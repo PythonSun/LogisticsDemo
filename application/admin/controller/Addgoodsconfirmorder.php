@@ -57,37 +57,42 @@ class Addgoodsconfirmorder extends Controller
             $order_goods_cs_undeliver_goods_info = $_POST['order_goods_cs_undeliver_goods_info'];
             $ogcugi_length = count($order_goods_cs_undeliver_goods_info);
         }
-
-        $retofginfo = \app\index\model\Admin::addofginfo($ofg_info);
+        $ofg_info_id = \app\index\model\Admin::getmaxtableidretid('ofg_info', 'ofg_info_id') + 1;
+        $ofg_info['ofg_info_id'] = $ofg_info_id;
+        $retofginfo = \app\index\model\Admin::updateofginfo($ofg_info);
 
         if (empty($retofginfo)){
             return "错误  52";
         }
-        $retfeeinfo = \app\index\model\Admin::addfeeinfo($fee_info);
+        $fee_info_id = \app\index\model\Admin::getmaxtableidretid('fee_info', 'fee_info_id') + 1;
+        $fee_info['fee_info_id'] = $fee_info_id;
+        $retfeeinfo = \app\index\model\Admin::updatefeeinfo($fee_info);
         if (empty($retfeeinfo)){
             return "错误  57";
         }
-        $ofg_info_id = \app\index\model\Admin::getmaxtableidretid('ofg_info', 'ofg_info_id');
-        $fee_info_id = \app\index\model\Admin::getmaxtableidretid('fee_info', 'fee_info_id');
         $order_goods_cs_info['ofg_info_id'] = $ofg_info_id;
         $order_goods_cs_info['fee_info_id'] = $fee_info_id;
         $cs_info_id = \app\index\model\Admin::getcsinfomaxid('order_goods_cs_info','cs_id');
         $order_goods_cs_info['cs_id'] = $cs_info_id;
-        $logistics_id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id');
-        $logistics_info['logistics_id'] = $logistics_id + 1;
+        $logistics_id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id') + 1;
+        $logistics_info['logistics_id'] = $logistics_id;
         $logistics_info['user_id'] = $login_user_id;
         $logistics_info['cs_id'] = $cs_info_id;
         $ret_logistics =\app\index\model\Admin::updatelogisticsinfo($logistics_info);
         if (empty($ret_logistics)) {
             return false;
         }
+        $ogcugi_id_arr =  array();
         if (!empty($order_goods_cs_undeliver_goods_info)){
             for ($i = 0; $i < $ogcugi_length; $i++){
+                $ogcugi_id = \app\index\model\Admin::getmaxtableidretid('order_goods_cs_undeliver_goods_info', 'ogcugi_id') + 1;
+                $order_goods_cs_undeliver_goods_info[$i]['ogcugi_id'] = $ogcugi_id;
                 $order_goods_cs_undeliver_goods_info[$i]['cs_id'] = $cs_info_id;
-                $retogcugi = \app\index\model\Admin::addogcugi($order_goods_cs_undeliver_goods_info[$i]);
+                $retogcugi = \app\index\model\Admin::updateogcugi($order_goods_cs_undeliver_goods_info[$i]);
                 if (empty($retogcugi)){
                     return "错误  70";
                 }
+                $ogcugi_id_arr[$i] = $ogcugi_id;
             }
         }
         $cs_belong['cs_id'] = $cs_info_id;
@@ -110,7 +115,7 @@ class Addgoodsconfirmorder extends Controller
             \app\index\model\Admin::deleterowtableid('cs_belong', 'cs_belong_id', $cs_belog_id);
             $ogcugi_id = \app\index\model\Admin::getcsinfomaxid('ofg_iorder_goods_cs_undeliver_goods_infonfo','ogcugi_id');
             for ($i = 0; $i < $ogcugi_length; $i++){
-                $delid = $ogcugi_id - $i;
+                $delid = $ogcugi_id_arr[$i];
                 \app\index\model\Admin::deleterowtableid('ofg_iorder_goods_cs_undeliver_goods_infonfo', 'ogcugi_id', $delid);
             }
             return "错误  404";

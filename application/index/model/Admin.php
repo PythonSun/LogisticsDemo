@@ -1203,36 +1203,39 @@
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
-        /*新增订单信息 ofg_info*/
-        public static function addofginfo($info){
-            //$ofg_info_id = $info['ofg_info_id'];
+        /*订单信息 ofg_info*/
+        public static function updateofginfo($info){
+            $ofg_info_id = $info['ofg_info_id'];
             $receiver_name = $info['receiver_name'];
             $receiver_phone = $info['receiver_phone'];
             $receiver_address = $info['receiver_address'];
             $user_id = $info['user_id'];
-
-            $sql_value ="'{$receiver_name}','{$receiver_phone}','{$receiver_address}','{$user_id}'";
-            $sql = "INSERT INTO dsp_logistic.ofg_info (receiver_name,receiver_phone,receiver_address,user_id) VALUES ({$sql_value})";
+            $sql_value ="'{$ofg_info_id}','{$receiver_name}','{$receiver_phone}','{$receiver_address}','{$user_id}'";
+            $sql = "INSERT INTO dsp_logistic.ofg_info (ofg_info_id,receiver_name,receiver_phone,receiver_address,user_id) VALUES ({$sql_value})";
+            $sql .= " ON DUPLICATE KEY UPDATE receiver_name = '{$receiver_name}',receiver_phone = '{$receiver_phone}',receiver_address = '{$receiver_address}'";
+            $sql .= ",user_id = '{$user_id}'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
 
-        /*新增费用情况 fee_info*/
-        public static function addfeeinfo($info){
-            //$fee_info_id = $info['fee_info_id'];
+        /*费用情况 fee_info*/
+        public static function updatefeeinfo($info){
+            $fee_info_id = $info['fee_info_id'];
             $customization_fee = $info['customization_fee'];
             $transfer_fee = $info['transfer_fee'];
             $transfer_mode = $info['transfer_mode'];
             $comment = $info['comment'];
 
-            $sql_value ="'{$customization_fee}','{$transfer_fee}','{$transfer_mode}','{$comment}'";
-            $sql = "INSERT INTO dsp_logistic.fee_info (customization_fee,transfer_fee,transfer_mode,comment) VALUES ({$sql_value})";
+            $sql_value ="'{$fee_info_id}','{$customization_fee}','{$transfer_fee}','{$transfer_mode}','{$comment}'";
+            $sql = "INSERT INTO dsp_logistic.fee_info (fee_info_id,customization_fee,transfer_fee,transfer_mode,comment) VALUES ({$sql_value})";
+            $sql .= " ON DUPLICATE KEY UPDATE customization_fee = '{$customization_fee}',transfer_fee = '{$transfer_fee}',transfer_mode = '{$transfer_mode}'";
+            $sql .= ",comment = '{$comment}'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
         /*新增 订货确认单 清单 order_goods_cs_undeliver_goods_info*/
-        public static function addogcugi($info){
-            $ogcugi_id = $info['fee_info_id'];
+        public static function updateogcugi($info){
+            $ogcugi_id = $info['ogcugi_id'];
             $cs_id = $info['cs_id'];
             $product_info_id = $info['product_info_id'];
             $ogcugi_count = $info['ogcugi_count'];
@@ -1241,6 +1244,8 @@
             $ogcugi_unit = $info['ogcugi_unit'];
             $sql_value ="'{$ogcugi_id}','{$cs_id}','{$product_info_id}','{$ogcugi_count}','{$ogcugi_product_state}','{$ogcugi_comment}','{$ogcugi_unit}'";
             $sql = "INSERT INTO dsp_logistic.order_goods_cs_undeliver_goods_info (ogcugi_id,cs_id,product_info_id,ogcugi_count,ogcugi_product_state,ogcugi_comment,ogcugi_unit) VALUES ({$sql_value})";
+            $sql .= " ON DUPLICATE KEY UPDATE cs_id = '{$cs_id}',product_info_id = '{$product_info_id}',ogcugi_count = '{$ogcugi_count}'";
+            $sql .= ",ogcugi_product_state = '{$ogcugi_product_state}',ogcugi_comment = '{$ogcugi_comment}',ogcugi_unit = '{$ogcugi_unit}'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
