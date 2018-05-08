@@ -193,8 +193,17 @@
         orderItem.place = jq('#place_id').val();//
         orderItem.count = jq('#inputcount').val();
         orderItem.unit = jq('#inputunit').val();
-        orderItem.unc_product_text = jq("#unc_productid").find("option:selected").text();
-        orderItem.unc_product_id = jq("#unc_productid").find("option:selected").val();
+
+
+        var unc_productid = jq("#unc_productid").find("option:selected").val();
+        var unc_product_text = "";
+        if(unc_productid == ""){
+            unc_product_text = "";
+        }else {
+            unc_product_text = jq("#unc_productid").find("option:selected").text();
+        }
+        orderItem.unc_product_text = unc_product_text;
+        orderItem.unc_product_id = unc_productid;
 
         /*jq("input[name='inputunroutine']").each(function(){             //改
             if(jq(this).prop('checked')){

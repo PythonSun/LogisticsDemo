@@ -1,0 +1,68 @@
+/* CSS Document */
+
+* {
+	margin: 0px;
+	padding: 0px;
+}
+html, body {
+	width: 100%;
+	height: 100%;
+	background-color: #F1F1F1;
+	overflow: hidden;
+}
+.top {
+	width: 567px;
+	height: 10%;
+	margin: 5% auto;
+	margin-bottom: 0%;
+}
+.uspw {
+	/*background: -webkit-linear-gradient(#009688, #009688, #009688);
+	background: -o-linear-gradient( #009688, #009688, #009688);
+	background: -moz-linear-gradient( #009688, #009688, #009688);
+	background: linear-gradient( #009688, #009688, #009688);*/
+	background-color: #009688;
+/*	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#88C868, endColorstr=#448624);
+*/	/*IE<9>*/
+/*	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#88C868,endColorstr=#448624)";
+*/	/*IE<8>*/
+	max-width: 460px;
+	max-height: 450px;
+	margin: 3% auto;
+	margin-top: 10%;
+	border-radius: 20px;
+	box-shadow: 0px 10px 5px 5px #009688;
+	padding: 5% 4% 5% 4%;
+	text-align: center;
+	overflow: hidden;
+}
+.login {
+	width: 36%;
+	margin: 1% auto;
+}
+.login .layui-btn-radius {
+	background-color: black;
+	border-color: #3C3A3A;
+	color: #fff;
+	width: 100%;
+	font-size: 20px;
+	letter-spacing: 5px;
+	text-align: center;
+}
+.message {
+	border-radius: 20px!important;
+	background-color: red;
+}
+label {
+	margin-left: 9%!important;
+	width: 5%!important;
+}
+input {
+	width: 80%!important;
+}
+.layui-input-block {
+	margin-left: 20%!important;
+}
+.layui-form-item {
+	margin-top: 3%!important;
+}

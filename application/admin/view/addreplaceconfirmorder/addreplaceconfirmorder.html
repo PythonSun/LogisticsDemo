@@ -17,13 +17,13 @@
                         <input type="text" disabled name="date" id="date1" autocomplete="on" class="layui-input light_gray" value="{$date}"> </div>
                 </div>
                 <div class="layui-inline">
-                    <label class="layui-form-label">接收时间</label>
+                    <label class="layui-form-label light_gray">接收时间</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input"> </div>
+                        <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input light_gray"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">状态</label>
-                    <div class="layui-input-inline">
+                    <div class="layui-input-inline dark_blue">
                         <select name="status">
                             <option value="" disabled="" selected="">选择</option>
                             <option value="0">空</option>
@@ -66,7 +66,7 @@
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">总部门：</label>
-                    <div class="layui-input-inline">
+                    <div class="layui-input-inline Wheat">
                         <select id="company_id" name="company_id" lay-filter="company_id">
                             <option value="" selected>请选择</option>
                             {volist name="companylist" id="vo"}
@@ -77,7 +77,7 @@
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">子部门：</label>
-                    <div class="layui-input-inline">
+                    <div class="layui-input-inline Wheat">
                         <select id="department_id" name="department_id" lay-filter="department_id">
                             <option value="" selected>请选择</option>
                         </select>
@@ -85,7 +85,7 @@
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">区域经理</label>
-                    <div class="layui-input-inline">
+                    <div class="layui-input-inline Wheat">
                         <select id="manager_id" name="manager_id" lay-filter="manager_id">
                             <option value="" selected>请选择</option>
                         </select>
@@ -93,7 +93,7 @@
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat label_change">区域经理电话</label>
-                    <div class="layui-input-inline">
+                    <div class="layui-input-inline Wheat">
                         <input type="text" disabled name="areamanagertel" id="areamanagertel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
@@ -193,7 +193,7 @@
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">运费方式</label>
-                    <div class="layui-input-inline">
+                    <div class="layui-input-inline Wheat">
                         <select name="freightway">
                             <option value="" disabled="" selected="">选择</option>
                             <option value="1">到付</option>
@@ -632,7 +632,7 @@
                 var cs_belong = new Object();
                 //cs_belong.cs_id = data['cs_id'];
                 cs_belong.build_organize_id = data['company_id'];
-                cs_belong.build_dspartment_id = data['department_id'];
+                cs_belong.build_department_id = data['department_id'];
                 cs_belong.build_user_id = data['manager_id'];
                 cs_belong.build_department_name = jq("#department_id").find("option:selected").text();                //缺
                 //cs_belong.cs_belong_create_time = data['cs_belong_create_time'];
@@ -734,7 +734,6 @@
                 for(var i = 1,rows = mytable.rows.length - 2; i < rows; i++){
                     var rowdata = {};
                     for(var j = 0,cells=mytable.rows[i].cells.length; j<cells; j++){
-
                         var tag = jq(mytable.rows[i].cells[j].innerHTML).attr('tag');
                         var text = jq(mytable.rows[i].cells[j].innerHTML).text();
                         var mymap = {};

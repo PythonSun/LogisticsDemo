@@ -6,10 +6,7 @@ h2, h3 {
 	text-align: center;
 	margin-bottom: 20px;
 }
-.Wheat,.Wheat:hover,.Wheat th {
-	background-color: #F5DEB3!important;
-	border-color:#000000!important;
-}
+
 button[lay-filter="save"], button[lay-filter="deliver"], button[lay-filter="cancel"] {
 	margin-left: 40%;
 }
@@ -37,16 +34,20 @@ button[lay-filter="save"], button[lay-filter="deliver"], button[lay-filter="canc
 label,input,div[pane=""]{
 	border-color:#000000!important;
 }
-.light_gray,.light_gray:hover{
+.light_gray,.light_gray:hover,.light_gray .layui-select-title input{
 	background-color:#D3D3D3!important;
 }
-.dark_blue,.dark_blue:hover{
+.dark_blue,.dark_blue:hover,.dark_blue .layui-select-title input{
 	background-color:#6495ED!important;
 }
-.light_blue,.light_blue:hover{
+.light_blue,.light_blue:hover,.light_blue .layui-select-title input{
 	background-color:#C6E2FF!important;
 }
-.light_green,.light_green:hover {
+.light_green,.light_green:hover,.light_green .layui-select-title input {
 	background-color: #90EE90!important;border-color:#000000!important;
+}
+.Wheat,.Wheat:hover,.Wheat th,.Wheat .layui-select-title input {
+	background-color: #F5DEB3!important;
+	border-color:#000000!important;
 }
 /*对lable标签和input输入标签颜色的设定结束*/
