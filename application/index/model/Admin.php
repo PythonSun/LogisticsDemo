@@ -938,8 +938,8 @@
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
-        /*新增 cs_belong*/
-        public static function addcsbelong($info){
+        /*cs_belong*/
+        public static function updatecsbelong($info){
             $cs_belong_id = $info['cs_belong_id'];
             $cs_id = $info['cs_id'];
             $build_organize_id = $info['build_organize_id'];
