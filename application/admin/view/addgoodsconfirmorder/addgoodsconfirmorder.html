@@ -492,7 +492,7 @@
                 cs_belong.cs_belong_create_time = null;
                 cs_belong.build_user_name = jq("#manager_id").find("option:selected").text();
                 cs_belong.build_organize_name = jq("#company_id").find("option:selected").text();
-                cs_belong.build_dspartment_id = data['department_id'];
+                cs_belong.build_department_id = data['department_id'];
                 cs_belong.build_department_name = jq("#department_id").find("option:selected").text();
                 return cs_belong;
             }

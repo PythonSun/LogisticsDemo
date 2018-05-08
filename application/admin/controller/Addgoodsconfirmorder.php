@@ -72,7 +72,7 @@ class Addgoodsconfirmorder extends Controller
         }
         $order_goods_cs_info['ofg_info_id'] = $ofg_info_id;
         $order_goods_cs_info['fee_info_id'] = $fee_info_id;
-        $cs_info_id = \app\index\model\Admin::getcsinfomaxid('order_goods_cs_info','cs_id');
+        $cs_info_id = \app\index\model\Admin::getcsinfomaxid('cs_belong','cs_id');
         $order_goods_cs_info['cs_id'] = $cs_info_id;
         $logistics_id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id') + 1;
         $logistics_info['logistics_id'] = $logistics_id;
@@ -95,25 +95,26 @@ class Addgoodsconfirmorder extends Controller
                 $ogcugi_id_arr[$i] = $ogcugi_id;
             }
         }
+        $cs_belog_id = \app\index\model\Admin::getmaxtableidretid('cs_belong','cs_belong_id') + 1;
+        $cs_belong['cs_belong_id'] = $cs_belog_id;
         $cs_belong['cs_id'] = $cs_info_id;
         $cs_belong['cs_belong_create_time'] = $date_now;
 
-        $ret_cs_belog = \app\index\model\Admin::addcsbelong($cs_belong);
+        $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
         if (empty($ret_cs_belog)) {
             return false;
         }
 
         //还有cs_belong
-        $retcsinfo = \app\index\model\Admin::addordergoodscsinfo($order_goods_cs_info);
+        $retcsinfo = \app\index\model\Admin::updateordergoodscsinfo($order_goods_cs_info);
 
         if (empty($retcsinfo)){
             //删除相关添加的表  未完
-            $cs_belog_id = \app\index\model\Admin::getcsinfomaxid('cs_belong','cs_belong_id');
+
             \app\index\model\Admin::deleterowtableid('ofg_info', 'ofg_info_id', $ofg_info_id);
             \app\index\model\Admin::deleterowtableid('fee_info', 'fee_info_id', $fee_info_id);
 
             \app\index\model\Admin::deleterowtableid('cs_belong', 'cs_belong_id', $cs_belog_id);
-            $ogcugi_id = \app\index\model\Admin::getcsinfomaxid('ofg_iorder_goods_cs_undeliver_goods_infonfo','ogcugi_id');
             for ($i = 0; $i < $ogcugi_length; $i++){
                 $delid = $ogcugi_id_arr[$i];
                 \app\index\model\Admin::deleterowtableid('ofg_iorder_goods_cs_undeliver_goods_infonfo', 'ogcugi_id', $delid);

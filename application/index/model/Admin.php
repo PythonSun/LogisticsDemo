@@ -1071,8 +1071,11 @@
                 return Db::query($sqlleader);
             }
         }
-        public static function getcsinfomaxid($tableName,$tableID){
+        public static function getcsinfomaxid($tableName,$tableID,$type = ""){
             $dateymd = date('Ymd');
+            if (!empty($type) && $type != ""){
+                $dateymd = $type.$dateymd;
+            }
             $sql ="select * from dsp_logistic.{$tableName} where {$tableID} like '%{$dateymd}%'";
             $retdb = Db::query($sql);
             if(empty($retdb)){
@@ -1175,8 +1178,8 @@
             $sql = "SELECT * FROM dsp_logistic.unc_product";
             return Db::query($sql);
         }
-        /*新增订货确认单 order_goods_cs_info*/
-        public static function addordergoodscsinfo($info){
+        /*订货确认单 order_goods_cs_info*/
+        public static function updateordergoodscsinfo($info){
             $cs_id = $info['cs_id'];
             $ofg_info_id = $info['ofg_info_id'];
             $fee_info_id = $info['fee_info_id'];
@@ -1187,6 +1190,7 @@
             $delivered_pa = $info['delivered_pa'];
             $delivered_conference = $info['delivered_conference'];
             $delivered_customization = $info['delivered_customization'];
+
             $delivered_record = $info['delivered_record'];
             $delivered_metro = $info['delivered_metro'];
             $delivered_aux = $info['delivered_aux'];
@@ -1200,6 +1204,11 @@
             $sql = "INSERT INTO dsp_logistic.order_goods_cs_info (cs_id,ofg_info_id,fee_info_id,delivery_date_reply,unc_ofg_info_id,consult_sheet_file,";
             $sql .= "delivered_total,delivered_pa,delivered_conference,delivered_customization,delivered_record,delivered_metro,delivered_aux,";
             $sql .= "delivered_gift,delivered_album,product_number,order_date) VALUES ({$sql_value})";
+            $sql .= " ON DUPLICATE KEY UPDATE cs_id = '{$cs_id}',ofg_info_id = '{$ofg_info_id}',fee_info_id = '{$fee_info_id}',delivery_date_reply = '{$delivery_date_reply}'";
+            $sql .= ",unc_ofg_info_id = '{$unc_ofg_info_id}',consult_sheet_file = '{$consult_sheet_file}',delivered_total = '{$delivered_total}'";
+            $sql .",delivered_pa = '{$delivered_pa}',delivered_conference = '{$delivered_conference}',delivered_customization = '{$delivered_customization}'";
+            $sql .= ",delivered_record = '{$delivered_record}',delivered_metro = '{$delivered_metro}',delivered_aux = '{$delivered_aux}'";
+            $sql .= ",delivered_gift = '{$delivered_gift}',delivered_album = '{$delivered_album}',product_number = '{$product_number}',order_date = '{$order_date}'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
