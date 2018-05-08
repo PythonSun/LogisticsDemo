@@ -25,21 +25,21 @@
 					<div class="layui-inline">
 						<label class="layui-form-label">部门：</label>
 						<div class="layui-input-inline" style="width: 200px;">
-							<input type="text" name="departname" lay-filter="departname" placeholder="请输入部门" autocomplete="off" class="layui-input">
+							<input type="text" name="departname" lay-filter="departname"  id="departname" placeholder="请输入部门" autocomplete="off" class="layui-input">
 						</div>
 					</div>
 
 					<div class="layui-inline">
 						<label class="layui-form-label">区域经理：</label>
 						<div class="layui-input-inline" style="width: 200px;">
-							<input type="text" name="areamanager" lay-filter="areamanager" placeholder="请输入区域经理" autocomplete="off" class="layui-input">
+							<input type="text" name="areamanager" lay-filter="areamanager" id="areamanager" placeholder="请输入区域经理" autocomplete="off" class="layui-input">
 						</div>
 					</div>
 
 					<div class="layui-inline">
 						<label class="layui-form-label">状态：</label>
 						<div class="layui-input-inline">
-							<select name="orderstate" lay-filter="orderstate">
+							<select name="orderstate" lay-filter="orderstate" id="orderstate">
 								<option value="" selected>请选择</option>
 								<option value="0" >已完成</option>
 								<option value="1">处理中</option>
@@ -54,35 +54,35 @@
 					<div class="layui-inline">
 						<label class="layui-form-label">流水号：</label>
 						<div class="layui-input-inline" style="width: 200px;">
-							<input type="text" name="order_id" lay-filter="order_id" placeholder="请输入流水号" autocomplete="off" class="layui-input">
+							<input type="text" name="order_id" lay-filter="order_id" id="order_id" placeholder="请输入流水号" autocomplete="off" class="layui-input">
 						</div>
 					</div>
 
 					<div class="layui-inline">
 						<label class="layui-form-label">收货人：</label>
 						<div class="layui-input-inline" style="width: 200px;">
-							<input type="text" name="receiver_name" lay-filter="receiver_name" placeholder="请输入收货人" autocomplete="off" class="layui-input">
+							<input type="text" name="receiver_name" lay-filter="receiver_name" id="receiver_name" placeholder="请输入收货人" autocomplete="off" class="layui-input">
 						</div>
 					</div>
 
 					<div class="layui-inline">
 						<label class="layui-form-label">货场：</label>
 						<div class="layui-input-inline" style="width: 200px;">
-							<input type="text" name="yard" lay-filter="yard" placeholder="请输入货场" autocomplete="off" class="layui-input">
+							<input type="text" name="yard" lay-filter="yard" id="yard" placeholder="请输入货场" autocomplete="off" class="layui-input">
 						</div>
 					</div>
 
 					<div class="layui-inline">
 						<label class="layui-form-label">运单号：</label>
 						<div class="layui-input-inline" style="width: 200px;">
-							<input type="text" name="couriernumber" lay-filter="couriernumber" placeholder="请输入运单号" autocomplete="off" class="layui-input">
+							<input type="text" name="couriernumber" lay-filter="couriernumber" id="couriernumber" placeholder="请输入运单号" autocomplete="off" class="layui-input">
 						</div>
 					</div>
 	 				{if condition="($exportgoodspower eq 16) OR ($exportreplacepower eq 16) OR ($exportborrowpower eq 16) OR ($exportreturnpower eq 16) OR ($exportpartspower eq 16) OR ($exportrepairpower eq 16) OR ($exportalternativepower eq 16)"}
 						<div class="layui-inline">
 							<label class="layui-form-label">运费方式：</label>
 							<div class="layui-input-inline">
-								<select name="freightmode" lay-filter="freightmode">
+								<select name="freightmode" lay-filter="freightmode" id="freightmode">
 									<option value="" selected>请选择</option>
 									<option value="0">到付</option>
 									<option value="1">现金</option>
@@ -100,7 +100,7 @@
 					<div class="layui-inline">
 						<label class="layui-form-label">产品分类：</label>
 						<div class="layui-input-inline">
-							<select name="productclass" lay-filter="productclass">
+							<select name="productclass" lay-filter="productclass" id="productclass">
 								<option value="">请选择</option>
 								{volist name="productlist" id="vo"}
 								<option value={$vo.product_type_id}>{$vo.product_type_name}</option>
@@ -112,7 +112,7 @@
 					<div class="layui-inline">
 						<label class="layui-form-label">品牌：</label>
 						<div class="layui-input-inline">
-							<select name="brand" lay-filter="brand">
+							<select name="brand" lay-filter="brand" id="brand">
 								<option value="">请选择</option>
 								{volist name="brandlist" id="vo"}
 								<option value={$vo.brand_id}>{$vo.brand_name}</option>
@@ -124,14 +124,14 @@
 					<div class="layui-inline">
 						<label class="layui-form-label">产品型号：</label>
 						<div class="layui-input-inline" style="width: 200px;">
-							<input type="text" name="producttype" lay-filter="producttype" placeholder="请输入产品型号" autocomplete="off" class="layui-input">
+							<input type="text" name="producttype" lay-filter="producttype" id="producttype" placeholder="请输入产品型号" autocomplete="off" class="layui-input">
 						</div>
 					</div>
 
 					<div class="layui-inline">
 						<label class="layui-form-label">生产地：</label>
 						<div class="layui-input-inline">
-							<select name="productarea" lay-filter="productarea">
+							<select name="productarea" lay-filter="productarea" id="productarea">
 								<option value="">请选择</option>
 								{volist name="placelist" id="vo"}
 								<option value={$vo.place_id}>{$vo.place_name}</option>
@@ -143,7 +143,7 @@
 					<div class="layui-inline">
 						<label class="layui-form-label" style="width: 100px;">非常规产品：</label>
 						<div class="layui-input-inline">
-							<select name="customproduct" lay-filter="customproduct">
+							<select name="customproduct" lay-filter="customproduct" id="customproduct">
 								<option value="">请选择</option>
 								{volist name="unclist" id="vo"}
 								<option value={$vo.unc_product_id}>{$vo.unc_product_name}</option>
