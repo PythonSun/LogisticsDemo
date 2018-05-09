@@ -3,6 +3,7 @@
 	use think\Db;
 	use PHPExcel_IOFactory;
 	use PHPExcel;
+    use PHPExcel_RichText;
     use think\Session;
 
 	class Admin extends \think\Model
@@ -1257,13 +1258,97 @@
             $root_url = $_SERVER['DOCUMENT_ROOT'];
             $file_name = iconv("utf-8","gb2312",$file_name);
             $template_name = iconv("utf-8","gb2312",$template_name);
-            
+
             $objReader = PHPExcel_IOFactory::createReader('Excel2007');
             $objPHPExcel = $objReader->load($root_url."/templates/".$template_name);
-            for($sheetitem=0;$sheetitem<count($ret);$sheetitem++){
-                $objPHPExcel->getActiveSheet()->setTitle('sheet'.$sheetitem);
-                $objPHPExcel->setActiveSheetIndex(0);
-                $objPHPExcel->getActiveSheet()->setCellValue('C3', '研发一部');
+            $objPHPExcel->setActiveSheetIndex(0);
+            $cloned_source = clone $objPHPExcel->getActiveSheet(); /*拷贝模板源*/
+            $objPHPExcel->getActiveSheet()->setTitle('sheet0');
+            $objPHPExcel->getActiveSheet()->setCellValue('C3', $ret[0]['build_department_name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('G3', $ret[0]['build_user_name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C4', $ret[0]['company_name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('K4', $ret[0]['company_phone']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C5', $ret[0]['company_address']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C6', $ret[0]['legal_representative']);
+            $objPHPExcel->getActiveSheet()->setCellValue('I6', $ret[0]['legal_phone']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C7', $ret[0]['company_contact']);
+            $objPHPExcel->getActiveSheet()->setCellValue('I7', $ret[0]['company_contact_phone']);
+
+            $objPHPExcel->getActiveSheet()->setCellValue('C9', $ret[0]['delivery_info_receiver_name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('I9', $ret[0]['is_insure']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C10', $ret[0]['receiver_phone']);
+            $objPHPExcel->getActiveSheet()->setCellValue('I10', $ret[0]['insure_amout']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C11', $ret[0]['goods_yard_name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('I11', $ret[0]['is_sign']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C12', $ret[0]['receiver_phone']);
+            $objPHPExcel->getActiveSheet()->setCellValue('I12', $ret[0]['has_contract']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C13', $ret[0]['receiver_address']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C14', $ret[0]['order_delivery_require']);
+
+            $objPHPExcel->getActiveSheet()->setCellValue('C17', $ret[0]['return_info_goods_yard_name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C18', $ret[0]['return_info_goods_yard_phone']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C19', $ret[0]['return_info_receiver_address']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C20', $ret[0]['return_order_num']);
+
+            $productlist = $ret[0]['productlist'];
+            for($item=22;$item<(count($productlist)+22);$item++){
+                $cloned_sheet->setCellValue('B'.$item, $productlist[$item-22]['product_type_name']);
+                $cloned_sheet->setCellValue('C'.$item, $productlist[$item-22]['brand_name']);
+                $cloned_sheet->setCellValue('D'.$item, $productlist[$item-22]['product_info_name']);
+                $cloned_sheet->setCellValue('E'.$item, $productlist[$item-22]['model']);
+                $cloned_sheet->setCellValue('F'.$item, $productlist[$item-22]['specification']);
+                $cloned_sheet->setCellValue('H'.$item, $productlist[$item-22]['uint']);
+                $cloned_sheet->setCellValue('I'.$item, $productlist[$item-22]['product_number']);
+                $cloned_sheet->setCellValue('J'.$item, $productlist[$item-22]['bar_code']);
+                $cloned_sheet->setCellValue('K'.$item, $productlist[$item-22]['back_date']);
+                $cloned_sheet->setCellValue('L'.$item, $productlist[$item-22]['replace_reason']);
+            }
+
+            if(count($ret) > 0){
+                for($sheetitem=1;$sheetitem<count($ret);$sheetitem++){
+                    $cloned_sheet = clone $cloned_source;
+                    $cloned_sheet->setTitle('sheet'.$sheetitem);
+                    $objPHPExcel->addSheet($cloned_sheet);
+                    $cloned_sheet->setCellValue('C3', $ret[$sheetitem]['build_department_name']);
+                    $cloned_sheet->setCellValue('G3', $ret[$sheetitem]['build_user_name']);
+                    $cloned_sheet->setCellValue('C4', $ret[$sheetitem]['company_name']);
+                    $cloned_sheet->setCellValue('K4', $ret[$sheetitem]['company_phone']);
+                    $cloned_sheet->setCellValue('C5', $ret[$sheetitem]['company_address']);
+                    $cloned_sheet->setCellValue('C6', $ret[$sheetitem]['legal_representative']);
+                    $cloned_sheet->setCellValue('I6', $ret[$sheetitem]['legal_phone']);
+                    $cloned_sheet->setCellValue('C7', $ret[$sheetitem]['company_contact']);
+                    $cloned_sheet->setCellValue('I7', $ret[$sheetitem]['company_contact_phone']);
+
+                    $cloned_sheet->setCellValue('C9', $ret[$sheetitem]['delivery_info_receiver_name']);
+                    $cloned_sheet->setCellValue('I9', $ret[$sheetitem]['is_insure']);
+                    $cloned_sheet->setCellValue('C10', $ret[$sheetitem]['receiver_phone']);
+                    $cloned_sheet->setCellValue('I10', $ret[$sheetitem]['insure_amout']);
+                    $cloned_sheet->setCellValue('C11', $ret[$sheetitem]['goods_yard_name']);
+                    $cloned_sheet->setCellValue('I11', $ret[$sheetitem]['is_sign']);
+                    $cloned_sheet->setCellValue('C12', $ret[$sheetitem]['receiver_phone']);
+                    $cloned_sheet->setCellValue('I12', $ret[$sheetitem]['has_contract']);
+                    $cloned_sheet->setCellValue('C13', $ret[$sheetitem]['receiver_address']);
+                    $cloned_sheet->setCellValue('C14', $ret[$sheetitem]['order_delivery_require']);
+
+                    $cloned_sheet->setCellValue('C17', $ret[$sheetitem]['return_info_goods_yard_name']);
+                    $cloned_sheet->setCellValue('C18', $ret[$sheetitem]['return_info_goods_yard_phone']);
+                    $cloned_sheet->setCellValue('C19', $ret[$sheetitem]['return_info_receiver_address']);
+                    $cloned_sheet->setCellValue('C20', $ret[$sheetitem]['return_order_num']);
+
+                    $productlist = $ret[$sheetitem]['productlist'];
+                    for($item=22;$item<(count($productlist)+22);$item++){
+                        $cloned_sheet->setCellValue('B'.$item, $productlist[$item-22]['product_type_name']);
+                        $cloned_sheet->setCellValue('C'.$item, $productlist[$item-22]['brand_name']);
+                        $cloned_sheet->setCellValue('D'.$item, $productlist[$item-22]['product_info_name']);
+                        $cloned_sheet->setCellValue('E'.$item, $productlist[$item-22]['model']);
+                        $cloned_sheet->setCellValue('F'.$item, $productlist[$item-22]['specification']);
+                        $cloned_sheet->setCellValue('H'.$item, $productlist[$item-22]['uint']);
+                        $cloned_sheet->setCellValue('I'.$item, $productlist[$item-22]['product_number']);
+                        $cloned_sheet->setCellValue('J'.$item, $productlist[$item-22]['bar_code']);
+                        $cloned_sheet->setCellValue('K'.$item, $productlist[$item-22]['back_date']);
+                        $cloned_sheet->setCellValue('L'.$item, $productlist[$item-22]['replace_reason']);
+                    }
+                }
             }
 
             header('Content-Type: application/vnd.ms-excel');
