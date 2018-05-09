@@ -1156,14 +1156,14 @@
             }
         }
 
-
         /*查询需要导出的更换确认单*/
         public static function queryexportreplaceconfirmorder($param,$type){
             $sqlone ="select dsp_logistic.cs_belong.*,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.*,";
-            $sqlone .= "dsp_logistic.custom_info.*,dsp_logistic.return_info.* from dsp_logistic.cs_info ";
+            $sqlone .= "dsp_logistic.custom_info.*,dsp_logistic.return_info.*,dsp_logistic.logistics_info.* from dsp_logistic.cs_info ";
             $sqlone .= "left join dsp_logistic.custom_info on dsp_logistic.custom_info.custom_info_id = dsp_logistic.cs_info.custom_info_id ";
             $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
             $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
+            $sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqlone .= "where dsp_logistic.cs_info.cs_info_type='$type' ";
             if((property_exists($param,'startdate'))&&(property_exists($param,'enddate'))){
@@ -1199,45 +1199,62 @@
 
             if(property_exists($param,'yard')){
                 $yard = $param->yard;
+                $sqlone.= " and goods_yard_name ='$yard' ";
             }
 
             if(property_exists($param,'couriernumber')){
                 $couriernumber = $param->couriernumber;
-            }
-
-            if(property_exists($param,'freightmode')){
-                $freightmode = $param->freightmode;
-            }
-
-            if(property_exists($param,'productclass')){
-                $productclass = $param->productclass;
-            }
-
-            if(property_exists($param,'brand')){
-                $brand = $param->brand;
-            }
-
-            if(property_exists($param,'producttype')){
-                $producttype = $param->producttype;
-            }
-
-            if(property_exists($param,'productarea')){
-                $productarea = $param->productarea;
-            }
-
-            if(property_exists($param,'customproduct')){
-                $customproduct = $param->customproduct;
+                $sqlone.= " and transfer_order_num ='$couriernumber' ";
             }
 
             $tableobj = Db::query($sqlone);
 
             /*查询产品详细信息*/
-            $sqltwo = "select dsp_logistic.order_goods_manager.*,dsp_logistic.cs_info.*,dsp_logistic.product_info.*,dsp_logistic.product_brand.brand_name,dsp_logistic.product_type.product_type_name from dsp_logistic.cs_info ";
+            $sqltwo = "select dsp_logistic.order_goods_manager.*,dsp_logistic.cs_info.*,dsp_logistic.product_info.*,dsp_logistic.product_brand.brand_name,dsp_logistic.product_type.product_type_name,dsp_logistic.unc_product.unc_product_name,dsp_logistic.order_goods_logistics.ogl_unc_product_id from dsp_logistic.cs_info ";
             $sqltwo .= "left join dsp_logistic.order_goods_manager on dsp_logistic.order_goods_manager.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqltwo .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.order_goods_manager.product_info_id ";
             $sqltwo .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
             $sqltwo .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
-            $sqltwo .= "where dsp_logistic.cs_info.cs_info_type='$type' and dsp_logistic.product_info.product_info_id !='-1'";
+            $sqltwo .= "left join dsp_logistic.order_goods_logistics on dsp_logistic.order_goods_logistics.order_goods_manager_id = dsp_logistic.order_goods_manager.order_goods_manager_id ";
+            $sqltwo .= "left join dsp_logistic.unc_product on dsp_logistic.unc_product.unc_product_id = dsp_logistic.order_goods_logistics.ogl_unc_product_id ";
+            $sqltwo .= "where dsp_logistic.cs_info.cs_info_type='$type' and dsp_logistic.product_info.product_info_id !='-1' ";
+
+            /*运费付费模式*/
+            if(property_exists($param,'freightmode')){
+                $freightmode = intval($param->freightmode);
+                $sqltwo .= "and dsp_logistic.delivery_info.transfer_fee_mode = '$freightmode' ";
+            }
+
+            /*产品分类*/
+            if(property_exists($param,'productclass')){
+                $productclass = intval($param->productclass);
+                $sqltwo .= "and dsp_logistic.product_type.product_type_id = '$productclass' ";
+            }
+
+            /*品牌*/
+            if(property_exists($param,'brand')){
+                $brand = intval($param->brand);
+                $sqltwo .= "and dsp_logistic.product_brand.brand_id = '$brand' ";
+            }
+
+            /*产品型号*/
+            if(property_exists($param,'producttype')){
+                $producttype = $param->producttype;
+                $sqltwo .= "and dsp_logistic.product_info.model = '$producttype' ";
+            }
+
+            /*生产地*/
+            if(property_exists($param,'productarea')){
+                $productarea = intval($param->productarea);
+                $sqltwo .= "and dsp_logistic.product_place.place_id = '$productarea' ";
+            }
+
+            /*非常规产品*/
+            if(property_exists($param,'customproduct')){
+                $customproduct = intval($param->customproduct);
+                $sqltwo .= "and dsp_logistic.unc_product.unc_product_id = '$customproduct' ";
+            }
+
             $listobj = Db::query($sqltwo);
 
             for($item=0; $item<count($tableobj);$item++){
