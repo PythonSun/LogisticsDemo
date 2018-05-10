@@ -54,7 +54,23 @@ class Addgoodsconfirmorder extends Controller
         $unc_ofg_info = $_POST['unc_ofg_info'];
         $unc_ofg_detail = $_POST['unc_ofg_detail'];
         $order_goods_cs_undeliver_goods_info = null;
+        $cs_info_id = \app\index\model\Admin::getcsinfomaxid('cs_belong','cs_id');
 
+        $order_goods_cs_info['unc_ofg_info_id'] = -1;
+        $order_goods_cs_info['ofg_info_id'] = -1;
+        $order_goods_cs_info['fee_info_id'] = -1;
+
+        $order_goods_cs_info['cs_id'] = $cs_info_id;
+        $retcsinfo = \app\index\model\Admin::updateordergoodscsinfo($order_goods_cs_info);
+        $cs_belog_id = \app\index\model\Admin::getmaxtableidretid('cs_belong','cs_belong_id') + 1;
+        $cs_belong['cs_belong_id'] = $cs_belog_id;
+        $cs_belong['cs_id'] = $cs_info_id;
+        $cs_belong['cs_belong_create_time'] = $date_now;
+        $cs_belong['build_user _phone'] = $user_session['phone'];
+        $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
+        if (empty($ret_cs_belog)) {
+            return false;
+        }
         $ogcugi_length = 0;
         if(array_key_exists('order_goods_cs_undeliver_goods_info',$_POST)){
             $order_goods_cs_undeliver_goods_info = $_POST['order_goods_cs_undeliver_goods_info'];
@@ -82,6 +98,14 @@ class Addgoodsconfirmorder extends Controller
             if (empty($retfee_info)){
                 return "错误  80";
             }
+
+            $cs_belog_id = \app\index\model\Admin::getmaxtableidretid('cs_belong','cs_belong_id') + 1;
+            $cs_belong['cs_belong_id'] = $cs_belog_id;
+            $cs_belong['cs_id'] = $unc_ofg_info['uoi_manual_ofg_id'];
+            $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
+            if (empty($ret_cs_belog)) {
+                return false;
+            }
         }
 
         $uod_id_arr =  array();
@@ -98,12 +122,6 @@ class Addgoodsconfirmorder extends Controller
                 }
             }
         }
-
-        $order_goods_cs_info['unc_ofg_info_id'] = $uoi_id;
-        $order_goods_cs_info['ofg_info_id'] = $ofg_info_id;
-        $order_goods_cs_info['fee_info_id'] = $fee_info_id;
-        $cs_info_id = \app\index\model\Admin::getcsinfomaxid('cs_belong','cs_id');
-        $order_goods_cs_info['cs_id'] = $cs_info_id;
 
         $logistics_info_count = count($logistics_info);
         $logistics_id_arr =  array();
@@ -131,20 +149,15 @@ class Addgoodsconfirmorder extends Controller
                 $ogcugi_id_arr[$i] = $ogcugi_id;
             }
         }
-        $cs_belog_id = \app\index\model\Admin::getmaxtableidretid('cs_belong','cs_belong_id') + 1;
-        $cs_belong['cs_belong_id'] = $cs_belog_id;
-        $cs_belong['cs_id'] = $cs_info_id;
-        $cs_belong['cs_belong_create_time'] = $date_now;
 
-        $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
-        if (empty($ret_cs_belog)) {
-            return false;
-        }
 
-        //还有cs_belong
+        $order_goods_cs_info['unc_ofg_info_id'] = $uoi_id;
+        $order_goods_cs_info['ofg_info_id'] = $ofg_info_id;
+        $order_goods_cs_info['fee_info_id'] = $fee_info_id;
+
+        //$order_goods_cs_info['cs_id'] = $cs_info_id;
         $retcsinfo = \app\index\model\Admin::updateordergoodscsinfo($order_goods_cs_info);
-
-        if (empty($retcsinfo)){
+        /*if (empty($retcsinfo)){
             //删除相关添加的表  未完
 
             \app\index\model\Admin::deleterowtableid('ofg_info', 'ofg_info_id', $ofg_info_id);
@@ -170,7 +183,7 @@ class Addgoodsconfirmorder extends Controller
                 \app\index\model\Admin::deleterowtableid('ofg_iorder_goods_cs_undeliver_goods_infonfo', 'ogcugi_id', $delid);
             }
             return "错误  404";
-        }
+        }*/
         return true;
     }
 }
