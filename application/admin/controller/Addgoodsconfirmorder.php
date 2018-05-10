@@ -51,7 +51,10 @@ class Addgoodsconfirmorder extends Controller
         $ofg_info = $_POST['ofg_info'];
         $fee_info = $_POST['fee_info'];
         $cs_belong = $_POST['cs_belong'];
+        $unc_ofg_info = $_POST['unc_ofg_info'];
+        $unc_ofg_detail = $_POST['unc_ofg_detail'];
         $order_goods_cs_undeliver_goods_info = null;
+
         $ogcugi_length = 0;
         if(array_key_exists('order_goods_cs_undeliver_goods_info',$_POST)){
             $order_goods_cs_undeliver_goods_info = $_POST['order_goods_cs_undeliver_goods_info'];
@@ -70,17 +73,50 @@ class Addgoodsconfirmorder extends Controller
         if (empty($retfeeinfo)){
             return "错误  57";
         }
+        $uoi_id = -1;
+        if (!empty($unc_ofg_info)){
+            $uoi_id = \app\index\model\Admin::getmaxtableidretid('unc_ofg_info', 'uoi_id') + 1;
+            $unc_ofg_info['uoi_date'] = $date_now;
+            $unc_ofg_info['uoi_id'] = $uoi_id;
+            $retfee_info = \app\index\model\Admin::updateunc_ofg_info($unc_ofg_info);
+            if (empty($retfee_info)){
+                return "错误  80";
+            }
+        }
+
+        $uod_id_arr =  array();
+        if(!empty($unc_ofg_info) && !empty($unc_ofg_detail)){
+            $unc_ofg_detail_length = count($unc_ofg_detail);
+            for($i = 0; $i < $unc_ofg_detail_length; $i++){
+                $uod_id = \app\index\model\Admin::getmaxtableidretid('unc_ofg_detail', 'uod_id') + 1;
+                $unc_ofg_detail[$i]['uod_id'] = $uod_id;
+                $uod_id_arr[$i] = $uod_id;
+                $unc_ofg_detail[$i]['unc_ofg_info_id'] = $uoi_id;
+                $retunc_ofg_detail = \app\index\model\Admin::updateunc_ofg_detail($unc_ofg_detail[$i]);
+                if (empty($retunc_ofg_detail)){
+                    return "错误  92";
+                }
+            }
+        }
+
+        $order_goods_cs_info['unc_ofg_info_id'] = $uoi_id;
         $order_goods_cs_info['ofg_info_id'] = $ofg_info_id;
         $order_goods_cs_info['fee_info_id'] = $fee_info_id;
         $cs_info_id = \app\index\model\Admin::getcsinfomaxid('cs_belong','cs_id');
         $order_goods_cs_info['cs_id'] = $cs_info_id;
-        $logistics_id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id') + 1;
-        $logistics_info['logistics_id'] = $logistics_id;
-        $logistics_info['user_id'] = $login_user_id;
-        $logistics_info['cs_id'] = $cs_info_id;
-        $ret_logistics =\app\index\model\Admin::updatelogisticsinfo($logistics_info);
-        if (empty($ret_logistics)) {
-            return false;
+
+        $logistics_info_count = count($logistics_info);
+        $logistics_id_arr =  array();
+        for ($i = 0; $i < $logistics_info_count; $i++){
+            $logistics_id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id') + 1;
+            $logistics_id_arr[$i] = $logistics_id;
+            $logistics_info[$i]['logistics_id'] = $logistics_id;
+            $logistics_info[$i]['user_id'] = $login_user_id;
+            $logistics_info[$i]['cs_id'] = $cs_info_id;
+            $ret_logistics =\app\index\model\Admin::updatelogisticsinfo($logistics_info[$i]);       //c错误
+            if (empty($ret_logistics)) {
+                return false;
+            }
         }
         $ogcugi_id_arr =  array();
         if (!empty($order_goods_cs_undeliver_goods_info)){
@@ -115,6 +151,20 @@ class Addgoodsconfirmorder extends Controller
             \app\index\model\Admin::deleterowtableid('fee_info', 'fee_info_id', $fee_info_id);
 
             \app\index\model\Admin::deleterowtableid('cs_belong', 'cs_belong_id', $cs_belog_id);
+
+            \app\index\model\Admin::deleterowtableid('unc_ofg_info', 'uoi_id', $uoi_id);
+
+            $logistics_id_arr_length = count($logistics_id_arr);
+            for ($i = 0; $i < $logistics_id_arr_length; $i++){
+                $delid = $logistics_id_arr[$i];
+                \app\index\model\Admin::deleterowtableid('logistics_info', 'logistics_id', $delid);
+            }
+            $uod_id_arr_length = count($uod_id_arr);
+            for ($i = 0; $i < $uod_id_arr_length; $i++){
+                $delid = $uod_id_arr_length[$i];
+                \app\index\model\Admin::deleterowtableid('unc_ofg_detail', 'uod_id', $delid);
+            }
+
             for ($i = 0; $i < $ogcugi_length; $i++){
                 $delid = $ogcugi_id_arr[$i];
                 \app\index\model\Admin::deleterowtableid('ofg_iorder_goods_cs_undeliver_goods_infonfo', 'ogcugi_id', $delid);
