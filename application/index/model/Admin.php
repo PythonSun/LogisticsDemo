@@ -896,19 +896,19 @@
         public static function adddeliveryinfo($info){
             $delivery_info_id = $info['delivery_info_id'];
             $delivery_info_receiver_name = $info['delivery_info_receiver_name'];
-            $receiver_phone = $info['receiver_phone'];
-            $goods_yard_name = $info['goods_yard_name'];
-            $goods_yard_phone = $info['goods_yard_phone'];
-            $receiver_address = $info['receiver_address'];
+            $delivery_info_receiver_phone = $info['delivery_info_receiver_phone'];
+            $delivery_info_goods_yard_name = $info['delivery_info_goods_yard_name'];
+            $delivery_info_goods_yard_phone = $info['delivery_info_goods_yard_phone'];
+            $delivery_info_receiver_address = $info['delivery_info_receiver_address'];
             $is_insure = $info['is_insure'];
             $is_sign = $info['is_sign'];
             $insure_amout = $info['insure_amout'];
             $has_contract = $info['has_contract'];
             $transfer_fee_mode = $info['transfer_fee_mode'];
-            $sql_value ="'$delivery_info_id','{$delivery_info_receiver_name}','{$receiver_phone}','{$goods_yard_name}','{$goods_yard_phone}','{$receiver_address}','{$is_insure}','{$insure_amout}','{$is_sign}','{$has_contract}','{$transfer_fee_mode}'";
-            $sql = "INSERT INTO dsp_logistic.delivery_info (delivery_info_id,delivery_info_receiver_name,receiver_phone,goods_yard_name,goods_yard_phone,receiver_address,is_insure,insure_amout,is_sign,has_contract,transfer_fee_mode) VALUES ({$sql_value})";
-            $sql.= "ON DUPLICATE KEY UPDATE delivery_info_receiver_name = '$delivery_info_receiver_name',receiver_phone = '$receiver_phone',goods_yard_name = '{$goods_yard_name}',";
-            $sql.= "goods_yard_phone= '{$goods_yard_phone}',receiver_address= '{$receiver_address}',is_insure = '{$is_insure}',";
+            $sql_value ="'$delivery_info_id','{$delivery_info_receiver_name}','{$delivery_info_receiver_phone}','{$delivery_info_goods_yard_name}','{$delivery_info_goods_yard_phone}','{$delivery_info_receiver_address}','{$is_insure}','{$insure_amout}','{$is_sign}','{$has_contract}','{$transfer_fee_mode}'";
+            $sql = "INSERT INTO dsp_logistic.delivery_info (delivery_info_id,delivery_info_receiver_name,delivery_info_receiver_phone,delivery_info_goods_yard_name,delivery_info_goods_yard_phone,delivery_info_receiver_address,is_insure,insure_amout,is_sign,has_contract,transfer_fee_mode) VALUES ({$sql_value})";
+            $sql.= "ON DUPLICATE KEY UPDATE delivery_info_receiver_name = '$delivery_info_receiver_name',delivery_info_receiver_phone = '$delivery_info_receiver_phone',delivery_info_goods_yard_name = '{$delivery_info_goods_yard_name}',";
+            $sql.= "delivery_info_goods_yard_phone= '{$delivery_info_goods_yard_phone}',delivery_info_receiver_address= '{$delivery_info_receiver_address}',is_insure = '{$is_insure}',";
             $sql.= "is_sign= '{$is_sign}',insure_amout= '{$insure_amout}',has_contract= '{$has_contract}',transfer_fee_mode= '{$transfer_fee_mode}'";
             $sqlret = Db::execute($sql);
             return $sqlret;
@@ -959,11 +959,12 @@
             $build_organize_name = $info['build_organize_name'];
             $build_department_id = $info['build_department_id'];
             $build_department_name = $info['build_department_name'];
-            $sql_value ="'$cs_belong_id','{$cs_id}','{$build_organize_id}','{$build_user_id}','{$cs_belong_create_time}','{$build_user_name}','{$build_organize_name}','{$build_department_id}','{$build_department_name}'";
-            $sql = "INSERT INTO dsp_logistic.cs_belong (cs_belong_id,cs_id,build_organize_id,build_user_id,cs_belong_create_time,build_user_name,build_organize_name,build_department_id,build_department_name) VALUES ({$sql_value})";
+            $build_user_phone = $info['build_user_phone'];
+            $sql_value ="'$cs_belong_id','{$cs_id}','{$build_organize_id}','{$build_user_id}','{$cs_belong_create_time}','{$build_user_name}','{$build_organize_name}','{$build_department_id}','{$build_department_name}','$build_user_phone'";
+            $sql = "INSERT INTO dsp_logistic.cs_belong (cs_belong_id,cs_id,build_organize_id,build_user_id,cs_belong_create_time,build_user_name,build_organize_name,build_department_id,build_department_name,build_user_phone) VALUES ({$sql_value})";
             $sql.= "ON DUPLICATE KEY UPDATE cs_id = '$cs_id',build_organize_id = '$build_organize_id',build_user_id = '$build_user_id',";
             $sql.= "cs_belong_create_time= '$cs_belong_create_time',build_user_name= '$build_user_name',build_organize_name= '$build_organize_name',";
-            $sql.= "build_department_id='{$build_department_id}',build_department_name='{$build_department_name}';";
+            $sql.= "build_department_id='{$build_department_id}',build_department_name='{$build_department_name}',build_user_phone = '$build_user_phone';";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }

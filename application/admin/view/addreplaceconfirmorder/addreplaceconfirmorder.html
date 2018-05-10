@@ -14,7 +14,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">日期</label>
                     <div class="layui-input-inline">
-                        <input type="text" disabled name="date" id="date1" autocomplete="on" class="layui-input light_gray" value="{$date}"> </div>
+                        <input type="text" disabled name="cs_belong_create_time" id="cs_belong_create_time" autocomplete="on" class="layui-input light_gray" value="{$date}"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">接收时间</label>
@@ -24,7 +24,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">状态</label>
                     <div class="layui-input-inline dark_blue">
-                        <select name="status">
+                        <select name="cs_info_state">
                             <option value="" disabled="" selected="">选择</option>
                             <option value="0">空</option>
                             <option value="1">处理中</option>
@@ -78,7 +78,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">子部门：</label>
                     <div class="layui-input-inline Wheat">
-                        <select id="department_id" name="department_id" lay-filter="department_id">
+                        <select id="build_organize_id" name="build_organize_id" lay-filter="build_organize_id">
                             <option value="" selected>请选择</option>
                         </select>
                     </div>
@@ -86,7 +86,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">区域经理</label>
                     <div class="layui-input-inline Wheat">
-                        <select id="manager_id" name="manager_id" lay-filter="manager_id">
+                        <select id="build_department_id" name="build_department_id" lay-filter="build_department_id">
                             <option value="" selected>请选择</option>
                         </select>
                     </div>
@@ -94,7 +94,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat label_change">区域经理电话</label>
                     <div class="layui-input-inline Wheat">
-                        <input type="text" disabled name="areamanagertel" id="areamanagertel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" disabled name="build_user_phone" id="build_user_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <h3>客户信息</h3>
@@ -102,39 +102,39 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">公司名称</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="companyname" id="companyname" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="company_name" id="company_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat label_change">公司电话/传真</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="companytel" id="companytel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="company_phone" id="company_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">公司地址</label>
                 <div class="layui-input-block">
-                    <input type="text" name="companyaddress" id="companyaddress" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                    <input type="text" name="company_address" id="company_address" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">法人代表</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="legalrepresentative" id="legalrepresentative" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="legal_representative" id="legal_representative" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">法人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="legalpersontel" id="legalpersontel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="legal_phone" id="legal_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">公司联系人</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="companycontact" id="companycontact" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="company_contact" id="company_contact" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">联系人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="contacttel" id="contacttel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="company_contact_phone" id="company_contact_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <h3>发货信息</h3>
@@ -142,59 +142,59 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人姓名</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="deliveryreceiver_name" id="deliveryreceiver_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="delivery_info_receiver_name" id="delivery_info_receiver_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="deliveryreceiver_phone" id="deliveryreceiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="delivery_info_receiver_phone" id="delivery_info_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场名称</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivery_goods_yard_name" id="delivery_goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="delivery_info_goods_yard_name" id="delivery_info_goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivery_goods_yard_phone" id="delivery_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="delivery_info_goods_yard_phone" id="delivery_info_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">收货地址</label>
                 <div class="layui-input-block">
-                    <input type="text" name="delivery_receiver_address" id="delivery_receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                    <input type="text" name="delivery_info_receiver_address" id="delivery_info_receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
             </div>
             <div class="layui-form-item Wheat" pane="">
                 <label class="layui-form-label Wheat">是否买保险</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="purchase" value="1" title="买">
-                    <input type="radio" name="purchase" value="0" title="不买" checked=""> </div>
+                    <input type="radio" name="is_insure" value="1" title="买">
+                    <input type="radio" name="is_insure" value="0" title="不买" checked=""> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">保额</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="coverage" id="coverage" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="insure_amount" id="insure_amount" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <div class="layui-form-item Wheat" pane="">
                 <label class="layui-form-label Wheat">客户性质</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="signed" value="1" title="签约" checked="">
-                    <input type="radio" name="signed" value="0" title="非签约"> </div>
+                    <input type="radio" name="is_sign" value="1" title="签约" checked="">
+                    <input type="radio" name="is_sign" value="0" title="非签约"> </div>
             </div>
             <div class="layui-form-item Wheat" pane="">
                 <label class="layui-form-label Wheat">销售合同</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="salescontract" value="1" title="有" checked="">
-                    <input type="radio" name="salescontract" value="0" title="无"> </div>
+                    <input type="radio" name="has_contract" value="1" title="有" checked="">
+                    <input type="radio" name="has_contract" value="0" title="无"> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">运费方式</label>
                     <div class="layui-input-inline Wheat">
-                        <select name="freightway">
+                        <select name="transfer_fee_mode">
                             <option value="" disabled="" selected="">选择</option>
                             <option value="1">到付</option>
                             <option value="2">现金</option>
@@ -207,31 +207,31 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat label_change">订单发货要求</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="ordershipmentsrequest" id="ordershipmentsrequest" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat"> </div>
+                    <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat"> </div>
             </div>
             <h3>返货信息</h3>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人姓名</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="return_receiver_name" id="return_receiver_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="return_info_receiver_name" id="return_info_receiver_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="return_receiver_phone" id="return_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="return_info_receiver_phone" id="return_info_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场名称</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="return_goods_yard_name" id="return_goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="return_info_goods_yard_name" id="return_info_goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="return_goods_yard_phone" id="return_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="return_info_goods_yard_phone" id="return_info_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">返货单号</label>
@@ -242,7 +242,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">收货地址</label>
                 <div class="layui-input-block">
-                    <input type="text" name="return_receiver_address" id="return_receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                    <input type="text" name="return_info_receiver_address" id="return_info_receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
             </div>
             <h3>部门总监审批</h3>
             <div class="layui-form-item">
@@ -320,30 +320,30 @@
             <div class="layui-form-item dark_blue" pane="">
                 <label class="layui-form-label dark_blue">是否到账</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="accountstatus" value="是" title="是" checked="">
-                    <input type="radio" name="accountstatus" value="否" title="否"> </div>
+                    <input type="radio" name="is_paid" value="是" title="是" checked="">
+                    <input type="radio" name="is_paid" value="否" title="否"> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">到账日期</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="date" id="date7" autocomplete="on" class="layui-input dark_blue"> </div>
+                        <input type="text" name="paid_date" id="paid_date" autocomplete="on" class="layui-input dark_blue"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">订制费用</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="custommoney" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
+                        <input type="text" name="customization_fee" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">运费</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="transportationexpense" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
+                        <input type="text" name="paid_bank" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label dark_blue">备注</label>
                 <div class="layui-input-block">
-                    <input type="text" name="remarkforth" id="remarkforth" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
+                    <input type="text" name="payment_info_comment" id="payment_info_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-btn-container">
@@ -679,66 +679,67 @@
                 console.log("以下确认单信息：");
                 console.log(cs_info);
                 var custom_info = new Object();
-                custom_info.company_name = data['companyname'];
-                custom_info.company_phone = data['companytel'];
-                custom_info.company_address = data['companyaddress'];
-                custom_info.legal_representative = data['legalrepresentative'];
-                custom_info.legal_phone = data['legalpersontel'];
-                custom_info.company_contact = data['companycontact'];
-                custom_info.company_contact_phone = data['contacttel'];
+                custom_info.company_name = data['company_name'];
+                custom_info.company_phone = data['company_phone'];
+                custom_info.company_address = data['company_address'];
+                custom_info.legal_representative = data['legal_representative'];
+                custom_info.legal_phone = data['legal_phone'];
+                custom_info.company_contact = data['company_contact'];
+                custom_info.company_contact_phone = data['company_contact_phone'];
                 console.log("以下客户信息：");
                 console.log(custom_info);
                 var delivery_info = new Object();
-                delivery_info.delivery_info_receiver_name = data['deliveryreceiver_name'];
-                delivery_info.receiver_phone = data['deliveryreceiver_phone'];
-                delivery_info.goods_yard_name = data['delivery_goods_yard_name'];
-                delivery_info.goods_yard_phone = data['delivery_goods_yard_phone'];
-                delivery_info.receiver_address = data['delivery_receiver_address'];
-                delivery_info.is_insure = data['purchase'];
-                delivery_info.insure_amout = data['coverage'];
-                if(data['purchase'] == 1){
-                    if(data['coverage'] == ""){
+                delivery_info.delivery_info_receiver_name = data['delivery_info_receiver_name'];
+                delivery_info.delivery_info_receiver_phone = data['delivery_info_receiver_phone'];
+                delivery_info.delivery_info_goods_yard_name = data['delivery_info_goods_yard_name'];
+                delivery_info.delivery_info_goods_yard_phone = data['delivery_info_goods_yard_phone'];
+                delivery_info.delivery_info_receiver_address = data['delivery_info_receiver_address'];
+                delivery_info.is_insure = data['is_insure'];
+                delivery_info.insure_amout = data['insure_amout'];
+                if(data['is_insure'] == 1){
+                    if(data['insure_amout'] == ""){
                         layer.msg('请选择填写保额！',{icon:2});
                         return false;
                     }
                 }else {
                     delivery_info.insure_amout = -1;
                 }
-                delivery_info.is_sign = data['signed'];
-                delivery_info.has_contract = data['salescontract'];
-                if(data['freightway'] == ""){
+                delivery_info.is_sign = data['is_sign'];
+                delivery_info.has_contract = data['has_contract'];
+                if(data['transfer_fee_mode'] == ""){
                     layer.msg('请选择运费方式！',{icon:2});
                     return false;
                 }
-                delivery_info.transfer_fee_mode = data['freightway'];//freightway 运费方式
+                delivery_info.transfer_fee_mode = data['transfer_fee_mode'];//freightway 运费方式
                 console.log("以下发货信息：");
                 console.log(delivery_info);
 
                 var return_info = new Object();
-                return_info.return_info_receiver_name = data['return_receiver_name'];
-                return_info.return_info_receiver_phone = data['return_receiver_phone'];
-                return_info.return_info_goods_yard_name = data['return_goods_yard_name'];
-                return_info.return_info_goods_yard_phone = data['return_goods_yard_phone'];
+                return_info.return_info_receiver_name = data['return_info_return_receiver_name'];
+                return_info.return_info_receiver_phone = data['return_info_return_receiver_phone'];
+                return_info.return_info_goods_yard_name = data['return_info_return_goods_yard_name'];
+                return_info.return_info_goods_yard_phone = data['return_info_return_goods_yard_phone'];
                 return_info.return_order_num = data['return_order_num'];
-                return_info.return_info_receiver_address = data['return_receiver_address'];
+                return_info.return_info_receiver_address = data['return_info_return_receiver_address'];
                 console.log("以下返货信息：");
                 console.log(return_info);
 
                 var cs_belong = new Object();
                 //cs_belong.cs_id = data['cs_id'];
-                cs_belong.build_organize_id = data['company_id'];
-                cs_belong.build_department_id = data['department_id'];
-                cs_belong.build_user_id = data['manager_id'];
-                cs_belong.build_department_name = jq("#department_id").find("option:selected").text();                //缺
+                cs_belong.build_organize_id = data['build_organize_id'];
+                cs_belong.build_department_id = data['build_department_id'];
+                cs_belong.build_user_id = data['build_user_id'];
+                cs_belong.build_department_name = jq("#build_department_id").find("option:selected").text();                //缺
                 //cs_belong.cs_belong_create_time = data['cs_belong_create_time'];
-                cs_belong.build_user_name = jq("#manager_id").find("option:selected").text();
-                cs_belong.build_organize_name = jq("#department_id").find("option:selected").text();
+                cs_belong.build_user_name = jq("#build_user_id").find("option:selected").text();
+                cs_belong.build_organize_name = jq("#build_organize_id").find("option:selected").text();
+                cs_belong.build_user_phone = data['build_user_phone'];
                 console.log("以下订单所属信息：");
                 console.log(cs_belong);
 
                 var cs_examine = [];
                 var directorExamine = {};
-                directorExamine['submit_user_id'] = data['manager_id'];
+                directorExamine['submit_user_id'] = data['build_user_id'];
                 directorExamine['cs_examine_date'] = '2000-1-1';
                 directorExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00'
                 directorExamine['cs_examine_comment'] = null;
@@ -747,7 +748,7 @@
                 directorExamine['cs_examine_state'] = state;
                 cs_examine[0] = directorExamine;
                 var generalManagerExamine = {};
-                generalManagerExamine['submit_user_id'] = data['manager_id'];
+                generalManagerExamine['submit_user_id'] = data['build_user_id'];
                 generalManagerExamine['cs_examine_date'] = '2000-1-1';
                 generalManagerExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00'
                 generalManagerExamine['cs_examine_comment'] = null;
