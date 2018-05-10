@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use think\Controller;
 use think\Exception;
+use think\Request;
 
 class Addreplaceconfirmorder extends Controller
 {
@@ -156,5 +157,12 @@ class Addreplaceconfirmorder extends Controller
         $dep_id = $_POST['param'];
         $result = \app\index\model\Admin::getuserinfobydepid($dep_id);
         return $result;
+    }
+
+    public function getcsallinfo()
+    {
+        $param = $_POST;
+        //return $param['param'];
+        return \app\index\model\Admin::getallcsinfobycsid($param['param']);
     }
 }

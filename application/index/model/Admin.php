@@ -34,7 +34,7 @@
         /*根据某个属性获取数据*/
         public static function getclassinfobyproperty($tablename,$property,$value){
             $sql = "select * from ".$tablename;
-            $sql.= " where '$property' = '$value'";
+            $sql.= " where $property = '$value'";
             $tableobj = Db::query($sql);
             if(!empty($tableobj)){
                 return $tableobj;
@@ -1615,13 +1615,13 @@
         /*根据cs_id 获取走流程确认单的所有信息*/
         public static function getallcsinfobycsid($cs_id)
         {
-
+            if($cs_id == null||$cs_id == "")
+                return null;
             $sqlone ="select dsp_logistic.cs_belong.*,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.*,";
-            $sqlone .= "dsp_logistic.custom_info.*,dsp_logistic.return_info.*,dsp_logistic.logistics_info.* from dsp_logistic.cs_info ";
+            $sqlone .= "dsp_logistic.custom_info.*,dsp_logistic.return_info.* from dsp_logistic.cs_info ";
             $sqlone .= "left join dsp_logistic.custom_info on dsp_logistic.custom_info.custom_info_id = dsp_logistic.cs_info.custom_info_id ";
             $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
             $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
-            $sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqlone .= "where dsp_logistic.cs_info.cs_id='$cs_id' ";
             $tableobj = Db::query($sqlone);
@@ -1630,21 +1630,43 @@
             //获取审批表
             $allcsinfo = $tableobj[0];
             $cs_examine_info = Array();
-            $examine_ids = Array();
-            $allcsinfo[''].explode(',',$examine_ids);
+            //$examine_ids = Array();
+            $examine_ids = explode(',',$allcsinfo['cs_examine_ids'],-1);
             if(count($examine_ids)>0)
             {
                 foreach ($examine_ids as $id )
                 {
-                    $exmine = \app\index\model\Admin::getclassinfobyproperty('cs_examine','cs_examine_id',$examine_ids[$id]);
+                    $exmine = \app\index\model\Admin::getclassinfobyproperty('cs_examine','cs_examine_id',$id);
                     if(!empty($exmine))
                         $cs_examine_info[]=$exmine[0];
                 }
             }
+
+            $logistric_info = \app\index\model\Admin::getclassinfobyproperty('logistics_info','cs_id',$cs_id);
+            if(empty($logistric_info))
+                $allcsinfo['logistric_info'] = null;
+            else
+                $allcsinfo['logistric_info'] = $logistric_info;
             $allcsinfo['cs_examine_info'] = $cs_examine_info;
-
-
+            $allcsinfo['order_goods'] =\app\index\model\Admin::getordergoodsbyid($cs_id);
+             return $allcsinfo;
         }
 
+        //根据cs_id获取确认单购买清单
+        public static function getordergoodsbyid($cs_id)
+        {
+            $sqlone ="select dsp_logistic.order_goods_manager.*,dsp_logistic.order_goods_logistics.*,dsp_logistic.product_info.*,";
+            $sqlone .= "dsp_logistic.product_brand.*,dsp_logistic.product_place.* ,dsp_logistic.product_type.* from dsp_logistic.order_goods_manager ";
+            $sqlone .= "left join dsp_logistic.order_goods_logistics on dsp_logistic.order_goods_logistics.order_goods_manager_id = dsp_logistic.order_goods_manager.order_goods_manager_id ";
+            $sqlone .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.order_goods_manager.product_info_id ";
+            $sqlone .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
+            $sqlone .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
+            $sqlone .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
+            $sqlone .= "where dsp_logistic.order_goods_manager.cs_id = '$cs_id' ";
+            $tableobj = Db::query($sqlone);
+            if(empty($tableobj))
+                return null;
+            return $tableobj;
+        }
     }
 ?>
