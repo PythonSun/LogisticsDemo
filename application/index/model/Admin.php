@@ -31,6 +31,15 @@
 				return $tableobj;
 			}
 		}
+        /*根据某个属性获取数据*/
+        public static function getclassinfobyproperty($tablename,$property,$value){
+            $sql = "select * from ".$tablename;
+            $sql.= " where '$property' = '$value'";
+            $tableobj = Db::query($sql);
+            if(!empty($tableobj)){
+                return $tableobj;
+            }
+        }
 
 		/*查询订货确认单*/
 		public static function querygoodsorderinfo(...$args){
@@ -965,9 +974,10 @@
             $cs_id = $info['cs_id'];
             $product_info_id = $info['product_info_id'];
             $unit_price = $info['unit_price'];
+            $unit = $info['unit'];
             $order_goods_manager_count = $info['order_goods_manager_count'];
             $specification = $info['specification'];
-            $order_goods_manager_explain = $info['explain'];
+            $order_goods_manager_explain = $info['order_goods_manager_explain'];
             $type = $info['type'];
             $comment = $info['comment'];
             $bar_code = $info['bar_code'];
@@ -977,14 +987,14 @@
             $deal_date = $info['deal_date'];
             $fault_condition = $info['fault_condition'];
             $sql_value ="'$order_goods_manager_id','{$cs_id}','{$product_info_id}','{$unit_price}','{$order_goods_manager_count}','{$specification}','{$order_goods_manager_explain}','{$type}'";
-            $sql_value .= ",'{$comment}','{$bar_code}','{$back_date}','{$replace_reason}','{$purchase_date}','{$deal_date}','{$fault_condition}'";
+            $sql_value .= ",'{$comment}','{$bar_code}','{$back_date}','{$replace_reason}','{$purchase_date}','{$deal_date}','{$fault_condition}','$unit'";
             $sql = "INSERT INTO dsp_logistic.order_goods_manager (order_goods_manager_id,cs_id,product_info_id,unit_price,order_goods_manager_count,specification,order_goods_manager_explain,type";
-            $sql .= ",comment,bar_code,back_date,replace_reason,purchase_date,deal_date,fault_condition) VALUES ({$sql_value})";
+            $sql .= ",comment,bar_code,back_date,replace_reason,purchase_date,deal_date,fault_condition,unit) VALUES ({$sql_value})";
             $sql.= "ON DUPLICATE KEY UPDATE cs_id = '$cs_id',product_info_id = '$product_info_id',unit_price = '$unit_price',";
             $sql.= "order_goods_manager_count= '$order_goods_manager_count',specification= '$specification',order_goods_manager_explain= '$order_goods_manager_explain',";
             $sql.= "type= '$type',comment= '$comment',bar_code= '$bar_code',";
             $sql.= "back_date= '$back_date',replace_reason= '$replace_reason',purchase_date= '$purchase_date',";
-            $sql.= "deal_date= '$deal_date',fault_condition= '$fault_condition' ;";
+            $sql.= "deal_date= '$deal_date',fault_condition= '$fault_condition' ,unit = '$unit';";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
@@ -1028,7 +1038,6 @@
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
-
 
         /*查询订单未审核的条数,未完待续*/
         public static function queryexamineordernums($cs_info_type,$cs_info_state){
@@ -1553,5 +1562,39 @@
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
+        /*根据cs_id 获取走流程确认单的所有信息*/
+        public static function getallcsinfobycsid($cs_id)
+        {
+
+            $sqlone ="select dsp_logistic.cs_belong.*,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.*,";
+            $sqlone .= "dsp_logistic.custom_info.*,dsp_logistic.return_info.*,dsp_logistic.logistics_info.* from dsp_logistic.cs_info ";
+            $sqlone .= "left join dsp_logistic.custom_info on dsp_logistic.custom_info.custom_info_id = dsp_logistic.cs_info.custom_info_id ";
+            $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
+            $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
+            $sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.cs_info.cs_id ";
+            $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
+            $sqlone .= "where dsp_logistic.cs_info.cs_id='$cs_id' ";
+            $tableobj = Db::query($sqlone);
+            if(empty($tableobj))
+                return null;
+            //获取审批表
+            $allcsinfo = $tableobj[0];
+            $cs_examine_info = Array();
+            $examine_ids = Array();
+            $allcsinfo[''].explode(',',$examine_ids);
+            if(count($examine_ids)>0)
+            {
+                foreach ($examine_ids as $id )
+                {
+                    $exmine = \app\index\model\Admin::getclassinfobyproperty('cs_examine','cs_examine_id',$examine_ids[$id]);
+                    if(!empty($exmine))
+                        $cs_examine_info[]=$exmine[0];
+                }
+            }
+            $allcsinfo['cs_examine_info'] = $cs_examine_info;
+
+
+        }
+
     }
 ?>
