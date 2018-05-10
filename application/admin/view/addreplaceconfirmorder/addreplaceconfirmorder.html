@@ -522,7 +522,77 @@
                     return false;
                 });
                 jq(document).on('click', '.edit_btn', function() {
-                    console.log(11111111122222222222);
+                    var text = jq(this).parent().parent();
+                    layer.open({
+                        type:2,
+                        title:'新增清单',
+                        area:['800px','90%'],
+                        shade:0,
+                        maxmin:false,
+                        content:"{:url('admin/addconfirmorderitem/addconfirmorderitem')}",
+                        btn:['保存','退出'],
+                        yes:function (index,layero) {
+                            var  iframeWin = window[layero.find('iframe')[0]['name']];
+                            var  orderItem = iframeWin.saveOrderItem();
+                            if(orderItem.product_info_name == null){
+                                return null;
+                            }
+                            console.log(orderItem);
+                            //+判断
+                            var row = new Object();
+                            row.product_type_id = orderItem.product_type_id;
+                            row.product_type_name = orderItem.product_type_name;
+                            row.brand_id = orderItem.brand_id;
+                            row.brand_name = orderItem.brand_name;
+                            row.product_info_name = orderItem.product_info_name;
+                            row.product_info_id = orderItem.product_info_id;
+                            row.model = orderItem.model;
+                            row.unit = orderItem.unit;
+                            row.place_id = orderItem.place_id;
+                            row.place_name = orderItem.place_name;
+                            row.order_goods_manager_count =orderItem.order_goods_manager_count;
+                            row.unc_product_name = orderItem.unc_product_name;
+                            row.unc_product_id = orderItem.unc_product_id;
+                            row.specification = orderItem.specification;
+                            row.back_date = orderItem.back_date;
+                            row.ogl_product_state = orderItem.ogl_product_state;
+                            row.bar_code = orderItem.bar_code;
+                            row.order_goods_manager_explain = orderItem.order_goods_manager_explain;
+                            row.ogl_comment = orderItem.ogl_comment;
+                            // console.log("length: "+ jq('#tableorder')[0].rows.length);
+                            row.id = jq(text[0].cells[0].innerHTML).attr("tag");
+                            insertRow(row)
+
+                            layer.closeAll();
+                        },
+                        btn2: function () {
+                            layer.closeAll();
+                        },
+                        success:function (layero, index) {
+                            var orderItem = new Object();
+                            //var text = jq(this).parent().parent();
+                            orderItem.product_type_id = jq(text[0].cells[1].innerHTML).attr("tag");
+                            orderItem.product_type_name = jq(text[0].cells[1].innerHTML).text();
+                            orderItem.brand_id = jq(text[0].cells[2].innerHTML).attr("tag");
+                            orderItem.brand_name = jq(text[0].cells[2].innerHTML).text();
+                            orderItem.model = jq(text[0].cells[5].innerHTML).text();
+                            orderItem.order_goods_manager_count = jq(text[0].cells[7].innerHTML).text();
+                            orderItem.unit = jq(text[0].cells[6].innerHTML).text();
+                            orderItem.specification = jq(text[0].cells[8].innerHTML).text();
+                            orderItem.bar_code = jq(text[0].cells[8].innerHTML).text();
+                            orderItem.back_date = jq(text[0].cells[9].innerHTML).text();
+                            orderItem.order_goods_manager_explain = jq(text[0].cells[10].innerHTML).text();
+                            orderItem.place_name = jq(text[0].cells[11].innerHTML).text();
+                            orderItem.place_id = jq(text[0].cells[11].innerHTML).attr("tag");//
+                            orderItem.ogl_product_state = jq(text[0].cells[12].innerHTML).text();
+                            orderItem.unc_product_name = jq(text[0].cells[13].innerHTML).text();
+                            orderItem.unc_product_id = jq(text[0].cells[13].innerHTML).attr("tag");
+                            orderItem.ogl_comment = jq(text[0].cells[14].innerHTML).text();
+
+                            var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                            iframeWin.LoadingData(orderItem);
+                        }
+                    });;
                 });
                 jq(document).on('click', '.del_btn', function(){
                     var text = jq(this).parent().parent();
@@ -531,12 +601,8 @@
                         delrowid.push(id);
                     jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
                     console.log(delrowid);
-
                 });
             });
-
-
-
 
             function insertRow(row) {
                 console.log(row);
@@ -545,7 +611,7 @@
 
                 var new_tr = jq('#tableorder')[0].insertRow(rows);//指定位置插入行
                 var col_0 = new_tr.insertCell(0);//添加列
-                col_0.innerHTML = "<td><a tag = '"+row.id+"'>"+ rows+"</a></td>";
+                col_0.innerHTML = "<td><a tag = '"+row.id+"'>"+ rows+"</a></td>"; //id是保存在数据库的id,新增时为空
                 var col_1 = new_tr.insertCell(1);//添加列
                 col_1.innerHTML = "<td><a tag='"+ row.product_type_id +"'>"+ row.product_type_name +"</a></td>";
                 var col_2 = new_tr.insertCell(2);//添加列

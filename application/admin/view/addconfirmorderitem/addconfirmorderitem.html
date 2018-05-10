@@ -76,7 +76,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">条码：</label>
                 <div class="layui-input-inline" style="max-width:120px">
-                    <input type="text" name="code" id="code">
+                    <input type="text" name="bar_code" id="bar_code">
                 </div>
             </div>
         </div>
@@ -218,7 +218,7 @@
                 orderItem.ogl_product_state = jq(this).attr('value');
             }
         });
-        orderItem.bar_code = jq('#code').val();
+        orderItem.bar_code = jq('#bar_code').val();
         orderItem.order_goods_manager_explain = jq('#explain').val();
         orderItem.ogl_comment = jq('#comment').val();
         //+判断 型号是否存在，不存在禁止录入
@@ -241,6 +241,33 @@
             },
         });
         return orderItem;
+    }
+
+    function LoadingData(data) {
+        console.log(data);
+        var jq = layui.jquery;
+
+        document.getElementById('product_type_id').value = data['product_type_id'];
+        document.getElementById('brand_id').value = data['brand_id'];
+        jq('#serachModelinfo').attr('value',data['model']);
+        document.getElementById('place_id').value = data['place_id'];
+        jq('#inputcount').attr('value',data['order_goods_manager_count']);
+        jq('#inputunit').attr('value',data['unit']);
+        document.getElementById('unc_productid').value = data['unc_product_id'];
+        jq('#specification').attr('value',data['specification']);
+        jq('#back_date').attr('value',data['back_date']);
+        jq('#bar_code').attr('value',data['bar_code']);
+        jq('#explain').attr('value',data['order_goods_manager_explain']);
+        jq('#comment').attr('value',data['ogl_comment']);
+        jq("input[name='inputstate']").each(function(){
+            if(jq(this).attr('value') == data['ogl_product_state']){
+                console.log(111);
+                jq(this).prop('checked',true);
+            }
+        });
+        layui.form.render('select');
+        layui.form.render('radio');
+
     }
 </script>
 
