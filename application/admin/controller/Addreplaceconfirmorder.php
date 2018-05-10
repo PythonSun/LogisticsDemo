@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use think\Controller;
 use think\Exception;
+use think\Request;
 
 class Addreplaceconfirmorder extends Controller
 {
@@ -49,7 +50,7 @@ class Addreplaceconfirmorder extends Controller
         $cs_examine = $_POST['cs_examine'];
         $order_goods_manager = $_POST['order_goods_manager'];
 
-        $cs_info_id = \app\index\model\Admin::getcsinfomaxid('cs_info','cs_id');
+        $cs_info_id = \app\index\model\Admin::getcsinfomaxid('cs_belong','cs_id');
         $cs_info['write_date'] = $date_now;
         $cs_info['cs_id'] = $cs_info_id;
         $cs_belong['cs_id'] = $cs_info['cs_id'];
@@ -57,7 +58,7 @@ class Addreplaceconfirmorder extends Controller
 
         $cs_belong_id = \app\index\model\Admin::getmaxtableidretid('cs_belong', 'cs_belong_id');
         $cs_belong['cs_belong_id'] = $cs_belong_id+1;
-        $ret_cs_belog = \app\index\model\Admin::addcsbelong($cs_belong);
+        $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
         if (empty($ret_cs_belog)) {
             return false;
         }
@@ -156,5 +157,12 @@ class Addreplaceconfirmorder extends Controller
         $dep_id = $_POST['param'];
         $result = \app\index\model\Admin::getuserinfobydepid($dep_id);
         return $result;
+    }
+
+    public function getcsallinfo()
+    {
+        $param = $_POST;
+        //return $param['param'];
+        return \app\index\model\Admin::getallcsinfobycsid($param['param']);
     }
 }

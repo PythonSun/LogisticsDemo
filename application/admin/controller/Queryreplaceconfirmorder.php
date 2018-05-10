@@ -85,6 +85,13 @@ class Queryreplaceconfirmorder extends Controller
 
     /*导出更换确认单*/
     public function exportreplaceconfirmorder(){
-        \app\index\model\Admin::exportreplaceconfirmorder();
+        $template_name = "更换代用确认单.xlsx";
+        $type=0x01;
+        $param = json_decode($_GET['param']);
+        $file_name = $_GET['file_name'];
+        $file_extend = $_GET['file_extend'];
+        /*查询更换确认单*/
+        $ret = \app\index\model\Admin::queryexportreplaceconfirmorder($param,$type);
+        dump($ret);
     }
 }

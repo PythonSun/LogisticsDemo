@@ -7,30 +7,38 @@ class Adminindex extends Controller
 	/*首页渲染方法*/
     public function index(){
         $userinfo = \app\index\model\Admin::getsessioninfo();
+        $user_id = intval($userinfo['user_id']);
+        
         $this->assign('loginusername',$userinfo["fullname"]);
-
-    	/*更换确认单*/
-        $replaceorder = 10;
+        
+        /*更换确认单*/
+        $type = 0x01;
+        $replaceorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
     	$this->assign('replaceorder',$replaceorder);
 
     	/*借样确认单*/
-        $borroworder = 5;
+        $type = 0x02;
+        $borroworder = \app\index\model\Admin::querycsinfonums($user_id,$type);
     	$this->assign('borroworder',$borroworder);
 
     	/*退货确认单*/
-        $returnorder = 3;
+        $type = 0x03;
+        $returnorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
     	$this->assign('returnorder',$returnorder);
 
     	/*维修确认单*/
-        $repairorder = 2;
+        $type = 0x04;
+        $repairorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
     	$this->assign('repairorder',$repairorder);
 
     	/*配件确认单*/
-        $partsorder = 0;
+        $type = 0x05;
+        $partsorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
     	$this->assign('partsorder',$partsorder);
 
     	/*代用确认单*/
-        $alternativeorder = 1;
+        $type = 0x06;
+        $alternativeorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
     	$this->assign('alternativeorder',$alternativeorder);
 
         $userinfo = \app\index\model\Admin::getsessioninfo();
