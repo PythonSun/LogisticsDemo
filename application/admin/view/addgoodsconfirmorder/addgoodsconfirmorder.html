@@ -45,10 +45,41 @@
             </div>
             <h3>物流信息</h3>
             <div class="layui-form-item">
+                <div class="layui-btn-container">
+                    <button id="btn_add_logistics_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_add_logistics_item">添加物流</button>
+                    <button id="btn_del_logistics_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_add_logistics_item">删除</button>
+
+                    <button id="btn_test" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_test">测试按钮</button>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+            <table class="layui-table" id="tablelogistics">
+                <colgroup>
+                </colgroup>
+                <thead>
+                <tr class="Wheat">
+                    <th>选择</th>
+                    <th>发货日期</th>
+                    <th>货场</th>
+                    <th>物流单号</th>
+                    <th>件数</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr class="Wheat">
+
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+
+            <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">发货日期</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivery_date" id="delivery_date" autocomplete="on" class="layui-input Wheat"> </div>
+                        <input type="text" name="delivery_date" id="delivery_date" autocomplete="on" class="layui-input Wheat">
+                    </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场</label>
@@ -152,9 +183,9 @@
                         <input type="text" name="delivery_date_reply" id="delivery_date_reply" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
-                	<a href="../IncreaseNonfinalizedProductsConfirmationSheet/IncreaseNonfinalizedProductsConfirmationSheet.html" class="layui-btn" target="_blank">增加非定型产品订货确认单</a>
+                	<a id="uncofginfo" class="layui-btn" target="_blank">增加非定型产品订货确认单</a>
                 	<a href="javascript:void(0);" class="layui-btn" target="_blank">查看非定型产品订货确认单</a>
-                	<a href="javascript:void(0);" class="layui-btn" target="_blank">上传咨询表</a>
+                	<a id="uploadpic" name="uploadpic" class="layui-btn" target="_blank">上传咨询表</a>
                 	<a href="javascript:void(0);" class="layui-btn" target="_blank">查看咨询表</a>
                	</div>
             </div>
@@ -242,12 +273,16 @@
             </div>
         </form>
         <script type="text/javascript" src="/static/layui/layui.js"></script>
+        <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript">
-            layui.use(['form', 'jquery','layedit', 'laydate'], function () {
+            var uncofginfo = null;
+            var del_logistics_id_arr = new Array();
+            layui.use(['form', 'jquery','layedit', 'laydate','upload'], function () {
                 var form = layui.form,
                     jq = layui.jquery,
                     layer = layui.layer,
                     layedit = layui.layedit,
+                     upload = layui.upload,
                     laydate = layui.laydate;
                 /*日期*/
                 laydate.render({
@@ -270,9 +305,45 @@
                     ,position: 'fixed'
                     ,theme: 'molv'
                 });
+                laydate.render({
+                    elem: '.lala'
+                    ,position: 'fixed'
+                    ,theme: 'molv'
+                });
+                //uploadpic
 
+                //执行实例      暂无
+                var uploadPic = upload.render({
+                    elem: '#uploadpic' //绑定元素
+                    ,acceptMime: 'image/*'
+                    ,url: '/upload/' //上传接口
+                    ,done: function(res){
+                        //上传完毕回调
+                    }
+                    ,error: function(){
+                        //请求异常回调
+                    }
+                });
+                //网页加载时  赋值使用
+                $(document).ready(function() {
+                    //判断此页面是新增还是编辑
+                    //如果新增
+                    addLogisticsItem(null);
+                    //否则 addLogisticsItem(data);
+                });
                 //监听提交
                 form.on('submit(save)', function (uidata) {
+                    var logistics_info = getlogisticsInfo();
+                    if(logistics_info == null){
+                        layer.msg('请填写完整物流信息！',{icon:2});
+                        return false;
+                    }
+                    var logistics_info_length = logistics_info.length;
+                    if(logistics_info_length < 1){
+                        layer.msg('请填写物流信息！',{icon:2});
+                        return false;
+                    }
+
                     jq = layui.jquery;
                     var data = uidata.field;
                     var order_date = data['order_date'];
@@ -296,7 +367,7 @@
                         return false;
                     }
                     console.log(data);
-                    var logistics_info = logisticsInfo(data);
+                    //var logistics_info = logisticsInfo();                           //错误
                     console.log('下列输入物流信息：');
                     console.log(logistics_info);
                     var order_goods_cs_info = orderGoodsInfo(data);
@@ -314,7 +385,32 @@
                     var order_goods_cs_undeliver_goods_info = ogcugi();
                     console.log('下列输入清单信息：');
                     console.log(order_goods_cs_undeliver_goods_info);
-
+                    var unc_ofg_info = null;
+                    var unc_ofg_detail = null;
+                    if (uncofginfo != null){
+                        unc_ofg_info = uncofginfo.unc_ofg_info;
+                        var unc_ofg_items = uncofginfo.unc_ofg_items;
+                        var length = unc_ofg_items.length;
+                        for (var i = 0; i < length; i++){
+                            if (unc_ofg_detail == null){
+                                unc_ofg_detail = [];
+                            }
+                            var itemInfo = {};
+                            itemInfo.uod_id = null;
+                            itemInfo.unc_ofg_info_id = null;
+                            itemInfo.product_info_id = unc_ofg_items[i].product_info_id
+                            itemInfo.uod_count = unc_ofg_items[i].uod_count
+                            itemInfo.uod_unit = unc_ofg_items[i].uod_unit;
+                            itemInfo.uod_requirement = unc_ofg_items[i].uod_requirement;
+                            itemInfo.uod_delivery_date = unc_ofg_items[i].uod_delivery_date;
+                            itemInfo.uod_comment = unc_ofg_items[i].uod_comment;
+                            unc_ofg_detail[i] = itemInfo;
+                        }
+                    }
+                    console.log('下列非常规订单信息：');
+                    console.log(unc_ofg_info);
+                    console.log('下列非常规清单信息：');
+                    console.log(unc_ofg_detail);
                     jq.ajax({
                         url: "{:url('admin/addgoodsconfirmorder/addcs')}",//php文件路径
                         data: {
@@ -323,7 +419,9 @@
                                 cs_belong:cs_belong,
                                 ofg_info:ofg_info,
                                 fee_info:fee_info,
-                                order_goods_cs_undeliver_goods_info:order_goods_cs_undeliver_goods_info
+                                order_goods_cs_undeliver_goods_info:order_goods_cs_undeliver_goods_info,
+                                unc_ofg_info:unc_ofg_info,
+                                unc_ofg_detail:unc_ofg_detail
                                 },
                         type: 'POST',
                         success: function(e) {
@@ -339,7 +437,6 @@
                     })
                     return false;
                 });
-
                 //监听选择公司
                 form.on('select(company_id)',function (data) {
                     jq.post("{:url('admin/addgoodsconfirmorder/getdepartmentinfo')}",{'param':data.value},function (data) {
@@ -359,6 +456,42 @@
                         }
                         form.render('select');
                     })
+                });
+                //添加物流信息
+                jq('#btn_add_logistics_item').click(function () {
+                    addLogisticsItem(null);
+                    /*var rows = jq('#tablelogistics')[0].rows.length;
+                    var new_tr = jq('#tablelogistics')[0].insertRow(rows);//指定位置插入行
+                    var col_0 = new_tr.insertCell(0);//添加列
+                    col_0.innerHTML = "<td><input type='checkbox' autocomplete='on' class='layui-input Wheat'></td>";
+                    var col_1 = new_tr.insertCell(1);//添加列
+                    col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item'></td>";
+                    jq.each(jq(".time-item"),function(){
+                        laydate.render({ elem: this });
+                    });
+                    var col_2 = new_tr.insertCell(2);//添加列
+                    col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                    var col_3 = new_tr.insertCell(3);//添加列
+                    col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                    var col_4 = new_tr.insertCell(4);//添加列
+                    col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                    form.render('checkbox');*/
+                    return false;
+                });
+                //删除物流信息
+                jq('#btn_del_logistics_item').click(function(){
+                    jq("#tablelogistics tbody tr").find("td:first input:checkbox").each(function () {
+                        var ischecked = jq(this).prop("checked");
+                        if(ischecked){
+                            var logistics_id = jq(this).parent().parent().attr("logistics_id");
+                            jq(this).parent().parent().remove();
+                            if (logistics_id === undefined || logistics_id == ""){
+                                return;
+                            }
+                            del_logistics_id_arr.pause(logistics_id);
+                        }
+                    });
+                    return false;
                 });
                 //添加清单明显
                 jq('#btn_add_order_item').click(function () {
@@ -380,46 +513,7 @@
                             if(orderItem.model_text == null){
                                 return null;
                             }
-                            console.log(orderItem);
-                            //+判断
-                            var type_id = orderItem.type_id;
-                            var type_text = orderItem.type_text;
-                            var brand_id = orderItem.brand_id;
-                            var brand_text = orderItem.brand_text;
-                            var model_text = orderItem.model_text;
-                            var product_info_id = orderItem.product_info_id;
-                            var model = orderItem.model;
-                            var unit = orderItem.unit;
-                            var place = orderItem.place_id;
-                            var place_text = orderItem.place_text;
-                            var count =orderItem.count;
-                            var product_state_text = orderItem.product_state_text;
-                            var product_state_id = orderItem.product_state_id;
-
-                            var comment = orderItem.comment;
-                            var rows = jq('#tableorder')[0].rows.length;
-
-                            var new_tr = jq('#tableorder')[0].insertRow(rows);//指定位置插入行
-                            var col_0 = new_tr.insertCell(0);//添加列
-                            col_0.innerHTML = "<td><a>"+ rows+"</a></td>";
-                            var col_1 = new_tr.insertCell(1);
-                            col_1.innerHTML = "<td><a tag='"+ type_id +"'>"+ type_text +"</a></td>";
-                            var col_2 = new_tr.insertCell(2);
-                            col_2.innerHTML = "<td><a tag='"+ brand_id +"'>"+ brand_text +"</a></td>";
-                            var col_3 = new_tr.insertCell(3);
-                            col_3.innerHTML = "<td><a>"+ model_text +"</a></td>";//-------产品名称-------
-                            var col_4 = new_tr.insertCell(4);
-                            col_4.innerHTML = "<td><a tag='" + product_info_id + "'>"+ model +"</a></td>";
-                            var col_5 = new_tr.insertCell(5);
-                            col_5.innerHTML = "<td><a>"+ unit +"</a></td>";
-                            var col_6 = new_tr.insertCell(6);
-                            col_6.innerHTML = "<td><a>"+ count +"</a></td>";
-                            var col_7 = new_tr.insertCell(7);
-                            col_7.innerHTML = "<td><a tag = '"+ place +"'>"+ place_text +"</a></td>";
-                            var col_8 = new_tr.insertCell(8);
-                            col_8.innerHTML = "<td><a tag='" + product_state_id + "'>"+ product_state_text +"</a></td>";
-                            var col_9 = new_tr.insertCell(9);
-                            col_9.innerHTML = "<td><a>"+ comment +"</a></td>";
+                            addTableItem(orderItem);
 
                             layer.closeAll();
                         },
@@ -429,6 +523,37 @@
                     });
                     return false;
                 });
+                //非定型订单弹窗
+                jq('#uncofginfo').click(function () {
+                    top.layer.open({
+                        type:2,
+                        title:'非定型产品订货单',
+                        area:['800px','90%'],
+                        shade: [0.7, '#393D49'],
+                        skin: 'layui-layer-molv',
+                        maxmin:true,
+                        content:"{:url('admin/uncofginfo/uncofginfo')}",
+                        btn:['保存','退出'],
+                        yes:function (index,layero) {
+                            var  iframeWin = top.window[layero.find('iframe')[0]['name']];
+                            uncofginfo = iframeWin.getData();
+                            top.layer.closeAll();
+                        },
+                        btn2: function () {
+                            top.layer.closeAll();
+                        }
+                    });
+                    return false;
+                })
+                //测试使用
+                jq('#btn_test').click(function () {
+                    var mytable = document.getElementById('tablelogistics');
+                    var obj = mytable.rows[1];
+                    var lala = jq(obj).attr('goods_yard_name');
+                    console.log(lala);
+                    console.log(obj);
+                    return false;
+                })
             });
             //订货确认单信息
             function orderGoodsInfo(data) {
@@ -438,7 +563,7 @@
                 order_goods_cs_info.fee_info_id = '';
                 order_goods_cs_info.order_date = data['order_date'];
                 order_goods_cs_info.delivery_date_reply = data['delivery_date_reply'];
-                order_goods_cs_info.unc_ofg_info_id = -1;                                       //非常规订单（暂无）
+                order_goods_cs_info.unc_ofg_info_id = -1;
                 order_goods_cs_info.consult_sheet_file = '';                                    //咨询单文件名（暂无）
                 order_goods_cs_info.delivered_total = data['transfer_mode'];
                 order_goods_cs_info.delivered_pa = data['delivered_pa'] == "" ? 0 : data['delivered_pa'];
@@ -496,20 +621,49 @@
                 cs_belong.build_department_name = jq("#department_id").find("option:selected").text();
                 return cs_belong;
             }
+            //获取物流信息
+            function getlogisticsInfo() {
+                var jq = layui.jquery;
+                var mytable = document.getElementById('tablelogistics');
+                var rows = mytable.rows.length;
+                var retArray = [];
+                for(var i = 1; i < rows; i++){
+                    var rowdata = {};
+                    var rowObj = mytable.rows[i]
+                    for(var j = 0,cells=mytable.rows[i].cells.length; j<cells; j++){
+                        var cellData = mytable.rows[i].cells[j].getElementsByTagName("input")[0].value;
+                        rowdata[j] = cellData;
+                    }
+                    var goods_yard_name = rowdata[2];
+                    var transfer_order_num = rowdata[3];
+                    var delivery_date = rowdata[1];
+                    var count = rowdata[4];
+                    if (goods_yard_name == "" && transfer_order_num == "" && delivery_date == "" && count == ""){
+                        continue;
+                    }
+                    if (goods_yard_name == "" || transfer_order_num == "" || delivery_date == "" || count == ""){
 
-            function logisticsInfo(data) {
-                var logistics_info = new Object();
-                logistics_info.logistics_id = null;
-                logistics_info.cs_id = null;
-                logistics_info.goods_yard_name = data['goods_yard_name'];
-                logistics_info.transfer_order_num = data['transfer_order_num'];
-                logistics_info.delivery_date = data['delivery_date'];
-                logistics_info.count = data['count'];
-                logistics_info.user_id = null;//data['user_id'];                         //登陆ID
-                logistics_info.time_stamp = '2000-01-01';                           //无
-                return logistics_info;
+                        return null;
+                    }
+                    var logistics_info = new Object();
+                    var logistics_id = jq(rowObj).attr('logistics_id');
+                    var cs_id = jq(rowObj).attr('cs_id');
+                    var user_id = jq(rowObj).attr('user_id');
+                    var time_stamp = jq(rowObj).attr('time_stamp');
+                    logistics_info.logistics_id = logistics_id === undefined ? "": logistics_id;
+                    logistics_info.cs_id = logistics_id === undefined ? "": cs_id;
+                    logistics_info.goods_yard_name = goods_yard_name;
+                    logistics_info.transfer_order_num = transfer_order_num;
+                    logistics_info.delivery_date = delivery_date;
+                    logistics_info.count = count;
+                    logistics_info.user_id = user_id === undefined ? "": user_id;                         //登陆ID
+                    logistics_info.time_stamp = time_stamp === undefined ? "2000-01-01": time_stamp;                          //无
+                    console.log(logistics_info);
+                    retArray[i - 1] = logistics_info;
+                }
+                return retArray;
             }
-
+            //获取表格数据
             function getTableData(){
                 var jq = layui.jquery;
                 var mytable = document.getElementById('tableorder');
@@ -548,6 +702,101 @@
                     order_goods_cs_undeliver_goods_info[i] = infoItem;
                 }
                 return order_goods_cs_undeliver_goods_info;
+            }
+            //添加订货确认单 清单
+            function addTableItem(itemData) {
+                var jq = layui.jquery;
+                //+判断
+                var type_id = itemData.type_id;
+                var type_text = itemData.type_text;
+                var brand_id = itemData.brand_id;
+                var brand_text = itemData.brand_text;
+                var model_text = itemData.model_text;
+                var product_info_id = itemData.product_info_id;
+                var model = itemData.model;
+                var unit = itemData.unit;
+                var place = itemData.place_id;
+                var place_text = itemData.place_text;
+                var count =itemData.count;
+                var product_state_text = itemData.product_state_text;
+                var product_state_id = itemData.product_state_id;
+
+                var comment = itemData.comment;
+                var rows = jq('#tableorder')[0].rows.length;
+                var new_tr = jq('#tableorder')[0].insertRow(rows);//指定位置插入行
+                var col_0 = new_tr.insertCell(0);//添加列
+                col_0.innerHTML = "<td><a>"+ rows+"</a></td>";
+                var col_1 = new_tr.insertCell(1);
+                col_1.innerHTML = "<td><a tag='"+ type_id +"'>"+ type_text +"</a></td>";
+                var col_2 = new_tr.insertCell(2);
+                col_2.innerHTML = "<td><a tag='"+ brand_id +"'>"+ brand_text +"</a></td>";
+                var col_3 = new_tr.insertCell(3);
+                col_3.innerHTML = "<td><a>"+ model_text +"</a></td>";//-------产品名称-------
+                var col_4 = new_tr.insertCell(4);
+                col_4.innerHTML = "<td><a tag='" + product_info_id + "'>"+ model +"</a></td>";
+                var col_5 = new_tr.insertCell(5);
+                col_5.innerHTML = "<td><a>"+ unit +"</a></td>";
+                var col_6 = new_tr.insertCell(6);
+                col_6.innerHTML = "<td><a>"+ count +"</a></td>";
+                var col_7 = new_tr.insertCell(7);
+                col_7.innerHTML = "<td><a tag = '"+ place +"'>"+ place_text +"</a></td>";
+                var col_8 = new_tr.insertCell(8);
+                col_8.innerHTML = "<td><a tag='" + product_state_id + "'>"+ product_state_text +"</a></td>";
+                var col_9 = new_tr.insertCell(9);
+                col_9.innerHTML = "<td><a>"+ comment +"</a></td>";
+            }
+            //页面间数据传递
+            function getUncofgInfoUI() {
+                return uncofginfo;
+            }
+            //添加一条物流信息 data == null 表示新增一条空数据
+            function addLogisticsItem(data) {
+                var jq = layui.jquery;
+                var laydate = layui.laydate;
+                var form = layui.form;
+                var logistics_id = "";
+                var cs_id = "";
+                var goods_yard_name = "";
+                var transfer_order_num = "";
+                var delivery_date = "";
+                var count = "";
+                var user_id = "";//data['user_id'];                         //登陆ID
+                var time_stamp = "";                           //无
+                if (data != null){
+                    logistics_id = data.logistics_id;
+                    cs_id = data.cs_id;
+                    goods_yard_name = data.goods_yard_name;
+                    transfer_order_num = data.transfer_order_num;
+                    delivery_date = data.delivery_date;
+                    count = data.count;
+                    user_id = data.user_id;//data['user_id'];                         //登陆ID
+                    time_stamp = data.time_stamp = '2000-01-01';                           //无
+                }
+                var rows = jq('#tablelogistics')[0].rows.length;
+                var new_tr = jq('#tablelogistics')[0].insertRow(rows);//指定位置插入行
+                jq(new_tr).attr("logistics_id",logistics_id);
+                jq(new_tr).attr("cs_id",cs_id);
+                jq(new_tr).attr("goods_yard_name",goods_yard_name);
+                jq(new_tr).attr("transfer_order_num",transfer_order_num);
+                jq(new_tr).attr("delivery_date",delivery_date);
+                jq(new_tr).attr("count",count);
+                jq(new_tr).attr("user_id",user_id);
+                jq(new_tr).attr("time_stamp",time_stamp);
+
+                var col_0 = new_tr.insertCell(0);//添加列
+                col_0.innerHTML = "<td><input type='checkbox' autocomplete='on' class='layui-input Wheat'></td>";
+                var col_1 = new_tr.insertCell(1);//添加列
+                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item'></td>";
+                jq.each(jq(".time-item"),function(){
+                    laydate.render({ elem: this });
+                });
+                var col_2 = new_tr.insertCell(2);//添加列
+                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                var col_3 = new_tr.insertCell(3);//添加列
+                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                var col_4 = new_tr.insertCell(4);//添加列
+                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                form.render('checkbox');
             }
         </script>
     </body>

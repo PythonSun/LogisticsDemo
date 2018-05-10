@@ -1091,10 +1091,10 @@
             $sql ="select * from dsp_logistic.{$tableName} where {$tableID} like '%{$dateymd}%'";
             $retdb = Db::query($sql);
             if(empty($retdb)){
-                return $dateymd.'0001';
+                return $dateymd.'00001';
             }else{
                 $num = count($retdb);
-                $maxid = 0001;
+                $maxid = 00001;
                 for($i = 0; $i < $num; $i++){
                     $cs_id = $retdb[$i]['cs_id'];
                     $cur_id = str_replace($dateymd,'',$cs_id);
@@ -1103,8 +1103,8 @@
                     }
                 }
 
-                $maxid = $maxid + 0001;
-                $strmaxid = $newStr= sprintf('%04s', $maxid);;
+                $maxid = $maxid + 00001;
+                $strmaxid = $newStr= sprintf('%05s', $maxid);;
                 return $dateymd.$strmaxid;
             }
         }
@@ -1611,6 +1611,43 @@
             $sql = "INSERT INTO dsp_logistic.logistics_info (logistics_id,cs_id,goods_yard_name,transfer_order_num,delivery_date,count,user_id,time_stamp) VALUES ({$sql_value})";
             $sql .= " ON DUPLICATE KEY UPDATE cs_id = '{$cs_id}',goods_yard_name = '{$goods_yard_name}',transfer_order_num = '{$transfer_order_num}',delivery_date = '{$delivery_date}'";
             $sql .= ",count = '{$count}',user_id = '{$user_id}',time_stamp = '{$time_stamp}'";
+            $sqlret = Db::execute($sql);
+            return $sqlret;
+        }
+
+        /*非常规订单 unc_ofg_info*/
+        public static function updateunc_ofg_info($info){
+            $uoi_id = $info['uoi_id'];
+            $uoi_manual_ofg_id = $info['uoi_manual_ofg_id'];
+            $uoi_to = $info['uoi_to'];
+            $uoi_custom_name = $info['uoi_custom_name'];
+            $uoi_to_place = $info['uoi_to_place'];
+            $user_id = $info['user_id'];
+            $uoi_date = $info['uoi_date'];
+            $uoi_project_name = $info['uoi_project_name'];
+            $uoi_provider_name = $info['uoi_provider_name'];
+            $sql_value ="'{$uoi_id}','{$uoi_manual_ofg_id}','{$uoi_to}','{$uoi_custom_name}','{$uoi_to_place}','{$user_id}','{$uoi_date}','{$uoi_project_name}','{$uoi_provider_name}'";
+            $sql = "INSERT INTO dsp_logistic.unc_ofg_info (uoi_id,uoi_manual_ofg_id,uoi_to,uoi_custom_name,uoi_to_place,user_id,uoi_date,uoi_project_name,uoi_provider_name) VALUES ({$sql_value})";
+            $sql .= " ON DUPLICATE KEY UPDATE uoi_manual_ofg_id = '{$uoi_manual_ofg_id}',uoi_to = '{$uoi_to}',uoi_custom_name = '{$uoi_custom_name}'";
+            $sql .= ",uoi_to_place = '{$uoi_to_place}',user_id = '{$user_id}',uoi_date = '{$uoi_date}',uoi_project_name = '{$uoi_project_name}',uoi_provider_name = '{$uoi_provider_name}'";
+            $sqlret = Db::execute($sql);
+            return $sqlret;
+        }
+        /*非常规订单清单 unc_ofg_detail*/
+        public static function updateunc_ofg_detail($info)
+        {
+            $uoi_id = $info['uoi_id'];
+            $unc_ofg_info_id = $info['unc_ofg_info_id'];
+            $product_info_id = $info['product_info_id'];
+            $uod_count = $info['uod_count'];
+            $uod_unit = $info['uod_unit'];
+            $uod_requirement = $info['uod_requirement'];
+            $uod_delivery_date = $info['uod_delivery_date'];
+            $uod_comment = $info['uod_comment'];
+            $sql_value = "'{$uoi_id}','{$unc_ofg_info_id}','{$product_info_id}','{$uod_count}','{$uod_unit}','{$uod_requirement}','{$uod_delivery_date}','{$uod_comment}'";
+            $sql = "INSERT INTO dsp_logistic.unc_ofg_detail (uoi_id,unc_ofg_info_id,product_info_id,uod_count,uod_unit,uod_requirement,uod_delivery_date,uod_comment) VALUES ({$sql_value})";
+            $sql .= " ON DUPLICATE KEY UPDATE unc_ofg_info_id = '{$unc_ofg_info_id}',product_info_id = '{$product_info_id}',uod_count = '{$uod_count}'";
+            $sql .= ",uod_unit = '{$uod_unit}',uod_requirement = '{$uod_requirement}',uod_delivery_date = '{$uod_delivery_date}',uod_comment = '{$uod_comment}'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
