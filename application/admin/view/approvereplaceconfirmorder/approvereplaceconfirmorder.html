@@ -14,6 +14,8 @@
 			<table class="layui-hide" id="replaceorder" lay-filter="replaceorder"></table>
 			<script type="text/html" id="operatebar">
 			  <a class="layui-btn layui-btn-xs" lay-event="detail">查看详情</a>
+			  <a class="layui-btn layui-btn-xs edit_btn" lay-event="edit">编辑</a>
+			  <a class="layui-btn layui-btn-xs del_btn" lay-event="delete">删除</a>
 			</script>
 		</div>
 		<script src="/static/layui/layui.js"></script>
@@ -56,9 +58,9 @@
                         ,{field: 'receiver_name', title: '收件人', minWidth: 100}
                         ,{field: 'cs_info_state', title: '状态', minWidth: 100}
                         ,{field: 'build_department_name', title: '部门', minWidth: 150}
-                        ,{field: 'build_user_name', title: '区域经理', minWidth: 100}
+                        ,{field: 'build_user_name', title: '区域经理', minWidth: 80}
                         ,{field: 'product_number', title: '项数', width: 80}
-				      	,{fixed: 'right', title:'操作', width:150, align:'center', toolbar: '#operatebar'}
+				      	,{fixed: 'right', title:'操作', width:200, align:'center', toolbar: '#operatebar'}
 				    ]]
 				    ,id: 'querytable'
 				    ,data:[]
@@ -76,6 +78,34 @@
 				    if(obj.event === 'detail'){
 				    	layer.msg('下单日期：'+ data.date + ' 的查看操作');
 				    }
+				    else if(obj.event === 'edit')
+					{
+                        layer.open({
+                            type:2,
+                            title:'新增清单',
+                            area:['90%','90%'],
+                            shade:0.9,
+                            maxmin:false,
+                            content:"{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}",
+                            btn:['保存','退出'],
+                            yes:function (layero,index) {
+                                var  iframeWin = window[layero.find('iframe')[0]['name']];
+                                var  orderItem = iframeWin.saveOrderItem();
+
+                            },
+                            btn2: function () {
+                                layer.closeAll();
+                            },
+							success:function (layero,index) {
+                                var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                                iframeWin.loadingOrder(data['cs_id']);
+                            }
+                        });
+					}
+					else if(obj.event === 'delete')
+					{
+
+					}
 			  	});
 			});
 		</script>

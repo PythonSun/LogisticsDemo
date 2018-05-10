@@ -836,8 +836,12 @@
                 return exp;
             }
             //加载订单数据
-            function loadingOrder(orderdata) {
+            function loadingOrder(cs_id) {
+                console.log(cs_id);
                 var jq = layui.jquery;
+                jq.post("{:url('admin/addreplaceconfirmorder/getcsallinfo')}",{'param':cs_id},function (data) {
+                    console.log(data);
+                })
 
             }
 
