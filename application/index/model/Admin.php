@@ -964,9 +964,10 @@
             $cs_id = $info['cs_id'];
             $product_info_id = $info['product_info_id'];
             $unit_price = $info['unit_price'];
+            $unit = $info['unit'];
             $order_goods_manager_count = $info['order_goods_manager_count'];
             $specification = $info['specification'];
-            $order_goods_manager_explain = $info['explain'];
+            $order_goods_manager_explain = $info['order_goods_manager_explain'];
             $type = $info['type'];
             $comment = $info['comment'];
             $bar_code = $info['bar_code'];
@@ -976,14 +977,14 @@
             $deal_date = $info['deal_date'];
             $fault_condition = $info['fault_condition'];
             $sql_value ="'$order_goods_manager_id','{$cs_id}','{$product_info_id}','{$unit_price}','{$order_goods_manager_count}','{$specification}','{$order_goods_manager_explain}','{$type}'";
-            $sql_value .= ",'{$comment}','{$bar_code}','{$back_date}','{$replace_reason}','{$purchase_date}','{$deal_date}','{$fault_condition}'";
+            $sql_value .= ",'{$comment}','{$bar_code}','{$back_date}','{$replace_reason}','{$purchase_date}','{$deal_date}','{$fault_condition}','$unit'";
             $sql = "INSERT INTO dsp_logistic.order_goods_manager (order_goods_manager_id,cs_id,product_info_id,unit_price,order_goods_manager_count,specification,order_goods_manager_explain,type";
-            $sql .= ",comment,bar_code,back_date,replace_reason,purchase_date,deal_date,fault_condition) VALUES ({$sql_value})";
+            $sql .= ",comment,bar_code,back_date,replace_reason,purchase_date,deal_date,fault_condition,unit) VALUES ({$sql_value})";
             $sql.= "ON DUPLICATE KEY UPDATE cs_id = '$cs_id',product_info_id = '$product_info_id',unit_price = '$unit_price',";
             $sql.= "order_goods_manager_count= '$order_goods_manager_count',specification= '$specification',order_goods_manager_explain= '$order_goods_manager_explain',";
             $sql.= "type= '$type',comment= '$comment',bar_code= '$bar_code',";
             $sql.= "back_date= '$back_date',replace_reason= '$replace_reason',purchase_date= '$purchase_date',";
-            $sql.= "deal_date= '$deal_date',fault_condition= '$fault_condition' ;";
+            $sql.= "deal_date= '$deal_date',fault_condition= '$fault_condition' ,unit = '$unit';";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }

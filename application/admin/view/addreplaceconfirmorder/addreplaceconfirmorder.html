@@ -369,16 +369,17 @@
                         <th class="dark_blue">产品状态</th>
                         <th class="dark_blue">非常规产品</th>
                         <th class="dark_blue">备注</th>
+                        <th class="dark_blue">操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td class="Wheat">其它说明</td>
-                        <td colspan="14"></td>
+                        <td colspan="15"></td>
                     </tr>
                     <tr>
                         <td class="dark_blue">情况说明</td>
-                        <td colspan="14"></td>
+                        <td colspan="15"></td>
                     </tr>
                 </tbody>
             </table>
@@ -390,8 +391,10 @@
                 </div>
             </div>
         </form>
+
         <script type="text/javascript" src="/static/layui/layui.js"></script>
         <script type="text/javascript">
+            var delrowid = new Array();
             layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
                 var form = layui.form,
                     laydate = layui.laydate,
@@ -481,64 +484,34 @@
                         yes:function (index,layero) {
                             var  iframeWin = window[layero.find('iframe')[0]['name']];
                             var  orderItem = iframeWin.saveOrderItem();
-                            if(orderItem.model_text == null){
+                            if(orderItem.product_info_name == null){
                                 return null;
                             }
                             console.log(orderItem);
                             //+判断
-                            var type_id = orderItem.type_id;
-                            var type_text = orderItem.type_text;
-                            var brand_id = orderItem.brand_id;
-                            var brand_text = orderItem.brand_text;
-                            var model_text = orderItem.model_text;
-                            var model_id = orderItem.model_id;
-                            var model = orderItem.model;
-                            var unit = orderItem.unit;
-                            var place = orderItem.place;
-                            var place_text = orderItem.place_text;
-                            var count =orderItem.count;
-                            var unc_product_text = orderItem.unc_product_text;
-                            var unc_product_id = orderItem.unc_product_id;
-                            var specification = orderItem.specification;
-                            var back_date = orderItem.back_date;
-                            var product_state = orderItem.product_state;
-                            var bar_code = orderItem.bar_code;
-                            var explain = orderItem.explain;
-                            var comment = orderItem.comment;
-                            console.log("length: "+ jq('#tableorder')[0].rows.length);
-                            var rows = jq('#tableorder')[0].rows.length - 2;
-
-                            var new_tr = jq('#tableorder')[0].insertRow(rows);//指定位置插入行
-                            var col_0 = new_tr.insertCell(0);//添加列
-                            col_0.innerHTML = "<td><a>"+ rows+"</a></td>";
-                            var col_1 = new_tr.insertCell(1);//添加列
-                            col_1.innerHTML = "<td><a tag='"+ type_id +"'>"+ type_text +"</a></td>";
-                            var col_2 = new_tr.insertCell(2);//添加列
-                            col_2.innerHTML = "<td><a tag='"+ brand_id +"'>"+ brand_text +"</a></td>";
-                            var col_3 = new_tr.insertCell(3);
-                            col_3.innerHTML = "<td><a>"+ model_text +"</a></td>";//-------产品名称-------
-                            var col_4 = new_tr.insertCell(4);
-                            col_4.innerHTML = "<td><a>"+ specification +"</a></td>";
-                            var col_5 = new_tr.insertCell(5);
-                            col_5.innerHTML = "<td><a tag='" + model_id + "'>"+ model +"</a></td>";
-                            var col_6 = new_tr.insertCell(6);
-                            col_6.innerHTML = "<td><a>"+ unit +"</a></td>";
-                            var col_7 = new_tr.insertCell(7);
-                            col_7.innerHTML = "<td><a>"+ count +"</a></td>";
-                            var col_8 = new_tr.insertCell(8);
-                            col_8.innerHTML = "<td><a>"+ bar_code +"</a></td>";
-                            var col_9 = new_tr.insertCell(9);
-                            col_9.innerHTML = "<td><a>"+ back_date +"</a></td>";
-                            var col_10 = new_tr.insertCell(10);
-                            col_10.innerHTML = "<td><a>"+ explain +"</a></td>";
-                            var col_11 = new_tr.insertCell(11);
-                            col_11.innerHTML = "<td><a tag = '"+ place +"'>"+ place_text +"</a></td>";
-                            var col_12 = new_tr.insertCell(12);
-                            col_12.innerHTML = "<td><a>"+ product_state +"</a></td>";
-                            var col_13 = new_tr.insertCell(13);
-                            col_13.innerHTML = "<td><a tag='" + unc_product_id + "'>"+ unc_product_text +"</a></td>";
-                            var col_14 = new_tr.insertCell(14);
-                            col_14.innerHTML = "<td><a>"+ comment +"</a></td>";
+                            var row = new Object();
+                            row.product_type_id = orderItem.product_type_id;
+                            row.product_type_name = orderItem.product_type_name;
+                            row.brand_id = orderItem.brand_id;
+                            row.brand_name = orderItem.brand_name;
+                            row.product_info_name = orderItem.product_info_name;
+                            row.product_info_id = orderItem.product_info_id;
+                            row.model = orderItem.model;
+                            row.unit = orderItem.unit;
+                            row.place_id = orderItem.place_id;
+                            row.place_name = orderItem.place_name;
+                            row.order_goods_manager_count =orderItem.order_goods_manager_count;
+                            row.unc_product_name = orderItem.unc_product_name;
+                            row.unc_product_id = orderItem.unc_product_id;
+                            row.specification = orderItem.specification;
+                            row.back_date = orderItem.back_date;
+                            row.ogl_product_state = orderItem.ogl_product_state;
+                            row.bar_code = orderItem.bar_code;
+                            row.order_goods_manager_explain = orderItem.order_goods_manager_explain;
+                            row.ogl_comment = orderItem.ogl_comment;
+                           // console.log("length: "+ jq('#tableorder')[0].rows.length);
+                            row.id = "";
+                            insertRow(row)
 
                             layer.closeAll();
                         },
@@ -548,7 +521,63 @@
                     });
                     return false;
                 });
+                jq(document).on('click', '.edit_btn', function() {
+                    console.log(11111111122222222222);
+                });
+                jq(document).on('click', '.del_btn', function(){
+                    var text = jq(this).parent().parent();
+                    var id= jq(text[0].cells[0].innerHTML).attr("tag");
+                    if(id != "")
+                        delrowid.push(id);
+                    jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
+                    console.log(delrowid);
+
+                });
             });
+
+
+
+
+            function insertRow(row) {
+                console.log(row);
+                var jq = layui.jquery;
+                var rows = jq('#tableorder')[0].rows.length - 2;
+
+                var new_tr = jq('#tableorder')[0].insertRow(rows);//指定位置插入行
+                var col_0 = new_tr.insertCell(0);//添加列
+                col_0.innerHTML = "<td><a tag = '"+row.id+"'>"+ rows+"</a></td>";
+                var col_1 = new_tr.insertCell(1);//添加列
+                col_1.innerHTML = "<td><a tag='"+ row.product_type_id +"'>"+ row.product_type_name +"</a></td>";
+                var col_2 = new_tr.insertCell(2);//添加列
+                col_2.innerHTML = "<td><a tag='"+ row.brand_id +"'>"+ row.brand_name +"</a></td>";
+                var col_3 = new_tr.insertCell(3);
+                col_3.innerHTML = "<td><a>"+ row.product_info_name +"</a></td>";//-------产品名称-------
+                var col_4 = new_tr.insertCell(4);
+                col_4.innerHTML = "<td><a>"+ row.specification +"</a></td>";
+                var col_5 = new_tr.insertCell(5);
+                col_5.innerHTML = "<td><a tag='" + row.product_info_id + "'>"+ row.model +"</a></td>";
+                var col_6 = new_tr.insertCell(6);
+                col_6.innerHTML = "<td><a>"+ row.unit +"</a></td>";
+                var col_7 = new_tr.insertCell(7);
+                col_7.innerHTML = "<td><a>"+  row.order_goods_manager_count +"</a></td>";
+                var col_8 = new_tr.insertCell(8);
+                col_8.innerHTML = "<td><a>"+ row.bar_code +"</a></td>";
+                var col_9 = new_tr.insertCell(9);
+                col_9.innerHTML = "<td><a>"+ row.back_date +"</a></td>";
+                var col_10 = new_tr.insertCell(10);
+                col_10.innerHTML = "<td><a>"+ row.order_goods_manager_explain +"</a></td>";
+                var col_11 = new_tr.insertCell(11);
+                col_11.innerHTML = "<td><a tag = '"+ row.place_id +"'>"+ row.place_name +"</a></td>";
+                var col_12 = new_tr.insertCell(12);
+                col_12.innerHTML = "<td><a>"+ row.ogl_product_state +"</a></td>";
+                var col_13 = new_tr.insertCell(13);
+                col_13.innerHTML = "<td><a tag='" + row.unc_product_id + "'>"+ row.unc_product_name +"</a></td>";
+                var col_14 = new_tr.insertCell(14);
+                col_14.innerHTML = "<td><a>"+ row.ogl_comment +"</a></td>";
+                var col_14 = new_tr.insertCell(15);
+                col_14.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
+            }
+
             //保存或者转交 新增单  state: 0,保存  1，转交给总监
             function saveOrDeliverToSql(uidata,state) {
                 jq = layui.jquery;
@@ -675,34 +704,21 @@
                 var order_goods_manager= [];
                 for(var i = 0; i <= rows; i++){
                     var order_goods_manager_item = {};
-                    if (i == rows){
-                        order_goods_manager_item['explain'] = exp;
+                    order_goods_manager_item['product_info_id']= tabledata[i][5]['tag'];
+                    order_goods_manager_item['unit'] = tabledata[i][6]['text'];
+                    order_goods_manager_item['order_goods_manager_count'] = tabledata[i][7]['text'];
+                    order_goods_manager_item['specification'] = tabledata[i][4]['text'];
+                    order_goods_manager_item['type'] = 1;                                             //1：更换 详细看数据库
+                    order_goods_manager_item['comment'] = tabledata[i][14]['text'];
+                    order_goods_manager_item['bar_code'] = tabledata[i][8]['text'];
+                    order_goods_manager_item['back_date'] = tabledata[i][9]['text'];
+                    order_goods_manager_item['replace_reason'] = tabledata[i][10]['text'];
+                    order_goods_manager_item['order_goods_manager_explain'] = exp;
 
-                        order_goods_manager_item['product_info_id']= -1;
-                        order_goods_manager_item['unit_price'] = -1;
-                        order_goods_manager_item['order_goods_manager_count'] = -1;
-                        order_goods_manager_item['specification'] = null;
-                        order_goods_manager_item['type'] = 1;                                             //1：更换 详细看数据库
-                        order_goods_manager_item['comment'] = null;
-                        order_goods_manager_item['bar_code'] = null;
-                        order_goods_manager_item['back_date'] = '2000-1-1';
-                        order_goods_manager_item['replace_reason'] = null;
-
-                    }else {
-                        order_goods_manager_item['product_info_id']= tabledata[i][5]['tag'];
-                        order_goods_manager_item['unit_price'] = tabledata[i][6]['text'];
-                        order_goods_manager_item['order_goods_manager_count'] = tabledata[i][7]['text'];
-                        order_goods_manager_item['specification'] = tabledata[i][4]['text'];
-                        order_goods_manager_item['type'] = 1;                                             //1：更换 详细看数据库
-                        order_goods_manager_item['comment'] = tabledata[i][14]['text'];
-                        order_goods_manager_item['bar_code'] = tabledata[i][8]['text'];
-                        order_goods_manager_item['back_date'] = tabledata[i][9]['text'];
-                        order_goods_manager_item['replace_reason'] = tabledata[i][10]['text'];
-                        order_goods_manager_item['explain'] = null;
-                    }
                     order_goods_manager_item['purchase_date'] = '2000-1-1';
                     order_goods_manager_item['deal_date'] = '2000-1-1';
                     order_goods_manager_item['fault_condition'] = null;
+                    order_goods_manager_item['unit_price'] = null;
                     order_goods_manager[i] = order_goods_manager_item;
                 }
                 console.log("以下清单信息：");
@@ -753,6 +769,12 @@
                 var exp = mytable.rows[mytable.rows.length - 1].cells[1].innerHTML;
                 return exp;
             }
+            //加载订单数据
+            function loadingOrder(orderdata) {
+                var jq = layui.jquery;
+
+            }
+
         </script>
     </body>
 </html>
