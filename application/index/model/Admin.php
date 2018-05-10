@@ -1166,6 +1166,18 @@
             }
         }
 
+        /*查询当前待审核订单个数*/
+        public static function querycsinfonums($user_id,$type){
+            $sql = "select count(*) from dsp_logistic.cs_examine ";
+            $sql .= "left join dsp_logistic.cs_info on dsp_logistic.cs_examine.cs_id = dsp_logistic.cs_info.cs_id";
+            $sql .= " where dsp_logistic.cs_examine.examine_user_id = '$user_id' and dsp_logistic.cs_info.cs_info_state = '$type' and cs_examine_state = '1'";
+            $nums = Db::query($sql);
+            if(empty($nums))
+                return 0;
+            return $nums[0]['count(*)'];
+
+        }
+
         /*查询需要导出的更换确认单  未完待续*/
         public static function queryexportreplaceconfirmorder($param,$type){
             $sqlone ="select dsp_logistic.cs_belong.*,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.* from dsp_logistic.cs_info ";
