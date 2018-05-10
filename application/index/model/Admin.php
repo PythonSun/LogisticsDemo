@@ -1613,7 +1613,6 @@
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
-<<<<<<< HEAD
 
         /*非常规订单 unc_ofg_info*/
         public static function updateunc_ofg_info($info){
@@ -1634,7 +1633,8 @@
             return $sqlret;
         }
         /*非常规订单清单 unc_ofg_detail*/
-        public static function updateunc_ofg_detail($info){
+        public static function updateunc_ofg_detail($info)
+        {
             $uoi_id = $info['uoi_id'];
             $unc_ofg_info_id = $info['unc_ofg_info_id'];
             $product_info_id = $info['product_info_id'];
@@ -1643,13 +1643,13 @@
             $uod_requirement = $info['uod_requirement'];
             $uod_delivery_date = $info['uod_delivery_date'];
             $uod_comment = $info['uod_comment'];
-            $sql_value ="'{$uoi_id}','{$unc_ofg_info_id}','{$product_info_id}','{$uod_count}','{$uod_unit}','{$uod_requirement}','{$uod_delivery_date}','{$uod_comment}'";
+            $sql_value = "'{$uoi_id}','{$unc_ofg_info_id}','{$product_info_id}','{$uod_count}','{$uod_unit}','{$uod_requirement}','{$uod_delivery_date}','{$uod_comment}'";
             $sql = "INSERT INTO dsp_logistic.unc_ofg_detail (uoi_id,unc_ofg_info_id,product_info_id,uod_count,uod_unit,uod_requirement,uod_delivery_date,uod_comment) VALUES ({$sql_value})";
             $sql .= " ON DUPLICATE KEY UPDATE unc_ofg_info_id = '{$unc_ofg_info_id}',product_info_id = '{$product_info_id}',uod_count = '{$uod_count}'";
             $sql .= ",uod_unit = '{$uod_unit}',uod_requirement = '{$uod_requirement}',uod_delivery_date = '{$uod_delivery_date}',uod_comment = '{$uod_comment}'";
             $sqlret = Db::execute($sql);
             return $sqlret;
-=======
+        }
         /*根据cs_id 获取走流程确认单的所有信息*/
         public static function getallcsinfobycsid($cs_id)
         {
@@ -1705,7 +1705,6 @@
             if(empty($tableobj))
                 return null;
             return $tableobj;
->>>>>>> 28c12eb444e35be49f620c642d7095df633a101b
         }
     }
 ?>
