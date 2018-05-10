@@ -1460,6 +1460,7 @@
             $sql = "SELECT * FROM dsp_logistic.unc_product";
             return Db::query($sql);
         }
+        
         /*订货确认单 order_goods_cs_info*/
         public static function updateordergoodscsinfo($info){
             $cs_id = $info['cs_id'];
