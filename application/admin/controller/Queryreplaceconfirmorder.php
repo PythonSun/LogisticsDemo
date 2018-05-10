@@ -88,7 +88,6 @@ class Queryreplaceconfirmorder extends Controller
         $template_name = "更换代用确认单.xlsx";
         $type=0x01;
         $param = json_decode($_GET['param']);
-        //var_dump($param->one);
         $file_name = $_GET['file_name'];
         $file_extend = $_GET['file_extend'];
         /*查询更换确认单*/
