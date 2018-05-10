@@ -42,27 +42,35 @@
             </div>
             <h3>物流信息</h3>
             <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">发货日期</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="deliverydate" id="date3" autocomplete="on" class="layui-input Wheat"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">货场</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="goodsyard" id="goodsyard" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">物流单号</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="trackingnumber" id="trackingnumber" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">件数</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="packagesnumber" id="packagesnumber" id lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                <div class="layui-btn-container">
+                    <button id="btn_add_logistics_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_add_logistics_item">添加物流</button>
+                    <button id="btn_del_logistics_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_add_logistics_item">删除</button>
+
+                    <button id="btn_test" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_test">测试按钮</button>
                 </div>
             </div>
+            <div class="layui-form-item">
+                <table class="layui-table" id="tablelogistics">
+                    <colgroup>
+                    </colgroup>
+                    <thead>
+                    <tr class="Wheat">
+                        <th>选择</th>
+                        <th>发货日期</th>
+                        <th>货场</th>
+                        <th>物流单号</th>
+                        <th>件数</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="Wheat">
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+           
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">总部门：</label>
@@ -332,12 +340,12 @@
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">订制费用</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="customization_fee" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
+                        <input type="text" name="customization_fee" id = "customization_fee" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">运费</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="paid_bank" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
+                        <input type="text" name="paid_bank" id = "paid_bank" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -395,6 +403,7 @@
         <script type="text/javascript" src="/static/layui/layui.js"></script>
         <script type="text/javascript">
             var delrowid = new Array();
+            var del_logistics_id_arr = new Array();
             layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
                 var form = layui.form,
                     laydate = layui.laydate,
@@ -448,6 +457,13 @@
 
                 jq(document).ready(function(){
                     var cs_id = "<?php echo $cs_id?>";
+                    if(cs_id == ""){
+                        addLogisticsItem(null);
+                        return ;
+                    }
+
+                    //如果新增
+                    //否则 addLogisticsItem(data);
                     jq.post("{:url('admin/addreplaceconfirmorder/getcsallinfo')}",{'param':cs_id},function (data) {
                         console.log(data);
                         //cs_belong
@@ -689,6 +705,27 @@
                         delrowid.push(id);
                     jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
                     console.log(delrowid);
+                });
+
+                //添加物流信息
+                jq('#btn_add_logistics_item').click(function () {
+                    addLogisticsItem(null);
+                    return false;
+                });
+                //删除物流信息
+                jq('#btn_del_logistics_item').click(function(){
+                    jq("#tablelogistics tbody tr").find("td:first input:checkbox").each(function () {
+                        var ischecked = jq(this).prop("checked");
+                        if(ischecked){
+                            var logistics_id = jq(this).parent().parent().attr("logistics_id");
+                            jq(this).parent().parent().remove();
+                            if (logistics_id === undefined || logistics_id == ""){
+                                return;
+                            }
+                            del_logistics_id_arr.pause(logistics_id);
+                        }
+                    });
+                    return false;
                 });
             });
 
@@ -962,6 +999,97 @@
                     }
                     layui.form.render('select');
                 });
+            }
+            //获取物流信息
+            function getlogisticsInfo() {
+                var jq = layui.jquery;
+                var mytable = document.getElementById('tablelogistics');
+                var rows = mytable.rows.length;
+                var retArray = [];
+                for(var i = 1; i < rows; i++){
+                    var rowdata = {};
+                    var rowObj = mytable.rows[i]
+                    for(var j = 0,cells=mytable.rows[i].cells.length; j<cells; j++){
+                        var cellData = mytable.rows[i].cells[j].getElementsByTagName("input")[0].value;
+                        rowdata[j] = cellData;
+                    }
+                    var goods_yard_name = rowdata[2];
+                    var transfer_order_num = rowdata[3];
+                    var delivery_date = rowdata[1];
+                    var count = rowdata[4];
+                    if (goods_yard_name == "" && transfer_order_num == "" && delivery_date == "" && count == ""){
+                        continue;
+                    }
+                    if (goods_yard_name == "" || transfer_order_num == "" || delivery_date == "" || count == ""){
+
+                        return null;
+                    }
+                    var logistics_info = new Object();
+                    var logistics_id = jq(rowObj).attr('logistics_id');
+                    var cs_id = jq(rowObj).attr('cs_id');
+                    var user_id = jq(rowObj).attr('user_id');
+                    var time_stamp = jq(rowObj).attr('time_stamp');
+                    logistics_info.logistics_id = logistics_id === undefined ? "": logistics_id;
+                    logistics_info.cs_id = logistics_id === undefined ? "": cs_id;
+                    logistics_info.goods_yard_name = goods_yard_name;
+                    logistics_info.transfer_order_num = transfer_order_num;
+                    logistics_info.delivery_date = delivery_date;
+                    logistics_info.count = count;
+                    logistics_info.user_id = user_id === undefined ? "": user_id;                         //登陆ID
+                    logistics_info.time_stamp = time_stamp === undefined ? "2000-01-01": time_stamp;                          //无
+                    console.log(logistics_info);
+                    retArray[i - 1] = logistics_info;
+                }
+                return retArray;
+            }
+            //添加一条物流信息 data == null 表示新增一条空数据
+            function addLogisticsItem(data) {
+                var jq = layui.jquery;
+                var laydate = layui.laydate;
+                var form = layui.form;
+                var logistics_id = "";
+                var cs_id = "";
+                var goods_yard_name = "";
+                var transfer_order_num = "";
+                var delivery_date = "";
+                var count = "";
+                var user_id = "";//data['user_id'];                         //登陆ID
+                var time_stamp = "";                           //无
+                if (data != null){
+                    logistics_id = data.logistics_id;
+                    cs_id = data.cs_id;
+                    goods_yard_name = data.goods_yard_name;
+                    transfer_order_num = data.transfer_order_num;
+                    delivery_date = data.delivery_date;
+                    count = data.count;
+                    user_id = data.user_id;//data['user_id'];                         //登陆ID
+                    time_stamp = data.time_stamp = '2000-01-01';                           //无
+                }
+                var rows = jq('#tablelogistics')[0].rows.length;
+                var new_tr = jq('#tablelogistics')[0].insertRow(rows);//指定位置插入行
+                jq(new_tr).attr("logistics_id",logistics_id);
+                jq(new_tr).attr("cs_id",cs_id);
+                jq(new_tr).attr("goods_yard_name",goods_yard_name);
+                jq(new_tr).attr("transfer_order_num",transfer_order_num);
+                jq(new_tr).attr("delivery_date",delivery_date);
+                jq(new_tr).attr("count",count);
+                jq(new_tr).attr("user_id",user_id);
+                jq(new_tr).attr("time_stamp",time_stamp);
+
+                var col_0 = new_tr.insertCell(0);//添加列
+                col_0.innerHTML = "<td><input type='checkbox' autocomplete='on' class='layui-input Wheat'></td>";
+                var col_1 = new_tr.insertCell(1);//添加列
+                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item'></td>";
+                jq.each(jq(".time-item"),function(){
+                    laydate.render({ elem: this });
+                });
+                var col_2 = new_tr.insertCell(2);//添加列
+                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                var col_3 = new_tr.insertCell(3);//添加列
+                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                var col_4 = new_tr.insertCell(4);//添加列
+                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                form.render('checkbox');
             }
         </script>
     </body>

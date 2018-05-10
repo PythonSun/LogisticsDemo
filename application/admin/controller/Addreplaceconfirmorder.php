@@ -21,6 +21,7 @@ class Addreplaceconfirmorder extends Controller
         $companytable = \app\index\model\Admin::querydepartmentinfo(0);
         if (!empty($companytable))
             $this->assign("companylist", $companytable);
+        $this->assign("cs_id", "");
         return $this->fetch();
     }
 
