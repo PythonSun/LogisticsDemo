@@ -905,11 +905,12 @@
             $insure_amout = $info['insure_amout'];
             $has_contract = $info['has_contract'];
             $transfer_fee_mode = $info['transfer_fee_mode'];
-            $sql_value ="'$delivery_info_id','{$delivery_info_receiver_name}','{$delivery_info_receiver_phone}','{$delivery_info_goods_yard_name}','{$delivery_info_goods_yard_phone}','{$delivery_info_receiver_address}','{$is_insure}','{$insure_amout}','{$is_sign}','{$has_contract}','{$transfer_fee_mode}'";
-            $sql = "INSERT INTO dsp_logistic.delivery_info (delivery_info_id,delivery_info_receiver_name,delivery_info_receiver_phone,delivery_info_goods_yard_name,delivery_info_goods_yard_phone,delivery_info_receiver_address,is_insure,insure_amout,is_sign,has_contract,transfer_fee_mode) VALUES ({$sql_value})";
+            $order_delivery_require = $info['order_delivery_require'];
+            $sql_value ="'$delivery_info_id','{$delivery_info_receiver_name}','{$delivery_info_receiver_phone}','{$delivery_info_goods_yard_name}','{$delivery_info_goods_yard_phone}','{$delivery_info_receiver_address}','{$is_insure}','{$insure_amout}','{$is_sign}','{$has_contract}','{$transfer_fee_mode}','$order_delivery_require'";
+            $sql = "INSERT INTO dsp_logistic.delivery_info (delivery_info_id,delivery_info_receiver_name,delivery_info_receiver_phone,delivery_info_goods_yard_name,delivery_info_goods_yard_phone,delivery_info_receiver_address,is_insure,insure_amout,is_sign,has_contract,transfer_fee_mode,order_delivery_require) VALUES ({$sql_value})";
             $sql.= "ON DUPLICATE KEY UPDATE delivery_info_receiver_name = '$delivery_info_receiver_name',delivery_info_receiver_phone = '$delivery_info_receiver_phone',delivery_info_goods_yard_name = '{$delivery_info_goods_yard_name}',";
             $sql.= "delivery_info_goods_yard_phone= '{$delivery_info_goods_yard_phone}',delivery_info_receiver_address= '{$delivery_info_receiver_address}',is_insure = '{$is_insure}',";
-            $sql.= "is_sign= '{$is_sign}',insure_amout= '{$insure_amout}',has_contract= '{$has_contract}',transfer_fee_mode= '{$transfer_fee_mode}'";
+            $sql.= "is_sign= '{$is_sign}',insure_amout= '{$insure_amout}',has_contract= '{$has_contract}',transfer_fee_mode= '{$transfer_fee_mode}',order_delivery_require = '$order_delivery_require'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }

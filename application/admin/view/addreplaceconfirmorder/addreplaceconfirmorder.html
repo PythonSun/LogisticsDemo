@@ -37,7 +37,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">部门编号</label>
                     <div class="layui-input-inline">
-                        <input type="text" disabled name="departmentnumber" id="departmentnumber" autocomplete="on" class="layui-input light_gray" value="{$depid}"> </div>
+                        <input type="text" disabled name="department_number" id="department_number" autocomplete="on" class="layui-input light_gray" value="{$depid}"> </div>
                 </div>
             </div>
             <h3>物流信息</h3>
@@ -67,7 +67,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">总部门：</label>
                     <div class="layui-input-inline Wheat">
-                        <select id="company_id" name="company_id" lay-filter="company_id">
+                        <select id="build_organize_id" name="build_organize_id" lay-filter="build_organize_id">
                             <option value="" selected>请选择</option>
                             {volist name="companylist" id="vo"}
                             <option value="{$vo.organize_id}">{$vo.organize_name}</option>
@@ -78,7 +78,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">子部门：</label>
                     <div class="layui-input-inline Wheat">
-                        <select id="build_organize_id" name="build_organize_id" lay-filter="build_organize_id">
+                        <select id="build_department_id" name="build_department_id" lay-filter="build_department_id">
                             <option value="" selected>请选择</option>
                         </select>
                     </div>
@@ -86,7 +86,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">区域经理</label>
                     <div class="layui-input-inline Wheat">
-                        <select id="build_department_id" name="build_department_id" lay-filter="build_department_id">
+                        <select id="build_user_id" name="build_user_id" lay-filter="build_user_id">
                             <option value="" selected>请选择</option>
                         </select>
                     </div>
@@ -194,7 +194,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">运费方式</label>
                     <div class="layui-input-inline Wheat">
-                        <select name="transfer_fee_mode">
+                        <select name="transfer_fee_mode" id="transfer_fee_mode">
                             <option value="" disabled="" selected="">选择</option>
                             <option value="1">到付</option>
                             <option value="2">现金</option>
@@ -402,7 +402,7 @@
                     layer = layui.layer;
                 /*日期*/
                 laydate.render({
-                    elem: '#date1',
+                    elem: '#cs_belong_create_time',
                     position: 'fixed',
                     theme: 'molv'
                 });
@@ -432,7 +432,7 @@
                     theme: 'molv'
                 });
                 laydate.render({
-                    elem: '#date7',
+                    elem: '#paid_date',
                     position: 'fixed',
                     theme: 'molv'
                 });
@@ -445,32 +445,120 @@
                     return saveOrDeliverToSql(uidata,1);
                 });
 
+
+                jq(document).ready(function(){
+                    var cs_id = "<?php echo $cs_id?>";
+                    jq.post("{:url('admin/addreplaceconfirmorder/getcsallinfo')}",{'param':cs_id},function (data) {
+                        console.log(data);
+                        //cs_belong
+                        document.getElementById('cs_belong_create_time').value = data['cs_belong_create_time'];
+                        document.getElementById('transfer_fee_mode').value = data['transfer_fee_mode'];
+                        jq('#build_organize_id').val(data['build_organize_id']);
+                        LoadingDepartmentAndSelected(data['build_organize_id'],data['build_department_id']);
+                        LoadingManagerAndSelected(data['build_department_id'],data['build_user_id']);
+                        //document.getElementById('build_user_phone ').value = data['build_user_phone'] == null ? "":data['build_user_phone'];
+                        jq('department_number').value = data['build_department_id'];
+
+                        //cs_info
+                        jq('#cs_info_state').val(data['cs_info_state']);
+                        jq('date2').value = data['complete_date']; //不确定下单时间是指那个
+
+                        //custom_info
+                        document.getElementById('company_name').value = data['company_name'];
+                        document.getElementById('company_phone').value = data['company_phone'];
+                        document.getElementById('company_address').value = data['company_address'];
+                        document.getElementById('legal_representative').value = data['legal_representative'];
+                        document.getElementById('legal_phone').value = data['legal_phone'];
+                        document.getElementById('company_contact').value = data['company_contact'];
+                        document.getElementById('company_contact_phone').value = data['company_contact_phone'];
+
+                        //delivery_info
+                        jq('#delivery_info_receiver_name').val(data['delivery_info_receiver_name']) ;
+                        jq('#delivery_info_receiver_phone').val( data['delivery_info_receiver_phone']);
+                        jq('#delivery_info_goods_yard_name').val( data['delivery_info_goods_yard_name']);
+                        jq('#delivery_info_goods_yard_phone').val( data['delivery_info_goods_yard_phone']);
+                        jq('#delivery_info_receiver_address').val( data['delivery_info_receiver_address']);
+                        jq("input[name='is_insure']").each(function(){
+                            if(jq(this).attr('value') == data['is_insure']){
+                                jq(this).prop('checked',true);
+                            }
+                        });
+                        jq('#insure_amount').value = data['insure_amount'];
+                        jq("input[name='is_sign']").each(function(){
+                            if(jq(this).attr('value') == data['is_sign']){
+                                jq(this).prop('checked',true);
+                            }
+                        });
+                        jq("input[name='has_contract']").each(function(){
+                            if(jq(this).attr('value') == data['has_contract']){
+                                jq(this).prop('checked',true);
+                            }
+                        });
+                        jq('#transfer_fee_mode').val( data['transfer_fee_mode']);
+                        jq('#order_delivery_require').val( data['order_delivery_require']);
+
+                        //return_info
+                        jq('#return_info_receiver_name').val( data['return_info_receiver_name']);
+                        jq('#return_info_receiver_phone').val( data['return_info_receiver_phone']);
+                        jq('#return_info_goods_yard_name').val( data['return_info_goods_yard_name']);
+                        jq('#return_info_goods_yard_phone').val( data['return_info_goods_yard_phone']);
+                        jq('#return_order_num').val(data['return_order_num']);
+                        jq('#return_info_receiver_address').val(data['return_info_receiver_address']);
+
+                        //payment_info
+                        jq("input[name='is_paid']").each(function(){
+                            if(jq(this).attr('value') == data['is_paid']){
+                                jq(this).prop('checked',true);
+                            }
+                        });
+                        jq('#paid_date').val( data['paid_date']);
+                        jq('#customization_fee').val( data['customization_fee']);
+                        jq('#paid_bank').val( data['paid_bank']);
+                        jq('#payment_info_comment').val( data['payment_info_comment']);
+
+                        //order_goods_manager
+                        if(data['order_goods'] != null)
+                        {
+                            var order_goods = data['order_goods'];
+                            for( var i = 0 ; i<order_goods.length; i++)
+                            {
+                                insertRow(order_goods[i]);
+                            }
+                        }
+
+
+
+                        layui.form.render('select');
+                        layui.form.render('radio');
+                    });
+                });
+
                 //监听选择公司
-                form.on('select(company_id)',function (data) {
+                form.on('select(build_organize_id)',function (data) {
                     jq.post("{:url('admin/addreplaceconfirmorder/getdepartmentinfo')}",{'param':data.value},function (data) {
                         //console.log(data);
                         for (var item in data){
-                            jq('#department_id').append("<option value='" + data[item]['organize_id'] + "'>" + data[item]['organize_name'] + "</option>>");
+                            jq('#build_department_id').append("<option value='" + data[item]['organize_id'] + "'>" + data[item]['organize_name'] + "</option>>");
                         }
                         form.render('select');
                     })
                 });
                 //监听选择部门
-                form.on('select(department_id)',function (data) {
+                form.on('select(build_department_id)',function (data) {
 
                     jq.post("{:url('admin/addreplaceconfirmorder/getdspmanagerinfo')}",{'param':data.value},function (data) {
                         for (var item in data){
-                            jq('#manager_id').append("<option value='" + data[item]['user_id'] + "' phone='" + data[item]['phone'] + "'>" + data[item]['fullname'] + "</option>>");
+                            jq('#build_user_id').append("<option value='" + data[item]['user_id'] + "' phone='" + data[item]['phone'] + "'>" + data[item]['fullname'] + "</option>>");
                         }
                         form.render('select');
                     })
                 });
                 //监听选中经理自动添加电话
-                form.on('select(manager_id)',function (data) {
-                    var options= jq("#manager_id option:selected");
+                form.on('select(build_user_id)',function (data) {
+                    var options= jq("#build_user_id option:selected");
                     var  phone = jq(options[0]).attr('phone');
                     console.log();
-                    document.getElementById('areamanagertel').value = phone;
+                    document.getElementById('build_user_phone').value = phone;
                 });
                 jq('#btn_add_order_item').click(function () {
                     layer.open({
@@ -653,11 +741,11 @@
                 var rows = tabledata.length;
 
                 //cs_info.cs_id  = data['swiftnumber'];
-                if(data['company_id'] == "" || data['department_id'] == ""){
+                if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
                     layer.msg('请选择部门！',{icon:2});
                     return false;
                 }
-                if(data['manager_id'] == ""){
+                if(data['build_user_id'] == ""){
                     layer.msg('请选择经理！',{icon:2});
                     return false;
                 }
@@ -672,7 +760,7 @@
                     layer.msg('请选择是否到账！',{icon:2});
                     return false;
                 }*/
-                cs_info.cs_examine_ids = null;
+                cs_info.cs_examine_ids = "";
                 cs_info.cs_info_state = -1;
                 cs_info.complete_date = "2000-1-1";        //新增 无完成日期
                 cs_info.product_number = rows;
@@ -711,6 +799,7 @@
                     return false;
                 }
                 delivery_info.transfer_fee_mode = data['transfer_fee_mode'];//freightway 运费方式
+                delivery_info.order_delivery_require = data['order_delivery_require'];
                 console.log("以下发货信息：");
                 console.log(delivery_info);
 
@@ -742,7 +831,7 @@
                 directorExamine['submit_user_id'] = data['build_user_id'];
                 directorExamine['cs_examine_date'] = '2000-1-1';
                 directorExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00'
-                directorExamine['cs_examine_comment'] = null;
+                directorExamine['cs_examine_comment'] = "";
                 directorExamine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
                 directorExamine['cs_examine_result'] = 2;
                 directorExamine['cs_examine_state'] = state;
@@ -751,7 +840,7 @@
                 generalManagerExamine['submit_user_id'] = data['build_user_id'];
                 generalManagerExamine['cs_examine_date'] = '2000-1-1';
                 generalManagerExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00'
-                generalManagerExamine['cs_examine_comment'] = null;
+                generalManagerExamine['cs_examine_comment'] = "";
                 generalManagerExamine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
                 generalManagerExamine['cs_examine_result'] = 2;
                 generalManagerExamine['cs_examine_state'] = 0;
@@ -760,7 +849,7 @@
                 financeExamine['submit_user_id'] = data['manager_id'];
                 financeExamine['cs_examine_date'] = '2000-1-1';
                 financeExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00'
-                financeExamine['cs_examine_comment'] = null;
+                financeExamine['cs_examine_comment'] = "";
                 financeExamine['cs_examine_content'] = data['examinationapprovalcontentthird'];
                 financeExamine['cs_examine_result'] = 2;
                 financeExamine['cs_examine_state'] = 0;
@@ -836,16 +925,44 @@
                 var exp = mytable.rows[mytable.rows.length - 1].cells[1].innerHTML;
                 return exp;
             }
-            //加载订单数据
-            function loadingOrder(cs_id) {
-                console.log(cs_id);
+            //获取子部门并选中
+            function LoadingDepartmentAndSelected(value,selectValue) {
                 var jq = layui.jquery;
-                jq.post("{:url('admin/addreplaceconfirmorder/getcsallinfo')}",{'param':cs_id},function (data) {
-                    console.log(data);
-                })
+                var form1 = layui.form;
+                jq.post("{:url('admin/addreplaceconfirmorder/getdepartmentinfo')}",{'param':value},function(data){
+                    for(var  item in data){
+                        //console.log(data[item]['organize_name']);
+                        if(data[item]['organize_id'] == selectValue)
+                        {
 
+                            jq("#build_department_id").append("<option value='"+data[item]['organize_id']+"' selected>"+data[item]['organize_name']+"</option>");
+                        }
+
+                        else
+                            jq("#build_department_id").append("<option value='"+data[item]['organize_id']+"'>"+data[item]['organize_name']+"</option>");
+                    }
+                    layui.form.render('select');
+                });
             }
+            //获取经理并选中
+            function LoadingManagerAndSelected(value,selectValue) {
+                var jq = layui.jquery;
+                var form1 = layui.form;
+                jq.post("{:url('admin/addreplaceconfirmorder/getdspmanagerinfo')}",{'param':value},function(data){
+                    for(var  item in data){
+                        //console.log(data[item]['organize_name']);
+                        if(data[item]['user_id'] == selectValue)
+                        {
 
+                            jq("#build_user_id").append("<option value='"+data[item]['user_id']+"' selected>"+data[item]['fullname']+"</option>");
+                        }
+
+                        else
+                            jq("#build_user_id").append("<option value='"+data[item]['user_id']+"'>"+data[item]['fullname']+"</option>");
+                    }
+                    layui.form.render('select');
+                });
+            }
         </script>
     </body>
 </html>

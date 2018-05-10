@@ -86,20 +86,15 @@
                             area:['90%','90%'],
                             shade:0.9,
                             maxmin:false,
-                            content:"{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}",
+                            content:"{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id="+data.cs_id,
                             btn:['保存','退出'],
                             yes:function (layero,index) {
                                 var  iframeWin = window[layero.find('iframe')[0]['name']];
                                 var  orderItem = iframeWin.saveOrderItem();
-
                             },
                             btn2: function () {
                                 layer.closeAll();
                             },
-							success:function (layero,index) {
-                                var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-                                iframeWin.loadingOrder(data['cs_id']);
-                            }
                         });
 					}
 					else if(obj.event === 'delete')
