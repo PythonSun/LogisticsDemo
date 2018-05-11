@@ -905,11 +905,12 @@
             $insure_amout = $info['insure_amout'];
             $has_contract = $info['has_contract'];
             $transfer_fee_mode = $info['transfer_fee_mode'];
-            $sql_value ="'$delivery_info_id','{$delivery_info_receiver_name}','{$delivery_info_receiver_phone}','{$delivery_info_goods_yard_name}','{$delivery_info_goods_yard_phone}','{$delivery_info_receiver_address}','{$is_insure}','{$insure_amout}','{$is_sign}','{$has_contract}','{$transfer_fee_mode}'";
-            $sql = "INSERT INTO dsp_logistic.delivery_info (delivery_info_id,delivery_info_receiver_name,delivery_info_receiver_phone,delivery_info_goods_yard_name,delivery_info_goods_yard_phone,delivery_info_receiver_address,is_insure,insure_amout,is_sign,has_contract,transfer_fee_mode) VALUES ({$sql_value})";
+            $order_delivery_require = $info['order_delivery_require'];
+            $sql_value ="'$delivery_info_id','{$delivery_info_receiver_name}','{$delivery_info_receiver_phone}','{$delivery_info_goods_yard_name}','{$delivery_info_goods_yard_phone}','{$delivery_info_receiver_address}','{$is_insure}','{$insure_amout}','{$is_sign}','{$has_contract}','{$transfer_fee_mode}','$order_delivery_require'";
+            $sql = "INSERT INTO dsp_logistic.delivery_info (delivery_info_id,delivery_info_receiver_name,delivery_info_receiver_phone,delivery_info_goods_yard_name,delivery_info_goods_yard_phone,delivery_info_receiver_address,is_insure,insure_amout,is_sign,has_contract,transfer_fee_mode,order_delivery_require) VALUES ({$sql_value})";
             $sql.= "ON DUPLICATE KEY UPDATE delivery_info_receiver_name = '$delivery_info_receiver_name',delivery_info_receiver_phone = '$delivery_info_receiver_phone',delivery_info_goods_yard_name = '{$delivery_info_goods_yard_name}',";
             $sql.= "delivery_info_goods_yard_phone= '{$delivery_info_goods_yard_phone}',delivery_info_receiver_address= '{$delivery_info_receiver_address}',is_insure = '{$is_insure}',";
-            $sql.= "is_sign= '{$is_sign}',insure_amout= '{$insure_amout}',has_contract= '{$has_contract}',transfer_fee_mode= '{$transfer_fee_mode}'";
+            $sql.= "is_sign= '{$is_sign}',insure_amout= '{$insure_amout}',has_contract= '{$has_contract}',transfer_fee_mode= '{$transfer_fee_mode}',order_delivery_require = '$order_delivery_require'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
@@ -1656,11 +1657,12 @@
             if($cs_id == null||$cs_id == "")
                 return null;
             $sqlone ="select dsp_logistic.cs_belong.*,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.*,";
-            $sqlone .= "dsp_logistic.custom_info.*,dsp_logistic.return_info.* from dsp_logistic.cs_info ";
+            $sqlone .= "dsp_logistic.custom_info.*,dsp_logistic.return_info.*,dsp_logistic.payment_info.* from dsp_logistic.cs_info ";
             $sqlone .= "left join dsp_logistic.custom_info on dsp_logistic.custom_info.custom_info_id = dsp_logistic.cs_info.custom_info_id ";
             $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
             $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
+            $sqlone .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
             $sqlone .= "where dsp_logistic.cs_info.cs_id='$cs_id' ";
             $tableobj = Db::query($sqlone);
             if(empty($tableobj))
