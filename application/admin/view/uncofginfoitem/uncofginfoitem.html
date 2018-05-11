@@ -73,17 +73,18 @@
 <script type="text/javascript" src="/static/UI-jquery/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/static/layui/layui.js"></script>
 <script type="text/javascript">
+    var uod_id = "";
     layui.use(['form', 'laydate', 'jquery', 'laydate'], function () {
         var form = layui.form,
-            laydate = layui.laydate;
-
+            laydate = layui.laydate,
+            jq = layui.jquery;
 
         laydate.render({
             elem: '#uod_delivery_date',
             position: 'fixed',
             theme: 'molv'
         });
-        jq = layui.jquery;
+
         jq("#serachModelinfo").autocomplete({
             source: function (request, response) {
                 jq.ajax({
@@ -103,7 +104,26 @@
             }
         });
     });
+    //父级调用 加载数据
+    function loadingData(data) {
+        jq = layui.jquery;
+        console.log(data);
+        document.getElementById('product_type_id').value = data.product_type_id;
+        document.getElementById('brand_id').value = data.brand_id;
 
+        //jq('#product_type_id').attr('value',data.product_type_id);
+        //jq('#brand_id').attr('value',data.brand_id);
+        jq('#serachModelinfo').val(data.model);
+        jq('#uod_count').val(data.uod_count);
+        jq('#uod_unit').val(data.uod_unit);
+        jq('#uod_requirement').val(data.uod_requirement);
+        jq('#uod_delivery_date').val(data.uod_delivery_date);
+        jq('#uod_comment').val(data.uod_comment);
+        //jq('#uoi_custom_name').attr('value',unc_ofg_info.uoi_custom_name);
+        layui.form.render('select');
+        uod_id = data.uod_id;
+    }
+    //父级调用 获取参数
     function saveOrderItem() {
         var jq = layui.jquery;
         var product_type_id = jq('#product_type_id').val();
@@ -146,6 +166,7 @@
         var obj1 = document.getElementById("brand_id");
         orderItem.brand_name = obj1.options[obj1.selectedIndex].text;
         orderItem.model = model;
+        orderItem.uod_id = orderItem;
         orderItem.uod_count = uod_count;
         orderItem.uod_unit = jq('#uod_unit').val();
         orderItem.uod_delivery_date = uod_delivery_date;

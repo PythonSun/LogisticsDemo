@@ -37,19 +37,19 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">数量：</label>
                     <div class="layui-input-inline" style="max-width:120px">
-                        <input type="text" id="inputcount" name="inputcount" class="layui-input Wheat"> </div>
+                        <input type="text" id="ogcugi_count" name="ogcugi_count" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">单位：</label>
                     <div class="layui-input-inline" style="max-width:120px">
-                        <input type="text" id="inputunit" name="inputunit" class="layui-input Wheat"> </div>
+                        <input type="text" id="ogcugi_unit" name="ogcugi_unit" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">状态：</label>
                     <div class="layui-input-inline Wheat" style="max-width:120px">
-                        <select id="productstate" name="productstate" lay-filter="productstate">
+                        <select id="ogcugi_product_state" name="ogcugi_product_state" lay-filter="ogcugi_product_state">
                             <option value="" selected>请选择</option>
                             <option value="0">未发货</option>
                             <option value="1">处理中</option>
@@ -64,7 +64,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">备注：</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="comment" id="comment" class="layui-input Wheat"> </div>
+                    <input type="text" name="ogcugi_comment" id="ogcugi_comment" class="layui-input Wheat"> </div>
             </div>
         </form>
     </body>
@@ -72,6 +72,10 @@
     <script type="text/javascript" src="/static/UI-jquery/jquery-ui.min.js"></script>
     <script type="text/javascript" src="/static/layui/layui.js"></script>
     <script type="text/javascript">
+
+        var ogcugi_id = "";
+        var cs_id = "";
+
         layui.use(['form', 'laydate', 'jquery', 'laydate'], function () {
             var form = layui.form,
                 laydate = layui.laydate;
@@ -95,7 +99,7 @@
                 }
             });
         });
-
+        //父级调用
         function saveOrderItem() {
             var jq = layui.jquery;
             var product_type_id = jq('#product_type_id').val();
@@ -113,7 +117,7 @@
                 layer.msg('请选择型号！', { icon: 2 });
                 return null;
             }
-            var count = jq('#inputcount').val();
+            var count = jq('#ogcugi_count').val();
             var isright = testRgexp(/^\d+$/, count);
             if(!isright) {
                 layer.msg('数量必须未正整数！', { icon: 2 });
@@ -124,28 +128,30 @@
                 layer.msg('请选择生产地！', { icon: 2 });
                 return null;
             }
-            var product_state_id = jq("#productstate").find("option:selected").val();
+            var product_state_id = jq("#ogcugi_product_state").find("option:selected").val();
             if(product_state_id == "") {
                 layer.msg('请选择状态！', { icon: 2 });
                 return null;
             }
             //place_id
             var orderItem = new Object();
-            orderItem.type_id = product_type_id;
+            orderItem.product_type_id = product_type_id;
             var obj = document.getElementById("product_type_id");
-            orderItem.type_text = obj.options[obj.selectedIndex].text;
+            orderItem.product_type_name = obj.options[obj.selectedIndex].text;
             orderItem.brand_id = brand_id;
             var obj1 = document.getElementById("brand_id");
-            orderItem.brand_text = obj1.options[obj1.selectedIndex].text;
+            orderItem.brand_name = obj1.options[obj1.selectedIndex].text;
             orderItem.model = modeltext;
             var obj2 = document.getElementById("place_id");
-            //orderItem.place_text = obj2.options[obj2.selectedIndex].text;
+            //orderItem.place_name = obj2.options[obj2.selectedIndex].text;
             //orderItem.place = place_id
             orderItem.count = count;
-            orderItem.unit = jq('#inputunit').val();
-            orderItem.product_state_text = jq("#productstate").find("option:selected").text();
+            orderItem.unit = jq('#ogcugi_unit').val();
+            orderItem.product_state_text = jq("#ogcugi_product_state").find("option:selected").text();
             orderItem.product_state_id = product_state_id;
-            orderItem.comment = jq('#comment').val();
+            orderItem.comment = jq('#ogcugi_comment').val();
+            orderItem.ogcugi_id = ogcugi_id;
+            orderItem.cs_id = cs_id;
             //+判断 型号是否存在，不存在禁止录入
             jq.ajax({
                 url: "{:url('admin/addgoodsconfirmorderitem/serachproductinfo')}",
@@ -155,9 +161,9 @@
                 data: { serrchText: jq("#serachModelinfo").val(), type: jq("#product_type_id").val(), brand: jq('#brand_id').val() },
                 success: function (data) {
                     if(data != null) {
-                        orderItem.place_text = data.place_info.place_name;
+                        orderItem.place_name = data.place_info.place_name;
                         orderItem.place_id = data.place_info.place_id
-                        orderItem.model_text = data.product_info.product_info_name;
+                        orderItem.product_info_name = data.product_info.product_info_name;
                         orderItem.product_info_id = data.product_info.product_info_id;
                     } else {
                         layui.use('layer', function () {
@@ -168,6 +174,20 @@
                 },
             });
             return orderItem;
+        }
+
+        function loadingData(data) {
+            ogcugi_id = data.ogcugi_id;
+            cs_id = data.cs_id;
+            document.getElementById('product_type_id').value = data.product_type_id;
+            document.getElementById('brand_id').value = data.brand_id;
+            jq('#serachModelinfo').val(data.model);
+            //data.product_info_id;
+            jq('#ogcugi_count').val(data.ogcugi_count);
+            jq('#ogcugi_product_state').val(data.ogcugi_product_state);
+            jq('#ogcugi_comment').val(data.ogcugi_comment);
+            jq('#ogcugi_unit').val(data.ogcugi_unit);
+            layui.form.render('select');
         }
 
         function testRgexp(re, s) { // 参数说明 re 为正则表达式 s 为要判断的字符

@@ -1636,7 +1636,7 @@
         /*非常规订单清单 unc_ofg_detail*/
         public static function updateunc_ofg_detail($info)
         {
-            $uoi_id = $info['uoi_id'];
+            $uod_id = $info['uod_id'];
             $unc_ofg_info_id = $info['unc_ofg_info_id'];
             $product_info_id = $info['product_info_id'];
             $uod_count = $info['uod_count'];
@@ -1644,8 +1644,8 @@
             $uod_requirement = $info['uod_requirement'];
             $uod_delivery_date = $info['uod_delivery_date'];
             $uod_comment = $info['uod_comment'];
-            $sql_value = "'{$uoi_id}','{$unc_ofg_info_id}','{$product_info_id}','{$uod_count}','{$uod_unit}','{$uod_requirement}','{$uod_delivery_date}','{$uod_comment}'";
-            $sql = "INSERT INTO dsp_logistic.unc_ofg_detail (uoi_id,unc_ofg_info_id,product_info_id,uod_count,uod_unit,uod_requirement,uod_delivery_date,uod_comment) VALUES ({$sql_value})";
+            $sql_value = "'{$uod_id}','{$unc_ofg_info_id}','{$product_info_id}','{$uod_count}','{$uod_unit}','{$uod_requirement}','{$uod_delivery_date}','{$uod_comment}'";
+            $sql = "INSERT INTO dsp_logistic.unc_ofg_detail (uod_id,unc_ofg_info_id,product_info_id,uod_count,uod_unit,uod_requirement,uod_delivery_date,uod_comment) VALUES ({$sql_value})";
             $sql .= " ON DUPLICATE KEY UPDATE unc_ofg_info_id = '{$unc_ofg_info_id}',product_info_id = '{$product_info_id}',uod_count = '{$uod_count}'";
             $sql .= ",uod_unit = '{$uod_unit}',uod_requirement = '{$uod_requirement}',uod_delivery_date = '{$uod_delivery_date}',uod_comment = '{$uod_comment}'";
             $sqlret = Db::execute($sql);
