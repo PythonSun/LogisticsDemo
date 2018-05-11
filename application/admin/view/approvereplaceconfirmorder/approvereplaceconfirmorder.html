@@ -75,37 +75,27 @@
 				/*监听工具条*/
 				table.on('tool(replaceorder)', function(obj){
 				    var data = obj.data;
-				    if(obj.event === 'detail'){
-				    	layer.msg('下单日期：'+ data.date + ' 的查看操作');
-				    }
-				    else if(obj.event === 'edit')
-					{
+				    if(obj.event === 'detail') {
                         layer.open({
-                            type:2,
-                            title:'新增清单',
-                            area:['90%','90%'],
-                            shade:0.9,
-                            maxmin:false,
-                            content:"{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}",
-                            btn:['保存','退出'],
-                            yes:function (layero,index) {
-                                var  iframeWin = window[layero.find('iframe')[0]['name']];
-                                var  orderItem = iframeWin.saveOrderItem();
-
+                            type: 2,
+                            title: '新增清单',
+                            area: ['90%', '90%'],
+                            shade: 0.9,
+                            maxmin: false,
+                            content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id,
+                            btn: ['退回', '保存','取消'],
+                            yes: function (layero, index) {
+                                var iframeWin = window[layero.find('iframe')[0]['name']];
+                                var orderItem = iframeWin.saveOrderItem();
                             },
                             btn2: function () {
                                 layer.closeAll();
                             },
-							success:function (layero,index) {
-                                var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-                                iframeWin.loadingOrder(data['cs_id']);
+							btn3:function () {
+                                layer.closeAll();
                             }
                         });
-					}
-					else if(obj.event === 'delete')
-					{
-
-					}
+                    }
 			  	});
 			});
 		</script>

@@ -261,7 +261,6 @@
         jq('#comment').attr('value',data['ogl_comment']);
         jq("input[name='inputstate']").each(function(){
             if(jq(this).attr('value') == data['ogl_product_state']){
-                console.log(111);
                 jq(this).prop('checked',true);
             }
         });

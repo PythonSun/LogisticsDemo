@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新增订单清单</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="/static/UI-jquery/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/public.css"> </head>
+<body>
+<form class="layui-form layui-form-pane" style="margin-top:40px;">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">产品分类：</label>
+            <div class="layui-input-inline Wheat" style="max-width:120px">
+                <select id="product_type_id" name="type_name" lay-filter="type_name">
+                    <option value="" selected>请选择</option> {volist name="producttypelist" id="vo"}
+                    <option value={$vo.product_type_id}>{$vo.product_type_name}</option> {/volist} </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">品牌：</label>
+            <div class="layui-input-inline Wheat" style="max-width:120px">
+                <select id="brand_id" name="brand_name" lay-filter="brand_name">
+                    <option value="" selected>请选择</option> {volist name="brandlist" id="vo"}
+                    <option value={$vo.brand_id}>{$vo.brand_name}</option> {/volist} </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">型号：</label>
+            <div class="layui-input-inline">
+                <input type="text" id="serachModelinfo" name="inputmodel" class="layui-input Wheat"> </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">数量：</label>
+            <div class="layui-input-inline" style="max-width:120px">
+                <input type="text" id="uod_count" name="uod_count" class="layui-input Wheat">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">单位：</label>
+            <div class="layui-input-inline" style="max-width:120px">
+                <input type="text" id="uod_unit" name="uod_unit" class="layui-input Wheat">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">要求交货日期：</label>
+            <div class="layui-input-inline Wheat" style="max-width:120px">
+                <input type="text" name="uod_delivery_date" id="uod_delivery_date" autocomplete="on" class="layui-input Wheat">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label Wheat">定制要求：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="uod_requirement" id="uod_requirement" class="layui-input Wheat">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label Wheat">备注：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="uod_comment" id="uod_comment" class="layui-input Wheat">
+        </div>
+    </div>
+</form>
+</body>
+<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/static/UI-jquery/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript">
+    var uod_id = "";
+    layui.use(['form', 'laydate', 'jquery', 'laydate'], function () {
+        var form = layui.form,
+            laydate = layui.laydate,
+            jq = layui.jquery;
+
+        laydate.render({
+            elem: '#uod_delivery_date',
+            position: 'fixed',
+            theme: 'molv'
+        });
+
+        jq("#serachModelinfo").autocomplete({
+            source: function (request, response) {
+                jq.ajax({
+                    url: "{:url('admin/uncofginfoitem/serachmodelinfo')}",
+                    type: "POST",
+                    dataType: "json",
+                    data: { serrchText: jq("#serachModelinfo").val(), type: jq("#product_type_id").val(), brand: jq('#brand_id').val() },
+                    success: function (data) {
+                        response(jq.map(data, function (item) {
+                            return {
+                                label: item.model,
+                                value: item.model,
+                            }
+                        }));
+                    },
+                });
+            }
+        });
+    });
+    //父级调用 加载数据
+    function loadingData(data) {
+        jq = layui.jquery;
+        console.log(data);
+        document.getElementById('product_type_id').value = data.product_type_id;
+        document.getElementById('brand_id').value = data.brand_id;
+
+        //jq('#product_type_id').attr('value',data.product_type_id);
+        //jq('#brand_id').attr('value',data.brand_id);
+        jq('#serachModelinfo').val(data.model);
+        jq('#uod_count').val(data.uod_count);
+        jq('#uod_unit').val(data.uod_unit);
+        jq('#uod_requirement').val(data.uod_requirement);
+        jq('#uod_delivery_date').val(data.uod_delivery_date);
+        jq('#uod_comment').val(data.uod_comment);
+        //jq('#uoi_custom_name').attr('value',unc_ofg_info.uoi_custom_name);
+        layui.form.render('select');
+        uod_id = data.uod_id;
+    }
+    //父级调用 获取参数
+    function saveOrderItem() {
+        var jq = layui.jquery;
+        var product_type_id = jq('#product_type_id').val();
+        var brand_id = jq('#brand_id').val();
+        if(product_type_id == "") {
+            layer.msg('请选择产品分类！', { icon: 2 });
+            return null;
+        }
+        if(brand_id == "") {
+            layer.msg('请选择品牌！', { icon: 2 });
+            return null;
+        }
+        var model = jq('#serachModelinfo').val();
+        if(model == "") {
+            layer.msg('请选择型号！', { icon: 2 });
+            return null;
+        }
+        var uod_count = jq('#uod_count').val();
+        var isright = testRgexp(/^\d+$/, uod_count);
+        if(!isright) {
+            layer.msg('数量必须未正整数！', { icon: 2 });
+            return null;
+        }
+        var place_id = jq('#place_id').val();
+        if(place_id == "") {
+            layer.msg('请选择生产地！', { icon: 2 });
+            return null;
+        }
+        var uod_delivery_date = jq("#uod_delivery_date").val();
+        if(uod_delivery_date == "") {
+            layer.msg('请选择要求交货日期！', { icon: 2 });
+            return null;
+        }
+        //place_id
+        var orderItem = new Object();
+        orderItem.product_type_id = product_type_id;
+        var obj = document.getElementById("product_type_id");
+        orderItem.product_type_name = obj.options[obj.selectedIndex].text;
+        orderItem.brand_id = brand_id;
+        var obj1 = document.getElementById("brand_id");
+        orderItem.brand_name = obj1.options[obj1.selectedIndex].text;
+        orderItem.model = model;
+        orderItem.uod_id = orderItem;
+        orderItem.uod_count = uod_count;
+        orderItem.uod_unit = jq('#uod_unit').val();
+        orderItem.uod_delivery_date = uod_delivery_date;
+        orderItem.uod_requirement = jq('#uod_requirement').val();
+        orderItem.uod_comment = jq('#uod_comment').val();
+        //+判断 型号是否存在，不存在禁止录入
+        jq.ajax({
+            url: "{:url('admin/uncofginfoitem/serachproductinfo')}",
+            type: "POST",
+            dataType: "json",
+            async: false,
+            data: { serrchText: jq("#serachModelinfo").val(), type: jq("#product_type_id").val(), brand: jq('#brand_id').val() },
+            success: function (data) {
+                if(data != null) {
+                    orderItem.place_name = data.place_info.place_name;
+                    orderItem.place_id = data.place_info.place_id
+                    //orderItem.model_text = data.product_info.product_info_name;
+                    orderItem.product_info_id = data.product_info.product_info_id;
+                } else {
+                    layui.use('layer', function () {
+                        var layer = layui.layer;
+                        layer.msg('型号不存！', { icon: 2 });
+                    });
+                }
+            },
+        });
+        return orderItem;
+    }
+
+    function testRgexp(re, s) { // 参数说明 re 为正则表达式 s 为要判断的字符
+        return re.test(s)
+    }
+</script>
+</html>

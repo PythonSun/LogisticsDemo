@@ -5,6 +5,11 @@
         <title></title>
         <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
         <link rel="stylesheet" type="text/css" href="/static/css/public.css"> </head>
+        <style>
+            .hide{
+                display: none;
+            }
+        </style>
     <body>
         <form class="layui-form layui-form-pane" action="">
             <div class="toph2">
@@ -14,7 +19,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">日期</label>
                     <div class="layui-input-inline">
-                        <input type="text" disabled name="date" id="date1" autocomplete="on" class="layui-input light_gray" value="{$date}"> </div>
+                        <input type="text" disabled name="cs_belong_create_time" id="cs_belong_create_time" autocomplete="on" class="layui-input light_gray" value="{$date}"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">接收时间</label>
@@ -24,7 +29,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">状态</label>
                     <div class="layui-input-inline dark_blue">
-                        <select name="status">
+                        <select name="cs_info_state">
                             <option value="" disabled="" selected="">选择</option>
                             <option value="0">空</option>
                             <option value="1">处理中</option>
@@ -37,37 +42,42 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">部门编号</label>
                     <div class="layui-input-inline">
-                        <input type="text" disabled name="departmentnumber" id="departmentnumber" autocomplete="on" class="layui-input light_gray" value="{$depid}"> </div>
+                        <input type="text" disabled name="department_number" id="department_number" autocomplete="on" class="layui-input light_gray" value="{$depid}"> </div>
                 </div>
             </div>
             <h3>物流信息</h3>
             <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">发货日期</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="deliverydate" id="date3" autocomplete="on" class="layui-input Wheat"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">货场</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="goodsyard" id="goodsyard" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">物流单号</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="trackingnumber" id="trackingnumber" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">件数</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="packagesnumber" id="packagesnumber" id lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                <div class="layui-btn-container">
+                    <button id="btn_add_logistics_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_add_logistics_item">添加物流</button>
+                    <button id="btn_del_logistics_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_add_logistics_item">删除</button>
+
+                    <button id="btn_test" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_test">测试按钮</button>
                 </div>
             </div>
+            <div class="layui-form-item">
+                <table class="layui-table" id="tablelogistics">
+                    <colgroup>
+                    </colgroup>
+                    <thead>
+                    <tr class="Wheat">
+                        <th>选择</th>
+                        <th>发货日期</th>
+                        <th>货场</th>
+                        <th>物流单号</th>
+                        <th>件数</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+           
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">总部门：</label>
                     <div class="layui-input-inline Wheat">
-                        <select id="company_id" name="company_id" lay-filter="company_id">
+                        <select id="build_organize_id" name="build_organize_id" lay-filter="build_organize_id">
                             <option value="" selected>请选择</option>
                             {volist name="companylist" id="vo"}
                             <option value="{$vo.organize_id}">{$vo.organize_name}</option>
@@ -78,7 +88,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">子部门：</label>
                     <div class="layui-input-inline Wheat">
-                        <select id="department_id" name="department_id" lay-filter="department_id">
+                        <select id="build_department_id" name="build_department_id" lay-filter="build_department_id">
                             <option value="" selected>请选择</option>
                         </select>
                     </div>
@@ -86,7 +96,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">区域经理</label>
                     <div class="layui-input-inline Wheat">
-                        <select id="manager_id" name="manager_id" lay-filter="manager_id">
+                        <select id="build_user_id" name="build_user_id" lay-filter="build_user_id">
                             <option value="" selected>请选择</option>
                         </select>
                     </div>
@@ -94,7 +104,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat label_change">区域经理电话</label>
                     <div class="layui-input-inline Wheat">
-                        <input type="text" disabled name="areamanagertel" id="areamanagertel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" disabled name="build_user_phone" id="build_user_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <h3>客户信息</h3>
@@ -102,39 +112,39 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">公司名称</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="companyname" id="companyname" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="company_name" id="company_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat label_change">公司电话/传真</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="companytel" id="companytel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="company_phone" id="company_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">公司地址</label>
                 <div class="layui-input-block">
-                    <input type="text" name="companyaddress" id="companyaddress" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                    <input type="text" name="company_address" id="company_address" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">法人代表</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="legalrepresentative" id="legalrepresentative" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="legal_representative" id="legal_representative" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">法人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="legalpersontel" id="legalpersontel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="legal_phone" id="legal_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">公司联系人</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="companycontact" id="companycontact" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="company_contact" id="company_contact" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">联系人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="contacttel" id="contacttel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="company_contact_phone" id="company_contact_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <h3>发货信息</h3>
@@ -142,59 +152,59 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人姓名</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="deliveryreceiver_name" id="deliveryreceiver_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="delivery_info_receiver_name" id="delivery_info_receiver_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="deliveryreceiver_phone" id="deliveryreceiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="delivery_info_receiver_phone" id="delivery_info_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场名称</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivery_goods_yard_name" id="delivery_goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="delivery_info_goods_yard_name" id="delivery_info_goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivery_goods_yard_phone" id="delivery_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="delivery_info_goods_yard_phone" id="delivery_info_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">收货地址</label>
                 <div class="layui-input-block">
-                    <input type="text" name="delivery_receiver_address" id="delivery_receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                    <input type="text" name="delivery_info_receiver_address" id="delivery_info_receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
             </div>
             <div class="layui-form-item Wheat" pane="">
                 <label class="layui-form-label Wheat">是否买保险</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="purchase" value="1" title="买">
-                    <input type="radio" name="purchase" value="0" title="不买" checked=""> </div>
+                    <input type="radio" name="is_insure" value="1" title="买">
+                    <input type="radio" name="is_insure" value="0" title="不买" checked=""> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">保额</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="coverage" id="coverage" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="insure_amount" id="insure_amount" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <div class="layui-form-item Wheat" pane="">
                 <label class="layui-form-label Wheat">客户性质</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="signed" value="1" title="签约" checked="">
-                    <input type="radio" name="signed" value="0" title="非签约"> </div>
+                    <input type="radio" name="is_sign" value="1" title="签约" checked="">
+                    <input type="radio" name="is_sign" value="0" title="非签约"> </div>
             </div>
             <div class="layui-form-item Wheat" pane="">
                 <label class="layui-form-label Wheat">销售合同</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="salescontract" value="1" title="有" checked="">
-                    <input type="radio" name="salescontract" value="0" title="无"> </div>
+                    <input type="radio" name="has_contract" value="1" title="有" checked="">
+                    <input type="radio" name="has_contract" value="0" title="无"> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">运费方式</label>
                     <div class="layui-input-inline Wheat">
-                        <select name="freightway">
+                        <select name="transfer_fee_mode" id="transfer_fee_mode">
                             <option value="" disabled="" selected="">选择</option>
                             <option value="1">到付</option>
                             <option value="2">现金</option>
@@ -207,31 +217,31 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat label_change">订单发货要求</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="ordershipmentsrequest" id="ordershipmentsrequest" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat"> </div>
+                    <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat"> </div>
             </div>
             <h3>返货信息</h3>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人姓名</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="return_receiver_name" id="return_receiver_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="return_info_receiver_name" id="return_info_receiver_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="return_receiver_phone" id="return_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="return_info_receiver_phone" id="return_info_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场名称</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="return_goods_yard_name" id="return_goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="return_info_goods_yard_name" id="return_info_goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="return_goods_yard_phone" id="return_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="return_info_goods_yard_phone" id="return_info_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">返货单号</label>
@@ -242,7 +252,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">收货地址</label>
                 <div class="layui-input-block">
-                    <input type="text" name="return_receiver_address" id="return_receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                    <input type="text" name="return_info_receiver_address" id="return_info_receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
             </div>
             <h3>部门总监审批</h3>
             <div class="layui-form-item">
@@ -320,30 +330,30 @@
             <div class="layui-form-item dark_blue" pane="">
                 <label class="layui-form-label dark_blue">是否到账</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="accountstatus" value="是" title="是" checked="">
-                    <input type="radio" name="accountstatus" value="否" title="否"> </div>
+                    <input type="radio" name="is_paid" value="是" title="是" checked="">
+                    <input type="radio" name="is_paid" value="否" title="否"> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">到账日期</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="date" id="date7" autocomplete="on" class="layui-input dark_blue"> </div>
+                        <input type="text" name="paid_date" id="paid_date" autocomplete="on" class="layui-input dark_blue"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">订制费用</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="custommoney" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
+                        <input type="text" name="customization_fee" id = "customization_fee" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">运费</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="transportationexpense" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
+                        <input type="text" name="paid_bank" id = "paid_bank" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label dark_blue">备注</label>
                 <div class="layui-input-block">
-                    <input type="text" name="remarkforth" id="remarkforth" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
+                    <input type="text" name="payment_info_comment" id="payment_info_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-btn-container">
@@ -374,7 +384,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="Wheat">其它说明</td>
+                        <td  class="Wheat">其它说明</td>
                         <td colspan="15"></td>
                     </tr>
                     <tr>
@@ -384,8 +394,8 @@
                 </tbody>
             </table>
             <div class="layui-form-item">
-                <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save">保存</button>
+                <div class="layui-container">
+                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save" id="save">保存</button>
                     <button class="layui-btn" lay-submit="" lay-filter="deliver">转交</button>
                     <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="cancel">取消</button>
                 </div>
@@ -395,6 +405,7 @@
         <script type="text/javascript" src="/static/layui/layui.js"></script>
         <script type="text/javascript">
             var delrowid = new Array();
+            var del_logistics_id_arr = new Array();
             layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
                 var form = layui.form,
                     laydate = layui.laydate,
@@ -402,7 +413,7 @@
                     layer = layui.layer;
                 /*日期*/
                 laydate.render({
-                    elem: '#date1',
+                    elem: '#cs_belong_create_time',
                     position: 'fixed',
                     theme: 'molv'
                 });
@@ -432,7 +443,7 @@
                     theme: 'molv'
                 });
                 laydate.render({
-                    elem: '#date7',
+                    elem: '#paid_date',
                     position: 'fixed',
                     theme: 'molv'
                 });
@@ -445,32 +456,133 @@
                     return saveOrDeliverToSql(uidata,1);
                 });
 
+
+                jq(document).ready(function(){
+                    var cs_id = "<?php echo $cs_id?>";
+                    if(cs_id == ""){
+                        addLogisticsItem(null);
+
+                        return ;
+                    }
+
+                    jq('#save').addClass('hide');
+                    jq('#deliver').addClass('hide');
+                    jq('#cancel').addClass('hide');
+                    //如果新增
+                    //否则 addLogisticsItem(data);
+                    jq.post("{:url('admin/addreplaceconfirmorder/getcsallinfo')}",{'param':cs_id},function (data) {
+                        console.log(data);
+                        //cs_belong
+                        document.getElementById('cs_belong_create_time').value = data['cs_belong_create_time'];
+                        document.getElementById('transfer_fee_mode').value = data['transfer_fee_mode'];
+                        jq('#build_organize_id').val(data['build_organize_id']);
+                        LoadingDepartmentAndSelected(data['build_organize_id'],data['build_department_id']);
+                        LoadingManagerAndSelected(data['build_department_id'],data['build_user_id']);
+                        //document.getElementById('build_user_phone ').value = data['build_user_phone'] == null ? "":data['build_user_phone'];
+                        jq('department_number').value = data['build_department_id'];
+
+                        //cs_info
+                        jq('#cs_info_state').val(data['cs_info_state']);
+                        jq('date2').value = data['complete_date']; //不确定下单时间是指那个
+
+                        //custom_info
+                        document.getElementById('company_name').value = data['company_name'];
+                        document.getElementById('company_phone').value = data['company_phone'];
+                        document.getElementById('company_address').value = data['company_address'];
+                        document.getElementById('legal_representative').value = data['legal_representative'];
+                        document.getElementById('legal_phone').value = data['legal_phone'];
+                        document.getElementById('company_contact').value = data['company_contact'];
+                        document.getElementById('company_contact_phone').value = data['company_contact_phone'];
+
+                        //delivery_info
+                        jq('#delivery_info_receiver_name').val(data['delivery_info_receiver_name']) ;
+                        jq('#delivery_info_receiver_phone').val( data['delivery_info_receiver_phone']);
+                        jq('#delivery_info_goods_yard_name').val( data['delivery_info_goods_yard_name']);
+                        jq('#delivery_info_goods_yard_phone').val( data['delivery_info_goods_yard_phone']);
+                        jq('#delivery_info_receiver_address').val( data['delivery_info_receiver_address']);
+                        jq("input[name='is_insure']").each(function(){
+                            if(jq(this).attr('value') == data['is_insure']){
+                                jq(this).prop('checked',true);
+                            }
+                        });
+                        jq('#insure_amount').value = data['insure_amount'];
+                        jq("input[name='is_sign']").each(function(){
+                            if(jq(this).attr('value') == data['is_sign']){
+                                jq(this).prop('checked',true);
+                            }
+                        });
+                        jq("input[name='has_contract']").each(function(){
+                            if(jq(this).attr('value') == data['has_contract']){
+                                jq(this).prop('checked',true);
+                            }
+                        });
+                        jq('#transfer_fee_mode').val( data['transfer_fee_mode']);
+                        jq('#order_delivery_require').val( data['order_delivery_require']);
+
+                        //return_info
+                        jq('#return_info_receiver_name').val( data['return_info_receiver_name']);
+                        jq('#return_info_receiver_phone').val( data['return_info_receiver_phone']);
+                        jq('#return_info_goods_yard_name').val( data['return_info_goods_yard_name']);
+                        jq('#return_info_goods_yard_phone').val( data['return_info_goods_yard_phone']);
+                        jq('#return_order_num').val(data['return_order_num']);
+                        jq('#return_info_receiver_address').val(data['return_info_receiver_address']);
+
+                        //payment_info
+                        jq("input[name='is_paid']").each(function(){
+                            if(jq(this).attr('value') == data['is_paid']){
+                                jq(this).prop('checked',true);
+                            }
+                        });
+                        jq('#paid_date').val( data['paid_date']);
+                        jq('#customization_fee').val( data['customization_fee']);
+                        jq('#paid_bank').val( data['paid_bank']);
+                        jq('#payment_info_comment').val( data['payment_info_comment']);
+
+                        //order_goods_manager
+                        if(data['order_goods'] != null)
+                        {
+                            var order_goods = data['order_goods'];
+                            for( var i = 0 ; i<order_goods.length; i++)
+                            {
+                                updateRow(order_goods[i],true);
+                            }
+                            jq('#tableorder')[0].ce
+                            jq('#tableorder')[0].insertRow(rows)
+                        }
+
+
+
+                        layui.form.render('select');
+                        layui.form.render('radio');
+                    });
+                });
+
                 //监听选择公司
-                form.on('select(company_id)',function (data) {
+                form.on('select(build_organize_id)',function (data) {
                     jq.post("{:url('admin/addreplaceconfirmorder/getdepartmentinfo')}",{'param':data.value},function (data) {
                         //console.log(data);
                         for (var item in data){
-                            jq('#department_id').append("<option value='" + data[item]['organize_id'] + "'>" + data[item]['organize_name'] + "</option>>");
+                            jq('#build_department_id').append("<option value='" + data[item]['organize_id'] + "'>" + data[item]['organize_name'] + "</option>>");
                         }
                         form.render('select');
                     })
                 });
                 //监听选择部门
-                form.on('select(department_id)',function (data) {
+                form.on('select(build_department_id)',function (data) {
 
                     jq.post("{:url('admin/addreplaceconfirmorder/getdspmanagerinfo')}",{'param':data.value},function (data) {
                         for (var item in data){
-                            jq('#manager_id').append("<option value='" + data[item]['user_id'] + "' phone='" + data[item]['phone'] + "'>" + data[item]['fullname'] + "</option>>");
+                            jq('#build_user_id').append("<option value='" + data[item]['user_id'] + "' phone='" + data[item]['phone'] + "'>" + data[item]['fullname'] + "</option>>");
                         }
                         form.render('select');
                     })
                 });
                 //监听选中经理自动添加电话
-                form.on('select(manager_id)',function (data) {
-                    var options= jq("#manager_id option:selected");
+                form.on('select(build_user_id)',function (data) {
+                    var options= jq("#build_user_id option:selected");
                     var  phone = jq(options[0]).attr('phone');
                     console.log();
-                    document.getElementById('areamanagertel').value = phone;
+                    document.getElementById('build_user_phone').value = phone;
                 });
                 jq('#btn_add_order_item').click(function () {
                     layer.open({
@@ -511,7 +623,7 @@
                             row.ogl_comment = orderItem.ogl_comment;
                            // console.log("length: "+ jq('#tableorder')[0].rows.length);
                             row.id = "";
-                            insertRow(row)
+                            updateRow(row,true)
 
                             layer.closeAll();
                         },
@@ -561,7 +673,8 @@
                             row.ogl_comment = orderItem.ogl_comment;
                             // console.log("length: "+ jq('#tableorder')[0].rows.length);
                             row.id = jq(text[0].cells[0].innerHTML).attr("tag");
-                            insertRow(row)
+                            row.num = jq(text[0].cells[0].innerHTML).text();
+                            updateRow(row,false)
 
                             layer.closeAll();
                         },
@@ -602,13 +715,38 @@
                     jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
                     console.log(delrowid);
                 });
+
+                //添加物流信息
+                jq('#btn_add_logistics_item').click(function () {
+                    addLogisticsItem(null);
+                    return false;
+                });
+                //删除物流信息
+                jq('#btn_del_logistics_item').click(function(){
+                    jq("#tablelogistics tbody tr").find("td:first input:checkbox").each(function () {
+                        var ischecked = jq(this).prop("checked");
+                        if(ischecked){
+                            var logistics_id = jq(this).parent().parent().attr("logistics_id");
+                            jq(this).parent().parent().remove();
+                            if (logistics_id === undefined || logistics_id == ""){
+                                return;
+                            }
+                            del_logistics_id_arr.pause(logistics_id);
+                        }
+                    });
+                    return false;
+                });
             });
 
-            function insertRow(row) {
+            function updateRow(row ,isAdd) {
                 console.log(row);
                 var jq = layui.jquery;
                 var rows = jq('#tableorder')[0].rows.length - 2;
-
+                if(isAdd == false)
+                {
+                    rows = row.num;
+                    jq('#tableorder')[0].deleteRow(rows)
+                }
                 var new_tr = jq('#tableorder')[0].insertRow(rows);//指定位置插入行
                 var col_0 = new_tr.insertCell(0);//添加列
                 col_0.innerHTML = "<td><a tag = '"+row.id+"'>"+ rows+"</a></td>"; //id是保存在数据库的id,新增时为空
@@ -651,19 +789,19 @@
                 var exp = getTableExplain();
                 var data = uidata.field;
                 var rows = tabledata.length;
-
+                console.log(data);
                 //cs_info.cs_id  = data['swiftnumber'];
-                if(data['company_id'] == "" || data['department_id'] == ""){
+                if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
                     layer.msg('请选择部门！',{icon:2});
                     return false;
                 }
-                if(data['manager_id'] == ""){
+                if(data['build_user_id'] == ""){
                     layer.msg('请选择经理！',{icon:2});
                     return false;
                 }
                 var cs_info = new Object();
                 cs_info.payment_info_id = -1;
-                cs_info.cur_process_user_id = data['company_id'];                      // 当前处理用户id
+                cs_info.cur_process_user_id = data['build_user_id'];                      // 当前处理用户id
                 cs_info.pre_process_user_id = -1;                         //     上一次处理用户id
                 cs_info.cs_info_type = 1;                               //1：更换 详细看数据库
                 cs_info.can_edit = 1;
@@ -672,94 +810,96 @@
                     layer.msg('请选择是否到账！',{icon:2});
                     return false;
                 }*/
-                cs_info.cs_examine_ids = null;
+                cs_info.cs_examine_ids = "";
                 cs_info.cs_info_state = -1;
                 cs_info.complete_date = "2000-1-1";        //新增 无完成日期
                 cs_info.product_number = rows;
                 console.log("以下确认单信息：");
                 console.log(cs_info);
                 var custom_info = new Object();
-                custom_info.company_name = data['companyname'];
-                custom_info.company_phone = data['companytel'];
-                custom_info.company_address = data['companyaddress'];
-                custom_info.legal_representative = data['legalrepresentative'];
-                custom_info.legal_phone = data['legalpersontel'];
-                custom_info.company_contact = data['companycontact'];
-                custom_info.company_contact_phone = data['contacttel'];
+                custom_info.company_name = data['company_name'];
+                custom_info.company_phone = data['company_phone'];
+                custom_info.company_address = data['company_address'];
+                custom_info.legal_representative = data['legal_representative'];
+                custom_info.legal_phone = data['legal_phone'];
+                custom_info.company_contact = data['company_contact'];
+                custom_info.company_contact_phone = data['company_contact_phone'];
                 console.log("以下客户信息：");
                 console.log(custom_info);
                 var delivery_info = new Object();
-                delivery_info.delivery_info_receiver_name = data['deliveryreceiver_name'];
-                delivery_info.receiver_phone = data['deliveryreceiver_phone'];
-                delivery_info.goods_yard_name = data['delivery_goods_yard_name'];
-                delivery_info.goods_yard_phone = data['delivery_goods_yard_phone'];
-                delivery_info.receiver_address = data['delivery_receiver_address'];
-                delivery_info.is_insure = data['purchase'];
-                delivery_info.insure_amout = data['coverage'];
-                if(data['purchase'] == 1){
-                    if(data['coverage'] == ""){
+                delivery_info.delivery_info_receiver_name = data['delivery_info_receiver_name'];
+                delivery_info.delivery_info_receiver_phone = data['delivery_info_receiver_phone'];
+                delivery_info.delivery_info_goods_yard_name = data['delivery_info_goods_yard_name'];
+                delivery_info.delivery_info_goods_yard_phone = data['delivery_info_goods_yard_phone'];
+                delivery_info.delivery_info_receiver_address = data['delivery_info_receiver_address'];
+                delivery_info.is_insure = data['is_insure'];
+                delivery_info.insure_amout = data['insure_amout'];
+                if(data['is_insure'] == 1){
+                    if(data['insure_amout'] == ""){
                         layer.msg('请选择填写保额！',{icon:2});
                         return false;
                     }
                 }else {
                     delivery_info.insure_amout = -1;
                 }
-                delivery_info.is_sign = data['signed'];
-                delivery_info.has_contract = data['salescontract'];
-                if(data['freightway'] == ""){
+                delivery_info.is_sign = data['is_sign'];
+                delivery_info.has_contract = data['has_contract'];
+                if(data['transfer_fee_mode'] == ""){
                     layer.msg('请选择运费方式！',{icon:2});
                     return false;
                 }
-                delivery_info.transfer_fee_mode = data['freightway'];//freightway 运费方式
+                delivery_info.transfer_fee_mode = data['transfer_fee_mode'];//freightway 运费方式
+                delivery_info.order_delivery_require = data['order_delivery_require'];
                 console.log("以下发货信息：");
                 console.log(delivery_info);
 
                 var return_info = new Object();
-                return_info.return_info_receiver_name = data['return_receiver_name'];
-                return_info.return_info_receiver_phone = data['return_receiver_phone'];
-                return_info.return_info_goods_yard_name = data['return_goods_yard_name'];
-                return_info.return_info_goods_yard_phone = data['return_goods_yard_phone'];
+                return_info.return_info_receiver_name = data['return_info_receiver_name'];
+                return_info.return_info_receiver_phone = data['return_info_receiver_phone'];
+                return_info.return_info_goods_yard_name = data['return_info_goods_yard_name'];
+                return_info.return_info_goods_yard_phone = data['return_info_goods_yard_phone'];
                 return_info.return_order_num = data['return_order_num'];
-                return_info.return_info_receiver_address = data['return_receiver_address'];
+                return_info.return_info_receiver_address = data['return_info_receiver_address'];
                 console.log("以下返货信息：");
                 console.log(return_info);
 
                 var cs_belong = new Object();
                 //cs_belong.cs_id = data['cs_id'];
-                cs_belong.build_organize_id = data['company_id'];
-                cs_belong.build_department_id = data['department_id'];
-                cs_belong.build_user_id = data['manager_id'];
-                cs_belong.build_department_name = jq("#department_id").find("option:selected").text();                //缺
+                cs_belong.build_organize_id = data['build_organize_id'];
+                cs_belong.build_department_id = data['build_department_id'];
+                cs_belong.build_user_id = data['build_user_id'];
+                cs_belong.build_department_name = jq("#build_department_id").find("option:selected").text();                //缺
                 //cs_belong.cs_belong_create_time = data['cs_belong_create_time'];
-                cs_belong.build_user_name = jq("#manager_id").find("option:selected").text();
-                cs_belong.build_organize_name = jq("#department_id").find("option:selected").text();
+                cs_belong.build_user_name = jq("#build_user_id").find("option:selected").text();
+                cs_belong.build_organize_name = jq("#build_organize_id").find("option:selected").text();
+                cs_belong.build_user_phone = data['build_user_phone'];
                 console.log("以下订单所属信息：");
                 console.log(cs_belong);
 
                 var cs_examine = [];
                 var directorExamine = {};
-                directorExamine['submit_user_id'] = data['manager_id'];
+                directorExamine['submit_user_id'] = data['build_user_id'];
                 directorExamine['cs_examine_date'] = '2000-1-1';
                 directorExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00'
-                directorExamine['cs_examine_comment'] = null;
+                directorExamine['cs_examine_comment'] = "";
                 directorExamine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
                 directorExamine['cs_examine_result'] = 2;
                 directorExamine['cs_examine_state'] = state;
                 cs_examine[0] = directorExamine;
                 var generalManagerExamine = {};
-                generalManagerExamine['submit_user_id'] = data['manager_id'];
+                generalManagerExamine['submit_user_id'] = data['build_user_id'];
                 generalManagerExamine['cs_examine_date'] = '2000-1-1';
                 generalManagerExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00'
-                generalManagerExamine['cs_examine_comment'] = null;
+                generalManagerExamine['cs_examine_comment'] = "";
                 generalManagerExamine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
                 generalManagerExamine['cs_examine_result'] = 2;
                 generalManagerExamine['cs_examine_state'] = 0;
                 cs_examine[1] = generalManagerExamine;
                 var financeExamine = {};
-                financeExamine['submit_user_id'] = data['manager_id'];
+                financeExamine['submit_user_id'] = data['build_user_id'];
                 financeExamine['cs_examine_date'] = '2000-1-1';
                 financeExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00'
-                financeExamine['cs_examine_comment'] = null;
+                financeExamine['cs_examine_comment'] = "";
                 financeExamine['cs_examine_content'] = data['examinationapprovalcontentthird'];
                 financeExamine['cs_examine_result'] = 2;
                 financeExamine['cs_examine_state'] = 0;
@@ -768,7 +908,7 @@
                 console.log(cs_examine);
                 //处理清单
                 var order_goods_manager= [];
-                for(var i = 0; i <= rows; i++){
+                for(var i = 0; i < rows; i++){
                     var order_goods_manager_item = {};
                     order_goods_manager_item['product_info_id']= tabledata[i][5]['tag'];
                     order_goods_manager_item['unit'] = tabledata[i][6]['text'];
@@ -786,6 +926,7 @@
                     order_goods_manager_item['fault_condition'] = null;
                     order_goods_manager_item['unit_price'] = null;
                     order_goods_manager[i] = order_goods_manager_item;
+                    console.log(order_goods_manager_item);
                 }
                 console.log("以下清单信息：");
                 console.log(order_goods_manager);
@@ -826,6 +967,7 @@
                     data[index] = rowdata;
                     index++;
                 }
+                console.log(data);
                 return data;
             }
             //获取清单其它说明（经理部分）
@@ -835,16 +977,135 @@
                 var exp = mytable.rows[mytable.rows.length - 1].cells[1].innerHTML;
                 return exp;
             }
-            //加载订单数据
-            function loadingOrder(cs_id) {
-                console.log(cs_id);
+            //获取子部门并选中
+            function LoadingDepartmentAndSelected(value,selectValue) {
                 var jq = layui.jquery;
-                jq.post("{:url('admin/addreplaceconfirmorder/getcsallinfo')}",{'param':cs_id},function (data) {
-                    console.log(data);
-                })
+                var form1 = layui.form;
+                jq.post("{:url('admin/addreplaceconfirmorder/getdepartmentinfo')}",{'param':value},function(data){
+                    for(var  item in data){
+                        //console.log(data[item]['organize_name']);
+                        if(data[item]['organize_id'] == selectValue)
+                        {
 
+                            jq("#build_department_id").append("<option value='"+data[item]['organize_id']+"' selected>"+data[item]['organize_name']+"</option>");
+                        }
+
+                        else
+                            jq("#build_department_id").append("<option value='"+data[item]['organize_id']+"'>"+data[item]['organize_name']+"</option>");
+                    }
+                    layui.form.render('select');
+                });
             }
+            //获取经理并选中
+            function LoadingManagerAndSelected(value,selectValue) {
+                var jq = layui.jquery;
+                var form1 = layui.form;
+                jq.post("{:url('admin/addreplaceconfirmorder/getdspmanagerinfo')}",{'param':value},function(data){
+                    for(var  item in data){
+                        //console.log(data[item]['organize_name']);
+                        if(data[item]['user_id'] == selectValue)
+                        {
 
+                            jq("#build_user_id").append("<option value='"+data[item]['user_id']+"' selected>"+data[item]['fullname']+"</option>");
+                        }
+
+                        else
+                            jq("#build_user_id").append("<option value='"+data[item]['user_id']+"'>"+data[item]['fullname']+"</option>");
+                    }
+                    layui.form.render('select');
+                });
+            }
+            //获取物流信息
+            function getlogisticsInfo() {
+                var jq = layui.jquery;
+                var mytable = document.getElementById('tablelogistics');
+                var rows = mytable.rows.length;
+                var retArray = [];
+                for(var i = 1; i < rows; i++){
+                    var rowdata = {};
+                    var rowObj = mytable.rows[i]
+                    for(var j = 0,cells=mytable.rows[i].cells.length; j<cells; j++){
+                        var cellData = mytable.rows[i].cells[j].getElementsByTagName("input")[0].value;
+                        rowdata[j] = cellData;
+                    }
+                    var goods_yard_name = rowdata[2];
+                    var transfer_order_num = rowdata[3];
+                    var delivery_date = rowdata[1];
+                    var count = rowdata[4];
+                    if (goods_yard_name == "" && transfer_order_num == "" && delivery_date == "" && count == ""){
+                        continue;
+                    }
+                    if (goods_yard_name == "" || transfer_order_num == "" || delivery_date == "" || count == ""){
+
+                        return null;
+                    }
+                    var logistics_info = new Object();
+                    var logistics_id = jq(rowObj).attr('logistics_id');
+                    var cs_id = jq(rowObj).attr('cs_id');
+                    var user_id = jq(rowObj).attr('user_id');
+                    var time_stamp = jq(rowObj).attr('time_stamp');
+                    logistics_info.logistics_id = logistics_id === undefined ? "": logistics_id;
+                    logistics_info.cs_id = logistics_id === undefined ? "": cs_id;
+                    logistics_info.goods_yard_name = goods_yard_name;
+                    logistics_info.transfer_order_num = transfer_order_num;
+                    logistics_info.delivery_date = delivery_date;
+                    logistics_info.count = count;
+                    logistics_info.user_id = user_id === undefined ? "": user_id;                         //登陆ID
+                    logistics_info.time_stamp = time_stamp === undefined ? "2000-01-01": time_stamp;                          //无
+                    console.log(logistics_info);
+                    retArray[i - 1] = logistics_info;
+                }
+                return retArray;
+            }
+            //添加一条物流信息 data == null 表示新增一条空数据
+            function addLogisticsItem(data) {
+                var jq = layui.jquery;
+                var laydate = layui.laydate;
+                var form = layui.form;
+                var logistics_id = "";
+                var cs_id = "";
+                var goods_yard_name = "";
+                var transfer_order_num = "";
+                var delivery_date = "";
+                var count = "";
+                var user_id = "";//data['user_id'];                         //登陆ID
+                var time_stamp = "";                           //无
+                if (data != null){
+                    logistics_id = data.logistics_id;
+                    cs_id = data.cs_id;
+                    goods_yard_name = data.goods_yard_name;
+                    transfer_order_num = data.transfer_order_num;
+                    delivery_date = data.delivery_date;
+                    count = data.count;
+                    user_id = data.user_id;//data['user_id'];                         //登陆ID
+                    time_stamp = data.time_stamp = '2000-01-01';                           //无
+                }
+                var rows = jq('#tablelogistics')[0].rows.length;
+                var new_tr = jq('#tablelogistics')[0].insertRow(rows);//指定位置插入行
+                jq(new_tr).attr("logistics_id",logistics_id);
+                jq(new_tr).attr("cs_id",cs_id);
+                jq(new_tr).attr("goods_yard_name",goods_yard_name);
+                jq(new_tr).attr("transfer_order_num",transfer_order_num);
+                jq(new_tr).attr("delivery_date",delivery_date);
+                jq(new_tr).attr("count",count);
+                jq(new_tr).attr("user_id",user_id);
+                jq(new_tr).attr("time_stamp",time_stamp);
+
+                var col_0 = new_tr.insertCell(0);//添加列
+                col_0.innerHTML = "<td><input type='checkbox' autocomplete='on' class='layui-input Wheat'></td>";
+                var col_1 = new_tr.insertCell(1);//添加列
+                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item'></td>";
+                jq.each(jq(".time-item"),function(){
+                    laydate.render({ elem: this });
+                });
+                var col_2 = new_tr.insertCell(2);//添加列
+                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                var col_3 = new_tr.insertCell(3);//添加列
+                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                var col_4 = new_tr.insertCell(4);//添加列
+                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                form.render('checkbox');
+            }
         </script>
     </body>
 </html>

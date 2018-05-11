@@ -26,7 +26,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">流水号</label>
                     <div class="layui-input-inline">
-                        <input type="text" disabled name="swiftnumber" id="swiftnumber" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray">
+                        <input type="text" disabled name="cs_id" id="cs_id" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray">
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -45,26 +45,30 @@
             </div>
             <h3>物流信息</h3>
             <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">发货日期</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="delivery_date" id="delivery_date" autocomplete="on" class="layui-input Wheat"> </div>
+                <div class="layui-btn-container">
+                    <button id="btn_add_logistics_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_add_logistics_item">添加物流</button>
+                    <button id="btn_del_logistics_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_add_logistics_item">删除</button>
+
+                    <button id="btn_test" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_test">测试按钮</button>
                 </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">货场</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="goods_yard_name" id="goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">物流单号</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="transfer_order_num" id="transfer_order_num" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">件数</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="count" id="count" id lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
+            </div>
+
+            <div class="layui-form-item">
+            <table class="layui-table" id="tablelogistics">
+                <colgroup>
+                </colgroup>
+                <thead>
+                <tr class="Wheat">
+                    <th>选择</th>
+                    <th>发货日期</th>
+                    <th>货场</th>
+                    <th>物流单号</th>
+                    <th>件数</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
             </div>
             <h3>订单信息</h3>
             <div class="layui-form-item">
@@ -90,7 +94,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">区域经理</label>
                     <div class="layui-input-inline Wheat">
-                        <select id="manager_id" name="manager_id" lay-filter="manager_id">
+                        <select id="user_id" name="user_id" lay-filter="user_id">
                             <option value="" selected>请选择</option>
                         </select>
                     </div>
@@ -152,9 +156,9 @@
                         <input type="text" name="delivery_date_reply" id="delivery_date_reply" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
-                	<a href="../IncreaseNonfinalizedProductsConfirmationSheet/IncreaseNonfinalizedProductsConfirmationSheet.html" class="layui-btn" target="_blank">增加非定型产品订货确认单</a>
+                	<a id="uncofginfo" class="layui-btn" target="_blank">增加非定型产品订货确认单</a>
                 	<a href="javascript:void(0);" class="layui-btn" target="_blank">查看非定型产品订货确认单</a>
-                	<a href="javascript:void(0);" class="layui-btn" target="_blank">上传咨询表</a>
+                	<a id="uploadpic" name="uploadpic" class="layui-btn" target="_blank">上传咨询表</a>
                 	<a href="javascript:void(0);" class="layui-btn" target="_blank">查看咨询表</a>
                	</div>
             </div>
@@ -230,6 +234,7 @@
                         <th>生产地</th>
                         <th class="dark_blue">产品状态</th>
                         <th class="dark_blue">备注</th>
+                        <th class="dark_blue">操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -242,12 +247,18 @@
             </div>
         </form>
         <script type="text/javascript" src="/static/layui/layui.js"></script>
+        <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript">
-            layui.use(['form', 'jquery','layedit', 'laydate'], function () {
+            var uncofginfo = null;      //非常规订单数据 包含unc_ofg_info，清单明细：搜索unc_ofg_items，删除表del_unc_ofg_detail_id_arr
+            var del_logistics_id_arr = new Array();//删除物流信息id
+            var del_unc_ofg_detail_id_arr = new Array();//删除非定型订单明细id
+            var del_ogcugi_id_arr = new Array(); //删除订单明细id
+            layui.use(['form', 'jquery','layedit', 'laydate','upload'], function () {
                 var form = layui.form,
                     jq = layui.jquery,
                     layer = layui.layer,
                     layedit = layui.layedit,
+                     upload = layui.upload,
                     laydate = layui.laydate;
                 /*日期*/
                 laydate.render({
@@ -270,9 +281,52 @@
                     ,position: 'fixed'
                     ,theme: 'molv'
                 });
+                laydate.render({
+                    elem: '.lala'
+                    ,position: 'fixed'
+                    ,theme: 'molv'
+                });
+                //uploadpic
 
+                //执行实例      暂无
+                var uploadPic = upload.render({
+                    elem: '#uploadpic' //绑定元素
+                    ,acceptMime: 'image/*'
+                    ,url: '/upload/' //上传接口
+                    ,done: function(res){
+                        //上传完毕回调
+                    }
+                    ,error: function(){
+                        //请求异常回调
+                    }
+                });
+                //网页加载时  赋值使用
+                $(document).ready(function() {
+                    //判断此页面是新增还是编辑
+                    //如果新增
+                    addLogisticsItem(null);                     //物流信息
+                    //否则 addLogisticsItem(data);
+                    //uncofginfo =                              //非常规订单数据 详细请搜索
+
+                    //addTableItem(data,tableIndex)
+                    // 添加订货确认单未发货清单
+                    // tableIndex：表行 1开始，
+                    // data：order_goods_cs_undeliver_goods_info，product_info，product_type，product_brand，product_place，5个表数据
+                    //
+                });
                 //监听提交
                 form.on('submit(save)', function (uidata) {
+                    var logistics_info = getlogisticsInfo();
+                    if(logistics_info == null){
+                        layer.msg('请填写完整物流信息！',{icon:2});
+                        return false;
+                    }
+                    var logistics_info_length = logistics_info.length;
+                    if(logistics_info_length < 1){
+                        layer.msg('请填写物流信息！',{icon:2});
+                        return false;
+                    }
+
                     jq = layui.jquery;
                     var data = uidata.field;
                     var order_date = data['order_date'];
@@ -280,8 +334,8 @@
                         layer.msg('请选择下单时间！',{icon:2});
                         return false;
                     }
-                    var manager_id = data['manager_id'];
-                    if (manager_id == ""){
+                    var user_id = data['user_id'];
+                    if (user_id == ""){
                         layer.msg('请选择经理！',{icon:2});
                         return false;
                     }
@@ -296,7 +350,6 @@
                         return false;
                     }
                     console.log(data);
-                    var logistics_info = logisticsInfo(data);
                     console.log('下列输入物流信息：');
                     console.log(logistics_info);
                     var order_goods_cs_info = orderGoodsInfo(data);
@@ -311,10 +364,46 @@
                     var fee_info = feeInfo(data);
                     console.log('下列输入费用情况：');
                     console.log(fee_info);
-                    var order_goods_cs_undeliver_goods_info = ogcugi();
+                    var order_goods_cs_undeliver_goods_info = getTableDataToDBObject();
                     console.log('下列输入清单信息：');
                     console.log(order_goods_cs_undeliver_goods_info);
+                    var unc_ofg_info = null;
+                    var unc_ofg_detail = null;
+                    if (uncofginfo != null){
+                        del_unc_ofg_detail_id_arr = uncofginfo.del_unc_ofg_detail_id_arr;
+                        unc_ofg_info = uncofginfo.unc_ofg_info;
+                        var unc_ofg_items = uncofginfo.unc_ofg_items;
+                        var length = unc_ofg_items.length;
+                        for (var i = 0; i < length; i++){
+                            if (unc_ofg_detail == null){
+                                unc_ofg_detail = [];
+                            }
+                            var itemInfo = {};
+                            itemInfo.uod_id = unc_ofg_items[i].uod_id;
+                            itemInfo.unc_ofg_info_id = null;
+                            itemInfo.product_info_id = unc_ofg_items[i].product_info_id;
+                            itemInfo.uod_count = unc_ofg_items[i].uod_count;
+                            itemInfo.uod_unit = unc_ofg_items[i].uod_unit;
+                            itemInfo.uod_requirement = unc_ofg_items[i].uod_requirement;
+                            itemInfo.uod_delivery_date = unc_ofg_items[i].uod_delivery_date;
+                            itemInfo.uod_comment = unc_ofg_items[i].uod_comment;
+                            unc_ofg_detail[i] = itemInfo;
+                        }
+                    }
+                    console.log('下列非常规订单信息：');
+                    console.log(unc_ofg_info);
+                    console.log('下列非常规清单信息：');
+                    console.log(unc_ofg_detail);
+                    /* ***************************************************** 说明 *********************************************************** */
+                    /*
+                    如果表
+                         unc_ofg_detail  uod_id == "" 表示新增
+                         logistics_info logistics_id == "" 表示新增  否则 cs_id  user_id  time_stamp 使用原来值php不要赋值
 
+                         del_logistics_id_arr  删除表 logistics_info           //删除物流信息id
+                         del_unc_ofg_detail_id_arr  删除表 unc_ofg_detail      //删除非定型订单明细id
+                         del_ogcugi_id_arr 删除表 order_goods_cs_undeliver_goods_info  //删除订货确认单未发货清单
+                     */
                     jq.ajax({
                         url: "{:url('admin/addgoodsconfirmorder/addcs')}",//php文件路径
                         data: {
@@ -323,14 +412,18 @@
                                 cs_belong:cs_belong,
                                 ofg_info:ofg_info,
                                 fee_info:fee_info,
-                                order_goods_cs_undeliver_goods_info:order_goods_cs_undeliver_goods_info
+                                order_goods_cs_undeliver_goods_info:order_goods_cs_undeliver_goods_info,
+                                unc_ofg_info:unc_ofg_info,
+                                unc_ofg_detail:unc_ofg_detail,
+                                del_logistics_id_arr:del_logistics_id_arr,
+                                del_unc_ofg_detail_id_arr:del_unc_ofg_detail_id_arr
                                 },
                         type: 'POST',
                         success: function(e) {
                             if(e){
                                 console.log('订单添加成功！');
                                 console.log(e);
-                                //location.href = "{:url('admin/addgoodsconfirmorder/addgoodsconfirmorder')}";
+                                location.href = "{:url('admin/addgoodsconfirmorder/addgoodsconfirmorder')}";
                             }else if(!e){
                                 console.log('订单提交失败！');
                                 console.log(e);
@@ -339,7 +432,6 @@
                     })
                     return false;
                 });
-
                 //监听选择公司
                 form.on('select(company_id)',function (data) {
                     jq.post("{:url('admin/addgoodsconfirmorder/getdepartmentinfo')}",{'param':data.value},function (data) {
@@ -355,81 +447,152 @@
 
                     jq.post("{:url('admin/addgoodsconfirmorder/getdspmanagerinfo')}",{'param':data.value},function (data) {
                         for (var item in data){
-                            jq('#manager_id').append("<option value='" + data[item]['user_id'] + "' phone='" + data[item]['phone'] + "'>" + data[item]['fullname'] + "</option>>");
+                            jq('#user_id').append("<option value='" + data[item]['user_id'] + "' phone='" + data[item]['phone'] + "'>" + data[item]['fullname'] + "</option>>");
                         }
                         form.render('select');
                     })
                 });
-                //添加清单明显
-                jq('#btn_add_order_item').click(function () {
-                    layer.open({
-                        type:2,
-                        title:'新增清单',
-                        area:['800px','90%'],
-                        shade: [0.7, '#393D49'],
-                        skin: 'layui-layer-molv',
-                        maxmin:false,
-                        content:"{:url('admin/addgoodsconfirmorderitem/addgoodsconfirmorderitem')}",
-                        btn:['保存','退出'],
-                        yes:function (index,layero) {
-                            var  iframeWin = window[layero.find('iframe')[0]['name']];
-                            var  orderItem = iframeWin.saveOrderItem();
-                            if (orderItem == ""){
+                //添加物流信息
+                jq('#btn_add_logistics_item').click(function () {
+                    addLogisticsItem(null);
+                    /*var rows = jq('#tablelogistics')[0].rows.length;
+                    var new_tr = jq('#tablelogistics')[0].insertRow(rows);//指定位置插入行
+                    var col_0 = new_tr.insertCell(0);//添加列
+                    col_0.innerHTML = "<td><input type='checkbox' autocomplete='on' class='layui-input Wheat'></td>";
+                    var col_1 = new_tr.insertCell(1);//添加列
+                    col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item'></td>";
+                    jq.each(jq(".time-item"),function(){
+                        laydate.render({ elem: this });
+                    });
+                    var col_2 = new_tr.insertCell(2);//添加列
+                    col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                    var col_3 = new_tr.insertCell(3);//添加列
+                    col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                    var col_4 = new_tr.insertCell(4);//添加列
+                    col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                    form.render('checkbox');*/
+                    return false;
+                });
+                //删除物流信息
+                jq('#btn_del_logistics_item').click(function(){
+                    jq("#tablelogistics tbody tr").find("td:first input:checkbox").each(function () {
+                        var ischecked = jq(this).prop("checked");
+                        if(ischecked){
+                            var logistics_id = jq(this).parent().parent().attr("logistics_id");
+                            jq(this).parent().parent().remove();
+                            if (logistics_id === undefined || logistics_id == ""){
                                 return;
                             }
-                            if(orderItem.model_text == null){
-                                return null;
-                            }
-                            console.log(orderItem);
-                            //+判断
-                            var type_id = orderItem.type_id;
-                            var type_text = orderItem.type_text;
-                            var brand_id = orderItem.brand_id;
-                            var brand_text = orderItem.brand_text;
-                            var model_text = orderItem.model_text;
-                            var product_info_id = orderItem.product_info_id;
-                            var model = orderItem.model;
-                            var unit = orderItem.unit;
-                            var place = orderItem.place_id;
-                            var place_text = orderItem.place_text;
-                            var count =orderItem.count;
-                            var product_state_text = orderItem.product_state_text;
-                            var product_state_id = orderItem.product_state_id;
-
-                            var comment = orderItem.comment;
-                            var rows = jq('#tableorder')[0].rows.length;
-
-                            var new_tr = jq('#tableorder')[0].insertRow(rows);//指定位置插入行
-                            var col_0 = new_tr.insertCell(0);//添加列
-                            col_0.innerHTML = "<td><a>"+ rows+"</a></td>";
-                            var col_1 = new_tr.insertCell(1);
-                            col_1.innerHTML = "<td><a tag='"+ type_id +"'>"+ type_text +"</a></td>";
-                            var col_2 = new_tr.insertCell(2);
-                            col_2.innerHTML = "<td><a tag='"+ brand_id +"'>"+ brand_text +"</a></td>";
-                            var col_3 = new_tr.insertCell(3);
-                            col_3.innerHTML = "<td><a>"+ model_text +"</a></td>";//-------产品名称-------
-                            var col_4 = new_tr.insertCell(4);
-                            col_4.innerHTML = "<td><a tag='" + product_info_id + "'>"+ model +"</a></td>";
-                            var col_5 = new_tr.insertCell(5);
-                            col_5.innerHTML = "<td><a>"+ unit +"</a></td>";
-                            var col_6 = new_tr.insertCell(6);
-                            col_6.innerHTML = "<td><a>"+ count +"</a></td>";
-                            var col_7 = new_tr.insertCell(7);
-                            col_7.innerHTML = "<td><a tag = '"+ place +"'>"+ place_text +"</a></td>";
-                            var col_8 = new_tr.insertCell(8);
-                            col_8.innerHTML = "<td><a tag='" + product_state_id + "'>"+ product_state_text +"</a></td>";
-                            var col_9 = new_tr.insertCell(9);
-                            col_9.innerHTML = "<td><a>"+ comment +"</a></td>";
-
-                            layer.closeAll();
-                        },
-                        btn2: function () {
-                            layer.closeAll();
+                            del_logistics_id_arr.pause(logistics_id);
                         }
                     });
                     return false;
                 });
+                //非定型订单弹窗
+                jq('#uncofginfo').click(function () {
+                    top.layer.open({
+                        type:2,
+                        title:'非定型产品订货单',
+                        area:['800px','90%'],
+                        shade: [0.7, '#393D49'],
+                        skin: 'layui-layer-molv',
+                        maxmin:true,
+                        content:"{:url('admin/uncofginfo/uncofginfo')}",
+                        btn:['保存','退出'],
+                        yes:function (index,layero) {
+                            var  iframeWin = top.window[layero.find('iframe')[0]['name']];
+                            uncofginfo = iframeWin.getData();
+                            top.layer.closeAll();
+                        },
+                        btn2: function () {
+                            top.layer.closeAll();
+                        }
+                    });
+                    return false;
+                })
+                //添加清单明显
+                jq('#btn_add_order_item').click(function () {
+                    openWindow();
+                    return false;
+                });
+                //编辑行
+                jq(document).on('click', '.edit_btn', function() {
+                    var text = jq(this).parent().parent();
+                    var tableRowIndex = jq(text[0].cells[0].innerHTML).text();
+                    openWindow(tableRowIndex);
+                });
+                //删除行
+                jq(document).on('click', '.del_btn', function(){
+                    var text = jq(this).parent().parent();
+                    var uod_id = jq(text[0].cells[0].innerHTML).attr("uod_id");
+                    if (uod_id === undefined || uod_id == ""){
+                        //return;
+                    }else {
+                        del_ogcugi_id_arr.push(id);
+                    }
+                    jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());
+                });
+                //测试使用
+                jq('#btn_test').click(function () {
+                    var mytable = document.getElementById('tablelogistics');
+                    var obj = mytable.rows[1];
+                    var lala = jq(obj).attr('goods_yard_name');
+                    console.log(lala);
+                    console.log(obj);
+                    return false;
+                });
             });
+
+            //编辑或者新增Item 窗体，tableRowIndex：表序号 新增不填
+            function openWindow(tableRowIndex) {
+                jq = layui.jquery;
+                var rowIndex = "";
+                if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
+                    rowIndex = jq('#tableorder')[0].rows.length;
+                }
+                else {
+                    rowIndex = tableRowIndex;
+                }
+                layer = layui.layer;
+                layer.open({
+                    type: 2,
+                    title: '新增清单',
+                    area: ['800px', '90%'],
+                    shade: [0.7, '#393D49'],
+                    skin: 'layui-layer-molv',
+                    maxmin: false,
+                    content: "{:url('admin/addgoodsconfirmorderitem/addgoodsconfirmorderitem')}",
+                    btn: ['保存', '退出'],
+                    yes: function (index, layero) {
+                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        var orderItem = iframeWin.saveOrderItem();
+                        if (orderItem == "") {
+                            return false;
+                        }
+
+                        if (tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == "") {
+
+                        }
+                        else {
+                            jq('#tableorder')[0].deleteRow(rowIndex);
+                        }
+                        addTableItem(orderItem, rowIndex);
+                        layer.close(index);
+                    },
+                    btn2: function () {
+                        layer.close(index);
+                    },
+                    success: function (layero, index) {
+                        if (tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == "") {
+                        }
+                        else {
+                            var rowData = getTableItemToDBObject(tableRowIndex);
+                            var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                            iframeWin.loadingData(rowData);
+                        }
+                    },
+                });
+            }
             //订货确认单信息
             function orderGoodsInfo(data) {
                 var order_goods_cs_info = new Object();
@@ -438,7 +601,7 @@
                 order_goods_cs_info.fee_info_id = '';
                 order_goods_cs_info.order_date = data['order_date'];
                 order_goods_cs_info.delivery_date_reply = data['delivery_date_reply'];
-                order_goods_cs_info.unc_ofg_info_id = -1;                                       //非常规订单（暂无）
+                order_goods_cs_info.unc_ofg_info_id = -1;
                 order_goods_cs_info.consult_sheet_file = '';                                    //咨询单文件名（暂无）
                 order_goods_cs_info.delivered_total = data['transfer_mode'];
                 order_goods_cs_info.delivered_pa = data['delivered_pa'] == "" ? 0 : data['delivered_pa'];
@@ -460,7 +623,7 @@
                 ofg_info.receiver_name = data['receiver_name'];
                 ofg_info.receiver_phone = data['receiver_phone'];
                 ofg_info.receiver_address = data['receiver_address'];
-                ofg_info.user_id = data['manager_id'];
+                ofg_info.user_id = data['user_id'];
                 return ofg_info;
             }
             //费用情况
@@ -488,66 +651,235 @@
                 var cs_belong = new Object();
                 cs_belong.cs_id = data['cs_id'];
                 cs_belong.build_organize_id = data['company_id'];
-                cs_belong.build_user_id = data['manager_id'];
+                cs_belong.build_user_id = data['user_id'];
                 cs_belong.cs_belong_create_time = null;
-                cs_belong.build_user_name = jq("#manager_id").find("option:selected").text();
+                cs_belong.build_user_name = jq("#user_id").find("option:selected").text();
                 cs_belong.build_organize_name = jq("#company_id").find("option:selected").text();
                 cs_belong.build_department_id = data['department_id'];
                 cs_belong.build_department_name = jq("#department_id").find("option:selected").text();
                 return cs_belong;
             }
-
-            function logisticsInfo(data) {
-                var logistics_info = new Object();
-                logistics_info.logistics_id = null;
-                logistics_info.cs_id = null;
-                logistics_info.goods_yard_name = data['goods_yard_name'];
-                logistics_info.transfer_order_num = data['transfer_order_num'];
-                logistics_info.delivery_date = data['delivery_date'];
-                logistics_info.count = data['count'];
-                logistics_info.user_id = null;//data['user_id'];                         //登陆ID
-                logistics_info.time_stamp = '2000-01-01';                           //无
-                return logistics_info;
-            }
-
-            function getTableData(){
+            //获取物流信息
+            function getlogisticsInfo() {
                 var jq = layui.jquery;
-                var mytable = document.getElementById('tableorder');
-                var data = [];
+                var mytable = document.getElementById('tablelogistics');
                 var rows = mytable.rows.length;
+                var retArray = [];
                 for(var i = 1; i < rows; i++){
                     var rowdata = {};
-                    for(var j = 0,cells=mytable.rows[i].cells.length; j<cells; j++){
-                        var tag = jq(mytable.rows[i].cells[j].innerHTML).attr('tag');
-                        var text = jq(mytable.rows[i].cells[j].innerHTML).text();
-                        var mymap = {};
-                        mymap['tag'] = tag;
-                        mymap['text'] = text;
-                        rowdata[j] = mymap;
+                    var rowObj = mytable.rows[i]
+                    for(var j = 0,cells = rowObj.cells.length; j<cells; j++){
+                        var cellData = rowObj.cells[j].getElementsByTagName("input")[0].value;
+                        rowdata[j] = cellData;
                     }
-                    data[i - 1] = rowdata;
+                    var goods_yard_name = rowdata[2];
+                    var transfer_order_num = rowdata[3];
+                    var delivery_date = rowdata[1];
+                    var count = rowdata[4];
+                    if (goods_yard_name == "" && transfer_order_num == "" && delivery_date == "" && count == ""){
+                        continue;
+                    }
+                    if (goods_yard_name == "" || transfer_order_num == "" || delivery_date == "" || count == ""){
+
+                        return null;
+                    }
+                    var logistics_info = new Object();
+                    var logistics_id = jq(rowObj).attr('logistics_id');
+                    var cs_id = jq(rowObj).attr('cs_id');
+                    var user_id = jq(rowObj).attr('user_id');
+                    var time_stamp = jq(rowObj).attr('time_stamp');
+                    logistics_info.logistics_id = logistics_id;
+                    logistics_info.cs_id = cs_id;
+                    logistics_info.goods_yard_name = goods_yard_name;
+                    logistics_info.transfer_order_num = transfer_order_num;
+                    logistics_info.delivery_date = delivery_date;
+                    logistics_info.count = count;
+                    logistics_info.user_id = user_id;                         //登陆ID
+                    logistics_info.time_stamp = time_stamp === "" ? "2000-01-01": time_stamp;                          //无
+                    console.log(logistics_info);
+                    retArray[i - 1] = logistics_info;
                 }
-                return data;
+                return retArray;
             }
             //订货确认单 清单
-            function ogcugi() {
-                var tableData = getTableData();
-                var length = tableData.length;
+            function getTableDataToDBObject(){
+                var jq = layui.jquery;
+                var mytable = document.getElementById('tableorder');
                 var order_goods_cs_undeliver_goods_info = [];
-                for(var i = 0; i < length ; i++){
-                    var tableRowData = tableData[i];
-                    var infoItem = {};
-
-                    infoItem.ogcugi_id = '';
-                    infoItem.cs_id ='';
-                    infoItem.product_info_id = tableRowData[4]['tag'];
-                    infoItem.ogcugi_count = tableRowData[6]['text'];
-                    infoItem.ogcugi_product_state = tableRowData[8]['tag'];
-                    infoItem.ogcugi_comment = tableRowData[9]['text'];
-                    infoItem.ogcugi_unit = tableRowData[5]['text'];
-                    order_goods_cs_undeliver_goods_info[i] = infoItem;
+                var rows = mytable.rows.length;
+                for(var i = 1; i < rows; i++){
+                    var itemData = getTableItemToDBObject(i);
+                    order_goods_cs_undeliver_goods_info[i - 1] = itemData;
                 }
                 return order_goods_cs_undeliver_goods_info;
+            }
+            //订货确认单 清单
+            function getTableItemToDBObject(rowIndex){
+                var jq = layui.jquery;
+                var mytable = document.getElementById('tableorder');
+                var itemInfo = {};
+                var rowdata = {};
+                var rowObj = mytable.rows[rowIndex];
+                for(var j = 0,cells = rowObj.cells.length; j<cells; j++){
+                    var tag = jq(rowObj.cells[j].innerHTML).attr('tag');
+                    var text = jq(rowObj.cells[j].innerHTML).text();
+                    var mymap = {};
+                    mymap['tag'] = tag;
+                    mymap['text'] = text;
+                    rowdata[j] = mymap;
+                }
+                var ogcugi_id = jq(rowObj).attr('ogcugi_id');
+                var cs_id = jq(rowObj).attr('cs_id');
+
+                itemInfo.ogcugi_id = ogcugi_id === undefined? "" : ogcugi_id;
+                itemInfo.cs_id = cs_id === undefined? "" : cs_id;
+                itemInfo.product_type_id = rowdata[1]['tag'];
+                itemInfo.brand_id = rowdata[2]['tag'];
+                itemInfo.model = rowdata[4]['text'];
+                itemInfo.product_info_id = rowdata[4]['tag'];
+                itemInfo.ogcugi_count = rowdata[6]['text'];
+                itemInfo.ogcugi_product_state = rowdata[8]['tag'];
+                itemInfo.ogcugi_comment = rowdata[9]['text'];
+                itemInfo.ogcugi_unit = rowdata[5]['text'];
+                return itemInfo;
+            }
+            //添加订货确认单 清单
+            function addTableItem(itemData,rowIndex) {
+                var jq = layui.jquery;
+                //+判断
+                var product_type_id = itemData.product_type_id;
+                var product_type_name = itemData.product_type_name;
+                var brand_id = itemData.brand_id;
+                var brand_name = itemData.brand_name;
+                var product_info_name = itemData.product_info_name;
+                var product_info_id = itemData.product_info_id;
+                var model = itemData.model;
+                var unit = itemData.unit;
+                var place = itemData.place_id;
+                var place_name = itemData.place_name;
+                var count =itemData.count;
+                var product_state_text = itemData.product_state_text;
+                var product_state_id = itemData.product_state_id;
+                var ogcugi_id = itemData.ogcugi_id;
+                var cs_id = itemData.cs_id;
+                var comment = itemData.comment;
+                //var rows = jq('#tableorder')[0].rows.length;
+                var new_tr = jq('#tableorder')[0].insertRow(rowIndex);//指定位置插入行
+                jq(new_tr).attr("ogcugi_id",ogcugi_id);
+                jq(new_tr).attr("cs_id",cs_id);
+                var col_0 = new_tr.insertCell(0);//添加列
+                col_0.innerHTML = "<td><a>"+ rowIndex+"</a></td>";
+                var col_1 = new_tr.insertCell(1);
+                col_1.innerHTML = "<td><a tag='"+ product_type_id +"'>"+ product_type_name +"</a></td>";
+                var col_2 = new_tr.insertCell(2);
+                col_2.innerHTML = "<td><a tag='"+ brand_id +"'>"+ brand_name +"</a></td>";
+                var col_3 = new_tr.insertCell(3);
+                col_3.innerHTML = "<td><a>"+ product_info_name +"</a></td>";//-------产品名称-------
+                var col_4 = new_tr.insertCell(4);
+                col_4.innerHTML = "<td><a tag='" + product_info_id + "'>"+ model +"</a></td>";
+                var col_5 = new_tr.insertCell(5);
+                col_5.innerHTML = "<td><a>"+ unit +"</a></td>";
+                var col_6 = new_tr.insertCell(6);
+                col_6.innerHTML = "<td><a>"+ count +"</a></td>";
+                var col_7 = new_tr.insertCell(7);
+                col_7.innerHTML = "<td><a tag = '"+ place +"'>"+ place_name +"</a></td>";
+                var col_8 = new_tr.insertCell(8);
+                col_8.innerHTML = "<td><a tag='" + product_state_id + "'>"+ product_state_text +"</a></td>";
+                var col_9 = new_tr.insertCell(9);
+                col_9.innerHTML = "<td><a>"+ comment +"</a></td>";
+                var col_10 = new_tr.insertCell(10);
+                col_10.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
+            }
+            //页面间数据传递
+            function getUncofgInfoUI() {
+                return uncofginfo;
+            }
+            //添加一条物流信息 data == null 表示新增一条空数据
+            function addLogisticsItem(data) {
+                var jq = layui.jquery;
+                var laydate = layui.laydate;
+                var form = layui.form;
+                var logistics_id = "";
+                var cs_id = "";
+                var goods_yard_name = "";
+                var transfer_order_num = "";
+                var delivery_date = "";
+                var count = "";
+                var user_id = "";//data['user_id'];                         //登陆ID
+                var time_stamp = "";                           //无
+                if (data != null){
+                    logistics_id = data.logistics_id;
+                    cs_id = data.cs_id;
+                    goods_yard_name = data.goods_yard_name;
+                    transfer_order_num = data.transfer_order_num;
+                    delivery_date = data.delivery_date;
+                    count = data.count;
+                    user_id = data.user_id;//data['user_id'];                         //登陆ID
+                    time_stamp = data.time_stamp = '2000-01-01';                           //无
+                }
+                var rows = jq('#tablelogistics')[0].rows.length;
+                var new_tr = jq('#tablelogistics')[0].insertRow(rows);//指定位置插入行
+                jq(new_tr).attr("logistics_id",logistics_id);
+                jq(new_tr).attr("cs_id",cs_id);
+                jq(new_tr).attr("goods_yard_name",goods_yard_name);
+                jq(new_tr).attr("transfer_order_num",transfer_order_num);
+                jq(new_tr).attr("delivery_date",delivery_date);
+                jq(new_tr).attr("count",count);
+                jq(new_tr).attr("user_id",user_id);
+                jq(new_tr).attr("time_stamp",time_stamp);
+
+                var col_0 = new_tr.insertCell(0);//添加列
+                col_0.innerHTML = "<td><input type='checkbox' autocomplete='on' class='layui-input Wheat'></td>";
+                var col_1 = new_tr.insertCell(1);//添加列
+                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item'></td>";
+                jq.each(jq(".time-item"),function(){
+                    laydate.render({ elem: this });
+                });
+                var col_2 = new_tr.insertCell(2);//添加列
+                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                var col_3 = new_tr.insertCell(3);//添加列
+                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                var col_4 = new_tr.insertCell(4);//添加列
+                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                form.render('checkbox');
+            }
+            //将数据显示
+            function setDBDateToHtml(order_goods_cs_info,fee_info,cs_belong,order_goods_info) {                        //缺文件
+                //order_goods_cs_info
+                //order_goods_info
+                //fee_info
+                jq('#cs_id').val(order_goods_cs_info.cs_id);
+                jq('#order_date').val(order_goods_cs_info.order_date);
+                jq('#product_number').val(order_goods_cs_info.product_number);
+                jq('#delivered_customization').val(order_goods_cs_info.delivered_customization);
+                jq('#delivered_album').val(order_goods_cs_info.delivered_album);
+                jq('#delivered_gift').val(order_goods_cs_info.delivered_gift);
+                jq('#delivered_aux').val(order_goods_cs_info.delivered_aux);
+                jq('#delivered_metro').val(order_goods_cs_info.delivered_metro);
+                jq('#delivered_record').val(order_goods_cs_info.delivered_record);
+                jq('#delivered_conference').val(order_goods_cs_info.delivered_conference);
+                jq('#delivered_pa').val(order_goods_cs_info.delivered_pa);
+                //jq('#consult_sheet_file').val(order_goods_cs_info.consult_sheet_file);
+                //jq('#unc_ofg_info_id').val(order_goods_cs_info.unc_ofg_info_id);
+                jq('#delivery_date_reply').val(order_goods_cs_info.delivery_date_reply);
+
+                //jq('#fee_info_id').val(fee_info.fee_info_id);
+                jq('#customization_fee').val(fee_info.customization_fee);
+                document.getElementById('transfer_fee').value = fee_info.transfer_fee;
+                jq('#comment').val(fee_info.comment);
+                jq('#delivery_date_reply').val(fee_info.delivery_date_reply);
+                //
+                document.getElementById('company_id').value = cs_belong.build_organize_id;
+                document.getElementById('department_id').value = cs_belong.build_department_id;
+                document.getElementById('user_id').value = cs_belong.build_user_id;
+
+                //jq('#ofg_info_id').val(order_goods_info.ofg_info_id);
+                jq('#receiver_name').val(order_goods_info.receiver_name);
+                jq('#receiver_phone').val(order_goods_info.receiver_phone);
+                jq('#receiver_address').val(order_goods_info.receiver_address);
+                document.getElementById('user_id').value = order_goods_info.user_id;
+
+                layui.form.render('select');
             }
         </script>
     </body>
