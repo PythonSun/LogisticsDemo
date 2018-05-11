@@ -77,6 +77,7 @@
                         <th>订制要求</th>
                         <th>要求交货日期</th>
                         <th>备注</th>
+                        <th class="dark_blue">操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -144,34 +145,58 @@
                 });
                 //添加清单明显
                 jq('#btn_add_order_item').click(function () {
-                    layer.open({
-                        type:2,
-                        title:'新增清单',
-                        area:['800px','90%'],
-                        shade: [0.7, '#393D49'],
-                        skin: 'layui-layer-molv',
-                        maxmin:false,
-                        content:"{:url('admin/uncofginfoitem/uncofginfoitem')}",
-                        btn:['保存','退出'],
-                        yes:function (index,layero) {
-                            var  iframeWin = window[layero.find('iframe')[0]['name']];
-                            var  orderItem = iframeWin.saveOrderItem();
-                            if (orderItem == ""){
-                                return;
-                            }
-
-                            addTableItem(orderItem);
-
-                            layer.closeAll();
-                        },
-                        btn2: function () {
-                            layer.closeAll();
-                        }
-                    });
+                    openWindow();
                     return false;
                 });
+
+                jq(document).on('click', '.edit_btn', function() {
+                    var text = jq(this).parent().parent();
+                    var tableRowIndex = jq(text[0].cells[0].innerHTML).val();
+                    openWindow(tableRowIndex);
+                });
+                jq(document).on('click', '.del_btn', function(){
+                    var text = jq(this).parent().parent();
+                    var id= jq(text[0].cells[0].innerHTML).attr("tag");
+                    if(id != "")
+                        delrowid.push(id);
+                    jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
+                    console.log(delrowid);
+                });
             });
-            function addTableItem(itemData) {
+
+            function openWindow(tableRowIndex) {
+                var rowIndex = "";
+                if(tableRowIndex === undefined || tableRowIndex == null){
+                    jq = layui.jquery,
+                    rowIndex = jq('#tableorder')[0].rows.length;
+                }
+                layer = layui.layer,
+                layer.open({
+                    type:2,
+                    title:'新增清单',
+                    area:['800px','90%'],
+                    shade: [0.7, '#393D49'],
+                    skin: 'layui-layer-molv',
+                    maxmin:false,
+                    content:"{:url('admin/uncofginfoitem/uncofginfoitem')}",
+                    btn:['保存','退出'],
+                    yes:function (index,layero) {
+                        var  iframeWin = window[layero.find('iframe')[0]['name']];
+                        var  orderItem = iframeWin.saveOrderItem();
+                        if (orderItem == ""){
+                            return;
+                        }
+                        addTableItem(orderItem,rowIndex);
+
+                        layer.closeAll();
+                    },
+                    btn2: function () {
+                        layer.closeAll();
+                    }
+                });
+            }
+
+            function addTableItem(itemData,rowIndex) {
                 var jq = layui.jquery;
                 //+判断
                 var product_type_id = itemData.product_type_id;
@@ -187,10 +212,10 @@
                 var uod_delivery_date = itemData.uod_delivery_date;
                 var uod_requirement = itemData.uod_requirement
                 var uod_comment = itemData.uod_comment;
-                var rows = jq('#tableorder')[0].rows.length;
-                var new_tr = jq('#tableorder')[0].insertRow(rows);//指定位置插入行
+
+                var new_tr = jq('#tableorder')[0].insertRow(rowIndex);//指定位置插入行
                 var col_0 = new_tr.insertCell(0);//添加列
-                col_0.innerHTML = "<td><a>"+ rows+"</a></td>";
+                col_0.innerHTML = "<td><a>"+ rowIndex+"</a></td>";
                 var col_1 = new_tr.insertCell(1);
                 col_1.innerHTML = "<td><a tag='"+ product_type_id +"'>"+ product_type_name +"</a></td>";
                 var col_2 = new_tr.insertCell(2);
@@ -212,7 +237,10 @@
                 col_8.innerHTML = "<td><a>"+ uod_delivery_date +"</a></td>";
                 var col_9 = new_tr.insertCell(9);
                 col_9.innerHTML = "<td><a>"+ uod_comment +"</a></td>";
+                var col_10 = new_tr.insertCell(10);
+                col_10.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
             }
+
             function getTableDataToDBObject(){
                 var jq = layui.jquery;
                 var mytable = document.getElementById('tableorder');
@@ -254,6 +282,7 @@
                 }
                 return retArray;
             }
+
             function getData() {
                 var jq = layui.jquery;
                 var unc_ofg_info = new Object();
@@ -280,8 +309,6 @@
                  && uoi_custom_name == "" && uoi_to_place == "" && uoi_project_name == "" && uoi_provider_name == ""){
                     return null;
                 }
-
-
                 return retData;
             }
         </script>
