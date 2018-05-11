@@ -5,6 +5,11 @@
         <title></title>
         <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
         <link rel="stylesheet" type="text/css" href="/static/css/public.css"> </head>
+        <style>
+            .hide{
+                display: none;
+            }
+        </style>
     <body>
         <form class="layui-form layui-form-pane" action="">
             <div class="toph2">
@@ -63,9 +68,6 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr class="Wheat">
-
-                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -382,7 +384,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="Wheat">其它说明</td>
+                        <td  class="Wheat">其它说明</td>
                         <td colspan="15"></td>
                     </tr>
                     <tr>
@@ -392,8 +394,8 @@
                 </tbody>
             </table>
             <div class="layui-form-item">
-                <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save">保存</button>
+                <div class="layui-container">
+                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save" id="save">保存</button>
                     <button class="layui-btn" lay-submit="" lay-filter="deliver">转交</button>
                     <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="cancel">取消</button>
                 </div>
@@ -459,9 +461,13 @@
                     var cs_id = "<?php echo $cs_id?>";
                     if(cs_id == ""){
                         addLogisticsItem(null);
+
                         return ;
                     }
 
+                    jq('#save').addClass('hide');
+                    jq('#deliver').addClass('hide');
+                    jq('#cancel').addClass('hide');
                     //如果新增
                     //否则 addLogisticsItem(data);
                     jq.post("{:url('admin/addreplaceconfirmorder/getcsallinfo')}",{'param':cs_id},function (data) {
@@ -538,8 +544,10 @@
                             var order_goods = data['order_goods'];
                             for( var i = 0 ; i<order_goods.length; i++)
                             {
-                                insertRow(order_goods[i]);
+                                updateRow(order_goods[i],true);
                             }
+                            jq('#tableorder')[0].ce
+                            jq('#tableorder')[0].insertRow(rows)
                         }
 
 
@@ -615,7 +623,7 @@
                             row.ogl_comment = orderItem.ogl_comment;
                            // console.log("length: "+ jq('#tableorder')[0].rows.length);
                             row.id = "";
-                            insertRow(row)
+                            updateRow(row,true)
 
                             layer.closeAll();
                         },
@@ -665,7 +673,8 @@
                             row.ogl_comment = orderItem.ogl_comment;
                             // console.log("length: "+ jq('#tableorder')[0].rows.length);
                             row.id = jq(text[0].cells[0].innerHTML).attr("tag");
-                            insertRow(row)
+                            row.num = jq(text[0].cells[0].innerHTML).text();
+                            updateRow(row,false)
 
                             layer.closeAll();
                         },
@@ -729,11 +738,15 @@
                 });
             });
 
-            function insertRow(row) {
+            function updateRow(row ,isAdd) {
                 console.log(row);
                 var jq = layui.jquery;
                 var rows = jq('#tableorder')[0].rows.length - 2;
-
+                if(isAdd == false)
+                {
+                    rows = row.num;
+                    jq('#tableorder')[0].deleteRow(rows)
+                }
                 var new_tr = jq('#tableorder')[0].insertRow(rows);//指定位置插入行
                 var col_0 = new_tr.insertCell(0);//添加列
                 col_0.innerHTML = "<td><a tag = '"+row.id+"'>"+ rows+"</a></td>"; //id是保存在数据库的id,新增时为空
@@ -776,7 +789,7 @@
                 var exp = getTableExplain();
                 var data = uidata.field;
                 var rows = tabledata.length;
-
+                console.log(data);
                 //cs_info.cs_id  = data['swiftnumber'];
                 if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
                     layer.msg('请选择部门！',{icon:2});
@@ -788,7 +801,7 @@
                 }
                 var cs_info = new Object();
                 cs_info.payment_info_id = -1;
-                cs_info.cur_process_user_id = data['company_id'];                      // 当前处理用户id
+                cs_info.cur_process_user_id = data['build_user_id'];                      // 当前处理用户id
                 cs_info.pre_process_user_id = -1;                         //     上一次处理用户id
                 cs_info.cs_info_type = 1;                               //1：更换 详细看数据库
                 cs_info.can_edit = 1;
@@ -841,12 +854,12 @@
                 console.log(delivery_info);
 
                 var return_info = new Object();
-                return_info.return_info_receiver_name = data['return_info_return_receiver_name'];
-                return_info.return_info_receiver_phone = data['return_info_return_receiver_phone'];
-                return_info.return_info_goods_yard_name = data['return_info_return_goods_yard_name'];
-                return_info.return_info_goods_yard_phone = data['return_info_return_goods_yard_phone'];
+                return_info.return_info_receiver_name = data['return_info_receiver_name'];
+                return_info.return_info_receiver_phone = data['return_info_receiver_phone'];
+                return_info.return_info_goods_yard_name = data['return_info_goods_yard_name'];
+                return_info.return_info_goods_yard_phone = data['return_info_goods_yard_phone'];
                 return_info.return_order_num = data['return_order_num'];
-                return_info.return_info_receiver_address = data['return_info_return_receiver_address'];
+                return_info.return_info_receiver_address = data['return_info_receiver_address'];
                 console.log("以下返货信息：");
                 console.log(return_info);
 
@@ -883,7 +896,7 @@
                 generalManagerExamine['cs_examine_state'] = 0;
                 cs_examine[1] = generalManagerExamine;
                 var financeExamine = {};
-                financeExamine['submit_user_id'] = data['manager_id'];
+                financeExamine['submit_user_id'] = data['build_user_id'];
                 financeExamine['cs_examine_date'] = '2000-1-1';
                 financeExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00'
                 financeExamine['cs_examine_comment'] = "";
@@ -895,7 +908,7 @@
                 console.log(cs_examine);
                 //处理清单
                 var order_goods_manager= [];
-                for(var i = 0; i <= rows; i++){
+                for(var i = 0; i < rows; i++){
                     var order_goods_manager_item = {};
                     order_goods_manager_item['product_info_id']= tabledata[i][5]['tag'];
                     order_goods_manager_item['unit'] = tabledata[i][6]['text'];
@@ -913,6 +926,7 @@
                     order_goods_manager_item['fault_condition'] = null;
                     order_goods_manager_item['unit_price'] = null;
                     order_goods_manager[i] = order_goods_manager_item;
+                    console.log(order_goods_manager_item);
                 }
                 console.log("以下清单信息：");
                 console.log(order_goods_manager);
@@ -953,6 +967,7 @@
                     data[index] = rowdata;
                     index++;
                 }
+                console.log(data);
                 return data;
             }
             //获取清单其它说明（经理部分）

@@ -967,7 +967,7 @@
             $sql.= "cs_belong_create_time= '$cs_belong_create_time',build_user_name= '$build_user_name',build_organize_name= '$build_organize_name',";
             $sql.= "build_department_id='{$build_department_id}',build_department_name='{$build_department_name}',build_user_phone = '$build_user_phone';";
             $sqlret = Db::execute($sql);
-            return $sqlret;
+            return 111;
         }
         /*新增 确认单清单经理部分 order_goods_manager*/
         public static function addordergoodsmanager($info){
@@ -975,7 +975,7 @@
             $order_goods_manager_id = $info['order_goods_manager_id'];
             $cs_id = $info['cs_id'];
             $product_info_id = $info['product_info_id'];
-            $unit_price = $info['unit_price'];
+            $unit_price = $info['unit_price']== ''?-1:$info['unit_price'];
             $unit = $info['unit'];
             $order_goods_manager_count = $info['order_goods_manager_count'];
             $specification = $info['specification'];
