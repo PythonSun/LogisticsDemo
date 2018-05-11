@@ -66,7 +66,7 @@ class Addgoodsconfirmorder extends Controller
         $cs_belong['cs_belong_id'] = $cs_belog_id;
         $cs_belong['cs_id'] = $cs_info_id;
         $cs_belong['cs_belong_create_time'] = $date_now;
-        $cs_belong['build_user _phone'] = $user_session['phone'];
+        $cs_belong['build_user_phone'] = $user_session['phone'];
         $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
         if (empty($ret_cs_belog)) {
             return false;

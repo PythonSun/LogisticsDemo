@@ -105,6 +105,7 @@
         <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript">
             var uoi_id = "";
+            var delrowid = new Array();
             $(document).ready(function() {
                 var wParent = window.parent[0];
                 var data = wParent.getUncofgInfoUI();
@@ -117,7 +118,7 @@
                 if (tableData != null){
                     var length = tableData.length;
                     for (var i = 0; i < length; i++){
-                        addTableItem(tableData[i]);
+                        addTableItem(tableData[i],i + 1);
                     }
                 }
                 uoi_id = unc_ofg_info.uoi_id;
@@ -148,27 +149,37 @@
                     openWindow();
                     return false;
                 });
-
+                //编辑行
                 jq(document).on('click', '.edit_btn', function() {
                     var text = jq(this).parent().parent();
-                    var tableRowIndex = jq(text[0].cells[0].innerHTML).val();
+                    console.log(this);
+                    console.log(text);
+                    var tableRowIndex = jq(text[0].cells[0].innerHTML).text();
                     openWindow(tableRowIndex);
                 });
+                //删除行
                 jq(document).on('click', '.del_btn', function(){
                     var text = jq(this).parent().parent();
-                    var id= jq(text[0].cells[0].innerHTML).attr("tag");
-                    if(id != "")
-                        delrowid.push(id);
+                    var uod_id = jq(text[0].cells[0].innerHTML).attr("uod_id");
+                    if (uod_id === undefined || uod_id == ""){
+                        //return;
+                    }else {
+                        delrowid.push(uod_id);
+                    }
                     jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
-                    console.log(delrowid);
                 });
             });
-
+            //编辑或者新增Item 窗体，tableRowIndex：表序号 新增不填
             function openWindow(tableRowIndex) {
+                jq = layui.jquery;
+                console.log(tableRowIndex);
                 var rowIndex = "";
-                if(tableRowIndex === undefined || tableRowIndex == null){
-                    jq = layui.jquery,
+                if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
+
                     rowIndex = jq('#tableorder')[0].rows.length;
+                }
+                else {
+                    rowIndex = tableRowIndex;
                 }
                 layer = layui.layer,
                 layer.open({
@@ -184,36 +195,56 @@
                         var  iframeWin = window[layero.find('iframe')[0]['name']];
                         var  orderItem = iframeWin.saveOrderItem();
                         if (orderItem == ""){
-                            return;
+                            return false;
+                        }
+
+                        if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
+
+                        }
+                        else {
+                            jq('#tableorder')[0].deleteRow(rowIndex);
                         }
                         addTableItem(orderItem,rowIndex);
-
-                        layer.closeAll();
+                        layer.close(index);
                     },
                     btn2: function () {
-                        layer.closeAll();
-                    }
+                        layer.close(index);
+                    },
+                    success:function (layero, index){
+                        if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
+                        }
+                        else {
+                            var rowData = getTableItemToDBObject(tableRowIndex);
+                            var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                            iframeWin.loadingData(rowData);
+                        }
+                    },
                 });
             }
-
+            //新增一条表数据   rowindex：插入位置
             function addTableItem(itemData,rowIndex) {
                 var jq = layui.jquery;
                 //+判断
                 var product_type_id = itemData.product_type_id;
                 var product_type_name = itemData.product_type_name;
+
                 var brand_id = itemData.brand_id;
                 var brand_name = itemData.brand_name;
                 var product_info_id = itemData.product_info_id;
                 var model = itemData.model;
-                var uod_unit = itemData.uod_unit;
+
                 var place_id = itemData.place_id;
                 var place_name = itemData.place_name;
+
+                var uod_id = itemData.uod_id;
+                var uod_unit = itemData.uod_unit;
                 var uod_count =itemData.uod_count;
                 var uod_delivery_date = itemData.uod_delivery_date;
                 var uod_requirement = itemData.uod_requirement
                 var uod_comment = itemData.uod_comment;
 
                 var new_tr = jq('#tableorder')[0].insertRow(rowIndex);//指定位置插入行
+                jq(new_tr).attr("uod_id",uod_id);
                 var col_0 = new_tr.insertCell(0);//添加列
                 col_0.innerHTML = "<td><a>"+ rowIndex+"</a></td>";
                 var col_1 = new_tr.insertCell(1);
@@ -222,9 +253,6 @@
                 col_2.innerHTML = "<td><a tag='"+ brand_id +"'>"+ brand_name +"</a></td>";
                 var col_3 = new_tr.insertCell(3);
                 col_3.innerHTML = "<td><a tag = '"+ place_id +"'>"+ place_name +"</a></td>";
-
-                //var col_3 = new_tr.insertCell(3);
-                //col_3.innerHTML = "<td><a>"+ model_text +"</a></td>";//-------产品名称-------
                 var col_4 = new_tr.insertCell(4);
                 col_4.innerHTML = "<td><a tag='" + product_info_id + "'>"+ model +"</a></td>";
                 var col_5 = new_tr.insertCell(5);
@@ -240,49 +268,56 @@
                 var col_10 = new_tr.insertCell(10);
                 col_10.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
             }
-
+            //获取整个表数据
             function getTableDataToDBObject(){
                 var jq = layui.jquery;
                 var mytable = document.getElementById('tableorder');
-                //var data = [];
                 var rows = mytable.rows.length;
                 var retArray = [];
                 for(var i = 1; i < rows; i++){
-                    var itemInfo = {};
-                    var rowdata = {};
-
-                    for(var j = 0,cells=mytable.rows[i].cells.length; j<cells; j++){
-                        var tag = jq(mytable.rows[i].cells[j].innerHTML).attr('tag');
-                        var text = jq(mytable.rows[i].cells[j].innerHTML).text();
-                        var mymap = {};
-                        mymap['tag'] = tag;
-                        mymap['text'] = text;
-                        rowdata[j] = mymap;
-                    }
-                    //DB product_type
-                    itemInfo.product_type_id = rowdata[1]['tag'];
-                    itemInfo.product_type_name = rowdata[1]['text'];
-                    //DB product_brand
-                    itemInfo.brand_id = rowdata[2]['tag'];
-                    itemInfo.brand_name = rowdata[2]['text'];
-                    //DB product_place
-                    itemInfo.place_id = rowdata[3]['tag'];
-                    itemInfo.place_name = rowdata[3]['text'];
-                    //DB product_info
-                    itemInfo.product_info_id = rowdata[4]['tag'];
-                    itemInfo.model = rowdata[4]['text'];
-                    //DB unc_ofg_detail
-                    itemInfo.uod_count = rowdata[5]['text'];
-                    itemInfo.uod_unit = rowdata[6]['text'];
-                    itemInfo.uod_requirement = rowdata[7]['text'];
-                    itemInfo.uod_delivery_date = rowdata[8]['text'];
-                    itemInfo.uod_comment = rowdata[9]['text'];
+                    var itemInfo = getTableItemToDBObject(i);
                     retArray[i - 1] = itemInfo;
-                    //data[i - 1] = rowdata;
                 }
                 return retArray;
             }
-
+            //获取指定表行数据
+            function getTableItemToDBObject(rowIndex){
+                var jq = layui.jquery;
+                var mytable = document.getElementById('tableorder');
+                var itemInfo = {};
+                var rowdata = {};
+                var rowObj = mytable.rows[rowIndex];
+                for(var j = 0,cells = rowObj.cells.length; j<cells; j++){
+                    var tag = jq(rowObj.cells[j].innerHTML).attr('tag');
+                    var text = jq(rowObj.cells[j].innerHTML).text();
+                    var mymap = {};
+                    mymap['tag'] = tag;
+                    mymap['text'] = text;
+                    rowdata[j] = mymap;
+                }
+                var uod_id = jq(rowObj).attr('uod_id');
+                //DB product_type
+                itemInfo.product_type_id = rowdata[1]['tag'];
+                itemInfo.product_type_name = rowdata[1]['text'];
+                //DB product_brand
+                itemInfo.brand_id = rowdata[2]['tag'];
+                itemInfo.brand_name = rowdata[2]['text'];
+                //DB product_place
+                itemInfo.place_id = rowdata[3]['tag'];
+                itemInfo.place_name = rowdata[3]['text'];
+                //DB product_info
+                itemInfo.product_info_id = rowdata[4]['tag'];
+                itemInfo.model = rowdata[4]['text'];
+                //DB unc_ofg_detail
+                itemInfo.uod_id = uod_id === undefined ? "": uod_id;
+                itemInfo.uod_count = rowdata[5]['text'];
+                itemInfo.uod_unit = rowdata[6]['text'];
+                itemInfo.uod_requirement = rowdata[7]['text'];
+                itemInfo.uod_delivery_date = rowdata[8]['text'];
+                itemInfo.uod_comment = rowdata[9]['text'];
+                return itemInfo;
+            }
+            //父级调用 获取参数
             function getData() {
                 var jq = layui.jquery;
                 var unc_ofg_info = new Object();
@@ -305,6 +340,7 @@
                 var retData = new Object();
                 retData.unc_ofg_info = unc_ofg_info;
                 retData.unc_ofg_items = tableItem;
+                retData.del_unc_ofg_detail_id_arr = delrowid;
                 if ((tableItem == null || tableItem.length == 0) && uoi_to == "" && uoi_manual_ofg_id == ""
                  && uoi_custom_name == "" && uoi_to_place == "" && uoi_project_name == "" && uoi_provider_name == ""){
                     return null;
