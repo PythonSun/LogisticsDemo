@@ -29,7 +29,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">状态</label>
                     <div class="layui-input-inline dark_blue">
-                        <select name="cs_info_state">
+                        <select name="cs_info_state" id = "cs_info_state" lay-filter="cs_info_state">
                             <option value="" disabled="" selected="">选择</option>
                             <option value="0">空</option>
                             <option value="1">处理中</option>
@@ -185,7 +185,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">保额</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="insure_amount" id="insure_amount" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="insure_amount" id="insure_amount" lay-verify="insure_amount" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <div class="layui-form-item Wheat" pane="">
@@ -382,22 +382,34 @@
                         <th class="dark_blue">操作</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td  class="Wheat">其它说明</td>
-                        <td colspan="15"></td>
-                    </tr>
-                    <tr>
-                        <td class="dark_blue">情况说明</td>
-                        <td colspan="15"></td>
-                    </tr>
-                </tbody>
+                <!--<tbody>-->
+                    <!--<tr>-->
+                        <!--<td  class="Wheat">其它说明</td>-->
+                        <!--<td colspan="15"></td>-->
+                    <!--</tr>-->
+                    <!--<tr>-->
+                        <!--<td class="dark_blue">情况说明</td>-->
+                        <!--<td colspan="15"></td>-->
+                    <!--</tr>-->
+                <!--</tbody>-->
             </table>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label Wheat">其它说明</label>
+                <div class="layui-input-block">
+                    <input type="text" name="order_goods_manager_explain" id="order_goods_manager_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label dark_blue">情况说明</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ogl_explain" id="ogl_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
+            </div>>
             <div class="layui-form-item">
                 <div class="layui-container">
                     <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save" id="save">保存</button>
-                    <button class="layui-btn" lay-submit="" lay-filter="deliver">转交</button>
-                    <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="cancel">取消</button>
+                    <button class="layui-btn" lay-submit="" lay-filter="deliver" id="deliver">转交</button>
+                    <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="cancel" id="cancel">取消</button>
                 </div>
             </div>
         </form>
@@ -405,6 +417,7 @@
         <script type="text/javascript" src="/static/layui/layui.js"></script>
         <script type="text/javascript">
             var delrowid = new Array();
+            var complet_date = "2000-1-1";
             var del_logistics_id_arr = new Array();
             layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
                 var form = layui.form,
@@ -533,23 +546,33 @@
                                 jq(this).prop('checked',true);
                             }
                         });
-                        jq('#paid_date').val( data['paid_date']);
+                        if(data['paid_date'] != '2000-1-1')
+                            jq('#paid_date').val( data['paid_date']);
                         jq('#customization_fee').val( data['customization_fee']);
                         jq('#paid_bank').val( data['paid_bank']);
                         jq('#payment_info_comment').val( data['payment_info_comment']);
 
                         //order_goods_manager
-                        if(data['order_goods'] != null)
+                        if(data['order_goods'] != null && data['order_goods'].length>0)
                         {
                             var order_goods = data['order_goods'];
                             for( var i = 0 ; i<order_goods.length; i++)
                             {
                                 updateRow(order_goods[i],true);
                             }
-                            jq('#tableorder')[0].ce
-                            jq('#tableorder')[0].insertRow(rows)
+                            jq('#order_goods_manager_explain').val( order_goods[0]['order_goods_manager_explain']);
+                            jq('#ogl_explain').val( order_goods[0]['ogl_explain']);
                         }
-
+                        if(data['logistic_info'] != null && data['logistic_info'].length>0)
+                        {
+                            var order_goods = data['logistic_info'];
+                            for( var i = 0 ; i<order_goods.length; i++)
+                            {
+                                updateRow(order_goods[i],true);
+                            }
+                            jq('#order_goods_manager_explain').val( order_goods[0]['order_goods_manager_explain']);
+                            jq('#ogl_explain').val( order_goods[0]['ogl_explain']);
+                        }
 
 
                         layui.form.render('select');
@@ -584,6 +607,15 @@
                     console.log();
                     document.getElementById('build_user_phone').value = phone;
                 });
+                //监听状态选择
+                form.on('select(cs_info_state)',function (data) {
+                    if(data.value == '2')
+                    {
+                        var curdate = new Date();
+                        complet_date = curdate.toLocaleDateString();
+                    }
+
+                });
                 jq('#btn_add_order_item').click(function () {
                     layer.open({
                         type:2,
@@ -599,7 +631,7 @@
                             if(orderItem.product_info_name == null){
                                 return null;
                             }
-                            console.log(orderItem);
+                           // console.log(orderItem);
                             //+判断
                             var row = new Object();
                             row.product_type_id = orderItem.product_type_id;
@@ -619,7 +651,7 @@
                             row.back_date = orderItem.back_date;
                             row.ogl_product_state = orderItem.ogl_product_state;
                             row.bar_code = orderItem.bar_code;
-                            row.order_goods_manager_explain = orderItem.order_goods_manager_explain;
+                            row.replace_reason = orderItem.replace_reason;
                             row.ogl_comment = orderItem.ogl_comment;
                            // console.log("length: "+ jq('#tableorder')[0].rows.length);
                             row.id = "";
@@ -637,7 +669,7 @@
                     var text = jq(this).parent().parent();
                     layer.open({
                         type:2,
-                        title:'新增清单',
+                        title:'修改清单',
                         area:['800px','90%'],
                         shade:0,
                         maxmin:false,
@@ -649,7 +681,7 @@
                             if(orderItem.product_info_name == null){
                                 return null;
                             }
-                            console.log(orderItem);
+                           // console.log(orderItem);
                             //+判断
                             var row = new Object();
                             row.product_type_id = orderItem.product_type_id;
@@ -669,7 +701,7 @@
                             row.back_date = orderItem.back_date;
                             row.ogl_product_state = orderItem.ogl_product_state;
                             row.bar_code = orderItem.bar_code;
-                            row.order_goods_manager_explain = orderItem.order_goods_manager_explain;
+                            row.replace_reason = orderItem.replace_reason;
                             row.ogl_comment = orderItem.ogl_comment;
                             // console.log("length: "+ jq('#tableorder')[0].rows.length);
                             row.id = jq(text[0].cells[0].innerHTML).attr("tag");
@@ -691,10 +723,10 @@
                             orderItem.model = jq(text[0].cells[5].innerHTML).text();
                             orderItem.order_goods_manager_count = jq(text[0].cells[7].innerHTML).text();
                             orderItem.unit = jq(text[0].cells[6].innerHTML).text();
-                            orderItem.specification = jq(text[0].cells[8].innerHTML).text();
+                            orderItem.specification = jq(text[0].cells[7].innerHTML).text();
                             orderItem.bar_code = jq(text[0].cells[8].innerHTML).text();
                             orderItem.back_date = jq(text[0].cells[9].innerHTML).text();
-                            orderItem.order_goods_manager_explain = jq(text[0].cells[10].innerHTML).text();
+                            orderItem.replace_reason = jq(text[0].cells[10].innerHTML).text();
                             orderItem.place_name = jq(text[0].cells[11].innerHTML).text();
                             orderItem.place_id = jq(text[0].cells[11].innerHTML).attr("tag");//
                             orderItem.ogl_product_state = jq(text[0].cells[12].innerHTML).text();
@@ -739,9 +771,9 @@
             });
 
             function updateRow(row ,isAdd) {
-                console.log(row);
+              //  console.log(row);
                 var jq = layui.jquery;
-                var rows = jq('#tableorder')[0].rows.length - 2;
+                var rows = jq('#tableorder')[0].rows.length;
                 if(isAdd == false)
                 {
                     rows = row.num;
@@ -767,9 +799,12 @@
                 var col_8 = new_tr.insertCell(8);
                 col_8.innerHTML = "<td><a>"+ row.bar_code +"</a></td>";
                 var col_9 = new_tr.insertCell(9);
-                col_9.innerHTML = "<td><a>"+ row.back_date +"</a></td>";
+                var date = '';
+                if(row.back_date != '' || row.back_date != null || row.back_date != '2000-1-1')
+                    date = row.back_date;
+                col_9.innerHTML = "<td><a>"+ date +"</a></td>";
                 var col_10 = new_tr.insertCell(10);
-                col_10.innerHTML = "<td><a>"+ row.order_goods_manager_explain +"</a></td>";
+                col_10.innerHTML = "<td><a>"+ row.replace_reason +"</a></td>";
                 var col_11 = new_tr.insertCell(11);
                 col_11.innerHTML = "<td><a tag = '"+ row.place_id +"'>"+ row.place_name +"</a></td>";
                 var col_12 = new_tr.insertCell(12);
@@ -786,7 +821,8 @@
             function saveOrDeliverToSql(uidata,state) {
                 jq = layui.jquery;
                 var  tabledata = getTableContent();
-                var exp = getTableExplain();
+                var exp = getOtherExplain();
+                var ogl_explain = getOglExplain();
                 var data = uidata.field;
                 var rows = tabledata.length;
                 console.log(data);
@@ -812,7 +848,7 @@
                 }*/
                 cs_info.cs_examine_ids = "";
                 cs_info.cs_info_state = -1;
-                cs_info.complete_date = "2000-1-1";        //新增 无完成日期
+                cs_info.complete_date = complet_date;        //新增 无完成日期
                 cs_info.product_number = rows;
                 console.log("以下确认单信息：");
                 console.log(cs_info);
@@ -833,14 +869,12 @@
                 delivery_info.delivery_info_goods_yard_phone = data['delivery_info_goods_yard_phone'];
                 delivery_info.delivery_info_receiver_address = data['delivery_info_receiver_address'];
                 delivery_info.is_insure = data['is_insure'];
-                delivery_info.insure_amout = data['insure_amout'];
+                delivery_info.insure_amount = data['insure_amount'];
                 if(data['is_insure'] == 1){
-                    if(data['insure_amout'] == ""){
+                    if(data['insure_amount'] == ""){
                         layer.msg('请选择填写保额！',{icon:2});
                         return false;
                     }
-                }else {
-                    delivery_info.insure_amout = -1;
                 }
                 delivery_info.is_sign = data['is_sign'];
                 delivery_info.has_contract = data['has_contract'];
@@ -889,7 +923,7 @@
                 var generalManagerExamine = {};
                 generalManagerExamine['submit_user_id'] = data['build_user_id'];
                 generalManagerExamine['cs_examine_date'] = '2000-1-1';
-                generalManagerExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00'
+                generalManagerExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00';
                 generalManagerExamine['cs_examine_comment'] = "";
                 generalManagerExamine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
                 generalManagerExamine['cs_examine_result'] = 2;
@@ -898,7 +932,7 @@
                 var financeExamine = {};
                 financeExamine['submit_user_id'] = data['build_user_id'];
                 financeExamine['cs_examine_date'] = '2000-1-1';
-                financeExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00'
+                financeExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00';
                 financeExamine['cs_examine_comment'] = "";
                 financeExamine['cs_examine_content'] = data['examinationapprovalcontentthird'];
                 financeExamine['cs_examine_result'] = 2;
@@ -906,6 +940,16 @@
                 cs_examine[2] = financeExamine;
                 console.log("以下订单审批信息：");
                 console.log(cs_examine);
+                //付款信息
+                var  payment_inf= {};
+                payment_inf['is_pad'] = data['is_pad'];
+                payment_inf['paid_date'] = data['paid_date'] == null ? "2000-1-1":data['paid_date'];
+                payment_inf['customization_fee'] =  data['customization_fee'];
+                payment_inf['paid_bank'] = data['paid_bank'];
+                payment_inf['payment_info_comment'] = data['payment_info_comment'];
+
+
+
                 //处理清单
                 var order_goods_manager= [];
                 for(var i = 0; i < rows; i++){
@@ -917,22 +961,29 @@
                     order_goods_manager_item['type'] = 1;                                             //1：更换 详细看数据库
                     order_goods_manager_item['comment'] = tabledata[i][14]['text'];
                     order_goods_manager_item['bar_code'] = tabledata[i][8]['text'];
-                    order_goods_manager_item['back_date'] = tabledata[i][9]['text'];
+                    order_goods_manager_item['back_date'] = tabledata[i][9]['text'] == '' ? '2000-1-1' : tabledata[i][9]['text'];
                     order_goods_manager_item['replace_reason'] = tabledata[i][10]['text'];
-                    order_goods_manager_item['order_goods_manager_explain'] = exp;
+                    order_goods_manager_item['order_goods_manager_explain'] = data['order_goods_manager_explain'];
 
                     order_goods_manager_item['purchase_date'] = '2000-1-1';
                     order_goods_manager_item['deal_date'] = '2000-1-1';
-                    order_goods_manager_item['fault_condition'] = null;
-                    order_goods_manager_item['unit_price'] = null;
+                    order_goods_manager_item['fault_condition'] = "";
+                    order_goods_manager_item['unit_price'] = -1;
+                    order_goods_manager_item['ogl_product_state'] = tabledata[i][12]['text'];
+                    order_goods_manager_item['ogl_unc_product_id'] =tabledata[i][13]['tag'];
+                    order_goods_manager_item['ogl_comment'] = tabledata[i][14]['text'];
+                    order_goods_manager_item['ogl_explain'] = data['order_goods_manager_explain'];
                     order_goods_manager[i] = order_goods_manager_item;
-                    console.log(order_goods_manager_item);
                 }
                 console.log("以下清单信息：");
                 console.log(order_goods_manager);
+
+                var logistic_info = getlogisticsInfo();
+
+
                 jq.ajax({
                     url: "{:url('admin/addreplaceconfirmorder/addconfirmorder')}",//php文件路径
-                    data: {cs_info:cs_info,custom_info:custom_info,delivery_info:delivery_info,return_info:return_info,cs_belong:cs_belong,order_goods_manager:order_goods_manager,cs_examine:cs_examine} ,
+                    data: {cs_info:cs_info,custom_info:custom_info,delivery_info:delivery_info,return_info:return_info,cs_belong:cs_belong,order_goods_manager:order_goods_manager,cs_examine:cs_examine,logistic_info:logistic_info} ,
                     type: 'POST',
                     dataType: 'json',
                     success: function(e) {
@@ -954,7 +1005,7 @@
                 var mytable = document.getElementById('tableorder');
                 var data = [];
                 var index = 0;
-                for(var i = 1,rows = mytable.rows.length - 2; i < rows; i++){
+                for(var i = 1,rows = mytable.rows.length; i < rows; i++){
                     var rowdata = {};
                     for(var j = 0,cells=mytable.rows[i].cells.length; j<cells; j++){
                         var tag = jq(mytable.rows[i].cells[j].innerHTML).attr('tag');
@@ -971,10 +1022,13 @@
                 return data;
             }
             //获取清单其它说明（经理部分）
-            function getTableExplain(){
-                var jq = layui.jquery;
-                var mytable = document.getElementById('tableorder');
-                var exp = mytable.rows[mytable.rows.length - 1].cells[1].innerHTML;
+            function getOtherExplain(){
+                var exp = document.getElementById('order_goods_manager_explain').text;
+                return exp;
+            }
+            //获取物流情况说明
+            function getOglExplain(){
+                var exp = document.getElementById('ogl_explain').text;
                 return exp;
             }
             //获取子部门并选中

@@ -204,7 +204,7 @@
 			$sqltwo .= "order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length} ;";
 			$tableobj = Db::query($sqltwo);
 			if(!empty($tableobj)){
-                for ($i = 0;$i < $count;$i++)
+                for ($i = 0;$i < count($tableobj);$i++)
                 {
                     if($type == 2||$type == 5) //借样和配件没有返货信息
                     {
@@ -217,8 +217,8 @@
                     }
                     $state = $tableobj[$i]["cs_info_state"];
                     $mode =  $tableobj[$i]["transfer_fee_mode"];
-                    if($state == 0)
-                        $tableobj[$i]["cs_info_state"] = "空";
+                    if($state == 0||$state == -1)
+                        $tableobj[$i]["cs_info_state"] = "";
                     elseif ($state == 1)
                     {
                         $tableobj[$i]["cs_info_state"] = "处理中";
@@ -375,7 +375,7 @@
             $sqltwo .= "order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length} ;";
             $tableobj = Db::query($sqltwo);
             if(!empty($tableobj)){
-                for ($i = 0;$i < $count;$i++)
+                for ($i = 0;$i < count($tableobj);$i++)
                 {
                     if($type == 2||$type == 5) //借样和配件没有返货信息
                     {
@@ -388,8 +388,8 @@
                     }
                     $state = $tableobj[$i]["cs_info_state"];
                     $mode =  $tableobj[$i]["transfer_fee_mode"];
-                    if($state == 0)
-                        $tableobj[$i]["cs_info_state"] = "空";
+                    if($state == 0||$state == -1)
+                        $tableobj[$i]["cs_info_state"] = "";
                     elseif ($state == 1)
                     {
                         $tableobj[$i]["cs_info_state"] = "处理中";
@@ -566,6 +566,25 @@
                         $tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
                     }
                     $tableobj[$i]["serial_number"] = $i+1;
+                    $state = $tableobj[$i]["cs_info_state"];
+                    if($state == 0||$state == -1)
+                        $tableobj[$i]["cs_info_state"] = "";
+                    elseif ($state == 1)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "处理中";
+                    }
+                    elseif ($state == 2)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "已完成";
+                    }
+                    elseif ($state == 3)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "取消";
+                    }
+                    elseif ($state == 4)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "备货";
+                    }
                 }
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
             }
@@ -848,8 +867,8 @@
             return $organizeID;
         }
 
-        /*新增订单    暂时使用（更改确认单）*/
-        public  static function addconfirmorder($info)
+        /*update    暂时使用（更改确认单）*/
+        public  static function updateconfirmorder($info)
         {
             $cs_id = $info['cs_id'];
             $custom_info_id = $info['custom_info_id'];
@@ -873,8 +892,8 @@
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
-        /*新增 custom_info */
-        public  static function addcustominfo($info)
+        /*update custom_info */
+        public  static function updatecustominfo($info)
         {
             $custom_info_id = $info['custom_info_id'];
             $company_name = $info['company_name'];
@@ -892,8 +911,8 @@
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
-        /*新增 delivery_info */
-        public static function adddeliveryinfo($info){
+        /*update delivery_info */
+        public static function updatedeliveryinfo($info){
             $delivery_info_id = $info['delivery_info_id'];
             $delivery_info_receiver_name = $info['delivery_info_receiver_name'];
             $delivery_info_receiver_phone = $info['delivery_info_receiver_phone'];
@@ -902,20 +921,20 @@
             $delivery_info_receiver_address = $info['delivery_info_receiver_address'];
             $is_insure = $info['is_insure'];
             $is_sign = $info['is_sign'];
-            $insure_amout = $info['insure_amout'];
+            $insure_amount = $info['insure_amount'];
             $has_contract = $info['has_contract'];
             $transfer_fee_mode = $info['transfer_fee_mode'];
             $order_delivery_require = $info['order_delivery_require'];
-            $sql_value ="'$delivery_info_id','{$delivery_info_receiver_name}','{$delivery_info_receiver_phone}','{$delivery_info_goods_yard_name}','{$delivery_info_goods_yard_phone}','{$delivery_info_receiver_address}','{$is_insure}','{$insure_amout}','{$is_sign}','{$has_contract}','{$transfer_fee_mode}','$order_delivery_require'";
-            $sql = "INSERT INTO dsp_logistic.delivery_info (delivery_info_id,delivery_info_receiver_name,delivery_info_receiver_phone,delivery_info_goods_yard_name,delivery_info_goods_yard_phone,delivery_info_receiver_address,is_insure,insure_amout,is_sign,has_contract,transfer_fee_mode,order_delivery_require) VALUES ({$sql_value})";
+            $sql_value ="'$delivery_info_id','{$delivery_info_receiver_name}','{$delivery_info_receiver_phone}','{$delivery_info_goods_yard_name}','{$delivery_info_goods_yard_phone}','{$delivery_info_receiver_address}','{$is_insure}','{$insure_amount}','{$is_sign}','{$has_contract}','{$transfer_fee_mode}','$order_delivery_require'";
+            $sql = "INSERT INTO dsp_logistic.delivery_info (delivery_info_id,delivery_info_receiver_name,delivery_info_receiver_phone,delivery_info_goods_yard_name,delivery_info_goods_yard_phone,delivery_info_receiver_address,is_insure,insure_amount,is_sign,has_contract,transfer_fee_mode,order_delivery_require) VALUES ({$sql_value})";
             $sql.= "ON DUPLICATE KEY UPDATE delivery_info_receiver_name = '$delivery_info_receiver_name',delivery_info_receiver_phone = '$delivery_info_receiver_phone',delivery_info_goods_yard_name = '{$delivery_info_goods_yard_name}',";
             $sql.= "delivery_info_goods_yard_phone= '{$delivery_info_goods_yard_phone}',delivery_info_receiver_address= '{$delivery_info_receiver_address}',is_insure = '{$is_insure}',";
-            $sql.= "is_sign= '{$is_sign}',insure_amout= '{$insure_amout}',has_contract= '{$has_contract}',transfer_fee_mode= '{$transfer_fee_mode}',order_delivery_require = '$order_delivery_require'";
+            $sql.= "is_sign= '{$is_sign}',insure_amount= '{$insure_amount}',has_contract= '{$has_contract}',transfer_fee_mode= '{$transfer_fee_mode}',order_delivery_require = '$order_delivery_require'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
-        /*新增 return_info */
-        public  static function addreturninfo($info)
+        /*update return_info */
+        public  static function updatereturninfo($info)
         {
             $return_info_id = $info['return_info_id'];
             $return_info_receiver_name = $info['return_info_receiver_name'];
@@ -932,8 +951,8 @@
             return $sqlret;
         }
 
-        /*新增 payment_info*/
-        public static function addpaymentinfo($info){
+        /*update payment_info*/
+        public static function updatepaymentinfo($info){
             $payment_info_id = $info['payment_info_id'];
             $is_pad = $info['is_pad'];
             $paid_date = $info['paid_date'];
@@ -949,7 +968,7 @@
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
-        /*cs_belong*/
+        /*update*/
         public static function updatecsbelong($info){
             $cs_belong_id = $info['cs_belong_id'];
             $cs_id = $info['cs_id'];
@@ -969,8 +988,8 @@
             $sqlret = Db::execute($sql);
             return 111;
         }
-        /*新增 确认单清单经理部分 order_goods_manager*/
-        public static function addordergoodsmanager($info){
+        /*update 确认单清单经理部分 order_goods_manager*/
+        public static function updateordergoodsmanager($info){
             //id
             $order_goods_manager_id = $info['order_goods_manager_id'];
             $cs_id = $info['cs_id'];
@@ -1000,8 +1019,8 @@
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
-        /*新增 确认单清单物流部分 order_goods_logistics*/
-        public static function addordergoodslogistics($info){
+        /*update 确认单清单物流部分 order_goods_logistics*/
+        public static function updateordergoodslogistics($info){
             $ogl_id = $info['ogl_id'];
             $order_goods_manager_id = $info['order_goods_manager_id'];
             $ogl_product_state = $info['ogl_product_state'];
@@ -1012,14 +1031,14 @@
             $ogl_explain = $info['ogl_explain'];
             $sql_value ="'$ogl_id','{$order_goods_manager_id}','{$ogl_product_state}','{$ogl_unc_product_id}','{$ogl_comment}','{$user_id}','{$ogl_time_stamp}','{$ogl_explain}'";
             $sql = "INSERT INTO dsp_logistic.order_goods_logistics (ogl_id,order_goods_manager_id,ogl_product_state,ogl_unc_product_id,ogl_comment,user_id,ogl_time_stamp,ogl_explain) VALUES ({$sql_value})";
-            $sql.= "ON DUPLICATE KEY UPDATE $order_goods_manager_id = '$order_goods_manager_id',ogl_product_state = '$ogl_product_state',ogl_unc_product_id = '$ogl_unc_product_id',";
+            $sql.= "ON DUPLICATE KEY UPDATE order_goods_manager_id = '$order_goods_manager_id',ogl_product_state = '$ogl_product_state',ogl_unc_product_id = '$ogl_unc_product_id',";
             $sql.= "ogl_comment= '$ogl_comment',user_id= '$user_id',ogl_time_stamp= '$ogl_time_stamp',";
             $sql.= "ogl_explain= '$ogl_explain'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
-        /*新增 确认单审批 cs_examine*/
-        public static function addcsexamine($info){
+        /*update 确认单审批 cs_examine*/
+        public static function updatecsexamine($info){
             $cs_examine_id = $info['cs_examine_id'];
             $cs_id = $info['cs_id'];
             $submit_user_id = $info['submit_user_id'];
@@ -1037,6 +1056,25 @@
             $sql.= "cs_examine_date= '$cs_examine_date',cs_examine_content= '$cs_examine_content',cs_examine_result= '$cs_examine_result',";
             $sql.= "cs_examine_time_stamp= '$cs_examine_time_stamp',cs_examine_comment= '$cs_examine_comment',cs_examine_name= '$cs_examine_name',";
             $sql.= "cs_examine_state= '$cs_examine_state'";
+            $sqlret = Db::execute($sql);
+            return $sqlret;
+        }
+
+        /*update 确认单审批 cs_examine*/
+        public static function updatelogisticinfo($info){
+            $logistics_id = $info['logistics_id'];
+            $cs_id = $info['cs_id'];
+            $goods_yard_name = $info['goods_yard_name'];
+            $transfer_order_num = $info['transfer_order_num'];
+            $delivery_date = $info['delivery_date'];
+            $count = $info['count'];
+            $user_id = $info['user_id'];
+            $time_stamp = $info['time_stamp'];
+            $sql_value ="'$logistics_id','$cs_id','$goods_yard_name','$transfer_order_num','$delivery_date','$count','$user_id','$time_stamp'";
+            $sql = "INSERT INTO dsp_logistic.logistics_info (logistics_id,cs_id,goods_yard_name,transfer_order_num,delivery_date,count,user_id,time_stamp) VALUES ({$sql_value})";
+            $sql.= "ON DUPLICATE KEY UPDATE cs_id = '$cs_id',goods_yard_name = '$goods_yard_name',transfer_order_num = '$transfer_order_num',";
+            $sql.= "delivery_date= '$delivery_date',count= '$count',user_id= '$user_id',";
+            $sql.= "time_stamp= '$time_stamp'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
@@ -1684,9 +1722,9 @@
 
             $logistric_info = \app\index\model\Admin::getclassinfobyproperty('logistics_info','cs_id',$cs_id);
             if(empty($logistric_info))
-                $allcsinfo['logistric_info'] = null;
+                $allcsinfo['logistic_info'] = null;
             else
-                $allcsinfo['logistric_info'] = $logistric_info;
+                $allcsinfo['logistic_info'] = $logistric_info;
             $allcsinfo['cs_examine_info'] = $cs_examine_info;
             $allcsinfo['order_goods'] =\app\index\model\Admin::getordergoodsbyid($cs_id);
              return $allcsinfo;
