@@ -55,7 +55,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="goodsyard" id="goodsyard" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="goodsyard" id="goodsyard" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">物流单号</label>
@@ -65,7 +65,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">件数</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="packagesnumber" id="packagesnumber" id lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="packagesnumber" id="packagesnumber" id lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -82,7 +82,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat label_change">区域经理电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="areamanagertel" id="areamanagertel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="areamanagertel" id="areamanagertel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <h3>客户信息</h3>
@@ -90,39 +90,39 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">公司名称</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="companyname" id="companyname" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="companyname" id="companyname" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat label_change">公司电话/传真</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="companytel" id="companytel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="companytel" id="companytel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">公司地址</label>
                 <div class="layui-input-block">
-                    <input type="text" name="companyaddress" id="companyaddress" autocomplete="on" placeholder="" class="layui-input  Wheat"> </div>
+                    <input type="text" name="companyaddress" id="companyaddress" autocomplete="on" placeholder="" class="layui-input  Wheat" oninput="detectinputtext(this);"> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">法人代表</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="legalrepresentative" id="legalrepresentative" lay-verify="" autocomplete="on" placeholder="" class="layui-input  Wheat"> </div>
+                        <input type="text" name="legalrepresentative" id="legalrepresentative" lay-verify="" autocomplete="on" placeholder="" class="layui-input  Wheat" oninput="detectinputtext(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">法人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="legalpersontel" id="legalpersontel" lay-verify="" autocomplete="on" placeholder="" class="layui-input  Wheat"> </div>
+                        <input type="number" name="legalpersontel" id="legalpersontel" lay-verify="" autocomplete="on" placeholder="" class="layui-input  Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">公司联系人</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="companycontact" id="companycontact" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="companycontact" id="companycontact" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">联系人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="contacttel" id="contacttel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="contacttel" id="contacttel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <h3>发货信息</h3>
@@ -130,28 +130,28 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人姓名</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="consigneenamefirst" id="consigneenamefirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="consigneenamefirst" id="consigneenamefirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="consigneetelfirst" id="consigneetelfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="consigneetelfirst" id="consigneetelfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场名称</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="goodsyardnamefirst" id="goodsyardnamefirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="goodsyardnamefirst" id="goodsyardnamefirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="goodsyardtelfirst" id="goodsyardtelfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="goodsyardtelfirst" id="goodsyardtelfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">收货地址</label>
                 <div class="layui-input-block">
-                    <input type="text" name="shippingaddressfirst" id="shippingaddressfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                    <input type="text" name="shippingaddressfirst" id="shippingaddressfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
             </div>
             <div class="layui-form-item Wheat" pane="">
                 <label class="layui-form-label Wheat">是否买保险</label>
@@ -162,7 +162,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">保额</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="coverage" id="coverage" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                    <input type="text" name="coverage" id="coverage" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputfloat(this);"> </div>
             </div>
             <div class="layui-form-item Wheat" pane="">
                 <label class="layui-form-label Wheat">客户性质</label>
@@ -193,31 +193,31 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat label_change">订单发货要求</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="ordershipmentsrequest" id="ordershipmentsrequest" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat input_change"> </div>
+                    <input type="text" name="ordershipmentsrequest" id="ordershipmentsrequest" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat input_change" oninput="detectinputtext(this);"> </div>
             </div>
             <h3>返货信息</h3>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人姓名</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="consigneenamesecond" id="consigneenamesecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="consigneenamesecond" id="consigneenamesecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="consigneetelsecond" id="consigneetelsecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="consigneetelsecond" id="consigneetelsecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场名称</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="goodsyardnamesecond" id="goodsyardnamesecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="goodsyardnamesecond" id="goodsyardnamesecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="goodsyardtelsecond" id="goodsyardtelsecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="goodsyardtelsecond" id="goodsyardtelsecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">返货单号</label>
@@ -228,13 +228,13 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">收货地址</label>
                 <div class="layui-input-block">
-                    <input type="text" name="shippingaddressecond" id="shippingaddressecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                    <input type="text" name="shippingaddressecond" id="shippingaddressecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
             </div>
             <h3>部门总监审批</h3>
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">审批内容</label>
                 <div class="layui-input-block">
-                    <input type="text" name="examinationapprovalcontentfirst" id="examinationapprovalcontentfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                    <input type="text" name="examinationapprovalcontentfirst" id="examinationapprovalcontentfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
             </div>
             <div class="layui-form-item light_green" pane="">
                 <label class="layui-form-label light_green">审批意见</label>
@@ -251,14 +251,14 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_green">备注</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="remarkfirst" id="remarkfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green"> </div>
+                        <input type="text" name="remarkfirst" id="remarkfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green" oninput="detectinputtext(this);"> </div>
                 </div>
             </div>
             <h3>执行总经理审批</h3>
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">审批内容</label>
                 <div class="layui-input-block">
-                    <input type="text" name="examinationapprovalcontentsecond" id="examinationapprovalcontentsecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                    <input type="text" name="examinationapprovalcontentsecond" id="examinationapprovalcontentsecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
             </div>
             <div class="layui-form-item light_green" pane="">
                 <label class="layui-form-label light_green">审批意见</label>
@@ -275,14 +275,14 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_green">备注</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="remarksecond" id="remarksecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green"> </div>
+                        <input type="text" name="remarksecond" id="remarksecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green" oninput="detectinputtext(this);"> </div>
                 </div>
             </div>
             <h3>财务审批</h3>
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">审批内容</label>
                 <div class="layui-input-block">
-                    <input type="text" name="examinationapprovalcontentthird" id="examinationapprovalcontentthird" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                    <input type="text" name="examinationapprovalcontentthird" id="examinationapprovalcontentthird" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
             </div>
             <div class="layui-form-item light_green" pane="">
                 <label class="layui-form-label light_green">审批意见</label>
@@ -299,7 +299,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_green">备注</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="remarkthird" id="remarkthird" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green"> </div>
+                        <input type="text" name="remarkthird" id="remarkthird" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green" oninput="detectinputtext(this);"> </div>
                 </div>
             </div>
             <h3>款项情况</h3>
@@ -318,18 +318,18 @@
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">订制费用</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="custommoney" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
+                        <input type="text" name="custommoney" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue" oninput="detectinputfloat(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">运费</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="transportationexpense" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
+                        <input type="text" name="transportationexpense" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue" oninput="detectinputfloat(this);"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label dark_blue">备注</label>
                 <div class="layui-input-block">
-                    <input type="text" name="remarkforth" id="remarkforth" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue"> </div>
+                    <input type="text" name="remarkforth" id="remarkforth" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue" oninput="detectinputtext(this);"> </div>
             </div>
             <h3>订购清单</h3>
             <table class="layui-table">
@@ -469,6 +469,7 @@
             </div>
         </form>
         <script type="text/javascript" src="/static/layui/layui.js"></script>
+        <script type="text/javascript" src="/static/js/commondetect.js"></script>
         <script type="text/javascript">
             layui.use(['form', 'layedit', 'laydate'], function () {
                 var form = layui.form,
