@@ -37,7 +37,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">状态</label>
                     <div class="layui-input-inline dark_blue">
-                        <select name="order_goods_cs_info">
+                        <select name="order_goods_cs_info" id="order_goods_cs_info">
                             <option value="" disabled="" selected="">选择</option>
                             <option value="0">空</option>
                             <option value="1">处理中</option>
@@ -306,7 +306,7 @@
                 $(document).ready(function() {
                     //判断此页面是新增还是编辑
                     //如果新增
-                    addLogisticsItem(null);                     //物流信息
+                   // addLogisticsItem(null);                     //物流信息
                     //否则 addLogisticsItem(data);
                     //uncofginfo =                              //非常规订单数据 详细请搜索
 
@@ -757,15 +757,15 @@
                 var product_info_name = itemData.product_info_name;
                 var product_info_id = itemData.product_info_id;
                 var model = itemData.model;
-                var unit = itemData.unit;
+                var ogcugi_unit = itemData.ogcugi_unit;
                 var place = itemData.place_id;
                 var place_name = itemData.place_name;
-                var count =itemData.count;
-                var product_state_text = itemData.product_state_text;
-                var product_state_id = itemData.product_state_id;
+                var ogcugi_count =itemData.ogcugi_count;
+                var ogcugi_product_state = itemData.ogcugi_product_state;
+                var ogcugi_product_state_text = itemData.ogcugi_product_state_text;
                 var ogcugi_id = itemData.ogcugi_id;
                 var cs_id = itemData.cs_id;
-                var comment = itemData.comment;
+                var ogcugi_comment = itemData.ogcugi_comment;
                 //var rows = jq('#tableorder')[0].rows.length;
                 var new_tr = jq('#tableorder')[0].insertRow(rowIndex);//指定位置插入行
                 jq(new_tr).attr("ogcugi_id",ogcugi_id);
@@ -781,15 +781,15 @@
                 var col_4 = new_tr.insertCell(4);
                 col_4.innerHTML = "<td><a tag='" + product_info_id + "'>"+ model +"</a></td>";
                 var col_5 = new_tr.insertCell(5);
-                col_5.innerHTML = "<td><a>"+ unit +"</a></td>";
+                col_5.innerHTML = "<td><a>"+ ogcugi_unit +"</a></td>";
                 var col_6 = new_tr.insertCell(6);
-                col_6.innerHTML = "<td><a>"+ count +"</a></td>";
+                col_6.innerHTML = "<td><a>"+ ogcugi_count +"</a></td>";
                 var col_7 = new_tr.insertCell(7);
                 col_7.innerHTML = "<td><a tag = '"+ place +"'>"+ place_name +"</a></td>";
                 var col_8 = new_tr.insertCell(8);
-                col_8.innerHTML = "<td><a tag='" + product_state_id + "'>"+ product_state_text +"</a></td>";
+                col_8.innerHTML = "<td><a tag='" + ogcugi_product_state + "'>"+ ogcugi_product_state_text +"</a></td>";
                 var col_9 = new_tr.insertCell(9);
-                col_9.innerHTML = "<td><a>"+ comment +"</a></td>";
+                col_9.innerHTML = "<td><a>"+ ogcugi_comment +"</a></td>";
                 var col_10 = new_tr.insertCell(10);
                 col_10.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
             }
@@ -847,64 +847,120 @@
                 form.render('checkbox');
             }
             //将数据显示
-            function setDBDateToHtml(data,order_goods_cs_info,fee_info,cs_belong,order_goods_info) {  //缺文件
-                console.log(data);
-
-
+            function setDBDateToHtml(data) {  //缺文件
+                var cs_id = data.cs_id;
+                var cs_belong_id = data.cs_belong_id;
+                var fee_info_id = data.fee_info_id;
+                var ofg_info_id = data.ofg_info_id;
+                var unc_ofg_info_id = data.unc_ofg_info_id;
 
 
                 var jq = layui.jquery;
                 jq('#save').addClass('hide');
-
                 jq.ajax({
                     url:"{:url('admin/addgoodsconfirmorder/getorderinfo')}",
                     data:{
-
+                        cs_id:cs_id,
+                        cs_belong_id:cs_belong_id,
+                        fee_info_id:fee_info_id,
+                        ofg_info_id:ofg_info_id,
+                        unc_ofg_info_id:unc_ofg_info_id
                     },
                     type:'POST',
-                    success:function (e) {
-                        console.log(e);
+                    success:function (dbData) {
+                        console.log(dbData);
+                        if (!dbData){
+                            return;
+                        }
+                        var order_goods_cs_info = dbData.cs_info;
+                        var fee_info = dbData.fee_info;
+                        var cs_belong = dbData.cs_info;
+                        var ofg_info = dbData.ofg_info;
+                        var unc_ofg_detail = dbData.unc_ofg_detail;
+                        var unc_ofg_info = dbData.unc_ofg_info;
+                        var ogcugi = dbData.ogcugi;
+
+
+                        //order_goods_cs_info
+                        //order_goods_info
+                        //fee_info
+                        jq('#cs_id').val(order_goods_cs_info.cs_id);
+                        jq('#order_date').val(order_goods_cs_info.order_date);
+                        jq('#product_number').val(order_goods_cs_info.product_number);
+                        jq('#delivered_customization').val(order_goods_cs_info.delivered_customization);
+                        jq('#delivered_album').val(order_goods_cs_info.delivered_album);
+                        jq('#delivered_gift').val(order_goods_cs_info.delivered_gift);
+                        jq('#delivered_aux').val(order_goods_cs_info.delivered_aux);
+                        jq('#delivered_metro').val(order_goods_cs_info.delivered_metro);
+                        jq('#delivered_record').val(order_goods_cs_info.delivered_record);
+                        jq('#delivered_conference').val(order_goods_cs_info.delivered_conference);
+                        jq('#delivered_pa').val(order_goods_cs_info.delivered_pa);
+                        //jq('#consult_sheet_file').val(order_goods_cs_info.consult_sheet_file);
+                        //jq('#unc_ofg_info_id').val(order_goods_cs_info.unc_ofg_info_id);
+                        jq('#delivery_date_reply').val(order_goods_cs_info.delivery_date_reply);
+                        document.getElementById('order_goods_cs_info').value = order_goods_cs_info.order_goods_cs_info;
+
+                        //jq('#fee_info_id').val(fee_info.fee_info_id);
+                        jq('#customization_fee').val(fee_info.customization_fee);
+                        document.getElementById('transfer_fee').value = fee_info.transfer_fee;
+                        jq('#comment').val(fee_info.comment);
+                        //jq('#delivery_date_reply').val(fee_info.delivery_date_reply);
+                        //
+                        document.getElementById('company_id').value = cs_belong.build_organize_id;
+                        document.getElementById('department_id').value = cs_belong.build_department_id;
+                        document.getElementById('user_id').value = cs_belong.build_user_id;
+
+                        //jq('#ofg_info_id').val(ofg_info.ofg_info_id);
+                        jq('#receiver_name').val(ofg_info.receiver_name);
+                        jq('#receiver_phone').val(ofg_info.receiver_phone);
+                        jq('#receiver_address').val(ofg_info.receiver_address);
+                        document.getElementById('user_id').value = ofg_info.user_id;
+
+                        if (unc_ofg_info != ""){
+                            uncofginfo = new Object();
+                            uncofginfo.unc_ofg_info = unc_ofg_info;
+                            uncofginfo.unc_ofg_items = unc_ofg_detail;
+                            uncofginfo.del_unc_ofg_detail_id_arr = null;
+                        }
+
+                        // addLogisticsItem(null);                     //物流信息
+                        //否则 addLogisticsItem(data);
+                        //uncofginfo =                              //非常规订单数据 详细请搜索
+
+                        if (ogcugi != ""){
+                            var length = ogcugi.length;
+                            for (var i = 0; i < length; i++){
+                                switch (ogcugi[i]['ogcugi_product_state']){
+                                    case 0:
+                                        ogcugi[i]['ogcugi_product_state_text'] = '未发货';
+                                        break;
+                                    case 1:
+                                        ogcugi[i]['ogcugi_product_state_text'] = '处理中';
+                                        break;
+                                    case 2:
+                                        ogcugi[i]['ogcugi_product_state_text'] = '已完成';
+                                        break;
+                                    case 3:
+                                        ogcugi[i]['ogcugi_product_state_text'] = '取消';
+                                        break;
+                                    case 4:
+                                        ogcugi[i]['ogcugi_product_state_text'] = '备货';
+                                        break;
+                                    case 5:
+                                        ogcugi[i]['ogcugi_product_state_text'] = '缺货';
+                                        break;
+                                    default:
+                                        ogcugi[i]['ogcugi_product_state_text'] = '';
+                                        break;
+                                }
+                                addTableItem(ogcugi[i],i + 1);
+                            }
+                        }
+
+                        layui.form.render('select');
                     }
-                })
-
+                });
                 return;
-
-                //order_goods_cs_info
-                //order_goods_info
-                //fee_info
-                jq('#cs_id').val(order_goods_cs_info.cs_id);
-                jq('#order_date').val(order_goods_cs_info.order_date);
-                jq('#product_number').val(order_goods_cs_info.product_number);
-                jq('#delivered_customization').val(order_goods_cs_info.delivered_customization);
-                jq('#delivered_album').val(order_goods_cs_info.delivered_album);
-                jq('#delivered_gift').val(order_goods_cs_info.delivered_gift);
-                jq('#delivered_aux').val(order_goods_cs_info.delivered_aux);
-                jq('#delivered_metro').val(order_goods_cs_info.delivered_metro);
-                jq('#delivered_record').val(order_goods_cs_info.delivered_record);
-                jq('#delivered_conference').val(order_goods_cs_info.delivered_conference);
-                jq('#delivered_pa').val(order_goods_cs_info.delivered_pa);
-                //jq('#consult_sheet_file').val(order_goods_cs_info.consult_sheet_file);
-                //jq('#unc_ofg_info_id').val(order_goods_cs_info.unc_ofg_info_id);
-                jq('#delivery_date_reply').val(order_goods_cs_info.delivery_date_reply);
-                document.getElementById('order_goods_cs_info').value = order_goods_cs_info.order_goods_cs_info;
-
-                //jq('#fee_info_id').val(fee_info.fee_info_id);
-                jq('#customization_fee').val(fee_info.customization_fee);
-                document.getElementById('transfer_fee').value = fee_info.transfer_fee;
-                jq('#comment').val(fee_info.comment);
-                jq('#delivery_date_reply').val(fee_info.delivery_date_reply);
-                //
-                document.getElementById('company_id').value = cs_belong.build_organize_id;
-                document.getElementById('department_id').value = cs_belong.build_department_id;
-                document.getElementById('user_id').value = cs_belong.build_user_id;
-
-                //jq('#ofg_info_id').val(order_goods_info.ofg_info_id);
-                jq('#receiver_name').val(order_goods_info.receiver_name);
-                jq('#receiver_phone').val(order_goods_info.receiver_phone);
-                jq('#receiver_address').val(order_goods_info.receiver_address);
-                document.getElementById('user_id').value = order_goods_info.user_id;
-
-                layui.form.render('select');
             }
         </script>
     </body>

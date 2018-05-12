@@ -2055,5 +2055,39 @@
                 return null;
             return $tableobj;
         }
+
+        //根据cs_id 获取订货确认单清单
+        public static function getorderogcugibyid($cs_id)
+        {
+            $sqlone ="select dsp_logistic.order_goods_cs_undeliver_goods_info.*,dsp_logistic.product_info.*,";
+            $sqlone .= "dsp_logistic.product_brand.*,dsp_logistic.product_place.* ,dsp_logistic.product_type.* from dsp_logistic.order_goods_cs_undeliver_goods_info ";
+            //$sqlone .= "left join dsp_logistic.order_goods_logistics on dsp_logistic.order_goods_logistics.order_goods_manager_id = dsp_logistic.order_goods_cs_undeliver_goods_info.order_goods_manager_id ";
+            $sqlone .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.order_goods_cs_undeliver_goods_info.product_info_id ";
+            $sqlone .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
+            $sqlone .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
+            $sqlone .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
+            $sqlone .= "where dsp_logistic.order_goods_cs_undeliver_goods_info.cs_id = '$cs_id' ";
+            $tableobj = Db::query($sqlone);
+            if(empty($tableobj))
+                return null;
+            return $tableobj;
+        }
+
+        //根据cs_id 获取非常规订单清单
+        public static function getuncofgdetailbyid($unc_ofg_info_id)
+        {
+            $sqlone ="select dsp_logistic.unc_ofg_detail.*,dsp_logistic.product_info.*,";
+            $sqlone .= "dsp_logistic.product_brand.*,dsp_logistic.product_place.* ,dsp_logistic.product_type.* from dsp_logistic.unc_ofg_detail ";
+            //$sqlone .= "left join dsp_logistic.order_goods_logistics on dsp_logistic.order_goods_logistics.order_goods_manager_id = dsp_logistic.order_goods_cs_undeliver_goods_info.order_goods_manager_id ";
+            $sqlone .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.unc_ofg_detail.product_info_id ";
+            $sqlone .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
+            $sqlone .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
+            $sqlone .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
+            $sqlone .= "where dsp_logistic.unc_ofg_detail.unc_ofg_info_id = '$unc_ofg_info_id' ";
+            $tableobj = Db::query($sqlone);
+            if(empty($tableobj))
+                return null;
+            return $tableobj;
+        }
     }
 ?>
