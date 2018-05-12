@@ -237,6 +237,11 @@ class Addgoodsconfirmorder extends Controller
         if (!empty($ogcugi)){
             $ret_info['ogcugi'] = $ogcugi;
         }
+        $ret_info['logistic_info'] = "";
+        $logistric_info = \app\index\model\Admin::getclassinfobyproperty('logistics_info','cs_id',$cs_id);
+        if(!empty($logistric_info)){
+            $ret_info['logistic_info'] = $logistric_info;
+        }
         return $ret_info;
     }
 }
