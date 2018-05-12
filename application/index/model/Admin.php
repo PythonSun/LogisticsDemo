@@ -408,12 +408,8 @@
 			$sqltwo .= "order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length} ;";
 			$tableobj = Db::query($sqltwo);
 			if(!empty($tableobj)){
-<<<<<<< HEAD
-                for ($i = 0;$i < count($tableobj);$i++)
-=======
 
-                for ($i = 0;$i < $count;$i++)
->>>>>>> 8becb13f05cba629d7897cf3f8132be1ccfee830
+                for ($i = 0;$i < count($tableobj);$i++)
                 {
                     if($type == 2||$type == 5) //借样和配件没有返货信息
                     {
