@@ -19,7 +19,7 @@ class Addgoodsconfirmorder extends Controller
         if (!empty($place)){
             $this->assign('placelist',$place);
         }
-        $date = date('Ymd');
+        $date = date('Y-m-d');
         $this->assign("date", $date);
         $companytable = \app\index\model\Admin::querydepartmentinfo(0);
         if (!empty($companytable))
