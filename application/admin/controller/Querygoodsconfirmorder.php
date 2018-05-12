@@ -66,23 +66,6 @@ class Querygoodsconfirmorder extends Controller
         }else{
             $tablelist = \app\index\model\Admin::querygoodsorderinfo($organizename,$departmentname,$areamanager,$type,$page,$limit);
         }
-
-
-
-
-
-
-
-    	/*$page = $_GET['page'];
-    	$limit = $_GET['limit'];
-
-    	if(isset($_GET['queryInfo'])){
-    		$queryInfo = $_GET['queryInfo'];
-    		$tablelist = \app\index\model\Admin::querygoodsorderinfo($page,$limit,$queryInfo);
-    	}else{
-    		$tablelist = \app\index\model\Admin::querygoodsorderinfo($page,$limit);
-    	}*/
-        
     	return $tablelist;
     }
 }

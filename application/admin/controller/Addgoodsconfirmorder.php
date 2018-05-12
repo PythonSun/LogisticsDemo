@@ -188,6 +188,55 @@ class Addgoodsconfirmorder extends Controller
     }
 
     public function getorderinfo(){
+        $cs_id = $_POST['cs_id'];
+        $cs_belong_id = $_POST['cs_belong_id'];
+        $fee_info_id = $_POST['fee_info_id'];
+        $ofg_info_id = $_POST['ofg_info_id'];
+        $unc_ofg_info_id = $_POST['unc_ofg_info_id'];
 
+        $ret_info = array();
+        $cs_belong = \app\index\model\Admin::getclassinfobyproperty('cs_belong','cs_belong_id',$cs_belong_id);
+        $ret_info['cs_belong'] = "";
+        if(!empty($cs_belong)){
+            $ret_info['cs_belong'] = $cs_belong;
+        }
+        $cs_info = \app\index\model\Admin::getclassinfobyproperty('order_goods_cs_info','cs_id',$cs_id);
+        if (empty($cs_info)){
+            return null;
+        }
+        $ret_info['cs_info'] = $cs_info[0];
+        $ret_info['ofg_info'] = "";
+        if ($ofg_info_id >= 1){
+            $ofg_info = \app\index\model\Admin::getclassinfobyproperty('ofg_info','ofg_info_id',$ofg_info_id);
+            if (!empty($ofg_info)){
+                $ret_info['ofg_info'] = $ofg_info[0];
+            }
+        }
+        $ret_info['fee_info'] = "";
+        if ($fee_info_id >= 1){
+            $fee_info = \app\index\model\Admin::getclassinfobyproperty('fee_info','fee_info_id',$fee_info_id);
+            if (!empty($fee_info)){
+                $ret_info['fee_info'] = $fee_info[0];
+            }
+        }
+        $ret_info['unc_ofg_info'] = "";
+        $ret_info['unc_ofg_detail'] = "";
+        if ($unc_ofg_info_id >= 1){
+            $unc_ofg_info = \app\index\model\Admin::getclassinfobyproperty('unc_ofg_info','uoi_id',$unc_ofg_info_id);
+            if (!empty($fee_info)){
+                $ret_info['unc_ofg_info'] = $unc_ofg_info[0];
+                $unc_ofg_detail = \app\index\model\Admin::getuncofgdetailbyid($unc_ofg_info_id);
+                if (!empty($unc_ofg_detail)){
+                    $ret_info['unc_ofg_detail'] = $unc_ofg_detail;
+                }
+            }
+        }
+
+        $ret_info['ogcugi'] = "";
+        $ogcugi = \app\index\model\Admin::getorderogcugibyid($cs_id);
+        if (!empty($ogcugi)){
+            $ret_info['ogcugi'] = $ogcugi;
+        }
+        return $ret_info;
     }
 }

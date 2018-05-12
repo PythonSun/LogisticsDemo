@@ -115,7 +115,7 @@
                 var jq = layui.jquery;
                 var unc_ofg_info = data.unc_ofg_info;
                 var tableData = data.unc_ofg_items;
-                if (tableData != null){
+                if (tableData != null && tableData != ""){
                     var length = tableData.length;
                     for (var i = 0; i < length; i++){
                         addTableItem(tableData[i],i + 1);

@@ -56,7 +56,7 @@
                             <option value="2">已完成</option>
                             <option value="3">取消</option>
                             <option value="4">备货</option>
-                            <option value="4">缺货</option>
+                            <option value="5">缺货</option>
                         </select>
                     </div>
                 </div>
@@ -117,8 +117,8 @@
                 layer.msg('请选择型号！', { icon: 2 });
                 return null;
             }
-            var count = jq('#ogcugi_count').val();
-            var isright = testRgexp(/^\d+$/, count);
+            var ogcugi_count = jq('#ogcugi_count').val();
+            var isright = testRgexp(/^\d+$/, ogcugi_count);
             if(!isright) {
                 layer.msg('数量必须未正整数！', { icon: 2 });
                 return null;
@@ -128,8 +128,8 @@
                 layer.msg('请选择生产地！', { icon: 2 });
                 return null;
             }
-            var product_state_id = jq("#ogcugi_product_state").find("option:selected").val();
-            if(product_state_id == "") {
+            var ogcugi_product_state = jq("#ogcugi_product_state").find("option:selected").val();
+            if(ogcugi_product_state == "") {
                 layer.msg('请选择状态！', { icon: 2 });
                 return null;
             }
@@ -145,11 +145,11 @@
             var obj2 = document.getElementById("place_id");
             //orderItem.place_name = obj2.options[obj2.selectedIndex].text;
             //orderItem.place = place_id
-            orderItem.count = count;
-            orderItem.unit = jq('#ogcugi_unit').val();
-            orderItem.product_state_text = jq("#ogcugi_product_state").find("option:selected").text();
-            orderItem.product_state_id = product_state_id;
-            orderItem.comment = jq('#ogcugi_comment').val();
+            orderItem.ogcugi_count = ogcugi_count;
+            orderItem.ogcugi_unit = jq('#ogcugi_unit').val();
+            orderItem.ogcugi_product_state = jq("#ogcugi_product_state").find("option:selected").text();
+            orderItem.ogcugi_product_state_text = jq("#ogcugi_product_state").find("option:selected").val();
+            orderItem.ogcugi_comment = jq('#ogcugi_comment').val();
             orderItem.ogcugi_id = ogcugi_id;
             orderItem.cs_id = cs_id;
             //+判断 型号是否存在，不存在禁止录入
