@@ -50,7 +50,30 @@ class Querygoodsconfirmorder extends Controller
     }
 
     public function getexamineorder(){
-    	$page = $_GET['page'];
+
+        $queryuserinfo = session("user_querypower");
+        $page = $_GET['page'];
+        $limit = $_GET['limit'];
+        $type = 0x01;
+        $organizename = $queryuserinfo["organizename"];
+        $departmentname = $queryuserinfo["departmentname"];
+        $areamanager = $queryuserinfo["areamanager"];
+        if(isset($_GET['queryInfo'])){
+            $queryInfo = $_GET['queryInfo'];
+            $queryInfo["organizename"] = $queryInfo["departname"];
+            $queryInfo["departmentname"] = $queryInfo["departname"];
+            $tablelist = \app\index\model\Admin::querygoodsorderinfo($organizename,$departmentname,$areamanager,$type,$page,$limit,$queryInfo);
+        }else{
+            $tablelist = \app\index\model\Admin::querygoodsorderinfo($organizename,$departmentname,$areamanager,$type,$page,$limit);
+        }
+
+
+
+
+
+
+
+    	/*$page = $_GET['page'];
     	$limit = $_GET['limit'];
 
     	if(isset($_GET['queryInfo'])){
@@ -58,7 +81,7 @@ class Querygoodsconfirmorder extends Controller
     		$tablelist = \app\index\model\Admin::querygoodsorderinfo($page,$limit,$queryInfo);
     	}else{
     		$tablelist = \app\index\model\Admin::querygoodsorderinfo($page,$limit);
-    	}
+    	}*/
         
     	return $tablelist;
     }
