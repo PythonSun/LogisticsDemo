@@ -51,7 +51,8 @@ class Addreplaceconfirmorder extends Controller
         $return_info = $_POST['return_info'];
         $cs_belong = $_POST['cs_belong'];
         $cs_examine = $_POST['cs_examine'];
-        $order_goods_manager = $_POST['order_goods_manager'];
+
+        $logistic_info = $_POST['logistic_info'];
 
         $cs_info_id = \app\index\model\Admin::getcsinfomaxid('cs_belong','cs_id');
         $cs_info['write_date'] = $date_now;
@@ -68,7 +69,7 @@ class Addreplaceconfirmorder extends Controller
 
         $custom_info_id = \app\index\model\Admin::getmaxtableidretid('custom_info', 'custom_info_id');
         $custom_info['custom_info_id'] = $custom_info_id+1;
-        $ret_custom_info = \app\index\model\Admin::addcustominfo($custom_info);
+        $ret_custom_info = \app\index\model\Admin::updatecustominfo($custom_info);
 
         if (empty($ret_custom_info)) {
             return false;//添加失败删除
@@ -76,24 +77,38 @@ class Addreplaceconfirmorder extends Controller
 
         $delivery_info_id = \app\index\model\Admin::getmaxtableidretid('delivery_info', 'delivery_info_id');
         $delivery_info['delivery_info_id'] = $delivery_info_id+1;
-        $ret_delivery_info = \app\index\model\Admin::adddeliveryinfo($delivery_info);
+        $ret_delivery_info = \app\index\model\Admin::updatedeliveryinfo($delivery_info);
         if (empty($ret_delivery_info)) {
             return false;
         }
 
         $return_info_id = \app\index\model\Admin::getmaxtableidretid('return_info', 'return_info_id');
         $return_info['return_info_id'] = $return_info_id+1;
-        $ret_return_info = \app\index\model\Admin::addreturninfo($return_info);
+        $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
         if (empty($ret_return_info)) {
             return false;
         }
-        $num = count($order_goods_manager);
-        for ($i = 0; $i < $num; $i++) {
-            $order_goods_manager_id = \app\index\model\Admin::getmaxtableidretid('order_goods_manager', 'order_goods_manager_id');
-            $order_goods_manager[$i]['order_goods_manager_id'] = $order_goods_manager_id+1;
-            $order_goods_manager[$i]['cs_id'] = $cs_info['cs_id'];
-            $retmanager = \app\index\model\Admin::addordergoodsmanager($order_goods_manager[$i]);
+        if(array_key_exists('order_goods_manager',$_POST)){
+            $order_goods_manager = $_POST['order_goods_manager'];
+            $num = count($order_goods_manager);
+            for ($i = 0; $i < $num; $i++) {
+                //order_goods_manager
+                $order_goods_manager_id = \app\index\model\Admin::getmaxtableidretid('order_goods_manager', 'order_goods_manager_id');
+                $order_goods_manager[$i]['order_goods_manager_id'] = $order_goods_manager_id+1;
+                $order_goods_manager[$i]['cs_id'] = $cs_info['cs_id'];
+                $retmanager = \app\index\model\Admin::updateordergoodsmanager($order_goods_manager[$i]);
+                //order_goods_logistics
+                $ogl_id = \app\index\model\Admin::getmaxtableidretid('order_goods_logistics', 'order_goods_manager_id');
+                $order_goods_manager[$i]['ogl_id'] = $ogl_id+1;
+                $order_goods_manager[$i]['ogl_time_stamp'] = $date_now;
+                $order_goods_manager[$i]['user_id'] = $cs_belong['build_user_id']; //暂时不知道是报那个的id,先写经理的
+                $retmanager = \app\index\model\Admin::updateordergoodslogistics($order_goods_manager[$i]);
+            }
+
         }
+
+
+
         $length = count($cs_examine);
         $cs_examine_id_array =array();
         for ($i = 0; $i < $length; $i++) {
@@ -125,14 +140,15 @@ class Addreplaceconfirmorder extends Controller
             $cs_examine_id = \app\index\model\Admin::getmaxtableidretid('cs_examine', 'cs_examine_id');
             $cs_examine[$i]['cs_examine_id'] = $cs_examine_id+1;
             $cs_examine_id_array[$i]= $cs_examine_id+1;
-            $rettest = \app\index\model\Admin::addcsexamine($cs_examine[$i]);
+            $rettest = \app\index\model\Admin::updatecsexamine($cs_examine[$i]);
         }
 
         $cs_info['return_info_id'] = $return_info_id +1;
         $cs_info['custom_info_id'] = $custom_info_id +1;
         $cs_info['delivery_info_id'] = $delivery_info_id +1;
         $cs_info['cs_examine_ids'] = $cs_examine_id_array[0] . ',' . $cs_examine_id_array[1] . ',' . $cs_examine_id_array[2];
-        $ret_confirm_order = \app\index\model\Admin::addconfirmorder($cs_info);
+        $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
+
         if (empty($ret_confirm_order)) {
             $cs_belong_id = \app\index\model\Admin::getmaxtableidretid('cs_belong', 'cs_belong_id');
 
@@ -144,6 +160,19 @@ class Addreplaceconfirmorder extends Controller
             //还有 order_goods_manager  cs_examine
             return false;
         }
+
+        if(array_key_exists('logistic_info',$_POST))
+        {
+            foreach ( $logistic_info as $item  )
+            {
+                $id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id');
+                $item['logistics_id'] = $id+1;
+                $item['time_stamp'] = $date_now;
+                $item['user_id'] = $cs_belong['build_user_id'];
+                \app\index\model\Admin::updatelogisticinfo($item);
+            }
+        }
+
         return $cs_info_id;
     }
 

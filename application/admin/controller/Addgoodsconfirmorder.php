@@ -186,4 +186,8 @@ class Addgoodsconfirmorder extends Controller
         }*/
         return true;
     }
+
+    public function getorderinfo(){
+
+    }
 }

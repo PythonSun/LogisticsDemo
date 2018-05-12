@@ -84,7 +84,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">原因：</label>
                 <div class="layui-input-inline" style="max-width:120px">
-                    <input type="text" name="explain" id="explain">
+                    <input type="text" name="replace_reason" id="replace_reason" lay-filter="replace_reason">
                 </div>
             </div>
         </div>
@@ -211,7 +211,7 @@
             }
         });*/
         orderItem.specification = jq('#specification').val();
-        orderItem.back_date = jq('#back_date').val();
+        orderItem.back_date = jq('#back_date').val() ;
         orderItem.ogl_product_state = null;
         jq("input[name='inputstate']").each(function(){
             if(jq(this).prop('checked')){
@@ -219,7 +219,7 @@
             }
         });
         orderItem.bar_code = jq('#bar_code').val();
-        orderItem.order_goods_manager_explain = jq('#explain').val();
+        orderItem.replace_reason = jq('#replace_reason').val();
         orderItem.ogl_comment = jq('#comment').val();
         //+判断 型号是否存在，不存在禁止录入
         jq.ajax({
@@ -255,9 +255,10 @@
         jq('#inputunit').attr('value',data['unit']);
         document.getElementById('unc_productid').value = data['unc_product_id'];
         jq('#specification').attr('value',data['specification']);
-        jq('#back_date').attr('value',data['back_date']);
+        if(data['back_date'] != '')
+            jq('#back_date').attr('value',data['back_date']);
         jq('#bar_code').attr('value',data['bar_code']);
-        jq('#explain').attr('value',data['order_goods_manager_explain']);
+        jq('#replace_reason').attr('value',data['replace_reason']);
         jq('#comment').attr('value',data['ogl_comment']);
         jq("input[name='inputstate']").each(function(){
             if(jq(this).attr('value') == data['ogl_product_state']){
