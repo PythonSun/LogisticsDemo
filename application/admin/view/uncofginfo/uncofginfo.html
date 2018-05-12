@@ -107,7 +107,7 @@
             var uoi_id = "";
             var delrowid = new Array();
             $(document).ready(function() {
-                var wParent = window.parent[0];
+                var wParent = window.parent[window.parent.length - 2];
                 var data = wParent.getUncofgInfoUI();
                 if(data == null){
                     return;

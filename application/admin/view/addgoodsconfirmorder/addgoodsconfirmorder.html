@@ -5,6 +5,11 @@
         <title></title>
         <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
         <link rel="stylesheet" type="text/css" href="/static/css/public.css"> </head>
+        <style>
+            .hide{
+                display: none;
+            }
+        </style>
     <body>
         <form class="layui-form layui-form-pane" action="">
         	<div class="toph2">
@@ -32,7 +37,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">状态</label>
                     <div class="layui-input-inline dark_blue">
-                        <select name="status">
+                        <select name="order_goods_cs_info">
                             <option value="" disabled="" selected="">选择</option>
                             <option value="0">空</option>
                             <option value="1">处理中</option>
@@ -218,9 +223,6 @@
             <h3>订购清单</h3>
             <table class="layui-table" id="tableorder">
                 <colgroup>
-                    <!--<col width="150">
-                    <col width="200">
-                    <col> -->
                 </colgroup>
                 <thead>
                     <tr class="Wheat">
@@ -242,7 +244,7 @@
             </table>
             <div class="layui-form-item">
                 <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save">保存</button>
+                    <button class="layui-btn layui-btn-normal" lay-submit="" id="save" lay-filter="save">保存</button>
                 </div>
             </div>
         </form>
@@ -475,7 +477,7 @@
                 });
                 //删除物流信息
                 jq('#btn_del_logistics_item').click(function(){
-                    jq("#tablelogistics tbody tr").find("td:first input:checkbox").each(function () {
+                    jq("input[name=onechoose]").each(function () {
                         var ischecked = jq(this).prop("checked");
                         if(ischecked){
                             var logistics_id = jq(this).parent().parent().attr("logistics_id");
@@ -502,10 +504,10 @@
                         yes:function (index,layero) {
                             var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                             uncofginfo = iframeWin.getData();
-                            top.layer.closeAll();
+                            layer.close(index);
                         },
-                        btn2: function () {
-                            top.layer.closeAll();
+                        btn2: function (index) {
+                            layer.close(index);
                         }
                     });
                     return false;
@@ -613,6 +615,7 @@
                 order_goods_cs_info.delivered_gift = data['delivered_gift'] == "" ? 0 : data['delivered_gift'];
                 order_goods_cs_info.delivered_album = data['delivered_album'] == "" ? 0 : data['delivered_album'];
                 order_goods_cs_info.product_number = data['product_number'] == "" ? 0 : data['product_number'];
+                order_goods_cs_info.cs_info_state = data['order_goods_cs_info'] == "" ? -1: data['order_goods_cs_info'];
                 return order_goods_cs_info;
             }
             //订单信息
@@ -829,7 +832,7 @@
                 jq(new_tr).attr("time_stamp",time_stamp);
 
                 var col_0 = new_tr.insertCell(0);//添加列
-                col_0.innerHTML = "<td><input type='checkbox' autocomplete='on' class='layui-input Wheat'></td>";
+                col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' autocomplete='on' class='layui-input Wheat'></td>";
                 var col_1 = new_tr.insertCell(1);//添加列
                 col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item'></td>";
                 jq.each(jq(".time-item"),function(){
@@ -844,7 +847,28 @@
                 form.render('checkbox');
             }
             //将数据显示
-            function setDBDateToHtml(order_goods_cs_info,fee_info,cs_belong,order_goods_info) {                        //缺文件
+            function setDBDateToHtml(data,order_goods_cs_info,fee_info,cs_belong,order_goods_info) {  //缺文件
+                console.log(data);
+
+
+
+
+                var jq = layui.jquery;
+                jq('#save').addClass('hide');
+
+                jq.ajax({
+                    url:"{:url('admin/addgoodsconfirmorder/getorderinfo')}",
+                    data:{
+
+                    },
+                    type:'POST',
+                    success:function (e) {
+                        console.log(e);
+                    }
+                })
+
+                return;
+
                 //order_goods_cs_info
                 //order_goods_info
                 //fee_info
@@ -862,6 +886,7 @@
                 //jq('#consult_sheet_file').val(order_goods_cs_info.consult_sheet_file);
                 //jq('#unc_ofg_info_id').val(order_goods_cs_info.unc_ofg_info_id);
                 jq('#delivery_date_reply').val(order_goods_cs_info.delivery_date_reply);
+                document.getElementById('order_goods_cs_info').value = order_goods_cs_info.order_goods_cs_info;
 
                 //jq('#fee_info_id').val(fee_info.fee_info_id);
                 jq('#customization_fee').val(fee_info.customization_fee);
