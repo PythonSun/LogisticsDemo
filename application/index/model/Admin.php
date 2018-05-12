@@ -1430,6 +1430,22 @@
             exit;        //关键
         }
 
+        /*查询需要导出的订货确认单  未完待续*/
+        public static function queryexportgoodsconfirmorder(){
+            $sqlone = "select dsp_logistic.cs_belong.*,dsp_logistic.order_goods_cs_info.*,dsp_logistic.unc_ofg_info.*,dsp_logistic.unc_ofg_detail.*,";
+            $sqlone .= "dsp_logistic.order_goods_cs_undeliver_goods_info.*,dsp_logistic.product_info.*,dsp_logistic.product_place.place_name,";
+            $sqlone .= "dsp_logistic.product_brand.brand_name from dsp_logistic.order_goods_cs_info";
+            $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
+            $sqlone .= "left join dsp_logistic.unc_ofg_info on dsp_logistic.unc_ofg_info.uoi_id = dsp_logistic.order_goods_cs_info.unc_ofg_info_id ";
+            $sqlone .= "left join dsp_logistic.unc_ofg_detail on dsp_logistic.unc_ofg_detail.unc_ofg_info_id = dsp_logistic.unc_ofg_info.uoi_id ";
+            return '123';
+        }
+
+        /*导出订货确认单*/
+        public static function exportgoodsconfirmorder(){
+            return '123';
+        }
+
         /*根据流水号和类型查询需打印的更换(0x01)/代用(0x06)/维修(0x04)/退货(0x03)/借样(0x02)确认单*/
         public static function queryprintcsinfoorder($cs_id,$type){
             $sqlone ="select dsp_logistic.cs_belong.*,dsp_logistic.cs_info.*,";
@@ -1551,6 +1567,7 @@
             if(($type == 0x01)||($type == 0x06)||($type == 0x04)||($type == 0x05)){
                 $startitem = 22;
             }
+
             if(($type == 0x02)||($type == 0x03)){
                 $startitem = 16;
             }
