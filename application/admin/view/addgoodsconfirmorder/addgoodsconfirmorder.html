@@ -300,22 +300,25 @@
                     ,position: 'fixed'
                     ,theme: 'molv'
                 });
-                //uploadpic
 
-                //执行实例      暂无
+                //执行实例
                 var uploadPic = upload.render({
                     elem: '#uploadpic' //绑定元素
                     ,acceptMime: 'image/*'
-                    ,url: '/upload/' //上传接口
+                    ,url: "{:url('admin/addgoodsconfirmorder/uploadconsultform')}" //上传接口
+                    ,before: function(obj){
+                        top.layer.load(); //上传loading
+                    }
                     ,done: function(res){
-                        //上传完毕回调
-                    }
-                    ,error: function(){
-                        //请求异常回调
-                    }
+                        top.layer.closeAll('loading');
+                        if(res.code == '1')
+                            top.layer.msg(res.msg,{icon:1});
+                        if(res.code == '0')
+                            top.layer.msg(res.msg,{icon:2});
+                    }   
                 });
                 //网页加载时  赋值使用
-                $(document).ready(function() {
+                $(document).ready(function(){
                     //判断此页面是新增还是编辑
                     //如果新增
                    // addLogisticsItem(null);                     //物流信息
