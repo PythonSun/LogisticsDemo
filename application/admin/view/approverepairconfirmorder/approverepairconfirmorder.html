@@ -13,7 +13,9 @@
 			<div><h2>维修待审批订单</h2></div>
 			<table class="layui-hide" id="repairorder" lay-filter="repairorder"></table>
 			<script type="text/html" id="operatebar">
-			  <a class="layui-btn layui-btn-xs" lay-event="detail">查看详情</a>
+  			  <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="detail">查看详情</a>
+			  <a class="layui-btn layui-btn-xs edit_btn" lay-event="edit">编辑</a>
+			  <a class="layui-btn layui-btn-xs del_btn layui-btn-danger" lay-event="delete">删除</a>
 			</script>
 		</div>
 		<script src="/static/layui/layui.js"></script>
