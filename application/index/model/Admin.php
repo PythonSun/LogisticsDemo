@@ -440,6 +440,10 @@
                     {
                         $tableobj[$i]["cs_info_state"] = "备货";
                     }
+                    elseif ($state == 5)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "退回";
+                    }
 
                     if ($mode == 1)
                     $tableobj[$i]["transfer_fee_mode"] = "到付";
@@ -610,6 +614,10 @@
                     elseif ($state == 4)
                     {
                         $tableobj[$i]["cs_info_state"] = "备货";
+                    }
+                    elseif ($state == 5)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "退回";
                     }
 
                     if ($mode == 1)
@@ -790,41 +798,14 @@
                     {
                         $tableobj[$i]["cs_info_state"] = "备货";
                     }
+                    elseif ($state == 5)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "退回";
+                    }
                 }
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
             }
         }
-
-		/*测试新建表格对象，并且填写数据*/
-		public static function testexcel(){
-			$PHPExcel = new PHPExcel(); //实例化PHPExcel类，类似于在桌面上新建一个Excel表格
-			$PHPSheet = $PHPExcel->getActiveSheet(); 
-			$PHPSheet->setTitle('demo'); 
-			$PHPSheet->setCellValue('A1','姓名')->setCellValue('B1','分数');
-			$PHPSheet->setCellValue('A2','张三')->setCellValue('B2','50');
-			$PHPWriter = PHPExcel_IOFactory::createWriter($PHPExcel,'Excel2007');
-		  	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        	header('Content-Disposition: attachment;filename="01simple.xlsx"');
-        	header('Cache-Control: max-age=0');
-        	$PHPWriter->save("php://output");
-		}
-
-		/*根据模板导出表格测试*/
-		public static function testtemplateexport(){
-			$objReader = PHPExcel_IOFactory::createReader('Excel2007');
-			$objPHPExcel = $objReader->load("F:/website/Apache24/htdocs/LogisticsOrder/public/templates/26template.xlsx");
-			$objPHPExcel->getActiveSheet()->setTitle('sheetone');
-			$objPHPExcel->setActiveSheetIndex(0);
-			$objPHPExcel->getActiveSheet()->setCellValue('C3', '研发一部');
-			$objPHPExcel->getActiveSheet()->getStyle('C3')->getFont()->setName('Candara');
-			$objPHPExcel->getActiveSheet()->getStyle('C3')->getFont()->setSize(16);
-			$objPHPExcel->getActiveSheet()->getStyle('C3')->getFont()->setBold(true);
-			$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel2007'); 
-		  	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        	header('Content-Disposition: attachment;filename="01simple.xlsx"');
-        	header('Cache-Control: max-age=0');
-        	$objWriter->save("php://output");
-		}
 
         /*根据条件查询用户信息*/
         public static function queryuserinfo($pagenum,$length)
@@ -1088,12 +1069,14 @@
             $cs_info_state = $info['cs_info_state'];
             $complete_date = $info['complete_date'];
             $product_number = $info['product_number'];
-            $sql_value ="'{$cs_id}','{$custom_info_id}','{$delivery_info_id}','{$return_info_id}','{$payment_info_id}','{$cur_process_user_id}','{$pre_process_user_id}','{$cs_info_type}','{$can_edit}','{$write_date}','{$cs_info_state}','{$complete_date}','{$product_number}'";
+            $cs_examine_ids = $info['cs_examine_ids'];
+            $sql_value ="'{$cs_id}','{$custom_info_id}','{$delivery_info_id}','{$return_info_id}','{$payment_info_id}','{$cur_process_user_id}','{$pre_process_user_id}','{$cs_info_type}','{$can_edit}','{$write_date}','{$cs_info_state}','{$complete_date}','{$product_number}','$cs_examine_ids'";
             $sql = "INSERT INTO dsp_logistic.cs_info (cs_id,custom_info_id,delivery_info_id,return_info_id,payment_info_id,cur_process_user_id,pre_process_user_id
-,cs_info_type,can_edit,write_date,cs_info_state,complete_date,product_number) VALUES ({$sql_value}) ";
+,cs_info_type,can_edit,write_date,cs_info_state,complete_date,product_number,cs_examine_ids) VALUES ({$sql_value}) ";
             $sql.= "ON DUPLICATE KEY UPDATE custom_info_id = '{$custom_info_id}',delivery_info_id = '{$delivery_info_id}',return_info_id = '{$return_info_id}',payment_info_id = '{$payment_info_id}',";
             $sql.= "cur_process_user_id= '{$cur_process_user_id}',pre_process_user_id= '{$pre_process_user_id}',cs_info_type = '{$cs_info_type}',";
-            $sql.= "can_edit= '{$can_edit}',write_date= '{$write_date}',cs_info_state= '{$cs_info_state}',complete_date= '{$complete_date}',product_number= '{$complete_date}'";
+            $sql.= "can_edit= '{$can_edit}',write_date= '{$write_date}',cs_info_state= '{$cs_info_state}',complete_date= '{$complete_date}',product_number= '$product_number',";
+            $sql.= "cs_examine_ids= '$cs_examine_ids'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
@@ -1159,16 +1142,16 @@
         /*update payment_info*/
         public static function updatepaymentinfo($info){
             $payment_info_id = $info['payment_info_id'];
-            $is_pad = $info['is_pad'];
+            $is_paid = $info['is_paid'];
             $paid_date = $info['paid_date'];
             $customization_fee = $info['customization_fee'];
             $paid_bank = $info['paid_bank'];
-            $payment_info_comment = $info['comment'];
+            $payment_info_comment = $info['payment_info_comment'];
 //            $time_stamp = $info['time_stamp'];
 //            $user_id = $info['user_id'];
-            $sql_value ="'$payment_info_id','{$is_pad}','{$paid_date}','{$customization_fee}','{$paid_bank}','{$payment_info_comment}'";
-            $sql = "INSERT INTO dsp_logistic.payment_info (payment_info_id,is_pad,paid_date,customization_fee,paid_bank,comment,time_stamp,user_id) VALUES ({$sql_value})";
-            $sql.= "ON DUPLICATE KEY UPDATE is_pad = '$is_pad',paid_date = '$paid_date',customization_fee = '{$customization_fee}',";
+            $sql_value ="'$payment_info_id','{$is_paid}','{$paid_date}','{$customization_fee}','{$paid_bank}','{$payment_info_comment}'";
+            $sql = "INSERT INTO dsp_logistic.payment_info (payment_info_id,is_paid,paid_date,customization_fee,paid_bank,payment_info_comment) VALUES ({$sql_value})";
+            $sql.= "ON DUPLICATE KEY UPDATE is_paid = '$is_paid',paid_date = '$paid_date',customization_fee = '{$customization_fee}',";
             $sql.= "paid_bank= '$paid_bank',payment_info_comment= '$payment_info_comment'";
             $sqlret = Db::execute($sql);
             return $sqlret;
@@ -1423,7 +1406,7 @@
         }
 
         /*查询需要导出的更换/代用/维修/退货/配件/借样确认单  未完待续*/
-        public static function queryexportreplaceconfirmorder($param,$type){
+        public static function queryexportcsinfoconfirmorder($param,$type){
             $sqlone ="select dsp_logistic.cs_belong.*,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.* from dsp_logistic.cs_info ";
             $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
@@ -1456,7 +1439,13 @@
 
             if(property_exists($param,'receiver_name')){
                 $receiver_name = $param->receiver_name;
-                $sqlone.= " and return_info_receiver_name ='$receiver_name' ";
+                $sqlone.= " and dsp_logistic.elivery_info.delivery_info_receiver_name ='$receiver_name' ";
+            }
+
+            /*运费付费模式*/
+            if(property_exists($param,'freightmode')){
+                $freightmode = intval($param->freightmode);
+                $sqltwo .= "and dsp_logistic.delivery_info.transfer_fee_mode = '$freightmode' ";
             }
 
             // if(property_exists($param,'yard')){
@@ -1469,144 +1458,140 @@
             //     $sqlone.= " and transfer_order_num ='$couriernumber' ";
             // }
             $tableobj = Db::query($sqlone);
+            if(empty($tableobj))
+                return null;
 
-            /*查询缺货数及缺货清单*/
-            $sqltwo = "select dsp_logistic.order_goods_manager.*,dsp_logistic.cs_info.*,dsp_logistic.product_info.*,dsp_logistic.product_brand.brand_name,dsp_logistic.product_type.product_type_name,dsp_logistic.product_place.place_name,dsp_logistic.order_goods_logistics.* from dsp_logistic.cs_info ";
-            $sqltwo .= "left join dsp_logistic.order_goods_manager on dsp_logistic.order_goods_manager.cs_id = dsp_logistic.cs_info.cs_id ";
-            $sqltwo .= "left join dsp_logistic.order_goods_logistics on dsp_logistic.order_goods_logistics.order_goods_manager_id = dsp_logistic.order_goods_manager.order_goods_manager_id ";
-            $sqltwo .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.order_goods_manager.product_info_id ";
-            $sqltwo .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
-            $sqltwo .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
-            $sqltwo .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
-            $sqltwo .= "where dsp_logistic.cs_info.cs_info_type='$type' and dsp_logistic.product_info.product_info_id !='-1' and dsp_logistic.order_goods_logistics.ogl_product_state='1'";
-            // /*运费付费模式*/
-            // if(property_exists($param,'freightmode')){
-            //     $freightmode = intval($param->freightmode);
-            //     $sqltwo .= "and dsp_logistic.delivery_info.transfer_fee_mode = '$freightmode' ";
-            // }
+            /*查询确认单明细*/
+            for ($i=0; $i < count($tableobj); $i++) {
+                $cs_id = $tableobj[$i]['cs_id'];
 
-            /*产品分类*/
-            if(property_exists($param,'productclass')){
-                $productclass = intval($param->productclass);
-                $sqltwo .= "and dsp_logistic.product_type.product_type_id = '$productclass' ";
+                $sqltwo = "select dsp_logistic.order_goods_manager.*,dsp_logistic.product_info.*,dsp_logistic.product_brand.brand_name,dsp_logistic.product_type.product_type_name,dsp_logistic.product_place.place_name,dsp_logistic.order_goods_logistics.*,dsp_logistic.unc_product.* from dsp_logistic.order_goods_manager ";
+                $sqltwo .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.order_goods_manager.product_info_id ";
+                $sqltwo .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
+                $sqltwo .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
+                $sqltwo .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
+                $sqltwo .= "left join dsp_logistic.order_goods_logistics on dsp_logistic.order_goods_logistics.order_goods_manager_id = dsp_logistic.order_goods_manager.order_goods_manager_id ";
+                $sqltwo .= "left join dsp_logistic.unc_product on dsp_logistic.unc_product.unc_product_id = dsp_logistic.order_goods_logistics.ogl_unc_product_id ";
+                $sqltwo .= "where dsp_logistic.order_goods_manager.type='$type' and dsp_logistic.order_goods_manager.cs_id ='$cs_id' ";
+                if(property_exists($param,'productclass')){
+                    $productclass = intval($param->productclass);
+                    $sqltwo .= "and dsp_logistic.product_type.product_type_id = '$productclass' ";
+                }
+
+                /*品牌*/
+                if(property_exists($param,'brand')){
+                    $brand = intval($param->brand);
+                    $sqltwo .= "and dsp_logistic.product_brand.brand_id = '$brand' ";
+                }
+
+                /*产品型号*/
+                if(property_exists($param,'producttype')){
+                    $producttype = $param->producttype;
+                    $sqltwo .= "and dsp_logistic.product_info.model = '$producttype' ";
+                }
+
+                /*生产地*/
+                if(property_exists($param,'productarea')){
+                    $productarea = intval($param->productarea);
+                    $sqltwo .= "and dsp_logistic.product_place.place_id = '$productarea' ";
+                }
+
+                /*非常规订单*/
+                if(property_exists($param,'customproduct')){
+                    $customproduct = intval($param->customproduct);
+                    $sqltwo .= "and dsp_logistic.unc_product.unc_product_id = '$customproduct' ";
+                }
+
+                $onelistobj = Db::query($sqltwo);
+                $tableobj[$i]['ofg_productlist'] = $onelistobj;
             }
 
-            /*品牌*/
-            if(property_exists($param,'brand')){
-                $brand = intval($param->brand);
-                $sqltwo .= "and dsp_logistic.product_brand.brand_id = '$brand' ";
-            }
+            /*统计缺货的,产品明细，非常规部分*/
+            for($i=0; $i<count($tableobj);$i++){
+                /*广播会议数量*/
+                $broadcast_num = 0 ;
+                $meeting_num = 0 ;
+                $subway_num = 0 ;
+                $auxdi_num = 0 ;
+                $record_num = 0 ;
 
-            /*产品型号*/
-            if(property_exists($param,'producttype')){
-                $producttype = $param->producttype;
-                $sqltwo .= "and dsp_logistic.product_info.model = '$producttype' ";
-            }
+                /*非常规产品数量*/
+                $unc_develop_num = 0 ;
+                $unc_special_num = 0;
+                $unc_network_num = 0 ;
+                $unc_interlligence_num = 0;
+                $unc_address_num = 0;
+                $unc_register_num = 0;
+                $unc_networksoft_num = 0;
+                $unc_interlligencesoft_num = 0;
 
-            /*生产地*/
-            if(property_exists($param,'productarea')){
-                $productarea = intval($param->productarea);
-                $sqltwo .= "and dsp_logistic.product_place.place_id = '$productarea' ";
-            }
-            $listobj = Db::query($sqltwo);
-            
-            /*计算分类产品总数*/
-            $sqlthree = "select dsp_logistic.order_goods_manager.*,dsp_logistic.cs_info.*,dsp_logistic.product_info.*,dsp_logistic.product_brand.brand_name,dsp_logistic.product_type.product_type_name,dsp_logistic.product_place.place_name,dsp_logistic.order_goods_logistics.* from dsp_logistic.cs_info ";
-            $sqlthree .= "left join dsp_logistic.order_goods_manager on dsp_logistic.order_goods_manager.cs_id = dsp_logistic.cs_info.cs_id ";
-            $sqlthree .= "left join dsp_logistic.order_goods_logistics on dsp_logistic.order_goods_logistics.order_goods_manager_id = dsp_logistic.order_goods_manager.order_goods_manager_id ";
-            $sqlthree .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.order_goods_manager.product_info_id ";
-            $sqlthree .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
-            $sqlthree .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
-            $sqlthree .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
-            $sqlthree .= "where dsp_logistic.cs_info.cs_info_type='$type' and dsp_logistic.product_info.product_info_id !='-1'";
-            // /*运费付费模式*/
-            // if(property_exists($param,'freightmode')){
-            //     $freightmode = intval($param->freightmode);
-            //     $sqltwo .= "and dsp_logistic.delivery_info.transfer_fee_mode = '$freightmode' ";
-            // }
-
-            /*产品分类*/
-            if(property_exists($param,'productclass')){
-                $productclass = intval($param->productclass);
-                $sqlthree .= "and dsp_logistic.product_type.product_type_id = '$productclass' ";
-            }
-
-            /*品牌*/
-            if(property_exists($param,'brand')){
-                $brand = intval($param->brand);
-                $sqlthree .= "and dsp_logistic.product_brand.brand_id = '$brand' ";
-            }
-
-            /*产品型号*/
-            if(property_exists($param,'producttype')){
-                $producttype = $param->producttype;
-                $sqlthree .= "and dsp_logistic.product_info.model = '$producttype' ";
-            }
-
-            /*生产地*/
-            if(property_exists($param,'productarea')){
-                $productarea = intval($param->productarea);
-                $sqlthree .= "and dsp_logistic.product_place.place_id = '$productarea' ";
-            }
-
-            $countlist = Db::query($sqlthree);
-
-            for($item=0; $item<count($tableobj);$item++){
+                /*缺货产品列表*/
                 $lessproductlist = array();
-                $broadcast = 0 ;
-                $meeting = 0 ;
-                $subway = 0 ;
-                $audi = 0 ;
-                $record = 0 ;
 
-                /*缺货型号对象信息*/
-                for($listitem=0;$listitem<count($listobj);$listitem++){
-                    if($tableobj[$item]['cs_id'] == $listobj[$listitem]['cs_id']){
-                        $model_param['place_name'] = $listobj[$listitem]['place_name'];
-                        $model_param['brand_name'] = $listobj[$listitem]['brand_name'];
-                        $model_param['model'] = $listobj[$listitem]['model'];
-                        $model_param['count'] = 1;
-                        $sign = 0;
-                        for($i=0; $i<count($lessproductlist); $i++){
-                            if($model_param['model'] == $lessproductlist[$i]['model']){
-                                $lessproductlist[$i]['count'] = $lessproductlist[$i]['count'] + 1;
-                                $sign = 1;
-                            }
-                        }
-                        if($sign == 0){
-                            $lessproductlist[] = $model_param;
-                        }
+                $ofg_productlist = $tableobj[$i]['ofg_productlist'];
+                for($j=0 ; $j <count($ofg_productlist); $j++ ){
+                    if($ofg_productlist[$j]['product_type_name'] == '公共广播')
+                        $broadcast_num++;
+                    if($ofg_productlist[$j]['product_type_name'] == '会议系统')
+                        $meeting_num++;
+                    if($ofg_productlist[$j]['product_type_name'] == '地铁事业')
+                        $subway_num++;
+                    if($ofg_productlist[$j]['product_type_name'] == '澳斯迪')
+                        $auxdi_num++;
+                    if($ofg_productlist[$j]['product_type_name'] == '录播')
+                        $record_num++;
+
+                    if($ofg_productlist[$j]['unc_product_name'] == '研发')
+                        $unc_develop_num++;
+                    if($ofg_productlist[$j]['unc_product_name'] == '特殊')
+                        $unc_special_num++;
+                    if($ofg_productlist[$j]['unc_product_name'] == '网络化')
+                        $unc_network_num++;
+                    if($ofg_productlist[$j]['unc_product_name'] == '智能化')
+                        $unc_interlligence_num++;
+                    if($ofg_productlist[$j]['unc_product_name'] == '可寻址')
+                        $unc_address_num++;
+                    if($ofg_productlist[$j]['unc_product_name'] == '注册码')
+                        $unc_register_num++;
+                    if($ofg_productlist[$j]['unc_product_name'] == '网络化软件')
+                        $unc_networksoft_num++;
+                    if($ofg_productlist[$j]['unc_product_name'] == '智能化软件')
+                        $unc_interlligencesoft_num++;
+
+                    /*缺货部分统计 order_goods_manager_count*/
+                    if($ofg_productlist[$j]['ogl_product_state'] == '1'){
+                        $model_param['place_name'] = $ofg_productlist[$j]['place_name'];
+                        $model_param['brand_name'] = $ofg_productlist[$j]['brand_name'];
+                        $model_param['model'] = $ofg_productlist[$j]['model'];
+                        $model_param['order_goods_manager_count'] = $ofg_productlist[$j]['order_goods_manager_count'];
+                        $lessproductlist[] = $model_param;
                     }
                 }
 
-                /*公共广播 会议 地铁 奥斯迪 录播统计*/
-                for($listitem=0;$listitem<count($countlist);$listitem++){
-                    if($tableobj[$item]['cs_id'] == $countlist[$listitem]['cs_id']){
-                        if($countlist[$listitem]['product_type_name'] == '公共广播'){
-                            $broadcast++;
-                        }else if($countlist[$listitem]['product_type_name'] == '会议系统'){
-                            $meeting++;
-                        }else if($countlist[$listitem]['product_type_name'] == '地铁事业'){
-                            $subway++;
-                        }else if($countlist[$listitem]['product_type_name'] == '澳斯迪'){
-                            $audi++;
-                        }else if($countlist[$listitem]['product_type_name'] == '录播'){
-                            $record++;
-                        }
-                    }
-                }
-                $tableobj[$item]['lessproductlist'] = $lessproductlist;
-                $tableobj[$item]['broadcast_num'] = $broadcast;
-                $tableobj[$item]['meeting_num'] = $meeting;
-                $tableobj[$item]['subway_num'] = $subway;
-                $tableobj[$item]['audi_num'] = $audi;
-                $tableobj[$item]['record_num'] = $record;
+                /*统计各产品数量*/
+                $tableobj[$i]['broadcast_num'] = $broadcast_num;
+                $tableobj[$i]['meeting_num'] = $meeting_num;
+                $tableobj[$i]['subway_num'] = $subway_num;
+                $tableobj[$i]['auxdi_num'] = $auxdi_num;
+                $tableobj[$i]['record_num'] = $record_num;
+
+                /*统计各非常规的数量*/
+                $tableobj[$i]['unc_develop_num'] = $unc_develop_num;
+                $tableobj[$i]['unc_special_num'] = $unc_special_num;
+                $tableobj[$i]['unc_network_num'] = $unc_network_num;
+                $tableobj[$i]['unc_interlligence_num'] = $unc_interlligence_num;
+                $tableobj[$i]['unc_address_num'] = $unc_address_num;
+                $tableobj[$i]['unc_register_num'] = $unc_register_num;
+                $tableobj[$i]['unc_networksoft_num'] = $unc_networksoft_num;
+                $tableobj[$i]['unc_interlligencesoft_num'] = $unc_interlligencesoft_num;
+
+                $tableobj[$i]['lessproductlist'] = $lessproductlist;
             }
             return $tableobj;
         }
 
         /*导出更换确认单 代用确认单 维修确认单  退货确认单 配件确认单 借用确认单*/
-        public static function exportreplaceconfirmorder($file_name,$file_extend,$template_name,$ret){
+        public static function exportcsinfoconfirmorder($file_name,$file_extend,$template_name,$ret){
             $root_url = $_SERVER['DOCUMENT_ROOT'];
             $file_name = iconv("utf-8","gb2312",$file_name);
             $template_name = iconv("utf-8","gb2312",$template_name);
@@ -1634,15 +1619,33 @@
                 }
                 $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), $ret[$item-3]['product_number']);
                 if($ret[$item-3]['broadcast_num'] != 0)
-                $objPHPExcel->getActiveSheet()->setCellValue('N'.($item+$liststart), $ret[$item-3]['broadcast_num']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('N'.($item+$liststart), $ret[$item-3]['broadcast_num']);
                 if($ret[$item-3]['meeting_num'] != 0)
-                $objPHPExcel->getActiveSheet()->setCellValue('O'.($item+$liststart), $ret[$item-3]['meeting_num']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('O'.($item+$liststart), $ret[$item-3]['meeting_num']);
                 if($ret[$item-3]['subway_num'] != 0)
-                $objPHPExcel->getActiveSheet()->setCellValue('P'.($item+$liststart), $ret[$item-3]['subway_num']);
-                if($ret[$item-3]['audi_num'] != 0)
-                $objPHPExcel->getActiveSheet()->setCellValue('Q'.($item+$liststart), $ret[$item-3]['audi_num']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('P'.($item+$liststart), $ret[$item-3]['subway_num']);
+                if($ret[$item-3]['auxdi_num'] != 0)
+                    $objPHPExcel->getActiveSheet()->setCellValue('Q'.($item+$liststart), $ret[$item-3]['auxdi_num']);
                 if($ret[$item-3]['record_num'] != 0)
-                $objPHPExcel->getActiveSheet()->setCellValue('R'.($item+$liststart), $ret[$item-3]['record_num']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('R'.($item+$liststart), $ret[$item-3]['record_num']);
+
+                /*非常规部分订单*/
+                if($ret[$item-3]['unc_develop_num'] != 0)
+                    $objPHPExcel->getActiveSheet()->setCellValue('S'.($item+$liststart), $ret[$item-3]['unc_develop_num']);
+                if($ret[$item-3]['unc_special_num'] != 0)
+                    $objPHPExcel->getActiveSheet()->setCellValue('T'.($item+$liststart), $ret[$item-3]['unc_special_num']);
+                if($ret[$item-3]['unc_network_num'] != 0)
+                    $objPHPExcel->getActiveSheet()->setCellValue('U'.($item+$liststart), $ret[$item-3]['unc_network_num']);
+                if($ret[$item-3]['unc_interlligence_num'] != 0)
+                    $objPHPExcel->getActiveSheet()->setCellValue('V'.($item+$liststart), $ret[$item-3]['unc_interlligence_num']);
+                if($ret[$item-3]['unc_address_num'] != 0)
+                    $objPHPExcel->getActiveSheet()->setCellValue('W'.($item+$liststart), $ret[$item-3]['unc_address_num']);
+                if($ret[$item-3]['unc_register_num'] != 0)
+                    $objPHPExcel->getActiveSheet()->setCellValue('X'.($item+$liststart), $ret[$item-3]['unc_register_num']);
+                if($ret[$item-3]['unc_networksoft_num'] != 0)
+                    $objPHPExcel->getActiveSheet()->setCellValue('Y'.($item+$liststart), $ret[$item-3]['unc_networksoft_num']);
+                if($ret[$item-3]['unc_interlligencesoft_num'] != 0)
+                    $objPHPExcel->getActiveSheet()->setCellValue('Z'.($item+$liststart), $ret[$item-3]['unc_interlligencesoft_num']);
 
                 $lesslist = $ret[$item-3]['lessproductlist'];
                 if(count($lesslist) != 0 ){
@@ -1650,7 +1653,7 @@
                         $objPHPExcel->getActiveSheet()->setCellValue('J'.($i+$item+$liststart), $lesslist[$i]['place_name']);
                         $objPHPExcel->getActiveSheet()->setCellValue('K'.($i+$item+$liststart), $lesslist[$i]['brand_name']);
                         $objPHPExcel->getActiveSheet()->setCellValue('L'.($i+$item+$liststart), $lesslist[$i]['model']);
-                        $objPHPExcel->getActiveSheet()->setCellValue('M'.($i+$item+$liststart), $lesslist[$i]['count']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('M'.($i+$item+$liststart), $lesslist[$i]['order_goods_manager_count']);
                     }
                 }
                 if(count($lesslist) > 1){
@@ -1674,19 +1677,324 @@
         }
 
         /*查询需要导出的订货确认单  未完待续*/
-        public static function queryexportgoodsconfirmorder(){
-            $sqlone = "select dsp_logistic.cs_belong.*,dsp_logistic.order_goods_cs_info.*,dsp_logistic.unc_ofg_info.*,dsp_logistic.unc_ofg_detail.*,";
-            $sqlone .= "dsp_logistic.order_goods_cs_undeliver_goods_info.*,dsp_logistic.product_info.*,dsp_logistic.product_place.place_name,";
-            $sqlone .= "dsp_logistic.product_brand.brand_name from dsp_logistic.order_goods_cs_info";
+        public static function queryexportgoodsconfirmorder($param){
+            $sqlone = "select dsp_logistic.cs_belong.*,dsp_logistic.order_goods_cs_info.*,dsp_logistic.ofg_info.*,dsp_logistic.fee_info.* from dsp_logistic.order_goods_cs_info ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
-            $sqlone .= "left join dsp_logistic.unc_ofg_info on dsp_logistic.unc_ofg_info.uoi_id = dsp_logistic.order_goods_cs_info.unc_ofg_info_id ";
-            $sqlone .= "left join dsp_logistic.unc_ofg_detail on dsp_logistic.unc_ofg_detail.unc_ofg_info_id = dsp_logistic.unc_ofg_info.uoi_id ";
-            return '123';
+            $sqlone .= "left join dsp_logistic.ofg_info on dsp_logistic.ofg_info.ofg_info_id = dsp_logistic.order_goods_cs_info.ofg_info_id ";
+            $sqlone .= "left join dsp_logistic.fee_info on dsp_logistic.fee_info.fee_info_id = dsp_logistic.order_goods_cs_info.fee_info_id ";
+            /*查询条件*/
+            $sqlone .= "where dsp_logistic.order_goods_cs_info.cs_id like '%%' ";
+            if((property_exists($param,'startdate'))&&(property_exists($param,'enddate'))){
+               $startdate = $param->startdate;
+               $enddate = $param->enddate;
+               $sqlone.= " and order_date >='$startdate' and order_date <='$enddate' ";
+            }
+
+            if(property_exists($param,'departname')){
+                $departname = $param->departname;
+                $sqlone.= " and (build_department_name ='$departname' or build_organize_name ='$departname') ";
+            }
+
+            if(property_exists($param,'areamanager')){
+                $areamanager = $param->areamanager;
+                $sqlone.= " and build_user_name ='$areamanager' ";
+            }
+
+            if(property_exists($param,'orderstate')){
+                $orderstate = $param->orderstate;
+                $sqlone.= " and cs_info_state ='$orderstate' ";
+            }
+
+            if(property_exists($param,'order_id')){
+                $order_id = $param->order_id;
+                $sqlone.= " and dsp_logistic.order_goods_cs_info.cs_id ='$order_id' ";
+            }
+
+            if(property_exists($param,'receiver_name')){
+                $receiver_name = $param->receiver_name;
+                $sqlone.= " and receiver_name ='$receiver_name' ";
+            }
+
+            // if(property_exists($param,'yard')){
+            //     $yard = $param->yard;
+            //     $sqlone.= " and goods_yard_name ='$yard' ";
+            // }
+
+            // if(property_exists($param,'couriernumber')){
+            //     $couriernumber = $param->couriernumber;
+            //     $sqlone.= " and transfer_order_num ='$couriernumber' ";
+            // }
+
+            /*运费付费模式*/
+            if(property_exists($param,'freightmode')){
+                $freightmode = intval($param->freightmode);
+                $sqlone .= "and dsp_logistic.fee_info.transfer_fee = '$freightmode' ";
+            }
+
+            $tableobj = Db::query($sqlone);
+            if(empty($tableobj))
+                return null;
+
+            for ($i=0; $i < count($tableobj); $i++) {
+                //非常规的产品明细
+                $unc_ofg_info_id = intval($tableobj[$i]['unc_ofg_info_id']);
+                $sqltwo = "select dsp_logistic.product_info.*,dsp_logistic.product_brand.*,dsp_logistic.product_type.product_type_name,dsp_logistic.product_place.place_name,dsp_logistic.unc_ofg_detail.*,dsp_logistic.unc_product.unc_product_name from dsp_logistic.unc_ofg_detail ";
+                $sqltwo .= "left join dsp_logistic.unc_product on dsp_logistic.unc_product.unc_product_id = dsp_logistic.unc_ofg_detail.unc_product_id ";
+                $sqltwo .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.unc_ofg_detail.product_info_id ";
+                $sqltwo .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
+                $sqltwo .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
+                $sqltwo .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
+                $sqltwo .= "where dsp_logistic.unc_ofg_detail.unc_ofg_info_id ='$unc_ofg_info_id' ";
+                if(property_exists($param,'productclass')){
+                    $productclass = intval($param->productclass);
+                    $sqltwo .= "and dsp_logistic.product_type.product_type_id = '$productclass' ";
+                }
+
+                /*品牌*/
+                if(property_exists($param,'brand')){
+                    $brand = intval($param->brand);
+                    $sqltwo .= "and dsp_logistic.product_brand.brand_id = '$brand' ";
+                }
+
+                /*产品型号*/
+                if(property_exists($param,'producttype')){
+                    $producttype = $param->producttype;
+                    $sqltwo .= "and dsp_logistic.product_info.model = '$producttype' ";
+                }
+
+                /*生产地*/
+                if(property_exists($param,'productarea')){
+                    $productarea = intval($param->productarea);
+                    $sqltwo .= "and dsp_logistic.product_place.place_id = '$productarea' ";
+                }
+
+                /*非常规订单*/
+                if(property_exists($param,'customproduct')){
+                    $customproduct = intval($param->customproduct);
+                    $sqltwo .= "and dsp_logistic.unc_product.unc_product_id = '$customproduct' ";
+                }
+
+                $listobjone = Db::query($sqltwo);
+                $tableobj[$i]['unc_productlist'] = $listobjone;;
+
+                //常规产品详细
+                $cs_id = $tableobj[$i]['cs_id'];
+                $sqlthree = "select dsp_logistic.product_info.*,dsp_logistic.product_brand.brand_name,dsp_logistic.product_type.product_type_name,dsp_logistic.product_place.place_name,dsp_logistic.order_goods_cs_undeliver_goods_info.* from dsp_logistic.order_goods_cs_undeliver_goods_info ";
+                $sqlthree .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.order_goods_cs_undeliver_goods_info.product_info_id ";
+                $sqlthree .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
+                $sqlthree .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
+                $sqlthree .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
+                $sqlthree .= "where dsp_logistic.order_goods_cs_undeliver_goods_info.cs_id ='$cs_id' ";
+                if(property_exists($param,'productclass')){
+                    $productclass = intval($param->productclass);
+                    $sqlthree .= "and dsp_logistic.product_type.product_type_id = '$productclass' ";
+                }
+
+                /*品牌*/
+                if(property_exists($param,'brand')){
+                    $brand = intval($param->brand);
+                    $sqlthree .= "and dsp_logistic.product_brand.brand_id = '$brand' ";
+                }
+
+                /*产品型号*/
+                if(property_exists($param,'producttype')){
+                    $producttype = $param->producttype;
+                    $sqlthree .= "and dsp_logistic.product_info.model = '$producttype' ";
+                }
+
+                /*生产地*/
+                if(property_exists($param,'productarea')){
+                    $productarea = intval($param->productarea);
+                    $sqlthree .= "and dsp_logistic.product_place.place_id = '$productarea' ";
+                }
+
+                $listobjtwo = Db::query($sqlthree);
+                $tableobj[$i]['ofg_productlist'] = $listobjtwo;
+
+            }
+
+            /*统计出缺货，产品分类，非常规数据*/
+            for($i = 0 ; $i < count($tableobj);$i++){
+                /*公共广播，会议等产品数量*/
+                $broadcast_num = 0 ;
+                $meeting_num = 0 ;
+                $subway_num = 0 ;
+                $auxdi_num = 0 ;
+                $record_num = 0 ;
+
+                /*非常规产品数量*/
+                $unc_develop_num = 0 ;
+                $unc_special_num = 0;
+                $unc_network_num = 0 ;
+                $unc_interlligence_num = 0;
+                $unc_address_num = 0;
+                $unc_register_num = 0;
+                $unc_networksoft_num = 0;
+                $unc_interlligencesoft_num = 0;
+
+                /*缺货产品列表*/
+                $lessproductlist = array();
+
+                $ofg_productlist = $tableobj[$i]['ofg_productlist'];
+                for($j=0 ; $j <count($ofg_productlist); $j++ ){
+                    if($ofg_productlist[$j]['product_type_name'] == '公共广播')
+                        $broadcast_num++;
+                    if($ofg_productlist[$j]['product_type_name'] == '会议系统')
+                        $meeting_num++;
+                    if($ofg_productlist[$j]['product_type_name'] == '地铁事业')
+                        $subway_num++;
+                    if($ofg_productlist[$j]['product_type_name'] == '澳斯迪')
+                        $auxdi_num++;
+                    if($ofg_productlist[$j]['product_type_name'] == '录播')
+                        $record_num++;
+
+                    if($ofg_productlist[$j]['ogcugi_product_state'] == 1){
+                        $model_param['place_name'] = $ofg_productlist[$j]['place_name'];
+                        $model_param['brand_name'] = $ofg_productlist[$j]['brand_name'];
+                        $model_param['model'] = $ofg_productlist[$j]['model'];
+                        $model_param['ogcugi_count'] = $ofg_productlist[$j]['ogcugi_count'];
+                        $lessproductlist[] = $model_param;
+                    }
+                }
+
+                /*统计各常规产品数量*/
+                $tableobj[$i]['broadcast_num'] = $broadcast_num;
+                $tableobj[$i]['meeting_num'] = $meeting_num;
+                $tableobj[$i]['subway_num'] = $subway_num;
+                $tableobj[$i]['auxdi_num'] = $auxdi_num;
+                $tableobj[$i]['record_num'] = $record_num;
+
+                /*缺货产品列表*/
+                $tableobj[$i]['lessproductlist'] = $lessproductlist;
+
+                $unc_productlist = $tableobj[$i]['unc_productlist'];
+                for($k = 0 ; $k < count($unc_productlist) ; $k++){
+                    if($unc_productlist[$k]['unc_product_name'] == '研发'){
+                        $unc_develop_num += intval($unc_productlist[$k]['uod_count']);
+                    }
+                    if($unc_productlist[$k]['unc_product_name'] == '特殊'){
+                        $unc_special_num += intval($unc_productlist[$k]['uod_count']);
+                    }
+                    if($unc_productlist[$k]['unc_product_name'] == '网络化'){
+                        $unc_network_num += intval($unc_productlist[$k]['uod_count']);
+                    }
+                    if($unc_productlist[$k]['unc_product_name'] == '智能化'){
+                        $unc_interlligence_num += intval($unc_productlist[$k]['uod_count']);
+                    }
+                    if($unc_productlist[$k]['unc_product_name'] == '可寻址'){
+                        $unc_address_num += intval($unc_productlist[$k]['uod_count']);
+                    }
+                    if($unc_productlist[$k]['unc_product_name'] == '注册码'){
+                        $unc_register_num += intval($unc_productlist[$k]['uod_count']);
+                    }
+                    if($unc_productlist[$k]['unc_product_name'] == '网络化软件'){
+                        $unc_networksoft_num += intval($unc_productlist[$k]['uod_count']);
+                    }
+                    if($unc_productlist[$k]['unc_product_name'] == '智能化软件'){
+                        $unc_interlligencesoft_num += intval($unc_productlist[$k]['uod_count']);
+                    }
+                }
+
+                /*统计各非常规产品数量*/
+                $tableobj[$i]['unc_develop_num'] = $unc_develop_num;
+                $tableobj[$i]['unc_special_num'] = $unc_special_num;
+                $tableobj[$i]['unc_network_num'] = $unc_network_num;
+                $tableobj[$i]['unc_interlligence_num'] = $unc_interlligence_num;
+                $tableobj[$i]['unc_address_num'] = $unc_address_num;
+                $tableobj[$i]['unc_register_num'] = $unc_register_num;
+                $tableobj[$i]['unc_networksoft_num'] = $unc_networksoft_num;
+                $tableobj[$i]['unc_interlligencesoft_num'] = $unc_interlligencesoft_num;
+            }
+
+            return $tableobj;
         }
 
         /*导出订货确认单*/
-        public static function exportgoodsconfirmorder(){
-            return '123';
+        public static function exportgoodsconfirmorder($file_name,$file_extend,$template_name,$ret){
+            $root_url = $_SERVER['DOCUMENT_ROOT'];
+            $file_name = iconv("utf-8","gb2312",$file_name);
+            $template_name = iconv("utf-8","gb2312",$template_name);
+
+            $objReader = PHPExcel_IOFactory::createReader('Excel2007');
+            $objPHPExcel = $objReader->load($root_url."/templates/".$template_name);
+            $objPHPExcel->setActiveSheetIndex(0);
+            $objPHPExcel->getActiveSheet()->setTitle('sheet0');
+
+            $liststart = 0 ;
+            for($item=3; $item < count($ret)+3; $item++){
+                $objPHPExcel->getActiveSheet()->setCellValue('A'.($item+$liststart), $ret[$item-3]['order_date']);
+                //$objPHPExcel->getActiveSheet()->setCellValue('B3', $ret[$item]['发货日期']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C'.($item+$liststart), $ret[$item-3]['build_department_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('D'.($item+$liststart), $ret[$item-3]['build_user_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('E'.($item+$liststart), $ret[$item-3]['receiver_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('F'.($item+$liststart), $ret[$item-3]['receiver_address']);
+                /*订单状态*/
+                if($ret[$item-3]['cs_info_state'] == 1){
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), '处理中');
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), 0);
+                }else if($ret[$item-3]['cs_info_state'] == 2){
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), '已完成');
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), 1);
+                }
+                $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), $ret[$item-3]['product_number']);
+                
+                /*常规产品统计*/
+                if($ret[$item-3]['broadcast_num'] != 0)
+                $objPHPExcel->getActiveSheet()->setCellValue('N'.($item+$liststart), $ret[$item-3]['broadcast_num']);
+                if($ret[$item-3]['meeting_num'] != 0)
+                $objPHPExcel->getActiveSheet()->setCellValue('O'.($item+$liststart), $ret[$item-3]['meeting_num']);
+                if($ret[$item-3]['subway_num'] != 0)
+                $objPHPExcel->getActiveSheet()->setCellValue('P'.($item+$liststart), $ret[$item-3]['subway_num']);
+                if($ret[$item-3]['auxdi_num'] != 0)
+                $objPHPExcel->getActiveSheet()->setCellValue('Q'.($item+$liststart), $ret[$item-3]['auxdi_num']);
+                if($ret[$item-3]['record_num'] != 0)
+                $objPHPExcel->getActiveSheet()->setCellValue('R'.($item+$liststart), $ret[$item-3]['record_num']);
+
+                /*非常规产品统计*/
+                if($ret[$item-3]['unc_develop_num'] != 0)
+                $objPHPExcel->getActiveSheet()->setCellValue('S'.($item+$liststart), $ret[$item-3]['unc_develop_num']);
+                if($ret[$item-3]['unc_special_num'] != 0)
+                $objPHPExcel->getActiveSheet()->setCellValue('T'.($item+$liststart), $ret[$item-3]['unc_special_num']);
+                if($ret[$item-3]['unc_network_num'] != 0)
+                $objPHPExcel->getActiveSheet()->setCellValue('U'.($item+$liststart), $ret[$item-3]['unc_network_num']);
+                if($ret[$item-3]['unc_interlligence_num'] != 0)
+                $objPHPExcel->getActiveSheet()->setCellValue('V'.($item+$liststart), $ret[$item-3]['unc_interlligence_num']);
+                if($ret[$item-3]['unc_address_num'] != 0)
+                $objPHPExcel->getActiveSheet()->setCellValue('W'.($item+$liststart), $ret[$item-3]['unc_address_num']);
+                if($ret[$item-3]['unc_register_num'] != 0)
+                $objPHPExcel->getActiveSheet()->setCellValue('X'.($item+$liststart), $ret[$item-3]['unc_register_num']);
+                if($ret[$item-3]['unc_networksoft_num'] != 0)
+                $objPHPExcel->getActiveSheet()->setCellValue('Y'.($item+$liststart), $ret[$item-3]['unc_networksoft_num']);
+                if($ret[$item-3]['unc_interlligencesoft_num'] != 0)
+                $objPHPExcel->getActiveSheet()->setCellValue('Z'.($item+$liststart), $ret[$item-3]['unc_interlligencesoft_num']);
+
+                $lesslist = $ret[$item-3]['lessproductlist'];
+                if(count($lesslist) != 0 ){
+                    for($i=0;$i<count($lesslist);$i++){
+                        $objPHPExcel->getActiveSheet()->setCellValue('J'.($i+$item+$liststart), $lesslist[$i]['place_name']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('K'.($i+$item+$liststart), $lesslist[$i]['brand_name']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('L'.($i+$item+$liststart), $lesslist[$i]['model']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('M'.($i+$item+$liststart), $lesslist[$i]['ogcugi_count']);
+                    }
+                }
+                if(count($lesslist) > 1){
+                    $liststart += (count($lesslist)-1);
+                }
+            }
+
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="'.$file_name.'.'.$file_extend.'"');
+            header('Cache-Control: max-age=0');
+            ob_clean();  //关键
+            flush();     //关键
+            if($file_extend == 'xlsx'){
+                $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel2007');
+            }else if($file_extend == 'xls'){
+                $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+            }
+
+            $objWriter->save("php://output");  /*输出至浏览器*/
+            exit;        //关键
         }
 
         /*根据流水号和类型查询需打印的更换(0x01)/代用(0x06)/维修(0x04)/退货(0x03)/借样(0x02)确认单*/
@@ -2098,13 +2406,14 @@
         //根据cs_id获取确认单购买清单
         public static function getordergoodsbyid($cs_id)
         {
-            $sqlone ="select dsp_logistic.order_goods_manager.*,dsp_logistic.order_goods_logistics.*,dsp_logistic.product_info.*,";
+            $sqlone ="select dsp_logistic.order_goods_manager.*,dsp_logistic.order_goods_logistics.*,dsp_logistic.product_info.*,dsp_logistic.unc_product.*,";
             $sqlone .= "dsp_logistic.product_brand.*,dsp_logistic.product_place.* ,dsp_logistic.product_type.* from dsp_logistic.order_goods_manager ";
             $sqlone .= "left join dsp_logistic.order_goods_logistics on dsp_logistic.order_goods_logistics.order_goods_manager_id = dsp_logistic.order_goods_manager.order_goods_manager_id ";
             $sqlone .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.order_goods_manager.product_info_id ";
             $sqlone .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
             $sqlone .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
             $sqlone .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
+            $sqlone .= "left join dsp_logistic.unc_product on dsp_logistic.unc_product.unc_product_id = dsp_logistic.order_goods_logistics.ogl_unc_product_id ";
             $sqlone .= "where dsp_logistic.order_goods_manager.cs_id = '$cs_id' ";
             $tableobj = Db::query($sqlone);
             if(empty($tableobj))

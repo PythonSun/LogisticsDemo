@@ -11,11 +11,11 @@
 
 </head>
 <body>
-    <form class="layui-form layui-form-pane">
+    <form class="layui-form layui-form-pane" style="margin-top:40px;">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label">产品分类：</label>
-                <div class="layui-input-inline" style="max-width:120px">
+                <label class="layui-form-label Wheat">产品分类：</label>
+                <div class="layui-input-inline Wheat" >
                     <select id="product_type_id" name="type_name" lay-filter="type_name" >
                         <option value="" selected>请选择</option>
                         {volist name="producttypelist" id="vo"}
@@ -25,8 +25,8 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label">品牌：</label>
-                <div class="layui-input-inline" style="max-width:120px">
+                <label class="layui-form-label Wheat">品牌：</label>
+                <div class="layui-input-inline Wheat" >
                     <select id="brand_id" name="brand_name" lay-filter="brand_name">
                         <option value="" selected>请选择</option>
                         {volist name="brandlist" id="vo"}
@@ -36,62 +36,8 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label">型号：</label>
-                <div class="layui-input-inline">
-                    <input type="text" id="serachModelinfo" name="inputmodel">
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-
-            <div class="layui-inline">
-                <label class="layui-form-label">数量：</label>
-                <div class="layui-input-inline" style="max-width:120px">
-                    <input type="text" id="inputcount" name="inputcount">
-                </div>
-            </div>
-
-            <div class="layui-inline">
-                <label class="layui-form-label">单位：</label>
-                <div class="layui-input-inline" style="max-width:120px">
-                    <input type="text" id="inputunit" name="inputunit">
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">规格：</label>
-                <div class="layui-input-inline" style="max-width:120px">
-                    <input type="text" id="specification" name="specification">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">归还日期：</label>
-                <div class="layui-input-inline" style="max-width:120px">
-                    <input type="text" name="date" id="back_date" autocomplete="on" class="layui-input">
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">条码：</label>
-                <div class="layui-input-inline" style="max-width:120px">
-                    <input type="text" name="bar_code" id="bar_code">
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">原因：</label>
-                <div class="layui-input-inline" style="max-width:120px">
-                    <input type="text" name="replace_reason" id="replace_reason" lay-filter="replace_reason">
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">生产地：</label>
-                <div class="layui-input-inline" style="max-width:120px">
+                <label class="layui-form-label  Wheat">生产地：</label>
+                <div class="layui-input-inline Wheat"  >
                     <select id="place_id" name="place_name" lay-filter="place_name">
                         <option value="" selected>请选择</option>
                         {volist name="placelist" id="vo"}
@@ -101,8 +47,66 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label">非常规产品：</label>
+                <label class="layui-form-label Wheat">型号：</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="serachModelinfo" name="inputmodel" class="layui-input Wheat">
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+
+            <div class="layui-inline">
+<<<<<<< HEAD
+                <label class="layui-form-label Wheat">数量：</label>
+                <div class="layui-input-inline" >
+                    <input type="text" id="inputcount" name="inputcount" class="layui-input Wheat">
+=======
+                <label class="layui-form-label">数量：</label>
                 <div class="layui-input-inline" style="max-width:120px">
+                    <input type="number" id="inputcount" name="inputcount">
+>>>>>>> a188dd1b8e9abdbe29879144529b37120db6f3b7
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label Wheat">单位：</label>
+                <div class="layui-input-inline" >
+                    <input type="text" id="inputunit" name="inputunit" class="layui-input Wheat">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label Wheat">规格：</label>
+                <div class="layui-input-inline" >
+                    <input type="text" id="specification" name="specification" class="layui-input Wheat">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label Wheat">归还日期：</label>
+                <div class="layui-input-inline" >
+                    <input type="text" name="date" id="back_date" autocomplete="on" class="layui-input Wheat">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label Wheat">条码：</label>
+                <div class="layui-input-inline" >
+                    <input type="text" name="bar_code" id="bar_code" class="layui-input Wheat">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label Wheat">原因：</label>
+                <div class="layui-input-inline" >
+                    <input type="text" name="replace_reason" id="replace_reason" lay-filter="replace_reason" class="layui-input Wheat">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="display: inline-block;">
+            <div class="layui-inline ">
+                <label class="layui-form-label dark_blue">非常规产品：</label>
+                <div class="layui-input-inline dark_blue" >
                     <select id="unc_productid" name="unc_productname" lay-filter="unc_productname">
                         <option value="" selected>请选择</option>
                         {volist name="uncproductlist" id="vo1"}
@@ -111,29 +115,22 @@
                     </select>
                 </div>
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">状态：</label>
-                <div class="layui-input-inline" style="max-width:120px">
-                    <input type="radio" name="inputstate" title="已更换" value="已更换">
-                    <input type="radio" name="inputstate" title="未更换" value="未更换">
-                </div>
+        </div>
+        <div class="layui-form-item dark_blue" style="display: inline-block;" pane="">
+            <label class="layui-form-label dark_blue">状态：</label>
+            <div class="layui-input-block " >
+                <input type="radio" name="inputstate" title="已更换" value="已更换" >
+                <input type="radio" name="inputstate" title="未更换" value="未更换" >
             </div>
         </div>
-
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label">备注：</label>
+                <label class="layui-form-label dark_blue">备注：</label>
                 <div class="layui-input-inline" style="max-width:120px">
-                    <input type="text" name="comment" id="comment">
+                    <input type="text" name="comment" id="comment" class="layui-input dark_blue">
                 </div>
             </div>
         </div>
-        <!--<div class="layui-form-item">
-            <label class="layui-form-label">名称：</label>
-            <div class="layui-input-inline">
-                <input type="text" id="product_info_name" name="inputmodel">
-            </div>
-        </div>-->
     </form>
 </body>
 <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>

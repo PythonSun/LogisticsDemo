@@ -24,3 +24,9 @@ function detectinputfloat(object){
           object.value = object.value.match(/\d{1,}\.{0,1}\d{0,}/) == null ? '' :object.value.match(/\d{1,}\.{0,1}\d{0,}/);
     }
 }
+
+/*检测只能输入数字和字母*/
+function detectinputdataletter(object){
+	var value = $(object).val();
+    $(object).val(value.replace(/[\W|\_]/g,""));
+}

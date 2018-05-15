@@ -172,47 +172,47 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">总项数</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="product_number" id="product_number" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="product_number" id="product_number" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">公共广播</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivered_pa" id="delivered_pa" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="delivered_pa" id="delivered_pa" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">会议系统</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivered_conference" id="delivered_conference" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="delivered_conference" id="delivered_conference" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">订制</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivered_customization" id="delivered_customization" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="delivered_customization" id="delivered_customization" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">录播</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivered_record" id="delivered_record" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="delivered_record" id="delivered_record" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">地铁事业</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivered_metro" id="delivered_metro" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="delivered_metro" id="delivered_metro" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">澳斯迪</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivered_aux" id="delivered_aux" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="delivered_aux" id="delivered_aux" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">礼品</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivered_gift" id="delivered_gift" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="delivered_gift" id="delivered_gift" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">画册</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivered_album" id="delivered_album" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="number" name="delivered_album" id="delivered_album" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -300,13 +300,13 @@
                     ,position: 'fixed'
                     ,theme: 'molv'
                 });
-                //uploadpic
 
-                //执行实例      暂无
+                //执行实例
                 var uploadPic = upload.render({
                     elem: '#uploadpic' //绑定元素
                     ,method: 'POST'
                     ,acceptMime: 'image/*'
+<<<<<<< HEAD
                     ,url: "{:url('admin/addgoodsconfirmorder/getdepartmentinfo')}"
                     ,size:'204800'
                     ,done: function(res){
@@ -324,9 +324,22 @@
                         console.log(obj);
                         //文件上传前的回调
                     }
+=======
+                    ,url: "{:url('admin/addgoodsconfirmorder/uploadconsultform')}" //上传接口
+                    ,before: function(obj){
+                        top.layer.load(); //上传loading
+                    }
+                    ,done: function(res){
+                        top.layer.closeAll('loading');
+                        if(res.code == '1')
+                            top.layer.msg(res.msg,{icon:1});
+                        if(res.code == '0')
+                            top.layer.msg(res.msg,{icon:2});
+                    }   
+>>>>>>> 9317c036cacedcf31a04bb314af9ebdd2d38648e
                 });
                 //网页加载时  赋值使用
-                $(document).ready(function() {
+                $(document).ready(function(){
                     //判断此页面是新增还是编辑
                     //如果新增
                    // addLogisticsItem(null);                     //物流信息

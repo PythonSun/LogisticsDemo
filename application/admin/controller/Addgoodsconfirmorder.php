@@ -2,6 +2,8 @@
 namespace app\admin\controller;
 use think\Controller;
 use think\Input;
+use think\Request;
+use \think\File;
 
 class Addgoodsconfirmorder extends Controller
 {
@@ -437,6 +439,7 @@ class Addgoodsconfirmorder extends Controller
         return $ret_info;
     }
 
+<<<<<<< HEAD
     public function uploadfile(){
         print_r('******************');
         return;
@@ -453,6 +456,24 @@ class Addgoodsconfirmorder extends Controller
                 move_uploaded_file($_FILES["file"]["tmp_name"], "upload/" . $_FILES["file"]["name"]);
                 //echo '1';
             }
+=======
+    /*上传咨询表*/
+    public function uploadconsultform(){
+        $file = request()->file('file');
+        $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
+        if($info){
+            $res=[
+                'code'=>'1',
+                'msg'=>'上传成功',
+            ];
+            return json($res);
+        }else{
+            $res=[
+                'code'=>'0',
+                'msg'=>'上传失败',
+            ];
+            return json($res);
+>>>>>>> 9317c036cacedcf31a04bb314af9ebdd2d38648e
         }
     }
 }
