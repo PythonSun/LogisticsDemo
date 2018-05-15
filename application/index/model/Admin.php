@@ -440,6 +440,10 @@
                     {
                         $tableobj[$i]["cs_info_state"] = "备货";
                     }
+                    elseif ($state == 5)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "退回";
+                    }
 
                     if ($mode == 1)
                     $tableobj[$i]["transfer_fee_mode"] = "到付";
@@ -610,6 +614,10 @@
                     elseif ($state == 4)
                     {
                         $tableobj[$i]["cs_info_state"] = "备货";
+                    }
+                    elseif ($state == 5)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "退回";
                     }
 
                     if ($mode == 1)
@@ -789,6 +797,10 @@
                     elseif ($state == 4)
                     {
                         $tableobj[$i]["cs_info_state"] = "备货";
+                    }
+                    elseif ($state == 5)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "退回";
                     }
                 }
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
@@ -1057,12 +1069,14 @@
             $cs_info_state = $info['cs_info_state'];
             $complete_date = $info['complete_date'];
             $product_number = $info['product_number'];
-            $sql_value ="'{$cs_id}','{$custom_info_id}','{$delivery_info_id}','{$return_info_id}','{$payment_info_id}','{$cur_process_user_id}','{$pre_process_user_id}','{$cs_info_type}','{$can_edit}','{$write_date}','{$cs_info_state}','{$complete_date}','{$product_number}'";
+            $cs_examine_ids = $info['cs_examine_ids'];
+            $sql_value ="'{$cs_id}','{$custom_info_id}','{$delivery_info_id}','{$return_info_id}','{$payment_info_id}','{$cur_process_user_id}','{$pre_process_user_id}','{$cs_info_type}','{$can_edit}','{$write_date}','{$cs_info_state}','{$complete_date}','{$product_number}','$cs_examine_ids'";
             $sql = "INSERT INTO dsp_logistic.cs_info (cs_id,custom_info_id,delivery_info_id,return_info_id,payment_info_id,cur_process_user_id,pre_process_user_id
-,cs_info_type,can_edit,write_date,cs_info_state,complete_date,product_number) VALUES ({$sql_value}) ";
+,cs_info_type,can_edit,write_date,cs_info_state,complete_date,product_number,cs_examine_ids) VALUES ({$sql_value}) ";
             $sql.= "ON DUPLICATE KEY UPDATE custom_info_id = '{$custom_info_id}',delivery_info_id = '{$delivery_info_id}',return_info_id = '{$return_info_id}',payment_info_id = '{$payment_info_id}',";
             $sql.= "cur_process_user_id= '{$cur_process_user_id}',pre_process_user_id= '{$pre_process_user_id}',cs_info_type = '{$cs_info_type}',";
-            $sql.= "can_edit= '{$can_edit}',write_date= '{$write_date}',cs_info_state= '{$cs_info_state}',complete_date= '{$complete_date}',product_number= '{$complete_date}'";
+            $sql.= "can_edit= '{$can_edit}',write_date= '{$write_date}',cs_info_state= '{$cs_info_state}',complete_date= '{$complete_date}',product_number= '$product_number',";
+            $sql.= "cs_examine_ids= '$cs_examine_ids'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
@@ -1128,16 +1142,16 @@
         /*update payment_info*/
         public static function updatepaymentinfo($info){
             $payment_info_id = $info['payment_info_id'];
-            $is_pad = $info['is_pad'];
+            $is_paid = $info['is_paid'];
             $paid_date = $info['paid_date'];
             $customization_fee = $info['customization_fee'];
             $paid_bank = $info['paid_bank'];
-            $payment_info_comment = $info['comment'];
+            $payment_info_comment = $info['payment_info_comment'];
 //            $time_stamp = $info['time_stamp'];
 //            $user_id = $info['user_id'];
-            $sql_value ="'$payment_info_id','{$is_pad}','{$paid_date}','{$customization_fee}','{$paid_bank}','{$payment_info_comment}'";
-            $sql = "INSERT INTO dsp_logistic.payment_info (payment_info_id,is_pad,paid_date,customization_fee,paid_bank,comment,time_stamp,user_id) VALUES ({$sql_value})";
-            $sql.= "ON DUPLICATE KEY UPDATE is_pad = '$is_pad',paid_date = '$paid_date',customization_fee = '{$customization_fee}',";
+            $sql_value ="'$payment_info_id','{$is_paid}','{$paid_date}','{$customization_fee}','{$paid_bank}','{$payment_info_comment}'";
+            $sql = "INSERT INTO dsp_logistic.payment_info (payment_info_id,is_paid,paid_date,customization_fee,paid_bank,payment_info_comment) VALUES ({$sql_value})";
+            $sql.= "ON DUPLICATE KEY UPDATE is_paid = '$is_paid',paid_date = '$paid_date',customization_fee = '{$customization_fee}',";
             $sql.= "paid_bank= '$paid_bank',payment_info_comment= '$payment_info_comment'";
             $sqlret = Db::execute($sql);
             return $sqlret;
@@ -2391,13 +2405,14 @@
         //根据cs_id获取确认单购买清单
         public static function getordergoodsbyid($cs_id)
         {
-            $sqlone ="select dsp_logistic.order_goods_manager.*,dsp_logistic.order_goods_logistics.*,dsp_logistic.product_info.*,";
+            $sqlone ="select dsp_logistic.order_goods_manager.*,dsp_logistic.order_goods_logistics.*,dsp_logistic.product_info.*,dsp_logistic.unc_product.*,";
             $sqlone .= "dsp_logistic.product_brand.*,dsp_logistic.product_place.* ,dsp_logistic.product_type.* from dsp_logistic.order_goods_manager ";
             $sqlone .= "left join dsp_logistic.order_goods_logistics on dsp_logistic.order_goods_logistics.order_goods_manager_id = dsp_logistic.order_goods_manager.order_goods_manager_id ";
             $sqlone .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.order_goods_manager.product_info_id ";
             $sqlone .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
             $sqlone .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
             $sqlone .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
+            $sqlone .= "left join dsp_logistic.unc_product on dsp_logistic.unc_product.unc_product_id = dsp_logistic.order_goods_logistics.ogl_unc_product_id ";
             $sqlone .= "where dsp_logistic.order_goods_manager.cs_id = '$cs_id' ";
             $tableobj = Db::query($sqlone);
             if(empty($tableobj))
