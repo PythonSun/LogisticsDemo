@@ -389,26 +389,26 @@ class Addgoodsconfirmorder extends Controller
         $ofg_info_id = $_POST['ofg_info_id'];
         $unc_ofg_info_id = $_POST['unc_ofg_info_id'];*/
         $ret_info = array();
-        $cs_belong = \app\index\model\Admin::getclassinfobyproperty('cs_belong','cs_belong_id',$cs_belong_id);
+        $cs_belong = \app\index\model\Admin::getclassinfobyproperty('dsp_logistic.cs_belong','cs_belong_id',$cs_belong_id);
         $ret_info['cs_belong'] = "";
         if(!empty($cs_belong)){
             $ret_info['cs_belong'] = $cs_belong[0];
         }
-        $cs_info = \app\index\model\Admin::getclassinfobyproperty('order_goods_cs_info','cs_id',$cs_id);
+        $cs_info = \app\index\model\Admin::getclassinfobyproperty('dsp_logistic.order_goods_cs_info','cs_id',$cs_id);
         if (empty($cs_info)){
             return null;
         }
         $ret_info['cs_info'] = $cs_info[0];
         $ret_info['ofg_info'] = "";
         if ($ofg_info_id >= 1){
-            $ofg_info = \app\index\model\Admin::getclassinfobyproperty('ofg_info','ofg_info_id',$ofg_info_id);
+            $ofg_info = \app\index\model\Admin::getclassinfobyproperty('dsp_logistic.ofg_info','ofg_info_id',$ofg_info_id);
             if (!empty($ofg_info)){
                 $ret_info['ofg_info'] = $ofg_info[0];
             }
         }
         $ret_info['fee_info'] = "";
         if ($fee_info_id >= 1){
-            $fee_info = \app\index\model\Admin::getclassinfobyproperty('fee_info','fee_info_id',$fee_info_id);
+            $fee_info = \app\index\model\Admin::getclassinfobyproperty('dsp_logistic.fee_info','fee_info_id',$fee_info_id);
             if (!empty($fee_info)){
                 $ret_info['fee_info'] = $fee_info[0];
             }
@@ -416,7 +416,7 @@ class Addgoodsconfirmorder extends Controller
         $ret_info['unc_ofg_info'] = "";
         $ret_info['unc_ofg_detail'] = "";
         if ($unc_ofg_info_id >= 1){
-            $unc_ofg_info = \app\index\model\Admin::getclassinfobyproperty('unc_ofg_info','uoi_id',$unc_ofg_info_id);
+            $unc_ofg_info = \app\index\model\Admin::getclassinfobyproperty('dsp_logistic.unc_ofg_info','uoi_id',$unc_ofg_info_id);
             if (!empty($fee_info)){
                 $ret_info['unc_ofg_info'] = $unc_ofg_info[0];
                 $unc_ofg_detail = \app\index\model\Admin::getuncofgdetailbyid($unc_ofg_info_id);
@@ -432,13 +432,31 @@ class Addgoodsconfirmorder extends Controller
             $ret_info['ogcugi'] = $ogcugi;
         }
         $ret_info['logistic_info'] = "";
-        $logistric_info = \app\index\model\Admin::getclassinfobyproperty('logistics_info','cs_id',$cs_id);
+        $logistric_info = \app\index\model\Admin::getclassinfobyproperty('dsp_logistic.logistics_info','cs_id',$cs_id);
         if(!empty($logistric_info)){
             $ret_info['logistic_info'] = $logistric_info;
         }
         return $ret_info;
     }
 
+<<<<<<< HEAD
+    public function uploadfile(){
+        print_r('******************');
+        return;
+
+        if ($_FILES["file"]["error"] > 0) {
+            //echo "错误：: " . $_FILES["file"]["error"] . "<br>";
+        } else {
+            // 判断当期目录下的 upload 目录是否存在该文件
+            // 如果没有 upload 目录，你需要创建它，upload 目录权限为 777
+            if (file_exists("upload/" . $_FILES["file"]["name"])) {
+                //echo '0';
+            } else {
+                // 如果 upload 目录不存在该文件则将文件上传到 upload 目录下
+                move_uploaded_file($_FILES["file"]["tmp_name"], "upload/" . $_FILES["file"]["name"]);
+                //echo '1';
+            }
+=======
     /*上传咨询表*/
     public function uploadconsultform(){
         $file = request()->file('file');
@@ -455,6 +473,7 @@ class Addgoodsconfirmorder extends Controller
                 'msg'=>'上传失败',
             ];
             return json($res);
+>>>>>>> 9317c036cacedcf31a04bb314af9ebdd2d38648e
         }
     }
 }

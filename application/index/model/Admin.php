@@ -2354,10 +2354,11 @@
             $uod_requirement = $info['uod_requirement'];
             $uod_delivery_date = $info['uod_delivery_date'];
             $uod_comment = $info['uod_comment'];
-            $sql_value = "'{$uod_id}','{$unc_ofg_info_id}','{$product_info_id}','{$uod_count}','{$uod_unit}','{$uod_requirement}','{$uod_delivery_date}','{$uod_comment}'";
-            $sql = "INSERT INTO dsp_logistic.unc_ofg_detail (uod_id,unc_ofg_info_id,product_info_id,uod_count,uod_unit,uod_requirement,uod_delivery_date,uod_comment) VALUES ({$sql_value})";
+            $unc_product_id = $info['unc_product_id'];
+            $sql_value = "'{$uod_id}','{$unc_ofg_info_id}','{$product_info_id}','{$uod_count}','{$uod_unit}','{$uod_requirement}','{$uod_delivery_date}','{$uod_comment}','{$unc_product_id}'";
+            $sql = "INSERT INTO dsp_logistic.unc_ofg_detail (uod_id,unc_ofg_info_id,product_info_id,uod_count,uod_unit,uod_requirement,uod_delivery_date,uod_comment,unc_product_id) VALUES ({$sql_value})";
             $sql .= " ON DUPLICATE KEY UPDATE unc_ofg_info_id = '{$unc_ofg_info_id}',product_info_id = '{$product_info_id}',uod_count = '{$uod_count}'";
-            $sql .= ",uod_unit = '{$uod_unit}',uod_requirement = '{$uod_requirement}',uod_delivery_date = '{$uod_delivery_date}',uod_comment = '{$uod_comment}'";
+            $sql .= ",uod_unit = '{$uod_unit}',uod_requirement = '{$uod_requirement}',uod_delivery_date = '{$uod_delivery_date}',uod_comment = '{$uod_comment}',unc_product_id = '{$unc_product_id}'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
@@ -2440,13 +2441,17 @@
         //根据cs_id 获取非常规订单清单
         public static function getuncofgdetailbyid($unc_ofg_info_id)
         {
-            $sqlone ="select dsp_logistic.unc_ofg_detail.*,dsp_logistic.product_info.*,";
+            $sqlone ="select dsp_logistic.unc_ofg_detail.*,dsp_logistic.product_info.*,dsp_logistic.unc_product.*,";
             $sqlone .= "dsp_logistic.product_brand.*,dsp_logistic.product_place.* ,dsp_logistic.product_type.* from dsp_logistic.unc_ofg_detail ";
             //$sqlone .= "left join dsp_logistic.order_goods_logistics on dsp_logistic.order_goods_logistics.order_goods_manager_id = dsp_logistic.order_goods_cs_undeliver_goods_info.order_goods_manager_id ";
             $sqlone .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.unc_ofg_detail.product_info_id ";
+
+            $sqlone .= "left join dsp_logistic.unc_product on dsp_logistic.unc_product.unc_product_id = dsp_logistic.unc_ofg_detail.unc_product_id ";
+
             $sqlone .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
             $sqlone .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
             $sqlone .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
+
             $sqlone .= "where dsp_logistic.unc_ofg_detail.unc_ofg_info_id = '$unc_ofg_info_id' ";
             $tableobj = Db::query($sqlone);
             if(empty($tableobj))

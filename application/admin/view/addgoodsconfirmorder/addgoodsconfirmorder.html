@@ -304,7 +304,27 @@
                 //执行实例
                 var uploadPic = upload.render({
                     elem: '#uploadpic' //绑定元素
+                    ,method: 'POST'
                     ,acceptMime: 'image/*'
+<<<<<<< HEAD
+                    ,url: "{:url('admin/addgoodsconfirmorder/getdepartmentinfo')}"
+                    ,size:'204800'
+                    ,done: function(res){
+                        console.log(res);
+                        //上传完毕回调
+                    }
+                    ,error: function(obj){
+                        console.log(obj);
+                        //请求异常回调
+                    }
+                    ,choose: function (obj) {
+                        console.log(obj);
+                    }
+                    ,before: function (obj) {
+                        console.log(obj);
+                        //文件上传前的回调
+                    }
+=======
                     ,url: "{:url('admin/addgoodsconfirmorder/uploadconsultform')}" //上传接口
                     ,before: function(obj){
                         top.layer.load(); //上传loading
@@ -316,6 +336,7 @@
                         if(res.code == '0')
                             top.layer.msg(res.msg,{icon:2});
                     }   
+>>>>>>> 9317c036cacedcf31a04bb314af9ebdd2d38648e
                 });
                 //网页加载时  赋值使用
                 $(document).ready(function(){
@@ -410,6 +431,7 @@
                             itemInfo.uod_requirement = unc_ofg_items[i].uod_requirement;
                             itemInfo.uod_delivery_date = unc_ofg_items[i].uod_delivery_date;
                             itemInfo.uod_comment = unc_ofg_items[i].uod_comment;
+                            itemInfo.unc_product_id = unc_ofg_items[i].unc_product_id;
                             unc_ofg_detail[i] = itemInfo;
                         }
                     }
@@ -505,7 +527,6 @@
                     console.log("删除物流信息  ---------------------");
                     jq("input[name=onechoose]").each(function () {
                         console.log("删除物流信息  ************************");
-
                         var ischecked = jq(this).prop("checked");
 
                         if(ischecked){
@@ -533,9 +554,17 @@
                         btn:['保存','退出'],
                         yes:function (index,layero) {
                             var  iframeWin = top.window[layero.find('iframe')[0]['name']];
-                            uncofginfo = iframeWin.getData();
-                            console.log(index);
-                            top.layer.close(index);
+                            var  ret = iframeWin.getData();
+
+                            if (ret == false){
+
+                            }else if (ret == null){
+                                top.layer.close(index);
+                            }else {
+                                uncofginfo = ret;
+                                top.layer.close(index);
+                            }
+
                         },
                         btn2: function (index) {
                             console.log(index);
@@ -1112,6 +1141,7 @@
                         itemInfo.uod_requirement = unc_ofg_items[i].uod_requirement;
                         itemInfo.uod_delivery_date = unc_ofg_items[i].uod_delivery_date;
                         itemInfo.uod_comment = unc_ofg_items[i].uod_comment;
+                        itemInfo.unc_product_id = unc_ofg_items[i].unc_product_id;
                         unc_ofg_detail[i] = itemInfo;
                     }
                 }

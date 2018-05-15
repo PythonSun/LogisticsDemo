@@ -15,11 +15,15 @@ class Uncofginfoitem extends Controller
     {
         $producttype = \app\index\model\Admin::getclassinfo('product_type','product_type_id');
         $brand = \app\index\model\Admin::getclassinfo('product_brand','brand_id');
+        $unc_product_list= \app\index\model\Admin::getclassinfo('unc_product','unc_product_id');
         if (!empty($brand)){
             $this->assign('producttypelist',$producttype);
         }
         if (!empty($brand)){
             $this->assign('brandlist',$brand);
+        }
+        if (!empty($unc_product_list)){
+            $this->assign('unc_product_list',$unc_product_list);
         }
         return $this->fetch();
     }

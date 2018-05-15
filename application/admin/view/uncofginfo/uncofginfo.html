@@ -72,6 +72,7 @@
                         <th>品牌</th>
                         <th>生产地</th>
                         <th>型号</th>
+                        <th>非常规产品</th>
                         <th>数量</th>
                         <th>单位</th>
                         <th>订制要求</th>
@@ -96,7 +97,6 @@
             </div>
             <div class="layui-form-item">
                 <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save">保存</button>
                     <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="printorder">打印订货单</button>
                 </div>
             </div>
@@ -171,7 +171,6 @@
             //编辑或者新增Item 窗体，tableRowIndex：表序号 新增不填
             function openWindow(tableRowIndex) {
                 jq = layui.jquery;
-                console.log(tableRowIndex);
                 var rowIndex = "";
                 if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
 
@@ -243,6 +242,9 @@
                 var uod_requirement = itemData.uod_requirement
                 var uod_comment = itemData.uod_comment;
 
+                var unc_product_id = itemData.unc_product_id;
+                var unc_product_name = itemData.unc_product_name;
+
                 var new_tr = jq('#tableorder')[0].insertRow(rowIndex);//指定位置插入行
                 jq(new_tr).attr('uod_id',uod_id);
                 var col_0 = new_tr.insertCell(0);//添加列
@@ -255,18 +257,22 @@
                 col_3.innerHTML = "<td><a tag = '"+ place_id +"'>"+ place_name +"</a></td>";
                 var col_4 = new_tr.insertCell(4);
                 col_4.innerHTML = "<td><a tag='" + product_info_id + "'>"+ model +"</a></td>";
+
                 var col_5 = new_tr.insertCell(5);
-                col_5.innerHTML = "<td><a>"+ uod_count +"</a></td>";
+                col_5.innerHTML = "<td><a tag='" + unc_product_id + "'>"+ unc_product_name +"</a></td>";
+
                 var col_6 = new_tr.insertCell(6);
-                col_6.innerHTML = "<td><a>"+ uod_unit +"</a></td>";
+                col_6.innerHTML = "<td><a>"+ uod_count +"</a></td>";
                 var col_7 = new_tr.insertCell(7);
-                col_7.innerHTML = "<td><a>"+ uod_requirement +"</a></td>";
+                col_7.innerHTML = "<td><a>"+ uod_unit +"</a></td>";
                 var col_8 = new_tr.insertCell(8);
-                col_8.innerHTML = "<td><a>"+ uod_delivery_date +"</a></td>";
+                col_8.innerHTML = "<td><a>"+ uod_requirement +"</a></td>";
                 var col_9 = new_tr.insertCell(9);
-                col_9.innerHTML = "<td><a>"+ uod_comment +"</a></td>";
+                col_9.innerHTML = "<td><a>"+ uod_delivery_date +"</a></td>";
                 var col_10 = new_tr.insertCell(10);
-                col_10.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
+                col_10.innerHTML = "<td><a>"+ uod_comment +"</a></td>";
+                var col_11 = new_tr.insertCell(11);
+                col_11.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
             }
             //获取整个表数据
             function getTableDataToDBObject(){
@@ -310,11 +316,14 @@
                 itemInfo.model = rowdata[4]['text'];
                 //DB unc_ofg_detail
                 itemInfo.uod_id = uod_id === undefined ? "": uod_id;
-                itemInfo.uod_count = rowdata[5]['text'];
-                itemInfo.uod_unit = rowdata[6]['text'];
-                itemInfo.uod_requirement = rowdata[7]['text'];
-                itemInfo.uod_delivery_date = rowdata[8]['text'];
-                itemInfo.uod_comment = rowdata[9]['text'];
+                itemInfo.uod_count = rowdata[6]['text'];
+                itemInfo.uod_unit = rowdata[7]['text'];
+                itemInfo.uod_requirement = rowdata[8]['text'];
+                itemInfo.uod_delivery_date = rowdata[9]['text'];
+                itemInfo.uod_comment = rowdata[10]['text'];
+
+                itemInfo.unc_product_id = rowdata[5]['tag'];
+                itemInfo.unc_product_name = rowdata[5]['text'];
                 return itemInfo;
             }
             //父级调用 获取参数
@@ -345,7 +354,34 @@
                  && uoi_custom_name == "" && uoi_to_place == "" && uoi_project_name == "" && uoi_provider_name == ""){
                     return null;
                 }
-                return retData;
+                if (uoi_manual_ofg_id == ""){
+                    layer.msg('订单编号不能为空！',{icon:2});
+                    return false;
+                }
+                var retbo = false;
+                jq.ajax({
+                    url: "{:url('admin/uncofginfo/checkid')}",//php文件路径
+                    data: {
+                       id:uoi_manual_ofg_id,
+                        uoi_id:uoi_id,
+                    },
+                    type: 'POST',
+                    async: false,
+                    success: function(e) {
+                        if(e){
+                            retbo = true;
+                        }else if(!e){
+                            layer.msg('订单编号已经存在！',{icon:2});
+                            retbo = false;
+                        }
+                    }
+                })
+                if (retbo){
+                    return retData;
+                }
+                else {
+                    return false;
+                }
             }
         </script>
     </body>
