@@ -90,9 +90,8 @@ class Queryreplaceconfirmorder extends Controller
         $param = json_decode($_GET['param']);
         $file_name = $_GET['file_name'];
         $file_extend = $_GET['file_extend'];
-        /*查询更换确认单*/
+
         $ret = \app\index\model\Admin::queryexportcsinfoconfirmorder($param,$type);
-        /*导出更换确认单*/
         \app\index\model\Admin::exportcsinfoconfirmorder($file_name,$file_extend,$template_name,$ret);
     }
 }
