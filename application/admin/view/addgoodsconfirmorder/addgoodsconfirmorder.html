@@ -305,14 +305,9 @@
                 var uploadPic = upload.render({
                     elem: '#uploadpic' //绑定元素
                     ,method: 'POST'
+                    ,url: "{:url('admin/addgoodsconfirmorder/uploadconsultform')}" //上传接口
                     ,acceptMime: 'image/*'
-<<<<<<< HEAD
-                    ,url: "{:url('admin/addgoodsconfirmorder/getdepartmentinfo')}"
                     ,size:'204800'
-                    ,done: function(res){
-                        console.log(res);
-                        //上传完毕回调
-                    }
                     ,error: function(obj){
                         console.log(obj);
                         //请求异常回调
@@ -320,12 +315,7 @@
                     ,choose: function (obj) {
                         console.log(obj);
                     }
-                    ,before: function (obj) {
-                        console.log(obj);
-                        //文件上传前的回调
-                    }
-=======
-                    ,url: "{:url('admin/addgoodsconfirmorder/uploadconsultform')}" //上传接口
+
                     ,before: function(obj){
                         top.layer.load(); //上传loading
                     }
@@ -335,8 +325,7 @@
                             top.layer.msg(res.msg,{icon:1});
                         if(res.code == '0')
                             top.layer.msg(res.msg,{icon:2});
-                    }   
->>>>>>> 9317c036cacedcf31a04bb314af9ebdd2d38648e
+                    }
                 });
                 //网页加载时  赋值使用
                 $(document).ready(function(){
