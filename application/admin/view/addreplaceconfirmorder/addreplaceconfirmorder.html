@@ -26,11 +26,17 @@
                     <div class="layui-input-inline ">
                         <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input light_gray dark_blue_disabled"> </div>
                 </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label light_gray">流水号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="cs_id" id="cs_id" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
+                </div>
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">状态</label>
                     <div class="layui-input-inline dark_blue ">
                         <select name="cs_info_state" id = "cs_info_state" lay-filter="cs_info_state" class="dark_blue_disabled">
-                            <option value="" disabled="" >选择</option>
+                            <option value=""  >选择</option>
                             <option value="1" selected="">处理中</option>
                             <option value="2">已完成</option>
                             <option value="3">取消</option>
@@ -342,30 +348,19 @@
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">订制费用</label>
                     <div class="layui-input-inline">
-<<<<<<< HEAD
-                        <input type="text" name="customization_fee" id = "customization_fee" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled"> </div>
-=======
-                        <input type="text" name="customization_fee" id = "customization_fee" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue" oninput="detectinputfloat(this);"> </div>
->>>>>>> a188dd1b8e9abdbe29879144529b37120db6f3b7
+                        <input type="text" name="customization_fee" id = "customization_fee" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputfloat(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">运费</label>
                     <div class="layui-input-inline">
-<<<<<<< HEAD
-                        <input type="text" name="paid_bank" id = "paid_bank" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled"> </div>
-=======
-                        <input type="text" name="paid_bank" id = "paid_bank" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue" oninput="detectinputfloat(this);"> </div>
->>>>>>> a188dd1b8e9abdbe29879144529b37120db6f3b7
+                        <input type="text" name="paid_bank" id = "paid_bank" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputfloat(this);"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label dark_blue">备注</label>
                 <div class="layui-input-block">
-<<<<<<< HEAD
-                    <input type="text" name="payment_info_comment" id="payment_info_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled"> </div>
-=======
-                    <input type="text" name="payment_info_comment" id="payment_info_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue" oninput="detectinputtext(this);"> </div>
->>>>>>> a188dd1b8e9abdbe29879144529b37120db6f3b7
+                   <input type="text" name="payment_info_comment" id="payment_info_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
+
             </div>
             <div class="layui-form-item">
                 <div class="layui-btn-container">
@@ -481,11 +476,11 @@
 
 
                 jq(document).ready(function(){
-
                     var cs_id = "<?php echo $cs_id?>";
-                    var cs_id ="<?php echo $current_user_type?>";
+                    var current_user_type ="<?php echo $current_user_type?>";
                     userPower();
                     jq('#cs_info_state').attr('value',1);
+                    form.render('select');
                     if(cs_id == ""){
                         addLogisticsItem(null);
 
