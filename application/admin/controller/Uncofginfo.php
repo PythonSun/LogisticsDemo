@@ -22,4 +22,23 @@ class Uncofginfo extends Controller
         //$this->assign('user_name',$login_user_name);
         return $this->fetch();
     }
+    public function checkid(){
+        $uoi_manual_ofg_id = $_POST['id'];
+        $uoi_id = $_POST['uoi_id'];
+        $unc_ofg_info = \app\index\model\Admin::getclassinfobyproperty('dsp_logistic.unc_ofg_info','uoi_manual_ofg_id',$uoi_manual_ofg_id);
+        if (empty($unc_ofg_info)){
+            return true;
+        }else{
+            if ($uoi_id == ""){
+                return false;
+            }
+            $length = count($unc_ofg_info);
+            for ($i = 0; $i < $length; $i++){
+                if ($uoi_id != $unc_ofg_info[$i]['uoi_id']){
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
 }

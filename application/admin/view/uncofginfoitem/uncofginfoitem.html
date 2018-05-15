@@ -15,22 +15,39 @@
             <label class="layui-form-label Wheat">产品分类：</label>
             <div class="layui-input-inline Wheat" style="max-width:120px">
                 <select id="product_type_id" name="type_name" lay-filter="type_name">
-                    <option value="" selected>请选择</option> {volist name="producttypelist" id="vo"}
-                    <option value={$vo.product_type_id}>{$vo.product_type_name}</option> {/volist} </select>
+                    <option value="" selected>请选择</option>
+                    {volist name="producttypelist" id="vo"}
+                    <option value={$vo.product_type_id}>{$vo.product_type_name}</option>
+                    {/volist}
+                </select>
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label Wheat">品牌：</label>
             <div class="layui-input-inline Wheat" style="max-width:120px">
                 <select id="brand_id" name="brand_name" lay-filter="brand_name">
-                    <option value="" selected>请选择</option> {volist name="brandlist" id="vo"}
-                    <option value={$vo.brand_id}>{$vo.brand_name}</option> {/volist} </select>
+                    <option value="" selected>请选择</option>
+                    {volist name="brandlist" id="vo"}
+                    <option value={$vo.brand_id}>{$vo.brand_name}</option>
+                    {/volist}
+                </select>
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label Wheat">型号：</label>
             <div class="layui-input-inline">
                 <input type="text" id="serachModelinfo" name="inputmodel" class="layui-input Wheat"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">非常规产品：</label>
+            <div class="layui-input-inline Wheat" style="max-width:120px">
+                <select id="unc_product_id" name="unc_product_id" lay-filter="unc_product_id">
+                    <option value="" selected>请选择</option>
+                    {volist name="unc_product_list" id="vo"}
+                    <option value={$vo.unc_product_id}>{$vo.unc_product_name}</option>
+                    {/volist}
+                </select>
+            </div>
         </div>
     </div>
     <div class="layui-form-item">
@@ -110,7 +127,7 @@
         console.log(data);
         document.getElementById('product_type_id').value = data.product_type_id;
         document.getElementById('brand_id').value = data.brand_id;
-
+        document.getElementById('unc_product_id').value = data.unc_product_id;
         //jq('#product_type_id').attr('value',data.product_type_id);
         //jq('#brand_id').attr('value',data.brand_id);
         jq('#serachModelinfo').val(data.model);
@@ -128,12 +145,17 @@
         var jq = layui.jquery;
         var product_type_id = jq('#product_type_id').val();
         var brand_id = jq('#brand_id').val();
+        var unc_product_id = jq('#unc_product_id').val();
         if(product_type_id == "") {
             layer.msg('请选择产品分类！', { icon: 2 });
             return null;
         }
         if(brand_id == "") {
             layer.msg('请选择品牌！', { icon: 2 });
+            return null;
+        }
+        if (unc_product_id == ""){
+            layer.msg('请选择非常规品牌！',{icon:2});
             return null;
         }
         var model = jq('#serachModelinfo').val();
@@ -165,6 +187,9 @@
         orderItem.brand_id = brand_id;
         var obj1 = document.getElementById("brand_id");
         orderItem.brand_name = obj1.options[obj1.selectedIndex].text;
+        var  obj2 = document.getElementById('unc_product_id');
+        orderItem.unc_product_name = obj2.options[obj2.selectedIndex].text;
+        orderItem.unc_product_id = unc_product_id;
         orderItem.model = model;
         orderItem.uod_id = uod_id;
         orderItem.uod_count = uod_count;
