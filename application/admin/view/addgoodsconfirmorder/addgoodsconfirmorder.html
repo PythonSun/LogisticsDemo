@@ -19,7 +19,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">日期</label>
                     <div class="layui-input-inline">
-                        <input type="text" disabled name="date1" id="date1" autocomplete="on" class="layui-input light_gray" value="{$date}">
+                        <input type="text" disabled name="cs_belong_create_time" id="cs_belong_create_time" autocomplete="on" class="layui-input light_gray" value="{$date}">
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -37,7 +37,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">状态</label>
                     <div class="layui-input-inline dark_blue">
-                        <select name="order_goods_cs_info" id="order_goods_cs_info">
+                        <select name="cs_info_state" id="cs_info_state">
                             <option value="" disabled="" selected="">选择</option>
                             <option value="0">空</option>
                             <option value="1">处理中</option>
@@ -52,7 +52,7 @@
             <div class="layui-form-item">
                 <div class="layui-btn-container">
                     <button id="btn_add_logistics_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_add_logistics_item">添加物流</button>
-                    <button id="btn_del_logistics_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_add_logistics_item">删除</button>
+                    <button id="btn_del_logistics_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_del_logistics_item">删除</button>
 
                     <button id="btn_test" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_test">测试按钮</button>
                 </div>
@@ -80,7 +80,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">总部门：</label>
                     <div class="layui-input-inline Wheat">
-                        <select id="company_id" name="company_id" lay-filter="company_id">
+                        <select id="build_organize_id" name="build_organize_id" lay-filter="build_organize_id">
                             <option value="" selected>请选择</option>
                             {volist name="companylist" id="vo"}
                             <option value="{$vo.organize_id}">{$vo.organize_name}</option>
@@ -91,7 +91,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">子部门</label>
                     <div class="layui-input-inline Wheat">
-                        <select id="department_id" name="department_id" lay-filter="department_id">
+                        <select id="build_department_id" name="build_department_id" lay-filter="build_department_id">
                             <option value="" selected>请选择</option>
                         </select>
                     </div>
@@ -138,7 +138,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">运费方式</label>
                     <div class="layui-input-inline Wheat">
-                        <select name="transfer_mode">
+                        <select name="transfer_mode" id="transfer_mode">
                             <option value="" disabled="" selected="">选择</option>
                             <option value="1">到付</option>
                             <option value="2">现金</option>
@@ -252,6 +252,17 @@
         <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="/static/js/commondetect.js"></script>
         <script type="text/javascript">
+            var cs_id = "";   //订单id 新增无；
+            var ofg_info_id = "";
+            var fee_info_id = "";
+            var unc_ofg_info_id = "";
+            var consult_sheet_file = "";
+            var cs_belong_id = "";
+            var cs_belong_create_time = "";
+            var ofg_info_id = "";
+            var fee_info_id = "";
+            var unc_ofg_info_id = "";
+            var htmlMode = 0; //当前页面模式 说明：0:新增 1：编辑
             var uncofginfo = null;      //非常规订单数据 包含unc_ofg_info，清单明细：搜索unc_ofg_items，删除表del_unc_ofg_detail_id_arr
             var del_logistics_id_arr = new Array();//删除物流信息id
             var del_unc_ofg_detail_id_arr = new Array();//删除非定型订单明细id
@@ -265,7 +276,7 @@
                     laydate = layui.laydate;
                 /*日期*/
                 laydate.render({
-                    elem: '#date1'
+                    elem: '#cs_belong_create_time'
                     ,position: 'fixed'
                     ,theme: 'molv'
                 });
@@ -315,7 +326,13 @@
                     // 添加订货确认单未发货清单
                     // tableIndex：表行 1开始，
                     // data：order_goods_cs_undeliver_goods_info，product_info，product_type，product_brand，product_place，5个表数据
-                    //
+                    var order_info = {$order_info};
+                    if(order_info == "-1"){
+                        addLogisticsItem(null);
+                        return ;
+                    }
+                    setDBDateToHtml(order_info);
+                    layui.form.render('select');
                 });
                 //监听提交
                 form.on('submit(save)', function (uidata) {
@@ -355,7 +372,7 @@
                     console.log(data);
                     console.log('下列输入物流信息：');
                     console.log(logistics_info);
-                    var order_goods_cs_info = orderGoodsInfo(data);
+                    var order_goods_cs_info = getorderGoodsInfo(data);
                     console.log('下列输入订货确认单信息：');
                     console.log(order_goods_cs_info);
                     var cs_belong = csBelong(data);
@@ -436,18 +453,22 @@
                     return false;
                 });
                 //监听选择公司
-                form.on('select(company_id)',function (data) {
+                form.on('select(build_organize_id)',function (data) {
+                    jq('#build_department_id').empty();
+                    jq('#user_id').empty();
+                    jq('#build_department_id').append("<option value='' selected>请选择</option>");
                     jq.post("{:url('admin/addgoodsconfirmorder/getdepartmentinfo')}",{'param':data.value},function (data) {
                         //console.log(data);
                         for (var item in data){
-                            jq('#department_id').append("<option value='" + data[item]['organize_id'] + "'>" + data[item]['organize_name'] + "</option>>");
+                            jq('#build_department_id').append("<option value='" + data[item]['organize_id'] + "'>" + data[item]['organize_name'] + "</option>>");
                         }
                         form.render('select');
                     })
                 });
                 //监听选择部门
-                form.on('select(department_id)',function (data) {
-
+                form.on('select(build_department_id)',function (data) {
+                    jq('#user_id').empty();
+                    jq('#user_id').append("<option value='' selected>请选择</option>");
                     jq.post("{:url('admin/addgoodsconfirmorder/getdspmanagerinfo')}",{'param':data.value},function (data) {
                         for (var item in data){
                             jq('#user_id').append("<option value='" + data[item]['user_id'] + "' phone='" + data[item]['phone'] + "'>" + data[item]['fullname'] + "</option>>");
@@ -478,17 +499,22 @@
                 });
                 //删除物流信息
                 jq('#btn_del_logistics_item').click(function(){
+                    console.log("删除物流信息  ---------------------");
                     jq("input[name=onechoose]").each(function () {
+                        console.log("删除物流信息  ************************");
+
                         var ischecked = jq(this).prop("checked");
+
                         if(ischecked){
-                            var logistics_id = jq(this).parent().parent().attr("logistics_id");
-                            jq(this).parent().parent().remove();
+                            var logistics_id = jq(jq(this).parent().parent()).attr("logistics_id");
+                            jq(jq(this).parent().parent()).remove();
                             if (logistics_id === undefined || logistics_id == ""){
                                 return;
                             }
-                            del_logistics_id_arr.pause(logistics_id);
+                            del_logistics_id_arr.push(logistics_id);
                         }
                     });
+                    console.log("删除物流信息  +++++++++++++++++++");
                     return false;
                 });
                 //非定型订单弹窗
@@ -505,9 +531,11 @@
                         yes:function (index,layero) {
                             var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                             uncofginfo = iframeWin.getData();
-                            layer.close(index);
+                            console.log(index);
+                            top.layer.close(index);
                         },
                         btn2: function (index) {
+                            console.log(index);
                             layer.close(index);
                         }
                     });
@@ -527,11 +555,11 @@
                 //删除行
                 jq(document).on('click', '.del_btn', function(){
                     var text = jq(this).parent().parent();
-                    var uod_id = jq(text[0].cells[0].innerHTML).attr("uod_id");
-                    if (uod_id === undefined || uod_id == ""){
+                    var ogcugi_id = jq(text).attr("ogcugi_id");
+                    if (ogcugi_id === undefined || ogcugi_id == ""){
                         //return;
                     }else {
-                        del_ogcugi_id_arr.push(id);
+                        del_ogcugi_id_arr.push(ogcugi_id);
                     }
                     jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());
                 });
@@ -597,15 +625,15 @@
                 });
             }
             //订货确认单信息
-            function orderGoodsInfo(data) {
+            function getorderGoodsInfo(data) {
                 var order_goods_cs_info = new Object();
-                order_goods_cs_info.cs_id = '';
-                order_goods_cs_info.ofg_info_id = '';
-                order_goods_cs_info.fee_info_id = '';
+                order_goods_cs_info.cs_id = cs_id;
+                order_goods_cs_info.ofg_info_id = ofg_info_id;
+                order_goods_cs_info.fee_info_id = fee_info_id;
                 order_goods_cs_info.order_date = data['order_date'];
                 order_goods_cs_info.delivery_date_reply = data['delivery_date_reply'];
-                order_goods_cs_info.unc_ofg_info_id = -1;
-                order_goods_cs_info.consult_sheet_file = '';                                    //咨询单文件名（暂无）
+                order_goods_cs_info.unc_ofg_info_id = unc_ofg_info_id;
+                order_goods_cs_info.consult_sheet_file = consult_sheet_file;                                    //咨询单文件名（暂无）
                 order_goods_cs_info.delivered_total = data['transfer_mode'];
                 order_goods_cs_info.delivered_pa = data['delivered_pa'] == "" ? 0 : data['delivered_pa'];
                 order_goods_cs_info.delivered_conference = data['delivered_conference'] == "" ? 0 : data['delivered_conference'];
@@ -616,14 +644,14 @@
                 order_goods_cs_info.delivered_gift = data['delivered_gift'] == "" ? 0 : data['delivered_gift'];
                 order_goods_cs_info.delivered_album = data['delivered_album'] == "" ? 0 : data['delivered_album'];
                 order_goods_cs_info.product_number = data['product_number'] == "" ? 0 : data['product_number'];
-                order_goods_cs_info.cs_info_state = data['order_goods_cs_info'] == "" ? -1: data['order_goods_cs_info'];
+                order_goods_cs_info.cs_info_state = data['cs_info_state'] == "" ? -1: data['cs_info_state'];
                 return order_goods_cs_info;
             }
             //订单信息
             function ofgInfo(data) {
 
                 var ofg_info = new Object();
-                ofg_info.ofg_info_id = '';                 //后台添加
+                ofg_info.ofg_info_id = ofg_info_id;                 //后台添加
                 ofg_info.receiver_name = data['receiver_name'];
                 ofg_info.receiver_phone = data['receiver_phone'];
                 ofg_info.receiver_address = data['receiver_address'];
@@ -633,7 +661,7 @@
             //费用情况
             function feeInfo(data) {
                 var fee_info = new Object();
-                fee_info.fee_info_id = '';
+                fee_info.fee_info_id = fee_info_id;
                 var customization_fee = data['customization_fee'];
                 if (typeof(customization_fee) == 'undefined' || customization_fee == ""){
                     customization_fee = -1;
@@ -653,14 +681,15 @@
             function csBelong(data) {
                 var jq = layui.jquery;
                 var cs_belong = new Object();
-                cs_belong.cs_id = data['cs_id'];
-                cs_belong.build_organize_id = data['company_id'];
+                cs_belong.cs_belong_id = cs_belong_id;
+                cs_belong.cs_id = cs_id;
+                cs_belong.build_organize_id = data['build_organize_id'];
                 cs_belong.build_user_id = data['user_id'];
-                cs_belong.cs_belong_create_time = null;
+                cs_belong.cs_belong_create_time = cs_belong_create_time;
                 cs_belong.build_user_name = jq("#user_id").find("option:selected").text();
-                cs_belong.build_organize_name = jq("#company_id").find("option:selected").text();
-                cs_belong.build_department_id = data['department_id'];
-                cs_belong.build_department_name = jq("#department_id").find("option:selected").text();
+                cs_belong.build_organize_name = jq("#build_organize_id").find("option:selected").text();
+                cs_belong.build_department_id = data['build_department_id'];
+                cs_belong.build_department_name = jq("#build_department_id").find("option:selected").text();
                 return cs_belong;
             }
             //获取物流信息
@@ -700,7 +729,6 @@
                     logistics_info.count = count;
                     logistics_info.user_id = user_id;                         //登陆ID
                     logistics_info.time_stamp = time_stamp === "" ? "2000-01-01": time_stamp;                          //无
-                    console.log(logistics_info);
                     retArray[i - 1] = logistics_info;
                 }
                 return retArray;
@@ -799,8 +827,11 @@
                 return uncofginfo;
             }
             //添加一条物流信息 data == null 表示新增一条空数据
-            function addLogisticsItem(data) {
+            function addLogisticsItem(data,tableindex) {
                 var jq = layui.jquery;
+                if (!tableindex){
+                    tableindex = jq('#tablelogistics')[0].rows.length;
+                }
                 var laydate = layui.laydate;
                 var form = layui.form;
                 var logistics_id = "";
@@ -821,8 +852,8 @@
                     user_id = data.user_id;//data['user_id'];                         //登陆ID
                     time_stamp = data.time_stamp = '2000-01-01';                           //无
                 }
-                var rows = jq('#tablelogistics')[0].rows.length;
-                var new_tr = jq('#tablelogistics')[0].insertRow(rows);//指定位置插入行
+
+                var new_tr = jq('#tablelogistics')[0].insertRow(tableindex);//指定位置插入行
                 jq(new_tr).attr("logistics_id",logistics_id);
                 jq(new_tr).attr("cs_id",cs_id);
                 jq(new_tr).attr("goods_yard_name",goods_yard_name);
@@ -835,133 +866,290 @@
                 var col_0 = new_tr.insertCell(0);//添加列
                 col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' autocomplete='on' class='layui-input Wheat'></td>";
                 var col_1 = new_tr.insertCell(1);//添加列
-                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item'></td>";
+                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item' value='"+ delivery_date +"'></td>";
                 jq.each(jq(".time-item"),function(){
                     laydate.render({ elem: this });
                 });
                 var col_2 = new_tr.insertCell(2);//添加列
-                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ goods_yard_name +"'></td>";
                 var col_3 = new_tr.insertCell(3);//添加列
-                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ transfer_order_num +"'></td>";
                 var col_4 = new_tr.insertCell(4);//添加列
-                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat'></td>";
+                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ count +"'></td>";
                 form.render('checkbox');
             }
             //将数据显示
-            function setDBDateToHtml(data) {  //缺文件
-                var cs_id = data.cs_id;
-                var cs_belong_id = data.cs_belong_id;
-                var fee_info_id = data.fee_info_id;
-                var ofg_info_id = data.ofg_info_id;
-                var unc_ofg_info_id = data.unc_ofg_info_id;
-
-
+            function setDBDateToHtml(dbData) {  //缺文件
                 var jq = layui.jquery;
                 jq('#save').addClass('hide');
-                jq.ajax({
-                    url:"{:url('admin/addgoodsconfirmorder/getorderinfo')}",
-                    data:{
-                        cs_id:cs_id,
-                        cs_belong_id:cs_belong_id,
-                        fee_info_id:fee_info_id,
-                        ofg_info_id:ofg_info_id,
-                        unc_ofg_info_id:unc_ofg_info_id
-                    },
-                    type:'POST',
-                    success:function (dbData) {
-                        console.log(dbData);
-                        if (!dbData){
-                            return;
-                        }
-                        var order_goods_cs_info = dbData.cs_info;
-                        var fee_info = dbData.fee_info;
-                        var cs_belong = dbData.cs_info;
-                        var ofg_info = dbData.ofg_info;
-                        var unc_ofg_detail = dbData.unc_ofg_detail;
-                        var unc_ofg_info = dbData.unc_ofg_info;
-                        var ogcugi = dbData.ogcugi;
+                if (!dbData){
+                    layer.msg('数据加载失败！',{icon:2});
+                    return;
+                }
+                console.log(dbData);
+                var order_goods_cs_info = dbData.cs_info;
+                var fee_info = dbData.fee_info;
+                var cs_belong = dbData.cs_belong;
+                var ofg_info = dbData.ofg_info;
+                var unc_ofg_detail = dbData.unc_ofg_detail;
+                var unc_ofg_info = dbData.unc_ofg_info;
+                var ogcugi = dbData.ogcugi;
+                var logistic_info = dbData.logistic_info;
 
+                //order_goods_cs_info
+                //order_goods_info
+                //fee_info
+                cs_id = order_goods_cs_info.cs_id;
+                ofg_info_id = order_goods_cs_info.ofg_info_id;
+                fee_info_id = order_goods_cs_info.fee_info_id;
+                unc_ofg_info_id = order_goods_cs_info.unc_ofg_info_id;
+                consult_sheet_file = order_goods_cs_info.consult_sheet_file;
+                jq('#cs_id').val(cs_id);
+                jq('#order_date').val(order_goods_cs_info.order_date);
+                jq('#product_number').val(order_goods_cs_info.product_number);
+                jq('#delivered_customization').val(order_goods_cs_info.delivered_customization);
+                jq('#delivered_album').val(order_goods_cs_info.delivered_album);
+                jq('#delivered_gift').val(order_goods_cs_info.delivered_gift);
+                jq('#delivered_aux').val(order_goods_cs_info.delivered_aux);
+                jq('#delivered_metro').val(order_goods_cs_info.delivered_metro);
+                jq('#delivered_record').val(order_goods_cs_info.delivered_record);
+                jq('#delivered_conference').val(order_goods_cs_info.delivered_conference);
+                jq('#delivered_pa').val(order_goods_cs_info.delivered_pa);
+                //jq('#consult_sheet_file').val(order_goods_cs_info.consult_sheet_file);
+                //jq('#unc_ofg_info_id').val(order_goods_cs_info.unc_ofg_info_id);
+                jq('#delivery_date_reply').val(order_goods_cs_info.delivery_date_reply);
+                document.getElementById('cs_info_state').value = order_goods_cs_info.cs_info_state;
 
-                        //order_goods_cs_info
-                        //order_goods_info
-                        //fee_info
-                        jq('#cs_id').val(order_goods_cs_info.cs_id);
-                        jq('#order_date').val(order_goods_cs_info.order_date);
-                        jq('#product_number').val(order_goods_cs_info.product_number);
-                        jq('#delivered_customization').val(order_goods_cs_info.delivered_customization);
-                        jq('#delivered_album').val(order_goods_cs_info.delivered_album);
-                        jq('#delivered_gift').val(order_goods_cs_info.delivered_gift);
-                        jq('#delivered_aux').val(order_goods_cs_info.delivered_aux);
-                        jq('#delivered_metro').val(order_goods_cs_info.delivered_metro);
-                        jq('#delivered_record').val(order_goods_cs_info.delivered_record);
-                        jq('#delivered_conference').val(order_goods_cs_info.delivered_conference);
-                        jq('#delivered_pa').val(order_goods_cs_info.delivered_pa);
-                        //jq('#consult_sheet_file').val(order_goods_cs_info.consult_sheet_file);
-                        //jq('#unc_ofg_info_id').val(order_goods_cs_info.unc_ofg_info_id);
-                        jq('#delivery_date_reply').val(order_goods_cs_info.delivery_date_reply);
-                        document.getElementById('order_goods_cs_info').value = order_goods_cs_info.order_goods_cs_info;
+                fee_info_id = fee_info.fee_info_id;
+                //jq('#fee_info_id').val(fee_info.fee_info_id);
+                jq('#customization_fee').val(fee_info.customization_fee);
+                document.getElementById('transfer_fee').value = fee_info.transfer_fee;
+                document.getElementById('transfer_mode').value = fee_info.transfer_mode;
+                jq('#comment').val(fee_info.comment);
 
-                        //jq('#fee_info_id').val(fee_info.fee_info_id);
-                        jq('#customization_fee').val(fee_info.customization_fee);
-                        document.getElementById('transfer_fee').value = fee_info.transfer_fee;
-                        jq('#comment').val(fee_info.comment);
-                        //jq('#delivery_date_reply').val(fee_info.delivery_date_reply);
-                        //
-                        document.getElementById('company_id').value = cs_belong.build_organize_id;
-                        document.getElementById('department_id').value = cs_belong.build_department_id;
-                        document.getElementById('user_id').value = cs_belong.build_user_id;
+                //jq('#delivery_date_reply').val(fee_info.delivery_date_reply);
+                //
+                jq('#build_organize_id').val(cs_belong.build_organize_id);
+                LoadingDepartmentAndSelected(cs_belong.build_organize_id,cs_belong.build_department_id);
+                LoadingManagerAndSelected(cs_belong.build_department_id, cs_belong.build_user_id);
+                jq('#cs_belong_create_time').val(cs_belong.cs_belong_create_time);
+                cs_belong_create_time = cs_belong.cs_belong_create_time;
+                cs_belong_id = cs_belong.cs_belong_id;
 
-                        //jq('#ofg_info_id').val(ofg_info.ofg_info_id);
-                        jq('#receiver_name').val(ofg_info.receiver_name);
-                        jq('#receiver_phone').val(ofg_info.receiver_phone);
-                        jq('#receiver_address').val(ofg_info.receiver_address);
-                        document.getElementById('user_id').value = ofg_info.user_id;
+                ofg_info_id = ofg_info.ofg_info_id;
+                //jq('#ofg_info_id').val(ofg_info.ofg_info_id);
+                jq('#receiver_name').val(ofg_info.receiver_name);
+                jq('#receiver_phone').val(ofg_info.receiver_phone);
+                jq('#receiver_address').val(ofg_info.receiver_address);
+                //document.getElementById('user_id').value = ofg_info.user_id;
 
-                        if (unc_ofg_info != ""){
-                            uncofginfo = new Object();
-                            uncofginfo.unc_ofg_info = unc_ofg_info;
-                            uncofginfo.unc_ofg_items = unc_ofg_detail;
-                            uncofginfo.del_unc_ofg_detail_id_arr = null;
-                        }
-
-                        // addLogisticsItem(null);                     //物流信息
-                        //否则 addLogisticsItem(data);
-                        //uncofginfo =                              //非常规订单数据 详细请搜索
-
-                        if (ogcugi != ""){
-                            var length = ogcugi.length;
-                            for (var i = 0; i < length; i++){
-                                switch (ogcugi[i]['ogcugi_product_state']){
-                                    case 0:
-                                        ogcugi[i]['ogcugi_product_state_text'] = '未发货';
-                                        break;
-                                    case 1:
-                                        ogcugi[i]['ogcugi_product_state_text'] = '处理中';
-                                        break;
-                                    case 2:
-                                        ogcugi[i]['ogcugi_product_state_text'] = '已完成';
-                                        break;
-                                    case 3:
-                                        ogcugi[i]['ogcugi_product_state_text'] = '取消';
-                                        break;
-                                    case 4:
-                                        ogcugi[i]['ogcugi_product_state_text'] = '备货';
-                                        break;
-                                    case 5:
-                                        ogcugi[i]['ogcugi_product_state_text'] = '缺货';
-                                        break;
-                                    default:
-                                        ogcugi[i]['ogcugi_product_state_text'] = '';
-                                        break;
-                                }
-                                addTableItem(ogcugi[i],i + 1);
-                            }
-                        }
-
-                        layui.form.render('select');
+                if (unc_ofg_info != ""){
+                    uncofginfo = new Object();
+                    uncofginfo.unc_ofg_info = unc_ofg_info;
+                    uncofginfo.unc_ofg_items = unc_ofg_detail;
+                    uncofginfo.del_unc_ofg_detail_id_arr = null;
+                }
+                if (logistic_info != ""){
+                    var length = logistic_info.length;
+                    for (var i = 0; i < length; i++){
+                        addLogisticsItem(logistic_info[i],i + 1);
                     }
-                });
+                }else {
+                    console.log("111111111")
+                    addLogisticsItem(null);
+                }
+                // addLogisticsItem(null);                     //物流信息
+                //否则 addLogisticsItem(data);
+
+                if (ogcugi != ""){
+                    var length = ogcugi.length;
+                    for (var i = 0; i < length; i++){
+                        switch (ogcugi[i]['ogcugi_product_state']){
+                            case 0:
+                                ogcugi[i]['ogcugi_product_state_text'] = '未发货';
+                                break;
+                            case 1:
+                                ogcugi[i]['ogcugi_product_state_text'] = '处理中';
+                                break;
+                            case 2:
+                                ogcugi[i]['ogcugi_product_state_text'] = '已完成';
+                                break;
+                            case 3:
+                                ogcugi[i]['ogcugi_product_state_text'] = '取消';
+                                break;
+                            case 4:
+                                ogcugi[i]['ogcugi_product_state_text'] = '备货';
+                                break;
+                            case 5:
+                                ogcugi[i]['ogcugi_product_state_text'] = '缺货';
+                                break;
+                            default:
+                                ogcugi[i]['ogcugi_product_state_text'] = '';
+                                break;
+                        }
+                        addTableItem(ogcugi[i],i + 1);
+                    }
+                }
+                layui.form.render('select');
                 return;
+            }
+            //获取子部门并选中
+            function LoadingDepartmentAndSelected(value,selectValue) {
+                var jq = layui.jquery;
+                jq('#build_department_id').empty();
+                jq('#user_id').empty();
+                jq('#build_department_id').append("<option value='' selected>请选择</option>");
+                var form1 = layui.form;
+                jq.post("{:url('admin/addgoodsconfirmorder/getdepartmentinfo')}",{'param':value},function(data){
+                    for(var  item in data){
+                        if(data[item]['organize_id'] == selectValue)
+                        {
+                            jq("#build_department_id").append("<option value='"+data[item]['organize_id']+"' selected>"+data[item]['organize_name']+"</option>");
+                        }
+
+                        else
+                            jq("#build_department_id").append("<option value='"+data[item]['organize_id']+"'>"+data[item]['organize_name']+"</option>");
+                    }
+                    layui.form.render('select');
+                });
+            }
+            //获取经理并选中
+            function LoadingManagerAndSelected(value,selectValue) {
+                var jq = layui.jquery;
+                jq('#user_id').empty();
+                jq('#user_id').append("<option value='' selected>请选择</option>");
+                var form1 = layui.form;
+                jq.post("{:url('admin/addgoodsconfirmorder/getdspmanagerinfo')}",{'param':value},function(data){
+                    for(var  item in data){
+                        if(data[item]['user_id'] == selectValue)
+                        {
+                            jq("#user_id").append("<option value='"+data[item]['user_id']+"' selected>"+data[item]['fullname']+"</option>");
+                        }
+
+                        else
+                            jq("#user_id").append("<option value='"+data[item]['user_id']+"'>"+data[item]['fullname']+"</option>");
+                    }
+                    layui.form.render('select');
+                });
+            }
+
+            function editSaveData() {
+                var logistics_info = getlogisticsInfo();
+                if(logistics_info == null){
+                    layer.msg('请填写完整物流信息！',{icon:2});
+                    return false;
+                }
+                var logistics_info_length = logistics_info.length;
+                if(logistics_info_length < 1){
+                    layer.msg('请填写物流信息！',{icon:2});
+                    return false;
+                }
+                var jq = layui.jquery;
+                data = [];
+                var obj = jq("form").serializeArray();                                  //获取表单数据
+                for (var i = 0; i < obj.length;i++){
+                    data[obj[i].name] = obj[i].value;
+                }
+                //var data = uidata.field;
+                var order_date = data['order_date'];
+                if (order_date == ""){
+                    layer.msg('请选择下单时间！',{icon:2});
+                    return false;
+                }
+                var user_id = data['user_id'];
+                if (user_id == ""){
+                    layer.msg('请选择经理！',{icon:2});
+                    return false;
+                }
+                var transfer_mode = data['transfer_mode'];
+                if (transfer_mode == ""){
+                    layer.msg('请选择运费方式！',{icon:2});
+                    return false;
+                }
+                var delivery_date_reply = data['delivery_date_reply'];
+                if(delivery_date_reply == ""){
+                    layer.msg('请选择货期回复！',{icon:2});
+                    return false;
+                }
+                console.log(data);
+                console.log('下列输入物流信息：');
+                console.log(logistics_info);
+                var order_goods_cs_info = getorderGoodsInfo(data);
+                console.log('下列输入订货确认单信息：');
+                console.log(order_goods_cs_info);
+                var cs_belong = csBelong(data);
+                console.log('下列输入订货所属信息：');
+                console.log(cs_belong);
+                var ofg_info = ofgInfo(data);
+                console.log('下列输入订单信息：');
+                console.log(ofg_info);
+                var fee_info = feeInfo(data);
+                console.log('下列输入费用情况：');
+                console.log(fee_info);
+                var order_goods_cs_undeliver_goods_info = getTableDataToDBObject();
+                console.log('下列输入清单信息：');
+                console.log(order_goods_cs_undeliver_goods_info);
+                var unc_ofg_info = null;
+                var unc_ofg_detail = null;
+                if (uncofginfo != null){
+                    del_unc_ofg_detail_id_arr = uncofginfo.del_unc_ofg_detail_id_arr;
+                    unc_ofg_info = uncofginfo.unc_ofg_info;
+                    var unc_ofg_items = uncofginfo.unc_ofg_items;
+                    var length = unc_ofg_items.length;
+                    for (var i = 0; i < length; i++){
+                        if (unc_ofg_detail == null){
+                            unc_ofg_detail = [];
+                        }
+                        var itemInfo = {};
+                        itemInfo.uod_id = unc_ofg_items[i].uod_id;
+                        itemInfo.unc_ofg_info_id = unc_ofg_info.uoi_id;
+                        itemInfo.product_info_id = unc_ofg_items[i].product_info_id;
+                        itemInfo.uod_count = unc_ofg_items[i].uod_count;
+                        itemInfo.uod_unit = unc_ofg_items[i].uod_unit;
+                        itemInfo.uod_requirement = unc_ofg_items[i].uod_requirement;
+                        itemInfo.uod_delivery_date = unc_ofg_items[i].uod_delivery_date;
+                        itemInfo.uod_comment = unc_ofg_items[i].uod_comment;
+                        unc_ofg_detail[i] = itemInfo;
+                    }
+                }
+                console.log('下列非常规订单信息：');
+                console.log(unc_ofg_info);
+                console.log('下列非常规清单信息：');
+                console.log(unc_ofg_detail);
+                console.log(del_logistics_id_arr);
+                console.log(del_unc_ofg_detail_id_arr);
+                console.log(del_ogcugi_id_arr);
+                var retBo = false;
+                jq.ajax({
+                    url: "{:url('admin/addgoodsconfirmorder/editcs')}",//php文件路径
+                    data: {
+                        order_goods_cs_info:order_goods_cs_info,
+                        logistics_info:logistics_info,
+                        cs_belong:cs_belong,
+                        ofg_info:ofg_info,
+                        fee_info:fee_info,
+                        order_goods_cs_undeliver_goods_info:order_goods_cs_undeliver_goods_info,
+                        unc_ofg_info:unc_ofg_info,
+                        unc_ofg_detail:unc_ofg_detail,
+                        del_logistics_id_arr:del_logistics_id_arr,
+                        del_unc_ofg_detail_id_arr:del_unc_ofg_detail_id_arr,
+                        del_ogcugi_id_arr:del_ogcugi_id_arr,
+                    },
+                    type: 'POST',
+                    async: false,
+                    success: function(e) {
+                        if(e){
+                            console.log('订单添加成功！');
+                            console.log(e);
+                            retBo = true;
+                            //location.href = "{:url('admin/addgoodsconfirmorder/addgoodsconfirmorder')}";
+                        }else if(!e){
+                            console.log('订单提交失败！');
+                            console.log(e);
+                        }
+                    }
+                })
+                return retBo;
             }
         </script>
     </body>

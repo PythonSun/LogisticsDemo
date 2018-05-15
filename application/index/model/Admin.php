@@ -2131,14 +2131,14 @@
             $uoi_to = $info['uoi_to'];
             $uoi_custom_name = $info['uoi_custom_name'];
             $uoi_to_place = $info['uoi_to_place'];
-            $user_id = $info['user_id'];
+            $user_name = $info['user_name'];
             $uoi_date = $info['uoi_date'];
             $uoi_project_name = $info['uoi_project_name'];
             $uoi_provider_name = $info['uoi_provider_name'];
-            $sql_value ="'{$uoi_id}','{$uoi_manual_ofg_id}','{$uoi_to}','{$uoi_custom_name}','{$uoi_to_place}','{$user_id}','{$uoi_date}','{$uoi_project_name}','{$uoi_provider_name}'";
-            $sql = "INSERT INTO dsp_logistic.unc_ofg_info (uoi_id,uoi_manual_ofg_id,uoi_to,uoi_custom_name,uoi_to_place,user_id,uoi_date,uoi_project_name,uoi_provider_name) VALUES ({$sql_value})";
+            $sql_value ="'{$uoi_id}','{$uoi_manual_ofg_id}','{$uoi_to}','{$uoi_custom_name}','{$uoi_to_place}','{$user_name}','{$uoi_date}','{$uoi_project_name}','{$uoi_provider_name}'";
+            $sql = "INSERT INTO dsp_logistic.unc_ofg_info (uoi_id,uoi_manual_ofg_id,uoi_to,uoi_custom_name,uoi_to_place,user_name,uoi_date,uoi_project_name,uoi_provider_name) VALUES ({$sql_value})";
             $sql .= " ON DUPLICATE KEY UPDATE uoi_manual_ofg_id = '{$uoi_manual_ofg_id}',uoi_to = '{$uoi_to}',uoi_custom_name = '{$uoi_custom_name}'";
-            $sql .= ",uoi_to_place = '{$uoi_to_place}',user_id = '{$user_id}',uoi_date = '{$uoi_date}',uoi_project_name = '{$uoi_project_name}',uoi_provider_name = '{$uoi_provider_name}'";
+            $sql .= ",uoi_to_place = '{$uoi_to_place}',user_name = '{$user_name}',uoi_date = '{$uoi_date}',uoi_project_name = '{$uoi_project_name}',uoi_provider_name = '{$uoi_provider_name}'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
