@@ -47,7 +47,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">下单人</label>
                     <div class="layui-input-inline">
-                        <input type="text" disabled name="user_id" id="user_id" userid="{$user_id}" value="{$user_name}" lay-verify="" placeholder="" autocomplete="on" class="layui-input">
+                        <input type="text" name="user_name" id="user_name" lay-verify="" placeholder="" autocomplete="on" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -115,7 +115,7 @@
                 var jq = layui.jquery;
                 var unc_ofg_info = data.unc_ofg_info;
                 var tableData = data.unc_ofg_items;
-                if (tableData != null){
+                if (tableData != null && tableData != ""){
                     var length = tableData.length;
                     for (var i = 0; i < length; i++){
                         addTableItem(tableData[i],i + 1);
@@ -126,7 +126,7 @@
                 jq('#uoi_manual_ofg_id').attr('value',unc_ofg_info.uoi_manual_ofg_id);
                 jq('#uoi_custom_name').attr('value',unc_ofg_info.uoi_custom_name);
                 jq('#uoi_to_place').val(unc_ofg_info.uoi_to_place);//.val(unc_ofg_info.uoi_to_place);
-                //jq('#user_id').attr('value',unc_ofg_info.user_id);
+                jq('#user_name').attr('value',unc_ofg_info.user_name);
                 jq('#uoi_date').attr('value',unc_ofg_info.uoi_date);
                 jq('#uoi_project_name').attr('value',unc_ofg_info.uoi_project_name);
                 jq('#uoi_provider_name').attr('value',unc_ofg_info.uoi_provider_name);
@@ -152,15 +152,14 @@
                 //编辑行
                 jq(document).on('click', '.edit_btn', function() {
                     var text = jq(this).parent().parent();
-                    console.log(this);
-                    console.log(text);
                     var tableRowIndex = jq(text[0].cells[0].innerHTML).text();
                     openWindow(tableRowIndex);
                 });
                 //删除行
                 jq(document).on('click', '.del_btn', function(){
                     var text = jq(this).parent().parent();
-                    var uod_id = jq(text[0].cells[0].innerHTML).attr("uod_id");
+                    console.log(text);
+                    var uod_id = jq(text).attr("uod_id");
                     if (uod_id === undefined || uod_id == ""){
                         //return;
                     }else {
@@ -223,6 +222,7 @@
             }
             //新增一条表数据   rowindex：插入位置
             function addTableItem(itemData,rowIndex) {
+
                 var jq = layui.jquery;
                 //+判断
                 var product_type_id = itemData.product_type_id;
@@ -244,7 +244,7 @@
                 var uod_comment = itemData.uod_comment;
 
                 var new_tr = jq('#tableorder')[0].insertRow(rowIndex);//指定位置插入行
-                jq(new_tr).attr("uod_id",uod_id);
+                jq(new_tr).attr('uod_id',uod_id);
                 var col_0 = new_tr.insertCell(0);//添加列
                 col_0.innerHTML = "<td><a>"+ rowIndex+"</a></td>";
                 var col_1 = new_tr.insertCell(1);
@@ -332,7 +332,7 @@
                 unc_ofg_info.uoi_manual_ofg_id = uoi_manual_ofg_id;
                 unc_ofg_info.uoi_custom_name = uoi_custom_name;
                 unc_ofg_info.uoi_to_place = uoi_to_place;
-                unc_ofg_info.user_id = jq('#user_id').attr('userid');
+                unc_ofg_info.user_name = jq('#user_name').val();
                 unc_ofg_info.uoi_date = jq('#uoi_date').val();
                 unc_ofg_info.uoi_project_name = uoi_project_name;
                 unc_ofg_info.uoi_provider_name = uoi_provider_name;

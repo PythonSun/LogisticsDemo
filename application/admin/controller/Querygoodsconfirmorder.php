@@ -66,23 +66,18 @@ class Querygoodsconfirmorder extends Controller
         }else{
             $tablelist = \app\index\model\Admin::querygoodsorderinfo($organizename,$departmentname,$areamanager,$type,$page,$limit);
         }
-
-
-
-
-
-
-
-    	/*$page = $_GET['page'];
-    	$limit = $_GET['limit'];
-
-    	if(isset($_GET['queryInfo'])){
-    		$queryInfo = $_GET['queryInfo'];
-    		$tablelist = \app\index\model\Admin::querygoodsorderinfo($page,$limit,$queryInfo);
-    	}else{
-    		$tablelist = \app\index\model\Admin::querygoodsorderinfo($page,$limit);
-    	}*/
-        
     	return $tablelist;
+    }
+
+    /*导出订货确认单*/
+    public function exportorderconfirmorder(){
+        $template_name = "订单登记系统导出.xlsx";
+        $param = json_decode($_GET['param']);
+        $file_name = $_GET['file_name'];
+        $file_extend = $_GET['file_extend'];
+        /*查询订货确认单*/
+        $ret = \app\index\model\Admin::queryexportgoodsconfirmorder($param);
+        /*导出订货确认单*/
+        \app\index\model\Admin::exportgoodsconfirmorder($file_name,$file_extend,$template_name,$ret);
     }
 }

@@ -82,6 +82,13 @@ class Queryalternativeconfirmorder extends Controller
 
     /*导出代用确认单确认单*/
     public function exportalternativeconfirmorder(){
-        return '导出代用确认单';
+        $template_name = "订单登记系统导出.xlsx";
+        $type=0x06;
+        $param = json_decode($_GET['param']);
+        $file_name = $_GET['file_name'];
+        $file_extend = $_GET['file_extend'];
+
+        $ret = \app\index\model\Admin::queryexportcsinfoconfirmorder($param,$type);
+        \app\index\model\Admin::exportcsinfoconfirmorder($file_name,$file_extend,$template_name,$ret);
     }
 }

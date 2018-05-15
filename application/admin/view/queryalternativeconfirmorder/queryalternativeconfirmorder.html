@@ -56,9 +56,84 @@
 
 				/*监听导出按钮*/
 				form.on('submit(export)',function(data){
-					jq.post("{:url('admin/queryalternativeconfirmorder/exportalternativeconfirmorder')}",function(data){
-						console.log(data);
-					});
+					top.layer.open({
+						type: 2,
+						area: ['600px', '250px'],
+						shade: 0.6,
+						shadeClose:true,
+						title: '设置导出参数',
+						resize:false,
+						btn: ['保存','取消'],
+						content: "{:url('admin/setexportfileparam/setexportfileparam')}",
+						yes:function(index,layero){
+		                        var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                        		var exportparam = iframeWin.getexportparam();
+                        		top.layer.close(index);
+                        		var param = new Object();
+                        		var startdate = jq('#startdate').val();
+                        		if(startdate != ''){
+                        			param.startdate = startdate;
+                        		}
+                        		var enddate = jq('#enddate').val();
+                        		if(enddate != ''){
+                        			param.enddate = enddate;
+                        		}
+
+                        		var departname = jq('#departname').val();
+                        		if(departname != ''){
+                        			param.departname = departname;
+                        		}
+                        		var areamanager = jq('#areamanager').val();
+                        		if(areamanager != ''){
+                        			param.areamanager = areamanager;
+                        		}
+                        		var orderstate = jq('#orderstate').val();
+                        		if(orderstate != ''){
+                        			param.orderstate = orderstate;
+                        		}
+                        		var order_id = jq('#order_id').val();
+                        		if(order_id != ''){
+                        			param.order_id = order_id;
+                        		}
+                        		var receiver_name = jq('#receiver_name').val();
+                        		if(receiver_name != ''){
+                        			param.receiver_name = receiver_name;
+                        		}
+                        		var yard = jq('#yard').val();
+                        		if(yard != ''){
+                        			param.yard = yard;
+                        		}
+                        		var couriernumber = jq('#couriernumber').val();
+                        		if(couriernumber != ''){
+                        			param.couriernumber = couriernumber;
+                        		}
+                        		var freightmode = jq('#freightmode').val();
+                        		if(freightmode != ''){
+                        			param.freightmode = freightmode;
+                        		}
+                        		var productclass = jq('#productclass').val();
+                        		if(productclass != ''){
+                        			param.productclass = productclass;
+                        		}
+                        		var brand = jq('#brand').val();
+                        		if(brand != ''){
+                        			param.brand = brand;
+                        		}
+                        		var producttype = jq('#producttype').val();
+                        		if(producttype != ''){
+                        			param.producttype = producttype;
+                        		}
+                        		var productarea = jq('#productarea').val();
+                        		if(productarea != ''){
+                        			param.productarea = productarea;
+                        		}
+                        		var customproduct = jq('#customproduct').val();
+                        		if(customproduct != ''){
+                        			param.customproduct = customproduct;
+                        		}
+                        		window.open("{:url('admin/queryalternativeconfirmorder/exportalternativeconfirmorder')}?param="+ JSON.stringify(param) + "&file_name=" + exportparam.file_name+ "&file_extend=" + exportparam.file_extend,"_self");
+							}
+						});
 					return false;
 				});
 
