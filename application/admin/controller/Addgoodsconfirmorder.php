@@ -1,9 +1,9 @@
 <?php
 namespace app\admin\controller;
-use think\Controller;
-use think\Input;
 use think\Request;
 use \think\File;
+use think\Controller;
+use think\Input;
 
 class Addgoodsconfirmorder extends Controller
 {
