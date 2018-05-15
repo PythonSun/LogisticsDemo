@@ -97,21 +97,33 @@
 				    if(obj.event === 'detail'){
 				    	layer.msg('下单日期：'+ data.order_date + ' 的查看操作');
 				    }else if(obj.event === 'edit'){
+                        var cs_id = data.cs_id;
+                        var cs_belong_id = data.cs_belong_id;
+                        var fee_info_id = data.fee_info_id;
+                        var ofg_info_id = data.ofg_info_id;
+                        var unc_ofg_info_id = data.unc_ofg_info_id;
                         top.layer.open({
                             type: 2 //此处以iframe举例
-                            , title: '修改更换确认单'
+                            , title: '修改订货确认单'
                             , area: ['90%', '90%']
                             , shade: 0.8
                             , maxmin: false
 							, moveOut:true
-                            , content: "{:url('admin/addgoodsconfirmorder/addgoodsconfirmorder')}"
+                            , content: "{:url('admin/addgoodsconfirmorder/editgoodsconfirmorder')}?cs_id=" + cs_id
+							+ "&cs_belong_id=" + cs_belong_id
+                            + "&fee_info_id=" + fee_info_id
+                            + "&ofg_info_id=" + ofg_info_id
+                            + "&unc_ofg_info_id=" + unc_ofg_info_id
                             , btn: ['保存', '退出'] //只是为了演示
                             , yes: function (index, layero) {
 
                                 var iframeWin = top.window[layero.find('iframe')[0]['name']];
-                                /*var user = iframeWin.SaveUser();
-
-                                user["user_id"] = data["user_id"];
+                                var ret = iframeWin.editSaveData();
+                                if (ret){
+                                    top.layer.close(index);
+                                    table.reload('querytable');
+								}
+                                /*user["user_id"] = data["user_id"];
                                 console.log(user);
                                 jq.post("{:url('usermanage/usermanage/updateuser')}",{'param':user} ,function(result){
                                     table.reload('querytable', {
@@ -121,7 +133,9 @@
                                     });
                                     console.log(result);
                                 });*/
-                                layer.close(index);
+
+
+                                //layer.close(index);
                             }
                             , btn2: function (index) {
                                 layer.close(index);
@@ -129,7 +143,7 @@
                             ,success: function(layero, index){
                                 //var body = layer.getChildFrame('body', index);
                                 var iframeWin = top.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-                                iframeWin.setDBDateToHtml(data);
+                                //iframeWin.setDBDateToHtml(data);
                             }
                         });
 				    }else if(obj.event === 'delete'){
