@@ -16,7 +16,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label Wheat">产品分类：</label>
                 <div class="layui-input-inline Wheat" >
-                    <select id="product_type_id" name="type_name" lay-filter="type_name" >
+                    <select id="product_type_id" name="type_name" lay-filter="type_name" class="Wheat_disabled">
                         <option value="" selected>请选择</option>
                         {volist name="producttypelist" id="vo"}
                         <option value={$vo.product_type_id}>{$vo.product_type_name}</option>
@@ -27,7 +27,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label Wheat">品牌：</label>
                 <div class="layui-input-inline Wheat" >
-                    <select id="brand_id" name="brand_name" lay-filter="brand_name">
+                    <select id="brand_id" name="brand_name" lay-filter="brand_name" class="Wheat_disabled">
                         <option value="" selected>请选择</option>
                         {volist name="brandlist" id="vo"}
                         <option value={$vo.brand_id}>{$vo.brand_name}</option>
@@ -38,7 +38,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label  Wheat">生产地：</label>
                 <div class="layui-input-inline Wheat"  >
-                    <select id="place_id" name="place_name" lay-filter="place_name">
+                    <select id="place_id" name="place_name" lay-filter="place_name" class="Wheat_disabled">
                         <option value="" selected>请选择</option>
                         {volist name="placelist" id="vo"}
                         <option value={$vo.place_id}>{$vo.place_name}</option>
@@ -49,29 +49,22 @@
             <div class="layui-inline">
                 <label class="layui-form-label Wheat">型号：</label>
                 <div class="layui-input-inline">
-                    <input type="text" id="serachModelinfo" name="inputmodel" class="layui-input Wheat">
+                    <input type="text" id="serachModelinfo" name="inputmodel" class="layui-input Wheat Wheat_disabled">
                 </div>
             </div>
 
         </div>
         <div class="layui-form-item">
-
             <div class="layui-inline">
-<<<<<<< HEAD
                 <label class="layui-form-label Wheat">数量：</label>
                 <div class="layui-input-inline" >
-                    <input type="text" id="inputcount" name="inputcount" class="layui-input Wheat">
-=======
-                <label class="layui-form-label">数量：</label>
-                <div class="layui-input-inline" style="max-width:120px">
-                    <input type="number" id="inputcount" name="inputcount">
->>>>>>> a188dd1b8e9abdbe29879144529b37120db6f3b7
+                    <input type="number" id="inputcount" name="inputcount" class="layui-input Wheat Wheat_disabled">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label Wheat">单位：</label>
                 <div class="layui-input-inline" >
-                    <input type="text" id="inputunit" name="inputunit" class="layui-input Wheat">
+                    <input type="text" id="inputunit" name="inputunit" class="layui-input Wheat Wheat_disabled">
                 </div>
             </div>
         </div>
@@ -79,13 +72,13 @@
             <div class="layui-inline">
                 <label class="layui-form-label Wheat">规格：</label>
                 <div class="layui-input-inline" >
-                    <input type="text" id="specification" name="specification" class="layui-input Wheat">
+                    <input type="text" id="specification" name="specification" class="layui-input Wheat Wheat_disabled">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label Wheat">归还日期：</label>
                 <div class="layui-input-inline" >
-                    <input type="text" name="date" id="back_date" autocomplete="on" class="layui-input Wheat">
+                    <input type="text" name="date" id="back_date" autocomplete="on" class="layui-input Wheat Wheat_disabled">
                 </div>
             </div>
         </div>
@@ -93,13 +86,13 @@
             <div class="layui-inline">
                 <label class="layui-form-label Wheat">条码：</label>
                 <div class="layui-input-inline" >
-                    <input type="text" name="bar_code" id="bar_code" class="layui-input Wheat">
+                    <input type="text" name="bar_code" id="bar_code" class="layui-input Wheat Wheat_disabled">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label Wheat">原因：</label>
                 <div class="layui-input-inline" >
-                    <input type="text" name="replace_reason" id="replace_reason" lay-filter="replace_reason" class="layui-input Wheat">
+                    <input type="text" name="replace_reason" id="replace_reason" lay-filter="replace_reason" class="layui-input Wheat Wheat_disabled">
                 </div>
             </div>
         </div>
@@ -107,7 +100,7 @@
             <div class="layui-inline ">
                 <label class="layui-form-label dark_blue">非常规产品：</label>
                 <div class="layui-input-inline dark_blue" >
-                    <select id="unc_productid" name="unc_productname" lay-filter="unc_productname">
+                    <select id="unc_productid" name="unc_productname" lay-filter="unc_productname" class="dark_blue_disabled">
                         <option value="" selected>请选择</option>
                         {volist name="uncproductlist" id="vo1"}
                         <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>
@@ -119,15 +112,15 @@
         <div class="layui-form-item dark_blue" style="display: inline-block;" pane="">
             <label class="layui-form-label dark_blue">状态：</label>
             <div class="layui-input-block " >
-                <input type="radio" name="inputstate" title="已更换" value="已更换" >
-                <input type="radio" name="inputstate" title="未更换" value="未更换" >
+                <input type="radio" name="inputstate" title="已更换" value="已更换" class="dark_blue_disabled">
+                <input type="radio" name="inputstate" title="未更换" value="未更换" class="dark_blue_disabled">
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label dark_blue">备注：</label>
                 <div class="layui-input-inline" style="max-width:120px">
-                    <input type="text" name="comment" id="comment" class="layui-input dark_blue">
+                    <input type="text" name="comment" id="comment" class="layui-input dark_blue dark_blue_disabled">
                 </div>
             </div>
         </div>
@@ -147,6 +140,24 @@
             ,position: 'fixed'
             ,theme: 'molv'
         });
+        jq(document).ready(function () {
+            console.log(111111111);
+            var type = "<?php echo $type?>";
+            if(type == 1)
+            {
+                jq('.Wheat_disabled').attr('disabled','');
+               // jq('.Wheat_disabled').addClass('layui-disabled');
+
+            }
+            else
+            {
+                jq('.dark_blue_disabled').attr("disabled",true);
+               // jq('.dark_blue_disabled').attr("disabled","disabled");
+                // jq('.dark_blue_disabled').attr('disabled','');
+                // jq('.dark_blue_disabled').addClass('layui-disabled');
+            }
+            layui.form.render('select');
+        })
        form.on('select(type_name)',function(typedata){
            //jq.post("{:url('admin/addconfirmorderitem/getbrand')}",{})
        })
@@ -177,6 +188,14 @@
 
     function saveOrderItem() {
         var jq = layui.jquery;
+        jq('.Wheat_disabled').attr("disabled",false);
+      //  jq('.Wheat_disabled').attr("disabled","disabled");
+
+        jq('.dark_blue_disabled').attr("disabled",false);
+      //  jq('.dark_blue_disabled').attr("disabled","disabled");
+
+
+
         var orderItem = new Object();
         orderItem.product_type_id = jq('#product_type_id').val();
         var obj = document.getElementById("product_type_id");
@@ -239,10 +258,12 @@
         });
         return orderItem;
     }
-
     function LoadingData(data) {
+
         console.log(data);
         var jq = layui.jquery;
+
+
 
         document.getElementById('product_type_id').value = data['product_type_id'];
         document.getElementById('brand_id').value = data['brand_id'];

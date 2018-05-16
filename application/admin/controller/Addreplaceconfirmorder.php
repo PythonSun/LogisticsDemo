@@ -27,6 +27,7 @@ class Addreplaceconfirmorder extends Controller
     public function editreplaceconfirmorder()
     {
         $cs_id = $_GET['cs_id'];
+
         $current_user_type = $_GET['current_user_type'];
 
         $organizeid = session("user_session");
@@ -53,8 +54,6 @@ class Addreplaceconfirmorder extends Controller
         $return_info = $_POST['return_info'];
         $cs_belong = $_POST['cs_belong'];
         $cs_examine = $_POST['cs_examine'];
-
-        $logistic_info = $_POST['logistic_info'];
 
         $cs_info_id = \app\index\model\Admin::getcsinfomaxid('cs_belong','cs_id');
         $cs_info['write_date'] = $date_now;
@@ -174,6 +173,7 @@ class Addreplaceconfirmorder extends Controller
 
         if(array_key_exists('logistic_info',$_POST))
         {
+            $logistic_info = $_POST['logistic_info'];
             foreach ( $logistic_info as $item  )
             {
                 $id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id');
