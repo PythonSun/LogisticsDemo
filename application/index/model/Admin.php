@@ -1175,6 +1175,14 @@
             return $retsql;
         }
 
+        /*精准搜索型号*/
+        public  static function coldserachmodelinfo($serachText, $product_type_id, $brand)
+        {
+            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model = '{$serachText}' AND product_type_id = '{$product_type_id}' AND brand_id = '{$brand}'";
+            $retsql = Db::query($sql);
+            return $retsql;
+        }
+
         /*获取表中最大的id值*/
         public static function getmaxtableid($tablename,$tableID){
             $sql = "SELECT max({$tableID}) FROM dsp_logistic.{$tablename}";

@@ -37,8 +37,17 @@ class Uncofginfoitem extends Controller
         return $dbproductinfo;
     }
 
+    public function coldserachmodelinfo()
+    {
+        $sereachText = $_POST['serrchText'];
+        $productType = $_POST['type'];
+        $brand = $_POST['brand'];
+        $dbproductinfo = \app\index\model\Admin::coldserachmodelinfo($sereachText,$productType,$brand);
+        return $dbproductinfo;
+    }
+
     public function serachproductinfo(){
-        $productinfo = self::serachmodelinfo();
+        $productinfo = self::coldserachmodelinfo();
         if (!empty($productinfo)){
             $place_id = $productinfo[0]['place_id'];
             $placeinfo = \app\index\model\Admin::getproductplace($place_id);
