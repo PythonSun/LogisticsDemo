@@ -25,6 +25,7 @@
 		<script src="/static/layui/layui.js"></script>
 		<script type="text/javascript">
 			var  divHeight,clientHeight;
+			var current_user_type = 1;
 			layui.use(['layer','jquery','laydate','form','table'],function(){
 				var form = layui.form ,layer = layui.layer,jq = layui.jquery,laydate = layui.laydate,table = layui.table;
 
@@ -51,7 +52,10 @@
 			      	});
 		  			return false;
 				});
+                jq(document).ready(function () {
+                    current_user_type = {$current_user_type};
 
+                })
 				/*监听导出按钮  style='width:300px;height:60px;*/
 				form.on('submit(export)',function(data){
 					top.layer.open({
@@ -171,43 +175,88 @@
 				table.on('tool(queryreplaceorder)', function(obj){
 				    var data = obj.data;
 				    if(obj.event === 'detail'){
-				    	layer.msg('下单日期：'+ data.write_date + ' 的查看操作');
-				    }else if(obj.event === 'edit'){
                         layer.open({
-                            type: 2 //此处以iframe举例
-                            , title: '修改更换确认单'
-                            , area: ['90%', '90%']
-                            , shade: 0.8
-                            , maxmin: false
-                            , content: "{:url('admin/Addreplaceconfirmorder/editreplaceconfirmorder')}"
-                            , btn: ['保存', '退出'] //只是为了演示
-                            , yes: function (index, layero) {
+                            type: 2,
+                            title: '新增清单',
+                            area: ['90%', '90%'],
+                            shade: 0.9,
+                            maxmin: false,
+                            content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type= 0",
+                            btn: [ '退出'],
+                            yes: function (index,layero) {
 
-                                var iframeWin = window[layero.find('iframe')[0]['name']];
-                                var user = iframeWin.SaveUser();
+                                layer.closeAll();
+                            }
 
-                                user["user_id"] = data["user_id"];
-                                console.log(user);
-                                jq.post("{:url('usermanage/usermanage/updateuser')}",{'param':user} ,function(result){
+                        });
+				    }else if(obj.event === 'edit'){
+                        if(current_user_type == 5)
+                        {
+                            layer.open({
+                                type: 2,
+                                title: '新增清单',
+                                area: ['90%', '90%'],
+                                shade: 0.9,
+                                maxmin: false,
+                                content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
+                                btn: [ '保存','取消'],
+                                yes: function (index,layero) {
+                                    var iframeWin = window[layero.find('iframe')[0]['name']];
+                                    var result = iframeWin.logisticSave();
+                                    if(result == false)
+                                        return false;
                                     table.reload('querytable', {
                                         page: {
                                             curr: 1
                                         }
                                     });
-                                    console.log(result);
-                                });
-                                layer.closeAll();
-                            }
-                            , btn2: function () {
-                                layer.closeAll();
-                            }
-                            ,success: function(layero, index){
-                                console.log(data);
-                                var body = layer.getChildFrame('body', index);
-                                var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-                                iframeWin.LoadingUser(data);
-                            }
-                        });
+                                    layer.closeAll();
+                                },
+                                btn2:function () {
+                                    layer.closeAll();
+                                }
+                            });
+                        }
+                        else
+                        {
+                            layer.open({
+                                type: 2,
+                                title: '新增清单',
+                                area: ['90%', '90%'],
+                                shade: 0.9,
+                                maxmin: false,
+                                content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
+                                btn: ['退回', '提交','取消'],
+                                yes: function (index,layero) {
+                                    var iframeWin = window[layero.find('iframe')[0]['name']];
+                                    var result = iframeWin.returnOrder();
+                                    if(result == false)
+                                        return false;
+                                    table.reload('querytable', {
+                                        page: {
+                                            curr: 1
+                                        }
+                                    });
+                                    layer.closeAll();
+                                },
+                                btn2: function (index,layero) {
+                                    var iframeWin = window[layero.find('iframe')[0]['name']];
+                                    var result = iframeWin.editDeliver();
+                                    if(result == false)
+                                        return false;
+                                    table.reload('querytable', {
+                                        page: {
+                                            curr: 1
+                                        }
+                                    });
+                                    layer.closeAll();
+                                },
+                                btn3:function () {
+                                    layer.closeAll();
+                                }
+                            });
+                        }
+
 				    }else if(obj.event === 'delete'){
 				    	layer.msg('删除操作');
 				    }

@@ -86,19 +86,22 @@
             //layui.form.render();
             /*监听总部门选择*/
             form.on('select(company_name)',function(data){
-                var ops=document.getElementById("areamanager");
+                var ops=document.getElementById("department_id");
                 ops.innerHTML = "";
                 ops.options.length = 0;
                 form.render('select');
-                jq("#areamanager").append("<option value=''>请选择</option>");
+                jq("#department_id").append("<option value=''>请选择</option>");
                 form.render('select');
 
-                if(obj.value == "")
+                if(data.value == "")
                     return ;
-                jq.post("{:url('usermanage/adduser/getdepartmentinfo')}",{'param':data.value},function(data){
-                    for(var  item in data){
+                jq.post("{:url('usermanage/adduser/getdepartmentinfo')}",{'param':data.value},function(result){
+                    if(result == null)
+                        return ;
+                    console.log(result);
+                    for(var  item in result){
                         //console.log(data[item]['organize_name']);
-                        jq("#department_id").append("<option value='"+data[item]['organize_id']+"'>"+data[item]['organize_name']+"</option>");
+                        jq("#department_id").append("<option value='"+result[item]['organize_id']+"'>"+result[item]['organize_name']+"</option>");
                     }
                     form.render('select');
                 });

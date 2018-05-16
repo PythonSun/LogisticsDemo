@@ -54,8 +54,8 @@
             <h3>物流信息</h3>
             <div class="layui-form-item">
                 <div class="layui-btn-container">
-                    <input type="button" value="添加物流" id="btn_add_logistics_item" class="layui-btn layui-btn-normal Wheat_disabled" lay-submit="" lay-filter="btn_add_logistics_item">
-                    <input type="button" value="删除" id="btn_del_logistics_item" class="layui-btn layui-btn-normal Wheat_disabled" lay-submit="" lay-filter="btn_add_logistics_item">
+                    <input type="button" value="添加物流" id="btn_add_logistics_item" class="layui-btn layui-btn-normal dark_blue_disabled" lay-submit="" lay-filter="btn_add_logistics_item">
+                    <input type="button" value="删除" id="btn_del_logistics_item" class="layui-btn layui-btn-normal dark_blue_disabled" lay-submit="" lay-filter="btn_add_logistics_item">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -358,7 +358,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label dark_blue">备注</label>
                 <div class="layui-input-block">
-                   <input type="text" name="payment_info_comment" id="payment_info_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input  layui-disabled dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
+                   <input type="text" name="payment_info_comment" id="payment_info_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input   dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
 
             </div>
             <div class="layui-form-item">
@@ -393,13 +393,13 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat ">其它说明</label>
                 <div class="layui-input-block">
-                    <input type="text" name="order_goods_manager_explain" id="order_goods_manager_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled layui-disabled " oninput="detectinputtext(this);"> </div>
+                    <input type="text" name="order_goods_manager_explain" id="order_goods_manager_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled  " oninput="detectinputtext(this);"> </div>
             </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label dark_blue">情况说明</label>
                 <div class="layui-input-block">
-                    <input type="text" name="ogl_explain" id="ogl_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input layui-disabled dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
+                    <input type="text" name="ogl_explain" id="ogl_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input  dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-container">
@@ -684,10 +684,13 @@
                         yes:function (index,layero) {
                             var  iframeWin = window[layero.find('iframe')[0]['name']];
                             var  orderItem = iframeWin.saveOrderItem();
+                            if(isEmptyObject(orderItem)){
+                                return;
+                            }
+
                             if(orderItem.product_info_name == null){
                                 return null;
                             }
-                           // console.log(orderItem);
                             //+判断
                             var row = new Object();
                             row.product_type_id = orderItem.product_type_id;
@@ -723,6 +726,8 @@
                     return false;
                 });
                 jq(document).on('click', '.edit_btn', function() {
+                    if(current_user_type != 5 || current_user_type != 1)
+                        return ;
                     var text = jq(this).parent().parent();
                     var type = current_user_type == 5?1:0;
                     layer.open({
@@ -801,6 +806,8 @@
                     });;
                 });
                 jq(document).on('click', '.del_btn', function(){
+                    if(current_user_type != 5 || current_user_type != 1)
+                        return ;
                     var text = jq(this).parent().parent();
                     var id= jq(text[0].cells[0].innerHTML).attr("tag");
                     if(id != "")
@@ -855,7 +862,6 @@
 
                     jq('.dark_blue_disabled').addClass('layui-disabled');
                     jq('.dark_blue_disabled').attr('disabled',value);
-
 
                 }
                 else if(current_user_type == 2)
@@ -926,6 +932,26 @@
                     jq('.finance_blue_disabled').addClass('layui-disabled');
                     jq('.finance_blue_disabled').attr('disabled',value);
 
+                }
+                else  if(current_user_type == 0) //只查看
+                {
+                    jq('.Wheat_disabled').addClass('layui-disabled');
+                    jq('.Wheat_disabled').attr('disabled',value);
+
+                    jq('.depart_blue_disabled').addClass('layui-disabled');
+                    jq('.depart_blue_disabled').attr('disabled',value);
+
+                    jq('.company_blue_disabled').addClass('layui-disabled');
+                    jq('.company_blue_disabled').attr('disabled',value);
+
+                    jq('.finance_blue_disabled').addClass('layui-disabled');
+                    jq('.finance_blue_disabled').attr('disabled',value);
+
+                    jq('.dark_blue_disabled').addClass('layui-disabled');
+                    jq('.dark_blue_disabled').attr('disabled',value);
+
+                    jq('.edit_disabled').addClass('layui-disabled');
+                    jq('.edit_disabled').attr('disabled',value);
                 }
             }
 
@@ -1323,18 +1349,18 @@
                 jq(new_tr).attr("time_stamp",time_stamp);
 
                 var col_0 = new_tr.insertCell(0);//添加列
-                col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' autocomplete='on' class='layui-input Wheat  Wheat_disabled'></td>";
+                col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' autocomplete='on' class='layui-input Wheat  dark_blue_disabled'></td>";
                 var col_1 = new_tr.insertCell(1);//添加列
-                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item Wheat_disabled' value='"+ delivery_date +"'></td>";
+                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item dark_blue_disabled' value='"+ delivery_date +"'></td>";
                 jq.each(jq(".time-item"),function(){
                     laydate.render({ elem: this });
                 });
                 var col_2 = new_tr.insertCell(2);//添加列
-                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat  Wheat_disabled' value='"+ goods_yard_name +"'></td>";
+                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat  dark_blue_disabled' value='"+ goods_yard_name +"'></td>";
                 var col_3 = new_tr.insertCell(3);//添加列
-                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat Wheat_disabled' value='"+ transfer_order_num +"'></td>";
+                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat dark_blue_disabled' value='"+ transfer_order_num +"'></td>";
                 var col_4 = new_tr.insertCell(4);//添加列
-                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat Wheat_disabled' value='"+ count +"'></td>";
+                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat dark_blue_disabled' value='"+ count +"'></td>";
                 form.render('checkbox');
             }
             //修改时 经理的提交
@@ -1891,9 +1917,11 @@
                 }
                 console.log("以下清单信息：");
                 console.log(order_goods_manager);
+
+                var logistic_info = getlogisticsInfo();
                 jq.ajax({
                     url: "{:url('admin/addreplaceconfirmorder/logisticeditandsaveorder')}",
-                    data: {cs_info:cs_info,cs_belong:cs_belong,order_goods_manager:order_goods_manager,payment_info:payment_info} ,
+                    data: {cs_info:cs_info,cs_belong:cs_belong,order_goods_manager:order_goods_manager,payment_info:payment_info,logistic_info:logistic_info,logistic_info_delete_row:del_logistics_id_arr} ,
                     type: 'POST',
                     dataType: 'json',
                     success: function(e) {
@@ -2027,6 +2055,13 @@
                     data[dataArray[i]['name']] = dataArray[i]['value'];
                 }
                 return data;
+            }
+
+            function isEmptyObject(obj){
+              for (var key in obj) {
+                return false;
+              }
+              return true;
             }
         </script>
     </body>
