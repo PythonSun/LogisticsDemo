@@ -896,7 +896,13 @@
                 var col_9 = new_tr.insertCell(9);
                 col_9.innerHTML = "<td><a>"+ ogcugi_comment +"</a></td>";
                 var col_10 = new_tr.insertCell(10);
-                col_10.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
+                if (type == 1){
+
+                    col_10.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
+                }else {
+                    col_10.innerHTML = "<td></td>";
+                }
+
             }
             //页面间数据传递
             function getUncofgInfoUI() {
@@ -951,7 +957,7 @@
                 var col_3 = new_tr.insertCell(3);//添加列
                 col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ transfer_order_num +"'></td>";
                 var col_4 = new_tr.insertCell(4);//添加列
-                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ count +"'></td>";
+                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ count +"' oninput='detectinputtext(this);'></td>";
                 form.render('checkbox');
             }
             //将数据显示

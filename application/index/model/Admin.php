@@ -196,7 +196,7 @@
                     }
                 }*/
             }
-            $sqltwo .= "order By dsp_logistic.order_goods_cs_info.order_date DESC limit {$offset},{$length} ;";
+            $sqltwo .= "order By dsp_logistic.order_goods_cs_info.cs_id DESC limit {$offset},{$length} ;";
             $tableobj = Db::query($sqltwo);
             if(!empty($tableobj)){
                 $tableobjcount = count($tableobj);
