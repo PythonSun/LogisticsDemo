@@ -18,6 +18,7 @@
 		</div>
 		<script src="/static/layui/layui.js"></script>
 		<script type="text/javascript">
+			var current_user_type = 2;
 			layui.use(['layer','jquery','laydate','form','table'],function(){
 				var form = layui.form ,layer = layui.layer,jq = layui.jquery,laydate = layui.laydate,table = layui.table;
 
@@ -29,7 +30,9 @@
 				laydate.render({
 				    elem: '#enddate'
 				});
-
+				jq(document).ready(function () {
+					current_user_type = "<?php echo $current_user_type?>";
+                })
 				/*监听查询按钮*/
 				form.on('submit(query)',function(data){
 					var queryInfo = data.field;
@@ -74,27 +77,40 @@
 				table.on('tool(replaceorder)', function(obj){
 				    var data = obj.data;
 				    if(obj.event === 'detail') {
+				        console.log(11111111);
                         layer.open({
                             type: 2,
                             title: '新增清单',
                             area: ['90%', '90%'],
                             shade: 0.9,
                             maxmin: false,
-                            content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id,
+                            content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                             btn: ['退回', '提交','取消'],
                             yes: function (index,layero) {
                                 var iframeWin = window[layero.find('iframe')[0]['name']];
                                 var result = iframeWin.returnOrder();
                                 if(result == false)
                                     return false;
+                                table.reload('querytable', {
+                                    page: {
+                                        curr: 1
+                                    }
+
+                                });
                             },
                             btn2: function (index,layero) {
                                 var iframeWin = window[layero.find('iframe')[0]['name']];
                                 var result = iframeWin.editDeliver();
                                 if(result == false)
                                     return false;
+                                table.reload('querytable', {
+                                    page: {
+                                        curr: 1
+                                    }
+                                });
                             },
 							btn3:function () {
+                                layui.closeAll();
                             }
                         });
                     }
