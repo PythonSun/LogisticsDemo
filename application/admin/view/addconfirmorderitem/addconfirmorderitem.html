@@ -228,7 +228,9 @@
         });*/
         orderItem.specification = jq('#specification').val();
         orderItem.back_date = jq('#back_date').val() ;
-        orderItem.ogl_product_state = null;
+
+        orderItem.ogl_product_state = "";
+
         jq("input[name='inputstate']").each(function(){
             if(jq(this).prop('checked')){
                 orderItem.ogl_product_state = jq(this).attr('value');
@@ -251,7 +253,7 @@
                 }else {
                     layui.use('layer', function(){
                         var layer = layui.layer;
-                        layer.msg('型号不存！',{icon:2});
+                        top.layer.msg('型号不存！',{icon:2});
                     });
                 }
             },
@@ -262,8 +264,6 @@
 
         console.log(data);
         var jq = layui.jquery;
-
-
 
         document.getElementById('product_type_id').value = data['product_type_id'];
         document.getElementById('brand_id').value = data['brand_id'];
