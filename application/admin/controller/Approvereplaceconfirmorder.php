@@ -35,12 +35,27 @@ class Approvereplaceconfirmorder extends Controller
         $user = session("user_session");
         $user_id = $user["user_id"];
         $orderType = 1;
-        if(isset($_GET['queryInfo'])){
-            $queryInfo = $_GET['queryInfo'];
-            $tablelist = \app\index\model\Admin::queryApproveConfirmOrder($user_id,$orderType,$page,$limit,$queryInfo);
-        }else{
-            $tablelist = \app\index\model\Admin::queryApproveConfirmOrder($user_id,$orderType,$page,$limit);
+        $queryuserinfo = session("user_querypower");
+        $rolename = $queryuserinfo['role_name'];
+        if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员")
+        {
+            if(isset($_GET['queryInfo'])){
+                $queryInfo = $_GET['queryInfo'];
+                $tablelist = \app\index\model\Admin::logisticQueryApproveConfirmOrder($orderType,$page,$limit,$queryInfo);
+            }else{
+                $tablelist = \app\index\model\Admin::logisticQueryApproveConfirmOrder($orderType,$page,$limit);
+            }
         }
+        else
+        {
+            if(isset($_GET['queryInfo'])){
+                $queryInfo = $_GET['queryInfo'];
+                $tablelist = \app\index\model\Admin::queryApproveConfirmOrder($user_id,$orderType,$page,$limit,$queryInfo);
+            }else{
+                $tablelist = \app\index\model\Admin::queryApproveConfirmOrder($user_id,$orderType,$page,$limit);
+            }
+        }
+
     	return $tablelist;
     }
 
