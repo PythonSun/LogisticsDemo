@@ -477,9 +477,10 @@
                 jq(document).ready(function(){
                     var cs_id = "<?php echo $cs_id?>";
                     current_user_type ="<?php echo $current_user_type?>";
-                    userPower();
+
                     if(cs_id == ""){
                         addLogisticsItem(null);
+                        userPower();
                         form.render('select');
                         return ;
                     }
@@ -501,12 +502,12 @@
                         LoadingDepartmentAndSelected(data['build_organize_id'],data['build_department_id']);
                         LoadingManagerAndSelected(data['build_department_id'],data['build_user_id']);
                         document.getElementById('build_user_phone').value = data['build_user_phone'];
-                        document.getElementById('cs_id').value = data['build_user_phone'];
+                        document.getElementById('cs_id').value = data['cs_id'];
                         jq('department_number').value = data['build_department_id'];
-                        editOrderData['cs_build_id'] = data['cs_build_id'];
+                        editOrderData['cs_belong_id'] = data['cs_belong_id'];
                         editOrderData['cs_belong_create_time'] = data['cs_belong_create_time'];
                         //cs_info
-                        jq('#cs_info_state').val(data['cs_info_state']);
+                        jq('#cs_info_state').value = data['cs_info_state'];
                         jq('date2').value = data['complete_date']; //不确定下单时间是指那个
                         editOrderData['cs_id'] = data['cs_id'];
                         editOrderData['complete_date'] = data['complete_date'];
@@ -630,7 +631,7 @@
                             });
                             editOrderData['finance_examine'] = cs_examine_info[2];
                         }
-
+                        userPower();
                         layui.form.render('select');
                         layui.form.render('radio');
                     });
@@ -731,7 +732,7 @@
                         area:['800px','90%'],
                         shade:0,
                         maxmin:false,
-                        content:"{:url('admin/addconfirmorderitem/addconfirmorderitem')}?type = "+ type,
+                        content:"{:url('admin/addconfirmorderitem/addconfirmorderitem')}?type="+ type,
                         btn:['保存','退出'],
                         yes:function (index,layero) {
                             var  iframeWin = window[layero.find('iframe')[0]['name']];
@@ -762,7 +763,8 @@
                             row.replace_reason = orderItem.replace_reason;
                             row.ogl_comment = orderItem.ogl_comment;
                             // console.log("length: "+ jq('#tableorder')[0].rows.length);
-                            row.id = jq(text[0].cells[0].innerHTML).attr("tag");
+                            row.order_goods_manager_id = jq(text[0].cells[0].innerHTML).attr("tag");
+                            row.ogl_id = jq(text[0].cells[0].innerHTML).attr("ogl_id");
                             row.num = jq(text[0].cells[0].innerHTML).text();
                             updateRow(row,false)
 
@@ -929,7 +931,7 @@
             }
 
             function updateRow(row ,isAdd) {
-              //  console.log(row);
+                //console.log(row);
                 var jq = layui.jquery;
                 var rows = jq('#tableorder')[0].rows.length;
                 if(isAdd == false)
@@ -983,7 +985,7 @@
                 var ogl_explain = getOglExplain();
                 var data = uidata.field;
                 var rows = tabledata.length;
-                console.log(data);
+               // console.log(data);
                 //cs_info.cs_id  = data['swiftnumber'];
                 if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
                     layer.msg('请选择部门！',{icon:2});
@@ -1075,8 +1077,8 @@
                 var cs_examine = [];
                 var directorExamine = {};
                 directorExamine['submit_user_id'] = data['build_user_id'];
-                directorExamine['cs_examine_date'] = '2000-1-1';
-                directorExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00'
+                directorExamine['cs_examine_date'] = '2000-01-01';
+                directorExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00'
                 directorExamine['cs_examine_comment'] = "";
                 directorExamine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
                 directorExamine['cs_examine_result'] = "";
@@ -1084,28 +1086,28 @@
                 cs_examine[0] = directorExamine;
                 var generalManagerExamine = {};
                 generalManagerExamine['submit_user_id'] = data['build_user_id'];
-                generalManagerExamine['cs_examine_date'] = '2000-1-1';
-                generalManagerExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00';
+                generalManagerExamine['cs_examine_date'] = '2000-01-01';
+                generalManagerExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00';
                 generalManagerExamine['cs_examine_comment'] = "";
                 generalManagerExamine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
                 generalManagerExamine['cs_examine_result'] = "";
-                generalManagerExamine['cs_examine_state'] = 0;
+                generalManagerExamine['cs_examine_state'] = state;
                 cs_examine[1] = generalManagerExamine;
                 var financeExamine = {};
                 financeExamine['submit_user_id'] = data['build_user_id'];
-                financeExamine['cs_examine_date'] = '2000-1-1';
-                financeExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00';
+                financeExamine['cs_examine_date'] = '2000-01-01';
+                financeExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00';
                 financeExamine['cs_examine_comment'] = "";
                 financeExamine['cs_examine_content'] = data['examinationapprovalcontentthird'];
                 financeExamine['cs_examine_result'] = "";
-                financeExamine['cs_examine_state'] = 0;
+                financeExamine['cs_examine_state'] = state;
                 cs_examine[2] = financeExamine;
                 console.log("以下订单审批信息：");
                 console.log(cs_examine);
                 //付款信息
                 var  payment_info= {};
                 payment_info['is_paid'] = data['is_paid'];
-                payment_info['paid_date'] = data['paid_date'] == '' ? "2000-1-1":data['paid_date'];
+                payment_info['paid_date'] = data['paid_date'] == '' ? "2000-01-01":data['paid_date'];
                 payment_info['customization_fee'] =  data['customization_fee'];
                 payment_info['paid_bank'] = data['paid_bank'];
                 payment_info['payment_info_comment'] = data['payment_info_comment'];
@@ -1121,16 +1123,16 @@
                     order_goods_manager_item['type'] = 1;                                             //1：更换 详细看数据库
                     order_goods_manager_item['comment'] = tabledata[i][14]['text'];
                     order_goods_manager_item['bar_code'] = tabledata[i][8]['text'];
-                    order_goods_manager_item['back_date'] = tabledata[i][9]['text'] == '' ? '2000-1-1' : tabledata[i][9]['text'];
+                    order_goods_manager_item['back_date'] = tabledata[i][9]['text'] == '' ? '2000-01-01' : tabledata[i][9]['text'];
                     order_goods_manager_item['replace_reason'] = tabledata[i][10]['text'];
                     order_goods_manager_item['order_goods_manager_explain'] = data['order_goods_manager_explain'];
 
-                    order_goods_manager_item['purchase_date'] = '2000-1-1';
-                    order_goods_manager_item['deal_date'] = '2000-1-1';
+                    order_goods_manager_item['purchase_date'] = '2000-01-01';
+                    order_goods_manager_item['deal_date'] = '2000-01-01';
                     order_goods_manager_item['fault_condition'] = "";
                     order_goods_manager_item['unit_price'] = -1;
                     order_goods_manager_item['ogl_product_state'] = tabledata[i][12]['text'];
-                    order_goods_manager_item['ogl_unc_product_id'] =tabledata[i][13]['tag'] ;
+                    order_goods_manager_item['unc_product_id'] =tabledata[i][13]['tag'] ;
                     order_goods_manager_item['ogl_comment'] = tabledata[i][14]['text'];
                     order_goods_manager_item['ogl_explain'] = data['order_goods_manager_explain'];
                     order_goods_manager[i] = order_goods_manager_item;
@@ -1191,7 +1193,7 @@
                     data[index] = rowdata;
                     index++;
                 }
-
+                console.log(data);
                 return data;
             }
             //获取清单其它说明（经理部分）
@@ -1336,7 +1338,6 @@
                 col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat Wheat_disabled' value='"+ count +"'></td>";
                 form.render('checkbox');
             }
-
             //修改时 经理的提交
             function managerDeliver () {
                 var data = getFormData();
@@ -1436,32 +1437,32 @@
                 var directorExamine = {};
                 directorExamine['cs_id'] = editOrderData['cs_id'];
                 directorExamine['submit_user_id'] = data['build_user_id'];
-                directorExamine['cs_examine_date'] = '2000-1-1';
-                directorExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00'
+                directorExamine['cs_examine_date'] = '2000-01-01';
+                directorExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00'
                 directorExamine['cs_examine_comment'] = "";
                 directorExamine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
-                directorExamine['cs_examine_result'] = 2;
+                directorExamine['cs_examine_result'] = "";
                 directorExamine['cs_examine_state'] = 1;
                 cs_examine[0] = directorExamine;
                 var generalManagerExamine = {};
                 generalManagerExamine['cs_id'] = editOrderData['cs_id'];
                 generalManagerExamine['submit_user_id'] = data['build_user_id'];
-                generalManagerExamine['cs_examine_date'] = '2000-1-1';
-                generalManagerExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00';
+                generalManagerExamine['cs_examine_date'] = '2000-01-01';
+                generalManagerExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00';
                 generalManagerExamine['cs_examine_comment'] = "";
                 generalManagerExamine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
-                generalManagerExamine['cs_examine_result'] = 2;
-                generalManagerExamine['cs_examine_state'] = 0;
+                generalManagerExamine['cs_examine_result'] = "";
+                generalManagerExamine['cs_examine_state'] = 1;
                 cs_examine[1] = generalManagerExamine;
                 var financeExamine = {};
                 financeExamine['cs_id'] = editOrderData['cs_id'];
                 financeExamine['submit_user_id'] = data['build_user_id'];
-                financeExamine['cs_examine_date'] = '2000-1-1';
-                financeExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00';
+                financeExamine['cs_examine_date'] = '2000-01-01';
+                financeExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00';
                 financeExamine['cs_examine_comment'] = "";
                 financeExamine['cs_examine_content'] = data['examinationapprovalcontentthird'];
-                financeExamine['cs_examine_result'] = 2;
-                financeExamine['cs_examine_state'] = 0;
+                financeExamine['cs_examine_result'] = "";
+                financeExamine['cs_examine_state'] = 1;
                 cs_examine[2] = financeExamine;
                 console.log("以下订单审批信息：");
                 console.log(cs_examine);
@@ -1469,7 +1470,7 @@
                 var  payment_info= {};
                 payment_info['payment_info_id'] = editOrderData['payment_info_id'];
                 payment_info['is_paid'] = data['is_paid'];
-                payment_info['paid_date'] = data['paid_date'] == null ? "2000-1-1":data['paid_date'];
+                payment_info['paid_date'] = data['paid_date'] == '' ? "2000-01-01":data['paid_date'];
                 payment_info['customization_fee'] =  data['customization_fee'];
                 payment_info['paid_bank'] = data['paid_bank'];
                 payment_info['payment_info_comment'] = data['payment_info_comment'];
@@ -1492,16 +1493,16 @@
 
                     order_goods_manager_item['comment'] = tabledata[i][14]['text'];
                     order_goods_manager_item['bar_code'] = tabledata[i][8]['text'];
-                    order_goods_manager_item['back_date'] = tabledata[i][9]['text'] == '' ? '2000-1-1' : tabledata[i][9]['text'];
+                    order_goods_manager_item['back_date'] = tabledata[i][9]['text'] == '' ? '2000-01-01' : tabledata[i][9]['text'];
                     order_goods_manager_item['replace_reason'] = tabledata[i][10]['text'];
-                    order_goods_manager_item['purchase_date'] = '2000-1-1';
-                    order_goods_manager_item['deal_date'] = '2000-1-1';
+                    order_goods_manager_item['purchase_date'] = '2000-01-01';
+                    order_goods_manager_item['deal_date'] = '2000-01-01';
                     order_goods_manager_item['fault_condition'] = "";
 
 
                     order_goods_manager_item['ogl_id'] = tabledata[i][0]['ogl_id'];
                     order_goods_manager_item['ogl_product_state'] = tabledata[i][12]['text'];
-                    order_goods_manager_item['ogl_unc_product_id'] =tabledata[i][13]['tag'];
+                    order_goods_manager_item['unc_product_id'] =tabledata[i][13]['tag'];
                     order_goods_manager_item['ogl_comment'] = tabledata[i][14]['text'];
                     order_goods_manager_item['ogl_explain'] = data['order_goods_manager_explain'];
                     order_goods_manager[i] = order_goods_manager_item;
@@ -1626,8 +1627,8 @@
                 directorExamine['cs_examine_id'] =editOrderData['depart_examine']['cs_examine_id'];
                 directorExamine['cs_id'] = editOrderData['cs_id'];
                 directorExamine['submit_user_id'] = data['build_user_id'];
-                directorExamine['cs_examine_date'] = '2000-1-1';
-                directorExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00'
+                directorExamine['cs_examine_date'] = '2000-01-01';
+                directorExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00'
                 directorExamine['cs_examine_comment'] = "";
                 directorExamine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
                 directorExamine['cs_examine_result'] = 2;
@@ -1637,8 +1638,8 @@
                 generalManagerExamine['cs_examine_id'] =editOrderData['company_examine']['cs_examine_id'];
                 generalManagerExamine['cs_id'] = editOrderData['cs_id'];
                 generalManagerExamine['submit_user_id'] = data['build_user_id'];
-                generalManagerExamine['cs_examine_date'] = '2000-1-1';
-                generalManagerExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00';
+                generalManagerExamine['cs_examine_date'] = '2000-01-01';
+                generalManagerExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00';
                 generalManagerExamine['cs_examine_comment'] = "";
                 generalManagerExamine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
                 generalManagerExamine['cs_examine_result'] = 2;
@@ -1648,8 +1649,8 @@
                 financeExamine['cs_examine_id'] =editOrderData['finance_examine']['cs_examine_id'];
                 financeExamine['cs_id'] = editOrderData['cs_id'];
                 financeExamine['submit_user_id'] = data['build_user_id'];
-                financeExamine['cs_examine_date'] = '2000-1-1';
-                financeExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00';
+                financeExamine['cs_examine_date'] = '2000-01-01';
+                financeExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00';
                 financeExamine['cs_examine_comment'] = "";
                 financeExamine['cs_examine_content'] = data['examinationapprovalcontentthird'];
                 financeExamine['cs_examine_result'] = 2;
@@ -1661,7 +1662,7 @@
                 var  payment_info= {};
                 payment_info['payment_info_id'] = editOrderData['payment_info_id'];
                 payment_info['is_paid'] = data['is_paid'];
-                payment_info['paid_date'] = data['paid_date'] == null ? "2000-1-1":data['paid_date'];
+                payment_info['paid_date'] = data['paid_date'] == '' ? "2000-01-01":data['paid_date'];
                 payment_info['customization_fee'] =  data['customization_fee'];
                 payment_info['paid_bank'] = data['paid_bank'];
                 payment_info['payment_info_comment'] = data['payment_info_comment'];
@@ -1684,16 +1685,16 @@
 
                     order_goods_manager_item['comment'] = tabledata[i][14]['text'];
                     order_goods_manager_item['bar_code'] = tabledata[i][8]['text'];
-                    order_goods_manager_item['back_date'] = tabledata[i][9]['text'] == '' ? '2000-1-1' : tabledata[i][9]['text'];
+                    order_goods_manager_item['back_date'] = tabledata[i][9]['text'] == '' ? '2000-01-01' : tabledata[i][9]['text'];
                     order_goods_manager_item['replace_reason'] = tabledata[i][10]['text'];
-                    order_goods_manager_item['purchase_date'] = '2000-1-1';
-                    order_goods_manager_item['deal_date'] = '2000-1-1';
+                    order_goods_manager_item['purchase_date'] = '2000-01-01';
+                    order_goods_manager_item['deal_date'] = '2000-01-01';
                     order_goods_manager_item['fault_condition'] = "";
 
 
                     order_goods_manager_item['ogl_id'] = tabledata[i][0]['ogl_id'];
                     order_goods_manager_item['ogl_product_state'] = tabledata[i][12]['text'];
-                    order_goods_manager_item['ogl_unc_product_id'] =tabledata[i][13]['tag'];
+                    order_goods_manager_item['unc_product_id'] =tabledata[i][13]['tag'];
                     order_goods_manager_item['ogl_comment'] = tabledata[i][14]['text'];
                     order_goods_manager_item['ogl_explain'] = data['order_goods_manager_explain'];
                     order_goods_manager[i] = order_goods_manager_item;
@@ -1716,7 +1717,6 @@
                     }
                 });
             }
-
             //修改时 主管提交
             function departDeliver () {
                 var jq = layui.jquery;
@@ -1730,11 +1730,11 @@
                     return false;
                 }
                 var departExamine = {};
-                departExamine['cs_examine_date'] = data['examinationapprovaldatefirst'];
+                departExamine['cs_examine_date'] = data['examinationapprovaldatefirst']== ''?'2000-01-01':data['examinationapprovaldatefirst'];
                 departExamine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
                 departExamine['cs_examine_comment'] = data['remarkfirst'];
                 departExamine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
-                departExamine['cs_examine_result'] = "同意";
+                departExamine['cs_examine_result'] = data['departmentdirectoradvice'];
                 departExamine['cs_examine_state'] = 2;
                 departExamine['cs_examine_name'] = editOrderData['depart_examine']['cs_examine_name'];
                 departExamine['examine_user_id'] = editOrderData['depart_examine']['examine_user_id'];
@@ -1742,19 +1742,6 @@
                 departExamine['cs_id'] = editOrderData['depart_examine']['cs_id'];
                 departExamine['submit_user_id'] = editOrderData['depart_examine']['submit_user_id'];
                 cs_examine[0] = departExamine;
-                var companyExamine = {};
-                companyExamine['cs_examine_date'] = '2000-1-1';
-                companyExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00';
-                companyExamine['cs_examine_comment'] = "";
-                companyExamine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
-                companyExamine['cs_examine_result'] = "";
-                companyExamine['cs_examine_state'] = 1;
-                companyExamine['cs_examine_name'] = editOrderData['company_examine']['cs_examine_name'];
-                companyExamine['examine_user_id'] = editOrderData['company_examine']['examine_user_id'];
-                companyExamine['cs_examine_id'] = editOrderData['company_examine']['cs_examine_id'];
-                companyExamine['cs_id'] = editOrderData['company_examine']['cs_id'];
-                companyExamine['submit_user_id'] = editOrderData['company_examine']['submit_user_id'];
-                cs_examine[1] = companyExamine;
                 jq.post("{:url('admin/Addreplaceconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
                     console.log(result);
                 });
@@ -1765,7 +1752,6 @@
             function companyDeliver () {
                 var jq = layui.jquery;
                 var data = getFormData();
-
                 var curdate = new Date();
                 if(data['executivegeneralmanageradvice'] != "同意")
                 {
@@ -1776,11 +1762,11 @@
                 var cs_examine = [];
                 var companyExamine = {};
 
-                companyExamine['cs_examine_date'] = data['examinationapprovaldatesecond'];
+                companyExamine['cs_examine_date'] = data['examinationapprovaldatesecond']== ''?'2000-01-01':data['examinationapprovaldatesecond'];
                 companyExamine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
                 companyExamine['cs_examine_comment'] = data['remarksecond'];
                 companyExamine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
-                companyExamine['cs_examine_result'] = "同意";
+                companyExamine['cs_examine_result'] = data['executivegeneralmanageradvice'];
                 companyExamine['cs_examine_state'] = 2;
                 companyExamine['cs_examine_name'] = editOrderData['company_examine']['cs_examine_name'];
                 companyExamine['examine_user_id'] = editOrderData['company_examine']['examine_user_id'];
@@ -1788,22 +1774,10 @@
                 companyExamine['cs_id'] = editOrderData['company_examine']['cs_id'];
                 companyExamine['submit_user_id'] = editOrderData['company_examine']['submit_user_id'];
                 cs_examine[0] = companyExamine;
-                var financeExamine = {};
-                financeExamine['cs_examine_date'] = '2000-1-1';
-                financeExamine['cs_examine_time_stamp'] = '2000-1-1 00:00:00';
-                financeExamine['cs_examine_comment'] = "";
-                financeExamine['cs_examine_content'] = data['examinationapprovaldatethird'];
-                financeExamine['cs_examine_result'] = "";
-                financeExamine['cs_examine_state'] = 1;
-                financeExamine['cs_examine_name'] = editOrderData['finance_examine']['cs_examine_name'];
-                financeExamine['examine_user_id'] = editOrderData['finance_examine']['examine_user_id'];
-                financeExamine['cs_examine_id'] = editOrderData['finance_examine']['cs_examine_id'];
-                financeExamine['cs_id'] = editOrderData['finance_examine']['cs_id'];
-                financeExamine['submit_user_id'] = editOrderData['finance_examine']['build_user_id'];
-                cs_examine[1] = companyExamine;
                 jq.post("{:url('admin/Addreplaceconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
                     console.log(result);
                 });
+                console.log(cs_examine);
                 return true;
             }
             //修改时 财务提交
@@ -1819,18 +1793,18 @@
                 }
                 var cs_examine = [];
                 var financeExamine = {};
-                financeExamine['cs_examine_date'] = data['examinationapprovaldatethird'];
+                financeExamine['cs_examine_date'] = data['examinationapprovaldatethird'] == ''?'2000-01-01':data['examinationapprovaldatethird'];
                 financeExamine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
                 financeExamine['cs_examine_comment'] = data['remarkthird'];
                 financeExamine['cs_examine_content'] = data['examinationapprovalcontentthird'];
-                financeExamine['cs_examine_result'] = 2;
+                financeExamine['cs_examine_result'] = data['financedirectoradvice'];
                 financeExamine['cs_examine_state'] = 2;
                 financeExamine['cs_examine_name'] = editOrderData['finance_examine']['cs_examine_name'];
                 financeExamine['examine_user_id'] = editOrderData['finance_examine']['examine_user_id'];
                 financeExamine['cs_examine_id'] = editOrderData['finance_examine']['cs_examine_id'];
                 financeExamine['cs_id'] = editOrderData['finance_examine']['cs_id'];
-                financeExamine['submit_user_id'] = editOrderData['finance_examine']['build_user_id'];
-                cs_examine[1] = financeExamine;
+                financeExamine['submit_user_id'] = editOrderData['finance_examine']['submit_user_id'];
+                cs_examine[0] = financeExamine;
                 jq.post("{:url('admin/Addreplaceconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
                     console.log(result);
                 });
@@ -1838,6 +1812,7 @@
             }
             //修改时 物流提交
             function logisticSave() {
+                setDisable(false);
                 var data = getFormData();
                 jq = layui.jquery;
                 var  tabledata = getTableContent();
@@ -1856,7 +1831,7 @@
                 cs_info.write_date = editOrderData['write_date'];
                 cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
                 cs_info.can_edit = 0;                              //0 不可编辑
-                cs_info.cs_info_state = 1;
+                cs_info.cs_info_state = data['cs_info_state'];
                 cs_info.complete_date = complete_date;       //新增 无完成日期
                 cs_info.product_number = rows;
                 console.log("以下确认单信息：");
@@ -1880,7 +1855,7 @@
                 var  payment_info= {};
                 payment_info['payment_info_id'] = editOrderData['payment_info_id'];
                 payment_info['is_paid'] = data['is_paid'];
-                payment_info['paid_date'] = data['paid_date'] == null ? "2000-1-1":data['paid_date'];
+                payment_info['paid_date'] = data['paid_date'] == '' ? "2000-01-01":data['paid_date'];
                 payment_info['customization_fee'] =  data['customization_fee'];
                 payment_info['paid_bank'] = data['paid_bank'];
                 payment_info['payment_info_comment'] = data['payment_info_comment'];
@@ -1903,14 +1878,14 @@
                     order_goods_manager_item['bar_code'] = tabledata[i][8]['text'];
                     order_goods_manager_item['back_date'] = tabledata[i][9]['text'] == '' ? '2000-1-1' : tabledata[i][9]['text'];
                     order_goods_manager_item['replace_reason'] = tabledata[i][10]['text'];
-                    order_goods_manager_item['purchase_date'] = '2000-1-1';
-                    order_goods_manager_item['deal_date'] = '2000-1-1';
+                    order_goods_manager_item['purchase_date'] = '2000-01-01';
+                    order_goods_manager_item['deal_date'] = '2000-01-01';
                     order_goods_manager_item['fault_condition'] = "";
 
 
                     order_goods_manager_item['ogl_id'] = tabledata[i][0]['ogl_id'];
                     order_goods_manager_item['ogl_product_state'] = tabledata[i][12]['text'];
-                    order_goods_manager_item['ogl_unc_product_id'] =tabledata[i][13]['tag'];
+                    order_goods_manager_item['unc_product_id'] =tabledata[i][13]['tag'] ;
                     order_goods_manager_item['ogl_comment'] = tabledata[i][14]['text'];
                     order_goods_manager_item['ogl_explain'] = data['order_goods_manager_explain'];
                     order_goods_manager[i] = order_goods_manager_item;
@@ -1931,6 +1906,7 @@
                         }
                     }
                 });
+                return true;
             }
 
             function editDeliver() {
@@ -1952,7 +1928,6 @@
                     return financeDeliver();
                 }
             }
-
             //修改时 退回
             function returnOrder() {
                 setDisable(false);
@@ -1970,10 +1945,10 @@
                         setDisable(true);
                         return false;
                     }
-                    cs_examine['cs_examine_date'] = data['examinationapprovaldatefirst'];
+                    cs_examine['cs_examine_date'] = data['examinationapprovaldatefirst']== ''?'2000-01-01':data['examinationapprovaldatefirst'];
                     cs_examine['cs_examine_comment'] = data['remarkfirst'];
                     cs_examine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
-                    cs_examine['cs_examine_result'] = "不同意";
+                    cs_examine['cs_examine_result'] = data['departmentdirectoradvice'];
                     cs_examine['cs_examine_state'] = 2;
                     cs_examine['cs_examine_name'] = editOrderData['depart_examine']['cs_examine_name'];
                     cs_examine['examine_user_id'] = editOrderData['depart_examine']['examine_user_id'];
@@ -1990,10 +1965,10 @@
                         setDisable(true);
                         return false;
                     }
-                    cs_examine['cs_examine_date'] = data['examinationapprovaldatesecond'];
+                    cs_examine['cs_examine_date'] =data['examinationapprovaldatesecond']== ''?'2000-01-01':data['examinationapprovaldatesecond'];
                     cs_examine['cs_examine_comment'] = data['remarksecond'];
                     cs_examine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
-                    cs_examine['cs_examine_result'] = "不同意";
+                    cs_examine['cs_examine_result'] = data['executivegeneralmanageradvice'];
                     cs_examine['cs_examine_state'] = 2;
                     cs_examine['cs_examine_name'] = editOrderData['company_examine']['cs_examine_name'];
                     cs_examine['examine_user_id'] = editOrderData['company_examine']['examine_user_id'];
@@ -2010,10 +1985,10 @@
                         setDisable(true);
                         return false;
                     }
-                    cs_examine['cs_examine_date'] = data['examinationapprovaldatethird'];
+                    cs_examine['cs_examine_date'] = data['examinationapprovaldatethird'] == ''?'2000-01-01':data['examinationapprovaldatethird'];
                     cs_examine['cs_examine_comment'] = data['remarkthird'];
                     cs_examine['cs_examine_content'] = data['examinationapprovalcontentthird'];
-                    cs_examine['cs_examine_result'] = "不同意";
+                    cs_examine['cs_examine_result'] = data['financedirectoradvice'];
                     cs_examine['cs_examine_state'] = 2;
                     cs_examine['cs_examine_name'] = editOrderData['finance_examine']['cs_examine_name'];
                     cs_examine['examine_user_id'] = editOrderData['finance_examine']['examine_user_id'];
@@ -2052,7 +2027,6 @@
                 {
                     data[dataArray[i]['name']] = dataArray[i]['value'];
                 }
-                console.log(data);
                 return data;
             }
         </script>
