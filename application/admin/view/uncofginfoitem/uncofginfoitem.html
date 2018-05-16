@@ -216,18 +216,23 @@
             async: false,
             data: { serrchText: jq("#serachModelinfo").val(), type: jq("#product_type_id").val(), brand: jq('#brand_id').val() },
             success: function (data) {
-                if(data != null) {
+                if(data !="") {
                     orderItem.place_name = data.place_info.place_name;
                     orderItem.place_id = data.place_info.place_id
                     //orderItem.model_text = data.product_info.product_info_name;
                     orderItem.product_info_id = data.product_info.product_info_id;
                 } else {
+                    console.log(data);
                     layui.use('layer', function () {
                         var layer = layui.layer;
                         layer.msg('型号不存！', { icon: 2 });
                     });
                 }
             },
+            error:function (e) {
+                console.log(e);
+                console.log("fuck!!!!!!");
+            }
         });
         return orderItem;
     }
