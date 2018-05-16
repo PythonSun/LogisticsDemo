@@ -648,7 +648,7 @@
             $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
          //   $sqlone .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
-            $sqlone.=" where examine_user_id = '$examine_user_id' and cs_info_type = '$type' and cs_info_state = '1' ";
+            $sqlone.=" where examine_user_id = '$examine_user_id' and cs_info_type = '$type' and cs_info_state = '1' and cs_examine_state = 1";
             if($totalargs == 5){
                 $startdate = $args[4]['startdate'];
                 $enddate = $args[4]['enddate'];
@@ -716,7 +716,7 @@
             $sqltwo .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
          //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
             $sqltwo .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
-            $sqltwo.=" where examine_user_id = '$examine_user_id' and cs_info_type = '$type' and cs_info_state = '1' ";
+            $sqltwo.=" where examine_user_id = '$examine_user_id' and cs_info_type = '$type' and cs_info_state = '1' and cs_examine_state = 1 ";
             if($totalargs == 5){
                 $startdate = $args[4]['startdate'];
                 $enddate = $args[4]['enddate'];

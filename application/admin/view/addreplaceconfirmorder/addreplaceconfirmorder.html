@@ -54,10 +54,8 @@
             <h3>物流信息</h3>
             <div class="layui-form-item">
                 <div class="layui-btn-container">
-                    <button id="btn_add_logistics_item" class="layui-btn layui-btn-normal Wheat_disabled" lay-submit="" lay-filter="btn_add_logistics_item">添加物流</button>
-                    <button id="btn_del_logistics_item" class="layui-btn layui-btn-normal Wheat_disabled" lay-submit="" lay-filter="btn_add_logistics_item">删除</button>
-
-                    <button id="btn_test" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="btn_test">测试按钮</button>
+                    <input type="button" value="添加物流" id="btn_add_logistics_item" class="layui-btn layui-btn-normal Wheat_disabled" lay-submit="" lay-filter="btn_add_logistics_item">
+                    <input type="button" value="删除" id="btn_del_logistics_item" class="layui-btn layui-btn-normal Wheat_disabled" lay-submit="" lay-filter="btn_add_logistics_item">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -66,7 +64,7 @@
                     </colgroup>
                     <thead>
                     <tr class="Wheat">
-                        <th>选择</th>
+                        <th >选择</th>
                         <th>发货日期</th>
                         <th>货场</th>
                         <th>物流单号</th>
@@ -212,6 +210,7 @@
                     <div class="layui-input-inline Wheat">
                         <select name="transfer_fee_mode" id="transfer_fee_mode" class="Wheat_disabled " >
                             <option value="" selected="">选择</option>
+
                             <option value="1" >到付</option>
                             <option value="2">现金</option>
                             <option value="3">代付</option>
@@ -293,7 +292,7 @@
             <div class="layui-form-item light_green" pane="">
                 <label class="layui-form-label light_green">审批意见</label>
                 <div class="layui-input-block ">
-                    <input type="radio" name="executivegeneralmanageradvice" value="同意" title="同意"  class="company_blue_disabled">
+                    <input type="radio" name="executivegeneralmanageradvice"  value="同意" title="同意"  class="company_blue_disabled">
                     <input type="radio" name="executivegeneralmanageradvice" value="不同意" title="不同意"  class="company_blue_disabled"> </div>
             </div>
             <div class="layui-form-item">
@@ -336,7 +335,7 @@
             <div class="layui-form-item dark_blue " pane="">
                 <label class="layui-form-label dark_blue">是否到账</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="is_paid" value="是" title="是" checked=""  class="dark_blue_disabled">
+                    <input type="radio" name="is_paid" value="是" title="是" checked=""   class="dark_blue_disabled">
                     <input type="radio" name="is_paid" value="否" title="否" class="dark_blue_disabled"> </div>
             </div>
             <div class="layui-form-item">
@@ -359,12 +358,12 @@
             <div class="layui-form-item">
                 <label class="layui-form-label dark_blue">备注</label>
                 <div class="layui-input-block">
-                   <input type="text" name="payment_info_comment" id="payment_info_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
+                   <input type="text" name="payment_info_comment" id="payment_info_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input  layui-disabled dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
 
             </div>
             <div class="layui-form-item">
                 <div class="layui-btn-container">
-                    <button id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled" lay-submit="" lay-filter="add_order_item" >添加清单</button>
+                    <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled" lay-submit="" lay-filter="add_order_item" >
                 </div>
             </div>
             <h3>订购清单</h3>
@@ -394,19 +393,19 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat ">其它说明</label>
                 <div class="layui-input-block">
-                    <input type="text" name="order_goods_manager_explain" id="order_goods_manager_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled"> </div>
+                    <input type="text" name="order_goods_manager_explain" id="order_goods_manager_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled layui-disabled "> </div>
             </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label dark_blue">情况说明</label>
                 <div class="layui-input-block">
-                    <input type="text" name="ogl_explain" id="ogl_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled"> </div>
+                    <input type="text" name="ogl_explain" id="ogl_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input layui-disabled dark_blue dark_blue_disabled"> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-container">
-                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save" id="save">保存</button>
-                    <button class="layui-btn" lay-submit="" lay-filter="deliver" id="deliver">转交</button>
-                    <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="cancel" id="cancel">取消</button>
+                    <input type="button" value="保存" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save" id="save">
+                    <input type="button" value="转交" class="layui-btn" lay-submit="" lay-filter="deliver" id="deliver">
+                    <input type="button" value="取消" class="layui-btn layui-btn-primary" lay-submit="" lay-filter="cancel" id="cancel">
                 </div>
             </div>
         </form>
@@ -501,7 +500,8 @@
                         jq('#build_organize_id').val(data['build_organize_id']);
                         LoadingDepartmentAndSelected(data['build_organize_id'],data['build_department_id']);
                         LoadingManagerAndSelected(data['build_department_id'],data['build_user_id']);
-                        //document.getElementById('build_user_phone ').value = data['build_user_phone'] == null ? "":data['build_user_phone'];
+                        document.getElementById('build_user_phone').value = data['build_user_phone'];
+                        document.getElementById('cs_id').value = data['build_user_phone'];
                         jq('department_number').value = data['build_department_id'];
                         editOrderData['cs_build_id'] = data['cs_build_id'];
                         editOrderData['cs_belong_create_time'] = data['cs_belong_create_time'];
@@ -724,13 +724,14 @@
                 });
                 jq(document).on('click', '.edit_btn', function() {
                     var text = jq(this).parent().parent();
+                    var type = current_user_type == 5?1:0;
                     layer.open({
                         type:2,
                         title:'修改清单',
                         area:['800px','90%'],
                         shade:0,
                         maxmin:false,
-                        content:"{:url('admin/addconfirmorderitem/addconfirmorderitem')}",
+                        content:"{:url('admin/addconfirmorderitem/addconfirmorderitem')}?type = "+ type,
                         btn:['保存','退出'],
                         yes:function (index,layero) {
                             var  iframeWin = window[layero.find('iframe')[0]['name']];
@@ -792,10 +793,9 @@
                             orderItem.ogl_comment = jq(text[0].cells[14].innerHTML).text();
 
                             var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-                            if(current_user_type == 5)
-                                iframeWin.LoadingData(orderItem,1);
-                            else
-                                iframeWin.LoadingData(orderItem,0);
+
+                            iframeWin.LoadingData(orderItem);
+
                         }
                     });;
                 });
@@ -839,61 +839,90 @@
             }
             //删除屏蔽
             function setDisable(value) {
+                //disabled 色值#CD3700
                 var jq = layui.jquery;
                 if(current_user_type == 1)
                 {
+                    jq('.depart_blue_disabled').addClass('layui-disabled');
                     jq('.depart_blue_disabled').attr('disabled',value);
 
+                    jq('.company_blue_disabled').addClass('layui-disabled');
                     jq('.company_blue_disabled').attr('disabled',value);
 
+                    jq('.finance_blue_disabled').addClass('layui-disabled');
                     jq('.finance_blue_disabled').attr('disabled',value);
 
+                    jq('.dark_blue_disabled').addClass('layui-disabled');
                     jq('.dark_blue_disabled').attr('disabled',value);
+
 
                 }
                 else if(current_user_type == 2)
                 {
+                    jq('.Wheat_disabled').addClass('layui-disabled');
                     jq('.Wheat_disabled').attr('disabled',value);
 
+                    jq('.company_blue_disabled').addClass('layui-disabled');
                     jq('.company_blue_disabled').attr('disabled',value);
 
+                    jq('.finance_blue_disabled').addClass('layui-disabled');
                     jq('.finance_blue_disabled').attr('disabled',value);
 
+                    jq('.dark_blue_disabled').addClass('layui-disabled');
                     jq('.dark_blue_disabled').attr('disabled',value);
 
+                    jq('.edit_disabled').addClass('layui-disabled');
                     jq('.edit_disabled').attr('disabled',value);
 
                 }
                 else if(current_user_type == 3)
                 {
+                    jq('.Wheat_disabled').addClass('layui-disabled');
                     jq('.Wheat_disabled').attr('disabled',value);
+
+                    jq('.depart_blue_disabled').addClass('layui-disabled');
                     jq('.depart_blue_disabled').attr('disabled',value);
+
+                    jq('.finance_blue_disabled').addClass('layui-disabled');
                     jq('.finance_blue_disabled').attr('disabled',value);
+
+                    jq('.dark_blue_disabled').addClass('layui-disabled');
                     jq('.dark_blue_disabled').attr('disabled',value);
+
+                    jq('.edit_disabled').addClass('layui-disabled');
                     jq('.edit_disabled').attr('disabled',value);
                 }
                 else if(current_user_type == 4)
                 {
+                    jq('.Wheat_disabled').addClass('layui-disabled');
                     jq('.Wheat_disabled').attr('disabled',value);
 
+                    jq('.depart_blue_disabled').addClass('layui-disabled');
                     jq('.depart_blue_disabled').attr('disabled',value);
 
+                    jq('.company_blue_disabled').addClass('layui-disabled');
                     jq('.company_blue_disabled').attr('disabled',value);
 
+                    jq('.dark_blue_disabled').addClass('layui-disabled');
                     jq('.dark_blue_disabled').attr('disabled',value);
 
+                    jq('.edit_disabled').addClass('layui-disabled');
                     jq('.edit_disabled').attr('disabled',value);
 
 
                 }
-                else if(current_user_type == 4)
+                else if(current_user_type == 5)
                 {
+                    jq('.Wheat_disabled').addClass('layui-disabled');
                     jq('.Wheat_disabled').attr('disabled',value);
 
+                    jq('.depart_blue_disabled').addClass('layui-disabled');
                     jq('.depart_blue_disabled').attr('disabled',value);
 
+                    jq('.company_blue_disabled').addClass('layui-disabled');
                     jq('.company_blue_disabled').attr('disabled',value);
 
+                    jq('.finance_blue_disabled').addClass('layui-disabled');
                     jq('.finance_blue_disabled').attr('disabled',value);
 
                 }
@@ -1293,18 +1322,18 @@
                 jq(new_tr).attr("time_stamp",time_stamp);
 
                 var col_0 = new_tr.insertCell(0);//添加列
-                col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' autocomplete='on' class='layui-input Wheat'></td>";
+                col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' autocomplete='on' class='layui-input Wheat  Wheat_disabled'></td>";
                 var col_1 = new_tr.insertCell(1);//添加列
-                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item' value='"+ delivery_date +"'></td>";
+                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item Wheat_disabled' value='"+ delivery_date +"'></td>";
                 jq.each(jq(".time-item"),function(){
                     laydate.render({ elem: this });
                 });
                 var col_2 = new_tr.insertCell(2);//添加列
-                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ goods_yard_name +"'></td>";
+                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat  Wheat_disabled' value='"+ goods_yard_name +"'></td>";
                 var col_3 = new_tr.insertCell(3);//添加列
-                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ transfer_order_num +"'></td>";
+                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat Wheat_disabled' value='"+ transfer_order_num +"'></td>";
                 var col_4 = new_tr.insertCell(4);//添加列
-                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ count +"'></td>";
+                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat Wheat_disabled' value='"+ count +"'></td>";
                 form.render('checkbox');
             }
 
@@ -1701,7 +1730,7 @@
                     return false;
                 }
                 var departExamine = {};
-                departExamine['cs_examine_date'] = curdate.toLocaleDateString();
+                departExamine['cs_examine_date'] = data['examinationapprovaldatefirst'];
                 departExamine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
                 departExamine['cs_examine_comment'] = data['remarkfirst'];
                 departExamine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
@@ -1747,7 +1776,7 @@
                 var cs_examine = [];
                 var companyExamine = {};
 
-                companyExamine['cs_examine_date'] = curdate.toLocaleDateString();
+                companyExamine['cs_examine_date'] = data['examinationapprovaldatesecond'];
                 companyExamine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
                 companyExamine['cs_examine_comment'] = data['remarksecond'];
                 companyExamine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
@@ -1790,10 +1819,10 @@
                 }
                 var cs_examine = [];
                 var financeExamine = {};
-                financeExamine['cs_examine_date'] = curdate.toLocaleDateString();
+                financeExamine['cs_examine_date'] = data['examinationapprovaldatethird'];
                 financeExamine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
                 financeExamine['cs_examine_comment'] = data['remarkthird'];
-                financeExamine['cs_examine_content'] = data['examinationapprovaldatethird'];
+                financeExamine['cs_examine_content'] = data['examinationapprovalcontentthird'];
                 financeExamine['cs_examine_result'] = 2;
                 financeExamine['cs_examine_state'] = 2;
                 financeExamine['cs_examine_name'] = editOrderData['finance_examine']['cs_examine_name'];
@@ -1926,20 +1955,22 @@
 
             //修改时 退回
             function returnOrder() {
+                setDisable(false);
                 var jq = layui.jquery;
                 var data = getFormData();
                 var curdate = new Date();
                 var cs_id = [];
                 var cs_examine = {};
-                cs_examine['cs_examine_date'] = curdate.toLocaleDateString();
                 cs_examine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
                 if(current_user_type == 2)
                 {
                     if(data['departmentdirectoradvice'] != "不同意")
                     {
                         layer.msg("退回请选择不同意",{icon:2});
+                        setDisable(true);
                         return false;
                     }
+                    cs_examine['cs_examine_date'] = data['examinationapprovaldatefirst'];
                     cs_examine['cs_examine_comment'] = data['remarkfirst'];
                     cs_examine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
                     cs_examine['cs_examine_result'] = "不同意";
@@ -1956,8 +1987,10 @@
                     if(data['executivegeneralmanageradvice'] != "不同意")
                     {
                         layer.msg("退回请选择不同意",{icon:2});
+                        setDisable(true);
                         return false;
                     }
+                    cs_examine['cs_examine_date'] = data['examinationapprovaldatesecond'];
                     cs_examine['cs_examine_comment'] = data['remarksecond'];
                     cs_examine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
                     cs_examine['cs_examine_result'] = "不同意";
@@ -1974,10 +2007,12 @@
                     if(data['financedirectoradvice'] != "不同意")
                     {
                         layer.msg("退回请选择不同意",{icon:2});
+                        setDisable(true);
                         return false;
                     }
+                    cs_examine['cs_examine_date'] = data['examinationapprovaldatethird'];
                     cs_examine['cs_examine_comment'] = data['remarkthird'];
-                    cs_examine['cs_examine_content'] = data['examinationapprovaldatethird'];
+                    cs_examine['cs_examine_content'] = data['examinationapprovalcontentthird'];
                     cs_examine['cs_examine_result'] = "不同意";
                     cs_examine['cs_examine_state'] = 2;
                     cs_examine['cs_examine_name'] = editOrderData['finance_examine']['cs_examine_name'];

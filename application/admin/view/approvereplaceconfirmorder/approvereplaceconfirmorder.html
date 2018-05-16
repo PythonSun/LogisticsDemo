@@ -95,8 +95,8 @@
                                     page: {
                                         curr: 1
                                     }
-
                                 });
+                                layer.closeAll();
                             },
                             btn2: function (index,layero) {
                                 var iframeWin = window[layero.find('iframe')[0]['name']];
@@ -108,9 +108,10 @@
                                         curr: 1
                                     }
                                 });
+                                layer.closeAll();
                             },
 							btn3:function () {
-                                layui.closeAll();
+                                layer.closeAll();
                             }
                         });
                     }
