@@ -54,8 +54,8 @@
             <h3>物流信息</h3>
             <div class="layui-form-item">
                 <div class="layui-btn-container">
-                    <input type="button" value="添加物流" id="btn_add_logistics_item" class="layui-btn layui-btn-normal Wheat_disabled" lay-submit="" lay-filter="btn_add_logistics_item">
-                    <input type="button" value="删除" id="btn_del_logistics_item" class="layui-btn layui-btn-normal Wheat_disabled" lay-submit="" lay-filter="btn_add_logistics_item">
+                    <input type="button" value="添加物流" id="btn_add_logistics_item" class="layui-btn layui-btn-normal dark_blue_disabled" lay-submit="" lay-filter="btn_add_logistics_item">
+                    <input type="button" value="删除" id="btn_del_logistics_item" class="layui-btn layui-btn-normal dark_blue_disabled" lay-submit="" lay-filter="btn_add_logistics_item">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -723,6 +723,8 @@
                     return false;
                 });
                 jq(document).on('click', '.edit_btn', function() {
+                    if(current_user_type != 5 || current_user_type != 1)
+                        return ;
                     var text = jq(this).parent().parent();
                     var type = current_user_type == 5?1:0;
                     layer.open({
@@ -801,6 +803,8 @@
                     });;
                 });
                 jq(document).on('click', '.del_btn', function(){
+                    if(current_user_type != 5 || current_user_type != 1)
+                        return ;
                     var text = jq(this).parent().parent();
                     var id= jq(text[0].cells[0].innerHTML).attr("tag");
                     if(id != "")
@@ -855,7 +859,6 @@
 
                     jq('.dark_blue_disabled').addClass('layui-disabled');
                     jq('.dark_blue_disabled').attr('disabled',value);
-
 
                 }
                 else if(current_user_type == 2)
@@ -926,6 +929,26 @@
                     jq('.finance_blue_disabled').addClass('layui-disabled');
                     jq('.finance_blue_disabled').attr('disabled',value);
 
+                }
+                else  if(current_user_type == 0) //只查看
+                {
+                    jq('.Wheat_disabled').addClass('layui-disabled');
+                    jq('.Wheat_disabled').attr('disabled',value);
+
+                    jq('.depart_blue_disabled').addClass('layui-disabled');
+                    jq('.depart_blue_disabled').attr('disabled',value);
+
+                    jq('.company_blue_disabled').addClass('layui-disabled');
+                    jq('.company_blue_disabled').attr('disabled',value);
+
+                    jq('.finance_blue_disabled').addClass('layui-disabled');
+                    jq('.finance_blue_disabled').attr('disabled',value);
+
+                    jq('.dark_blue_disabled').addClass('layui-disabled');
+                    jq('.dark_blue_disabled').attr('disabled',value);
+
+                    jq('.edit_disabled').addClass('layui-disabled');
+                    jq('.edit_disabled').attr('disabled',value);
                 }
             }
 
@@ -1323,18 +1346,18 @@
                 jq(new_tr).attr("time_stamp",time_stamp);
 
                 var col_0 = new_tr.insertCell(0);//添加列
-                col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' autocomplete='on' class='layui-input Wheat  Wheat_disabled'></td>";
+                col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' autocomplete='on' class='layui-input Wheat  dark_blue_disabled'></td>";
                 var col_1 = new_tr.insertCell(1);//添加列
-                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item Wheat_disabled' value='"+ delivery_date +"'></td>";
+                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item dark_blue_disabled' value='"+ delivery_date +"'></td>";
                 jq.each(jq(".time-item"),function(){
                     laydate.render({ elem: this });
                 });
                 var col_2 = new_tr.insertCell(2);//添加列
-                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat  Wheat_disabled' value='"+ goods_yard_name +"'></td>";
+                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat  dark_blue_disabled' value='"+ goods_yard_name +"'></td>";
                 var col_3 = new_tr.insertCell(3);//添加列
-                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat Wheat_disabled' value='"+ transfer_order_num +"'></td>";
+                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat dark_blue_disabled' value='"+ transfer_order_num +"'></td>";
                 var col_4 = new_tr.insertCell(4);//添加列
-                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat Wheat_disabled' value='"+ count +"'></td>";
+                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat dark_blue_disabled' value='"+ count +"'></td>";
                 form.render('checkbox');
             }
             //修改时 经理的提交

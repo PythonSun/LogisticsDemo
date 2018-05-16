@@ -48,6 +48,32 @@ class Queryreplaceconfirmorder extends Controller
         $this->assign('exportalternativepower',$exportalternativepower);
 
         $this->assign('exportreplacepower',$exportreplacepower);
+
+        $queryuserinfo = session("user_querypower");
+        $rolename = $queryuserinfo['role_name'];
+        if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员")
+        {
+            $this->assign('current_user_type',5);
+        }
+        elseif ($rolename == "财务部")
+        {
+            $this->assign('current_user_type',4);
+        }
+
+        elseif($rolename == "总经理")
+        {
+            $this->assign('current_user_type',3);
+        }
+        elseif($rolename == "总监")
+        {
+            $this->assign('current_user_type',2);
+        }
+        elseif($rolename == "经理")
+        {
+            $this->assign('current_user_type',1);
+        }
+
+
         return $this->fetch();
     }
 
