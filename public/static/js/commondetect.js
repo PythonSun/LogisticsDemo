@@ -30,3 +30,5 @@ function detectinputdataletter(object){
 	var value = $(object).val();
     $(object).val(value.replace(/[\W|\_]/g,""));
 }
+
+

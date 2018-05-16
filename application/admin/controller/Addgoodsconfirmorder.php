@@ -28,10 +28,13 @@ class Addgoodsconfirmorder extends Controller
             $this->assign("companylist", $companytable);
         $order_info = '-1';
         $this->assign("order_info", $order_info);
+        $this->assign('type',1);
     	return $this->fetch();
     }
 
     public function editgoodsconfirmorder(){
+        $type = $_GET['type'];
+
         $cs_id = $_GET['cs_id'];
         $cs_belong_id = $_GET['cs_belong_id'];
         $fee_info_id = $_GET['fee_info_id'];
@@ -63,6 +66,7 @@ class Addgoodsconfirmorder extends Controller
         $companytable = \app\index\model\Admin::querydepartmentinfo(0);
         if (!empty($companytable))
             $this->assign("companylist", $companytable);
+        $this->assign('type',$type);
         return $this->fetch('addgoodsconfirmorder');
     }
 
@@ -79,7 +83,7 @@ class Addgoodsconfirmorder extends Controller
         $result = \app\index\model\Admin::getuserinfobydepid($dep_id);
         return $result;
     }
-                                                                          //改
+
     public function addcs(){
         $user_session = session("user_session");
         $login_user_id = $user_session['user_id'];
@@ -222,10 +226,24 @@ class Addgoodsconfirmorder extends Controller
             }
             return "错误  404";
         }*/
+
+
+        $file_new = $order_goods_cs_info['consult_sheet_file'];
+        //$file_old = $order_goods_cs_info['consult_sheet_file_old'];
+        if (!empty($file_new)){
+            //文件移动
+            $cachefilePath = ROOT_PATH . 'public' . DS . 'cachefile'.DS.$file_new;
+            $filePath = ROOT_PATH . 'public' . DS . 'uploads'.DS.$file_new;
+            rename($cachefilePath,$filePath);
+        }
         return true;
     }
 
     public function editcs(){
+        $res=[
+            'code'=>1,
+            'msg'=>'保存成功！',
+        ];
 
         $user_session = session("user_session");
         $login_user_id = $user_session['user_id'];
@@ -254,6 +272,13 @@ class Addgoodsconfirmorder extends Controller
 
         //$order_goods_cs_info['unc_ofg_info_id'] = -1;                           /*******是否新增******/
         $cs_info_id = $order_goods_cs_info['cs_id'];
+
+        $file_new = $order_goods_cs_info['consult_sheet_file'];
+        $file_old = $order_goods_cs_info['consult_sheet_file_old'];
+        if (!empty($file_old) && empty($file_new)){//没有新文件上传
+            $order_goods_cs_info['consult_sheet_file'] = $file_old;
+        }
+
         $retcsinfo = \app\index\model\Admin::updateordergoodscsinfo($order_goods_cs_info);
 
         $cs_belong_old = \app\index\model\Admin::getclassinfobyproperty('dsp_logistic.cs_belong','cs_belong_id',$cs_belong['cs_belong_id']);
@@ -269,7 +294,11 @@ class Addgoodsconfirmorder extends Controller
                     $cs_belong_old[0]['build_department_name'] = $cs_belong['build_department_name'];
                     $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong_old[0]);
                     if (empty($ret_cs_belog)) {
-                        return false;
+                        $res=[
+                            'code'=> 0,
+                            'msg'=>'数据提交失败！错误代码：1295',
+                        ];
+                        return json($res);
                     }
                 }
             }
@@ -379,7 +408,35 @@ class Addgoodsconfirmorder extends Controller
             }
         }
         //$order_goods_cs_info['cs_id'] = $cs_info_id;
-        return true;
+
+
+        $cachefilePath = ROOT_PATH . 'public' . DS . 'cachefile'.DS.$file_new;
+        $filePath = ROOT_PATH . 'public' . DS . 'uploads'.DS.$file_new;
+        $filePath_old = ROOT_PATH . 'public' . DS . 'uploads'.DS.$file_old;
+
+        if (!empty($file_old) && empty($file_new)){//没有新文件上传
+        }else if (empty($file_old) && !empty($file_new)){//只有新文件
+            if (file_exists($cachefilePath)){
+                rename($cachefilePath,$filePath);
+                /*if (unlink($cachefilePath)){
+                }else{
+                }*/
+            }
+        }else if (!empty($file_old) && !empty($file_new)){//新旧都有
+            if (file_exists($cachefilePath)){
+                rename($cachefilePath,$filePath);
+                /*if (unlink($cachefilePath)){
+                }else{
+                }*/
+            }
+            if (file_exists($filePath_old)){
+                if (unlink($filePath_old)){
+                }else{
+                }
+            }
+        }
+
+        return json($res);
     }
 
     public function getorderinfo($cs_id,$cs_belong_id,$fee_info_id,$ofg_info_id,$unc_ofg_info_id){
@@ -441,20 +498,72 @@ class Addgoodsconfirmorder extends Controller
 
     /*上传咨询表*/
     public function uploadconsultform(){
-        $file = request()->file('file');
-        $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
-        if($info){
-            $res=[
-                'code'=>'1',
-                'msg'=>'上传成功',
-            ];
-            return json($res);
-        }else{
+        try{
+            $delFileName = '';
+            if (array_key_exists('delFileName',$_GET)){
+                $delFileName = $_GET['delFileName'];
+            }
+
+            $guid = self::create_guid();
+            $file = request()->file('file');
+            //$info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
+            $info = $file->move(ROOT_PATH . 'public' . DS . 'cachefile',"$guid",true);
+            $name = $info->getFilename();
+            $pathname = $info->getPathname();
+            if($info){
+                $delFileNameMsg = '';
+                if (!empty($delFileName)){
+                    $filePath = ROOT_PATH . 'public' . DS . 'cachefile'.DS.$delFileName;
+                    if (file_exists($filePath)){
+                        if (unlink($filePath)){
+                            $delFileNameMsg = '文件删除成功！';
+                        }else{
+                            $delFileNameMsg = '文件删除失败！';
+                        }
+                    }
+                }
+                $res=[
+                    'code'=>'1',
+                    'msg'=>'上传成功',
+                    'fileName'=>$name,
+                    'pathName'=>$pathname,
+                    'delFileNameMsg'=>$delFileNameMsg
+                ];
+                return json($res);
+            }else{
+                $res=[
+                    'code'=>'0',
+                    'msg'=>'上传失败',
+                ];
+                return json($res);
+            }
+        }
+        catch (Exception $e){
+            $msg = $e->getMessage();
             $res=[
                 'code'=>'0',
-                'msg'=>'上传失败',
+                'msg'=>$msg,
             ];
             return json($res);
         }
+    }
+
+    function test(){
+        $cachefilePath = '/uploads'.DS.'1.png';
+        return $cachefilePath;
+    }
+
+    /* 创建GUID */
+    function create_guid() {
+        $charid = strtoupper(md5(uniqid(mt_rand(), true)));
+        $hyphen = '';//chr(45);// "-"
+        $uuid = //chr(123).// "{"
+            substr($charid, 0, 8).$hyphen
+            .substr($charid, 8, 4).$hyphen
+            .substr($charid,12, 4).$hyphen
+            .substr($charid,16, 4).$hyphen
+            .substr($charid,20,12);
+            //.chr(125);// "}"
+        return $uuid;
     }
 }

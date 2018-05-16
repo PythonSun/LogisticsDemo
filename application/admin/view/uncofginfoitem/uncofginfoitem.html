@@ -33,13 +33,16 @@
                 </select>
             </div>
         </div>
+    </div>
+    <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label Wheat">型号：</label>
-            <div class="layui-input-inline">
-                <input type="text" id="serachModelinfo" name="inputmodel" class="layui-input Wheat"> </div>
+            <div class="layui-input-inline" style="max-width: 120px">
+                <input type="text" id="serachModelinfo" name="inputmodel" class="layui-input Wheat">
+            </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label Wheat">非常规产品：</label>
+            <label class="layui-form-label Wheat" style="min-width: 100px;padding-top: 8px;padding-left: 0px;padding-right: 0px">非常规产品：</label>
             <div class="layui-input-inline Wheat" style="max-width:120px">
                 <select id="unc_product_id" name="unc_product_id" lay-filter="unc_product_id">
                     <option value="" selected>请选择</option>
@@ -50,11 +53,12 @@
             </div>
         </div>
     </div>
+
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label Wheat">数量：</label>
             <div class="layui-input-inline" style="max-width:120px">
-                <input type="text" id="uod_count" name="uod_count" class="layui-input Wheat">
+                <input type="text" id="uod_count" name="uod_count" class="layui-input Wheat" oninput="detectinputtext(this);">
             </div>
         </div>
         <div class="layui-inline">
@@ -66,7 +70,7 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label Wheat">要求交货日期：</label>
+            <label class="layui-form-label Wheat" style="min-width: 100px;padding-top: 8px;padding-left: 0px;padding-right: 0px">要求交货日期：</label>
             <div class="layui-input-inline Wheat" style="max-width:120px">
                 <input type="text" name="uod_delivery_date" id="uod_delivery_date" autocomplete="on" class="layui-input Wheat">
             </div>
@@ -74,13 +78,13 @@
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label Wheat">定制要求：</label>
-        <div class="layui-input-inline">
+        <div class="layui-input-block">
             <input type="text" name="uod_requirement" id="uod_requirement" class="layui-input Wheat">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label Wheat">备注：</label>
-        <div class="layui-input-inline">
+        <div class="layui-input-block">
             <input type="text" name="uod_comment" id="uod_comment" class="layui-input Wheat">
         </div>
     </div>
@@ -154,24 +158,25 @@
             layer.msg('请选择品牌！', { icon: 2 });
             return null;
         }
-        if (unc_product_id == ""){
-            layer.msg('请选择非常规品牌！',{icon:2});
-            return null;
-        }
         var model = jq('#serachModelinfo').val();
         if(model == "") {
             layer.msg('请选择型号！', { icon: 2 });
             return null;
         }
+        if (unc_product_id == ""){
+            layer.msg('请选择非常规产品！',{icon:2});
+            return null;
+        }
+
         var uod_count = jq('#uod_count').val();
         var isright = testRgexp(/^\d+$/, uod_count);
         if(!isright) {
             layer.msg('数量必须未正整数！', { icon: 2 });
             return null;
         }
-        var place_id = jq('#place_id').val();
-        if(place_id == "") {
-            layer.msg('请选择生产地！', { icon: 2 });
+        var uod_unit = jq('#uod_unit').val();
+        if(uod_unit == "") {
+            layer.msg('请填写单位！', { icon: 2 });
             return null;
         }
         var uod_delivery_date = jq("#uod_delivery_date").val();
@@ -179,6 +184,12 @@
             layer.msg('请选择要求交货日期！', { icon: 2 });
             return null;
         }
+        var place_id = jq('#place_id').val();
+        if(place_id == "") {
+            layer.msg('请选择生产地！', { icon: 2 });
+            return null;
+        }
+
         //place_id
         var orderItem = new Object();
         orderItem.product_type_id = product_type_id;
