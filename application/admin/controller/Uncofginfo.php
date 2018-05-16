@@ -13,11 +13,13 @@ use think\Input;
 class Uncofginfo extends Controller
 {
     public function uncofginfo(){
+        $type = $_GET['type'];
         $user_session = session("user_session");
         $login_user_id = $user_session['user_id'];
         $login_user_name = $user_session['fullname'];
         $date = date("Y-m-d");
         $this->assign('date',$date);
+        $this->assign('type',$type);
         //$this->assign('user_id',$login_user_id);
         //$this->assign('user_name',$login_user_name);
         return $this->fetch();

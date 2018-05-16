@@ -393,13 +393,13 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat ">其它说明</label>
                 <div class="layui-input-block">
-                    <input type="text" name="order_goods_manager_explain" id="order_goods_manager_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled layui-disabled "> </div>
+                    <input type="text" name="order_goods_manager_explain" id="order_goods_manager_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled layui-disabled " oninput="detectinputtext(this);"> </div>
             </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label dark_blue">情况说明</label>
                 <div class="layui-input-block">
-                    <input type="text" name="ogl_explain" id="ogl_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input layui-disabled dark_blue dark_blue_disabled"> </div>
+                    <input type="text" name="ogl_explain" id="ogl_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input layui-disabled dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-container">
@@ -472,7 +472,6 @@
                 form.on('submit(deliver)',function (uidata) {
                     return saveOrDeliverToSql(uidata,1);
                 });
-
 
                 jq(document).ready(function(){
                     var cs_id = "<?php echo $cs_id?>";

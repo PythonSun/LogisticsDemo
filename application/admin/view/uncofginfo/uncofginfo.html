@@ -7,13 +7,20 @@
         <link rel="stylesheet" type="text/css" href="/static/css/public.css"> 
         <link rel="stylesheet" type="text/css" href="/static/font-awesome-4.7.0/css/font-awesome.css">
     	<style type="text/css">
+            .hide{
+                display: none;
+            }
+            .textcenter{
+                text-align: center;
+                left: 50%;
+            }
     	</style>
     </head>
     <body>
         <form class="layui-form layui-form-pane" action="">
         	<div class="toph2">
             	<h2>非定型产品订货单</h2>
-            	<i class="fa fa-reply fa-2x" aria-hidden="true"></i>
+            	<!--<i class="fa fa-reply fa-2x" aria-hidden="true"></i>-->
            	</div>
             
             <div class="layui-form-item">
@@ -56,12 +63,14 @@
                         <input type="text" disabled name="uoi_date" id="uoi_date" autocomplete="on" value="{$date}" class="layui-input"> </div>
                 </div>
             </div>
-            <div class="layui-form-item">
-                <div class="layui-btn-container">
-                    <button id="btn_add_order_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="add_order_item">添加清单</button>
+
+            <div>
+                <h3 class="textcenter" style="margin-bottom: -30px">订购清单</h3>
+                <div>
+                    <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="add_order_item">
                 </div>
             </div>
-            <h3>订购清单</h3>
+
             <table class="layui-table" id="tableorder">
                 <colgroup>
                 </colgroup>
@@ -97,7 +106,7 @@
             </div>
             <div class="layui-form-item">
                 <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="printorder">打印订货单</button>
+                    <input type="button" value="打印订货单" class="layui-btn layui-btn-primary" lay-submit="" lay-filter="printorder">
                 </div>
             </div>
         </form>
@@ -106,13 +115,28 @@
         <script type="text/javascript">
             var uoi_id = "";
             var delrowid = new Array();
+            var type = 1;//当前页面模式 说明：0:不可编辑 1：编辑
             $(document).ready(function() {
+                type = {$type};
                 var wParent = window.parent[window.parent.length - 2];
                 var data = wParent.getUncofgInfoUI();
+                var jq = layui.jquery;
+                if (type == 0){
+                    $('#uoi_to').attr("disabled","disabled");
+                    $('#btn_add_order_item').attr("disabled","disabled");
+                    $('#uoi_manual_ofg_id').attr("disabled","disabled");
+                    $('#uoi_custom_name').attr("disabled","disabled");
+                    $('#uoi_to_place').attr("disabled","disabled");
+                    $('#user_name').attr("disabled","disabled");
+                    $('#uoi_date').attr("disabled","disabled");
+                    $('#uoi_project_name').attr("disabled","disabled");
+                    $('#uoi_provider_name').attr("disabled","disabled");
+                    $('#btn_add_order_item').attr("disabled","disabled");
+                }
                 if(data == null){
                     return;
                 }
-                var jq = layui.jquery;
+
                 var unc_ofg_info = data.unc_ofg_info;
                 var tableData = data.unc_ofg_items;
                 if (tableData != null && tableData != ""){
@@ -180,17 +204,17 @@
                     rowIndex = tableRowIndex;
                 }
                 layer = layui.layer,
-                layer.open({
+                top.layer.open({
                     type:2,
                     title:'新增清单',
-                    area:['800px','90%'],
+                    area:['600px','50%'],
                     shade: [0.7, '#393D49'],
                     skin: 'layui-layer-molv',
                     maxmin:false,
                     content:"{:url('admin/uncofginfoitem/uncofginfoitem')}",
-                    btn:['保存','退出'],
+                    btn:['确定','退出'],
                     yes:function (index,layero) {
-                        var  iframeWin = window[layero.find('iframe')[0]['name']];
+                        var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                         var  orderItem = iframeWin.saveOrderItem();
                         if (orderItem == ""){
                             return false;
@@ -203,17 +227,17 @@
                             jq('#tableorder')[0].deleteRow(rowIndex);
                         }
                         addTableItem(orderItem,rowIndex);
-                        layer.close(index);
+                        top.layer.close(index);
                     },
-                    btn2: function () {
-                        layer.close(index);
+                    btn2: function (index) {
+                        top.layer.close(index);
                     },
                     success:function (layero, index){
                         if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
                         }
                         else {
                             var rowData = getTableItemToDBObject(tableRowIndex);
-                            var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                            var iframeWin = top.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
                             iframeWin.loadingData(rowData);
                         }
                     },
@@ -271,8 +295,13 @@
                 col_9.innerHTML = "<td><a>"+ uod_delivery_date +"</a></td>";
                 var col_10 = new_tr.insertCell(10);
                 col_10.innerHTML = "<td><a>"+ uod_comment +"</a></td>";
-                var col_11 = new_tr.insertCell(11);
-                col_11.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
+                if (type == 1){
+                    var col_11 = new_tr.insertCell(11);
+                    col_11.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
+                }else {
+                    var col_11 = new_tr.insertCell(11);
+                    col_11.innerHTML = "<td></td>";
+                }
             }
             //获取整个表数据
             function getTableDataToDBObject(){
@@ -333,7 +362,7 @@
                 var uoi_to = jq('#uoi_to').val();
                 var uoi_manual_ofg_id = jq('#uoi_manual_ofg_id').val();
                 var uoi_custom_name = jq('#uoi_custom_name').val();
-                var uoi_to_place = jq("#uoi_to_place").find("option:selected").text();
+                var uoi_to_place = jq("#uoi_to_place").find("option:selected").val();
                 var uoi_project_name = jq('#uoi_project_name').val();
                 var uoi_provider_name = jq('#uoi_provider_name').val();
                 unc_ofg_info.uoi_id = uoi_id;

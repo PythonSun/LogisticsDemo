@@ -56,7 +56,7 @@
             $sqlone .= "left join dsp_logistic.fee_info on dsp_logistic.fee_info.fee_info_id = dsp_logistic.order_goods_cs_info.fee_info_id ";
             $sqlone .= "left join dsp_logistic.unc_ofg_info on dsp_logistic.unc_ofg_info.uoi_id = dsp_logistic.order_goods_cs_info.unc_ofg_info_id ";
             //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
-            $sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
+            //$sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
 
             $sqlone .= "where dsp_logistic.order_goods_cs_info.cs_id like '%%' ";
@@ -129,13 +129,14 @@
             }
 
             $offset = ($pagenum - 1)*$length;
-            $sqltwo ="select  dsp_logistic.cs_belong.* ,dsp_logistic.order_goods_cs_info.*,dsp_logistic.fee_info.transfer_mode,dsp_logistic.logistics_info.transfer_order_num,";
+            //$sqltwo ="select  dsp_logistic.cs_belong.* ,dsp_logistic.order_goods_cs_info.*,dsp_logistic.fee_info.transfer_mode,dsp_logistic.logistics_info.transfer_order_num,";
+            $sqltwo ="select  dsp_logistic.cs_belong.* ,dsp_logistic.order_goods_cs_info.*,dsp_logistic.fee_info.transfer_mode,";
             $sqltwo .= "dsp_logistic.ofg_info.receiver_name from dsp_logistic.order_goods_cs_info ";
             $sqltwo .= "left join dsp_logistic.ofg_info on dsp_logistic.ofg_info.ofg_info_id = dsp_logistic.order_goods_cs_info.ofg_info_id ";
             $sqltwo .= "left join dsp_logistic.fee_info on dsp_logistic.fee_info.fee_info_id = dsp_logistic.order_goods_cs_info.fee_info_id ";
             $sqltwo .= "left join dsp_logistic.unc_ofg_info on dsp_logistic.unc_ofg_info.uoi_id = dsp_logistic.order_goods_cs_info.unc_ofg_info_id ";
             //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
-            $sqltwo .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
+            //$sqltwo .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
             $sqltwo .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
             $sqltwo .= "where dsp_logistic.order_goods_cs_info.cs_id like '%%' ";
             if($organizename != "")
