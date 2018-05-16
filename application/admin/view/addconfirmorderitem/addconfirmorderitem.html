@@ -244,7 +244,6 @@
             layer.msg('请输入型号',{icon:2});
             return;
         }
-
         //+判断 型号是否存在，不存在禁止录入
         jq.ajax({
             url:"{:url('admin/addconfirmorderitem/serachmodelinfo')}",
@@ -260,7 +259,7 @@
                     orderItem.product_info_name = data[0].product_info_name;
                     orderItem.product_info_id = data[0].product_info_id; 
                 }
-        });
+        }});
 
         return orderItem;
     }
@@ -295,7 +294,6 @@
         });
         layui.form.render('select');
         layui.form.render('radio');
-
     }
 </script>
 
