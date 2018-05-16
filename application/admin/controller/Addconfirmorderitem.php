@@ -13,6 +13,8 @@ class Addconfirmorderitem extends Controller
 {
     public function addconfirmorderitem()
     {
+        $type = $_GET['type'];
+        $this->assign('type',$type);
         $producttype = \app\index\model\Admin::getclassinfo('product_type','product_type_id');
         $brand = \app\index\model\Admin::getclassinfo('product_brand','brand_id');
         $place = \app\index\model\Admin::getclassinfo('product_place','place_id');

@@ -649,7 +649,7 @@
             $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
          //   $sqlone .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
-            $sqlone.=" where examine_user_id = '$examine_user_id' and cs_info_type = '$type'";
+            $sqlone.=" where examine_user_id = '$examine_user_id' and cs_info_type = '$type' and cs_info_state = '1' and cs_examine_state = 1";
             if($totalargs == 5){
                 $startdate = $args[4]['startdate'];
                 $enddate = $args[4]['enddate'];
@@ -717,7 +717,7 @@
             $sqltwo .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
          //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
             $sqltwo .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
-            $sqltwo.=" where examine_user_id = '$examine_user_id' and cs_info_type = '$type'";
+            $sqltwo.=" where examine_user_id = '$examine_user_id' and cs_info_type = '$type' and cs_info_state = '1' and cs_examine_state = 1 ";
             if($totalargs == 5){
                 $startdate = $args[4]['startdate'];
                 $enddate = $args[4]['enddate'];
@@ -1249,7 +1249,7 @@
             return $sqlret;
         }
 
-        /*update 确认单审批 cs_examine*/
+        /*update  logisticinfo*/
         public static function updatelogisticinfo($info){
             $logistics_id = $info['logistics_id'];
             $cs_id = $info['cs_id'];
@@ -1346,6 +1346,7 @@
             $rolename = $role[0]["role_name"];
             $userquerypower = array();
             $userquerypower["isSales"] = false;
+            $userquerypower["role_name"] = $rolename;
             if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员"||$rolename == "财务部")
             {
                 $userquerypower["isSales"] = true;
@@ -1446,7 +1447,7 @@
             /*运费付费模式*/
             if(property_exists($param,'freightmode')){
                 $freightmode = intval($param->freightmode);
-                $sqltwo .= "and dsp_logistic.delivery_info.transfer_fee_mode = '$freightmode' ";
+                $sqlone .= "and dsp_logistic.delivery_info.transfer_fee_mode = '$freightmode' ";
             }
 
             // if(property_exists($param,'yard')){
