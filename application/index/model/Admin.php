@@ -2618,5 +2618,13 @@
                 return null;
             return $tableobj;
         }
+
+        //根据cs_id修改订单状态
+        public static function cancelcsinfobyid($cs_id){
+            $cs_info_state = 3;
+            $sql = "update dsp_logistic.cs_info SET  cs_info_state = '{$cs_info_state}' where cs_id = '{$cs_id}'";
+            $sqlret = Db::execute($sql);
+            return $sqlret;
+        }
     }
 ?>

@@ -537,4 +537,11 @@ class Addreplaceconfirmorder extends Controller
 
     }
 
+    /*将订单状态改为取消*/
+    public function cancelcsinfo(){
+        $cs_id = $_POST['cs_id'];
+        $ret = \app\index\model\Admin::cancelcsinfobyid($cs_id);
+        return $ret;
+    }
+
 }

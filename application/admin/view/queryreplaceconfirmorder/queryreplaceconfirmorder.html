@@ -13,13 +13,20 @@
 			<div><h2>更换单查询</h2></div>
 			<table class="layui-hide" id="queryreplaceorder" lay-filter="queryreplaceorder"></table>
 			<script type="text/html" id="operatebar">
-			  <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="detail">查看</a>
-			  {if condition="$editreplacepower eq 2"}
-			  	<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-			  {/if}
-			  {if condition="$deletereplacepower eq 4"}
-			  	<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
-			  {/if}
+    		<a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="detail">查看</a>
+            {{#  if(d.cs_info_state != '取消'){ }}
+        		{if condition="$editreplacepower eq 2"}
+        		  	<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        		{/if}
+            {{#  } }}
+
+    		{if condition="$deletereplacepower eq 4"}
+    		  	<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+		    {/if}
+               
+            {{#  if(d.cs_info_state != '取消'){ }}
+                <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="cancel">取消</a>
+            {{#  } }}
 			</script>
 		</div>
 		<script src="/static/layui/layui.js"></script>
@@ -159,7 +166,7 @@
                         ,{field: 'cs_info_state', title: '状态', minWidth: 100}
                         ,{field: 'transfer_fee_mode', title: '运费方式', width: 100}
                         ,{field: 'transfer_order_num', title: '运单号', minWidth: 100}
-				      ,{fixed: 'right', title:'操作', width:200, align:'center', toolbar: '#operatebar'}
+				      ,{fixed: 'right', title:'操作', width:200, align:'left', toolbar: '#operatebar'}
 				    ]]
 				    ,id: 'querytable'
 				    ,data:[]
@@ -177,7 +184,7 @@
 				    if(obj.event === 'detail'){
                         layer.open({
                             type: 2,
-                            title: '新增清单',
+                            title: '查看订单详情',
                             area: ['90%', '90%'],
                             shade: 0.9,
                             maxmin: false,
@@ -194,7 +201,7 @@
                         {
                             layer.open({
                                 type: 2,
-                                title: '新增清单',
+                                title: '编辑订单',
                                 area: ['90%', '90%'],
                                 shade: 0.9,
                                 maxmin: false,
@@ -259,7 +266,18 @@
 
 				    }else if(obj.event === 'delete'){
 				    	layer.msg('删除操作');
-				    }
+				    }else if(obj.event === 'cancel'){
+                        var cs_id = data.cs_id;
+
+                        layer.confirm('确定取消？',{icon:2,title:'提示'},function(index){
+                            jq.post("{:url('admin/addreplaceconfirmorder/cancelcsinfo')}",{'cs_id':cs_id},function(data){
+                                layer.close(index);
+                                obj.update({
+                                  cs_info_state: '取消'
+                                });
+                            });
+                        });
+                    }
 			  	});
 			});
 		</script>
