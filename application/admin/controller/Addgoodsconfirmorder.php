@@ -1,5 +1,6 @@
 <?php
 namespace app\admin\controller;
+use think\Exception;
 use think\Request;
 use \think\File;
 use think\Controller;
@@ -543,6 +544,39 @@ class Addgoodsconfirmorder extends Controller
             $res=[
                 'code'=>'0',
                 'msg'=>$msg,
+            ];
+            return json($res);
+        }
+    }
+    //删除临时质询表
+    public function delcachefile(){
+        $delFileName = '';
+        if (array_key_exists('delFileName',$_POST)){
+            $delFileName = $_POST['delFileName'];
+        }else{
+        }
+        $delFileNameMsg = '';
+        try
+        {
+            if (!empty($delFileName)){
+                $filePath = ROOT_PATH . 'public' . DS . 'cachefile'.DS.$delFileName;
+                if (file_exists($filePath)){
+                    if (unlink($filePath)){
+                        $delFileNameMsg = '文件删除成功！';
+                    }else{
+                        $delFileNameMsg = '文件删除失败！';
+                    }
+                }
+            }
+            $res=[
+                'code'=>'1',
+                'msg'=>$delFileNameMsg,
+            ];
+            return json($res);
+        }catch (Exception $e){
+            $res=[
+                'code'=>'0',
+                'msg'=>$e->getMessage()
             ];
             return json($res);
         }

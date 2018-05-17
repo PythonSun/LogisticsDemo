@@ -207,7 +207,7 @@
                 top.layer.open({
                     type:2,
                     title:'新增清单',
-                    area:['600px','50%'],
+                    area:['600px','80%'],
                     shade: [0.7, '#393D49'],
                     skin: 'layui-layer-molv',
                     maxmin:false,
@@ -216,7 +216,7 @@
                     yes:function (index,layero) {
                         var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                         var  orderItem = iframeWin.saveOrderItem();
-                        if (orderItem == ""){
+                        if (orderItem == "" || orderItem == null){
                             return false;
                         }
 

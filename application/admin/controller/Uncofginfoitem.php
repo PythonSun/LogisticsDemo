@@ -48,6 +48,8 @@ class Uncofginfoitem extends Controller
 
     public function serachproductinfo(){
         $productinfo = self::coldserachmodelinfo();
+
+
         if (!empty($productinfo)){
             $place_id = $productinfo[0]['place_id'];
             $placeinfo = \app\index\model\Admin::getproductplace($place_id);
@@ -58,6 +60,6 @@ class Uncofginfoitem extends Controller
                 return $retinfo;
             }
         }
-        return null;
+        return "";
     }
 }
