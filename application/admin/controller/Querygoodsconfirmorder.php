@@ -55,9 +55,18 @@ class Querygoodsconfirmorder extends Controller
         $page = $_GET['page'];
         $limit = $_GET['limit'];
         $type = 0x01;
-        $organizename = $queryuserinfo["organizename"];
-        $departmentname = $queryuserinfo["departmentname"];
-        $areamanager = $queryuserinfo["areamanager"];
+        $organizename = "";
+        if (array_key_exists('organizename',$queryuserinfo)){
+            $organizename = $queryuserinfo["organizename"];
+        }
+        $departmentname = "";
+        if (array_key_exists('departmentname',$queryuserinfo)){
+            $departmentname = $queryuserinfo["departmentname"];
+        }
+        $areamanager = "";
+        if (array_key_exists('areamanager',$queryuserinfo)){
+            $areamanager = $queryuserinfo["areamanager"];
+        }
         if(isset($_GET['queryInfo'])){
             $queryInfo = $_GET['queryInfo'];
             $queryInfo["organizename"] = $queryInfo["departname"];
@@ -66,7 +75,7 @@ class Querygoodsconfirmorder extends Controller
         }else{
             $tablelist = \app\index\model\Admin::querygoodsorderinfo($organizename,$departmentname,$areamanager,$type,$page,$limit);
         }
-    	return $tablelist;
+        return $tablelist;
     }
 
     /*导出订货确认单*/
