@@ -21,8 +21,8 @@
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">品牌：</label>
-                    <div class="layui-input-inline Wheat" style="max-width:120px">
-                        <select id="brand_id" name="brand_name" lay-filter="brand_name">
+                    <div class="layui-input-inline Wheat" style="max-width:120px;" >
+                        <select id="brand_id" name="brand_name" lay-filter="brand_name" >
                             <option value="" selected>请选择</option> {volist name="brandlist" id="vo"}
                             <option value={$vo.brand_id}>{$vo.brand_name}</option> {/volist} </select>
                     </div>
@@ -37,7 +37,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">数量：</label>
                     <div class="layui-input-inline" style="max-width:120px">
-                        <input type="text" id="ogcugi_count" name="ogcugi_count" class="layui-input Wheat"> </div>
+                        <input type="text" id="ogcugi_count" name="ogcugi_count" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">单位：</label>
@@ -62,29 +62,37 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">备注：</label>
                 <div class="layui-input-block">
-                    <input type="text" name="ogcugi_comment" id="ogcugi_comment" class="layui-input Wheat"> </div>
+                    <!--<input type="text" name="ogcugi_comment" id="ogcugi_comment" class="layui-input Wheat">-->
+                    <textarea name="ogcugi_comment" id="ogcugi_comment" required lay-verify="required" placeholder="请输入" class="layui-textarea Wheat"></textarea>
+                </div>
             </div>
         </form>
     </body>
     <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="/static/UI-jquery/jquery-ui.min.js"></script>
     <script type="text/javascript" src="/static/layui/layui.js"></script>
+    <script type="text/javascript" src="/static/js/commondetect.js"></script>
+    <script type="text/javascript" src="/static/UI-jquery/jquery-ui.js" ></script>
     <script type="text/javascript">
-
         var ogcugi_id = "";
         var cs_id = "";
-
         layui.use(['form', 'laydate', 'jquery', 'laydate'], function () {
             var form = layui.form,
-                laydate = layui.laydate;
-            jq = layui.jquery;
+                laydate = layui.laydate,
+                jq = layui.jquery;
             jq("#serachModelinfo").autocomplete({
                 source: function (request, response) {
+                    var product_type = jq("#product_type_id").val();
+                    var brand = jq('#brand_id').val();
+                    var serachText = jq("#serachModelinfo").val().trim();;
+                    if (product_type == "" || brand == "" || serachText == ""){
+                        return;
+                    }
                     jq.ajax({
                         url: "{:url('admin/addgoodsconfirmorderitem/serachmodelinfo')}",
                         type: "POST",
                         dataType: "json",
-                        data: { serrchText: jq("#serachModelinfo").val(), type: jq("#product_type_id").val(), brand: jq('#brand_id').val() },
+                        data: { serrchText:serachText, type:product_type, brand:brand },
                         success: function (data) {
                             response(jq.map(data, function (item) {
                                 return {
@@ -110,12 +118,16 @@
                 layer.msg('请选择品牌！', { icon: 2 });
                 return null;
             }
-            var modeltext = jq('#serachModelinfo').val();
+            var modeltext = jq('#serachModelinfo').val().trim();
             if(modeltext == "") {
                 layer.msg('请选择型号！', { icon: 2 });
                 return null;
             }
             var ogcugi_count = jq('#ogcugi_count').val();
+            if (ogcugi_count == ""){
+                layer.msg('请填写数量！', { icon: 2 });
+                return null;
+            }
             var isright = testRgexp(/^\d+$/, ogcugi_count);
             if(!isright) {
                 layer.msg('数量必须未正整数！', { icon: 2 });
@@ -151,12 +163,13 @@
             orderItem.ogcugi_id = ogcugi_id;
             orderItem.cs_id = cs_id;
             //+判断 型号是否存在，不存在禁止录入
+            var canRet = true;
             jq.ajax({
                 url: "{:url('admin/addgoodsconfirmorderitem/serachproductinfo')}",
                 type: "POST",
                 dataType: "json",
                 async: false,
-                data: { serrchText: jq("#serachModelinfo").val(), type: jq("#product_type_id").val(), brand: jq('#brand_id').val() },
+                data: { serrchText: modeltext, type: product_type_id, brand: brand_id},
                 success: function (data) {
                     if(data != "") {
                         orderItem.place_name = data.place_info.place_name;
@@ -164,17 +177,21 @@
                         orderItem.product_info_name = data.product_info.product_info_name;
                         orderItem.product_info_id = data.product_info.product_info_id;
                     } else {
-                        layui.use('layer', function () {
-                            var layer = layui.layer;
-                            layer.msg('型号不存！', { icon: 2 });
-                        });
+                        var layer = layui.layer;
+                        top.layer.msg('型号不存在！', { icon: 2 });
+                        canRet = false;
                     }
                 },
             });
-            return orderItem;
+            if (canRet){
+                return orderItem;
+            }else {
+                return null;
+            }
         }
 
         function loadingData(data) {
+            var jq = layui.jquery;
             ogcugi_id = data.ogcugi_id;
             cs_id = data.cs_id;
             document.getElementById('product_type_id').value = data.product_type_id;

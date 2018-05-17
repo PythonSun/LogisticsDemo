@@ -6,6 +6,9 @@
         <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
         <link rel="stylesheet" type="text/css" href="/static/css/public.css"> </head>
         <style>
+            .btnPicLightBg{
+                background: #8D8D8D;
+            }
             .hide{
                 display: none;
             }
@@ -167,6 +170,7 @@
                 	<input type="button" id="lockuncofginfo" class="layui-btn" target="_blank" value="查看非定型产品订货确认单">
                 	<input type="button" id="uploadpic" name="uploadpic" class="layui-btn" target="_blank" value="上传咨询表">
                 	<input type="button" id="lookpic" class="layui-btn" target="_blank" value="查看咨询表">
+                    <input type="button" id="delpic" class="layui-btn" target="_blank" value="删除咨询表" title="删除新上传的未保存的咨询表（已保存无法删除）">
                	</div>
             </div>
             <h3>已发货产品</h3>
@@ -317,6 +321,7 @@
                         top.layer.closeAll('loading');
                         top.layer.msg('上传失败！',{icon:2});
                         //请求异常回调
+                        setConsultSheet();
                     }
                     ,before: function(obj){
                         if (consult_sheet_file_new != ""){
@@ -326,32 +331,32 @@
                         }
                         console.log(this);
                         top.layer.load(); //上传loading
+                        setConsultSheet();
                     }
                     ,done: function(res){
                         top.layer.closeAll('loading');
                         console.log(res);
                         if(res.code == '1'){
                             var fileName = res.fileName;
-                            var pathName = res.pathName;
+                            var pathName = res.pathName;//暂无用
                             top.layer.msg(res.msg,{icon:1});
                             if (fileName === undefined || fileName ==""){
 
                             }else {
                                 consult_sheet_file_new = fileName;
                             }
-                            //hasUploadPic = true;
                         }
                         if(res.code == '0'){
                             top.layer.msg(res.msg,{icon:2});
                             consult_sheet_file_new = "";
                         }
+                        setConsultSheet();
                     }
                 });
 
                 //网页加载时  赋值使用
                 $(document).ready(function(){
                     type = {$type};
-
                     var order_info = {$order_info};
                     if(order_info == "-1"){
                         addLogisticsItem(null);
@@ -522,11 +527,8 @@
                 });
                 //删除物流信息
                 jq('#btn_del_logistics_item').click(function(){
-                    console.log("删除物流信息  ---------------------");
                     jq("input[name=onechoose]").each(function () {
-                        console.log("删除物流信息  ************************");
                         var ischecked = jq(this).prop("checked");
-
                         if(ischecked){
                             var logistics_id = jq(jq(this).parent().parent()).attr("logistics_id");
                             jq(jq(this).parent().parent()).remove();
@@ -536,7 +538,6 @@
                             del_logistics_id_arr.push(logistics_id);
                         }
                     });
-                    console.log("删除物流信息  +++++++++++++++++++");
                     return false;
                 });
                 //非定型订单弹窗
@@ -613,6 +614,7 @@
                 });
 
                 jq('#lookpic').click(function () {
+                    console.log("查看咨询表被点击了");
                     //var consult_sheet_file = "";
                     //var consult_sheet_file_new = "";
                     var fileName = '';
@@ -647,6 +649,29 @@
                         ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
                     });
                 });
+                //删除未保存咨询表
+                jq('#delpic').click(function () {
+                    if (consult_sheet_file_new == ""){
+                        return;
+                    }
+                    jq.ajax({
+                        url: "{:url('admin/addgoodsconfirmorder/delcachefile')}",//php文件路径
+                        data: {
+                            delFileName:consult_sheet_file_new
+                        },
+                        type: 'POST',
+                        success: function(res) {
+                            console.log(res)
+                            consult_sheet_file_new = "";
+                            if(res.code){
+                                top.layer.msg(res.msg,{icon:1});
+                            }else {
+                                top.layer.msg(res.msg,{icon:2});
+                            }
+                            setConsultSheet();
+                        }
+                    })
+                });
             });
 
             //编辑或者新增Item 窗体，tableRowIndex：表序号 新增不填
@@ -659,20 +684,20 @@
                 else {
                     rowIndex = tableRowIndex;
                 }
-                layer = layui.layer;
-                layer.open({
+                var layer = layui.layer;
+                top.layer.open({
                     type: 2,
                     title: '新增清单',
-                    area: ['880px', '350px'],
+                    area: ['880px', '400px'],
                     shade: [0.7, '#393D49'],
                     skin: 'layui-layer-molv',
                     maxmin: false,
                     content: "{:url('admin/addgoodsconfirmorderitem/addgoodsconfirmorderitem')}",
                     btn: ['确定', '退出'],
                     yes: function (index, layero) {
-                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        var iframeWin = top.window[layero.find('iframe')[0]['name']];
                         var orderItem = iframeWin.saveOrderItem();
-                        if (orderItem == "") {
+                        if (orderItem == "" || orderItem == null) {
                             return false;
                         }
 
@@ -683,17 +708,17 @@
                             jq('#tableorder')[0].deleteRow(rowIndex);
                         }
                         addTableItem(orderItem, rowIndex);
-                        layer.close(index);
+                        top.layer.close(index);
                     },
-                    btn2: function () {
-                        layer.close(index);
+                    btn2: function (index) {
+                        top.layer.close(index);
                     },
                     success: function (layero, index) {
                         if (tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == "") {
                         }
                         else {
                             var rowData = getTableItemToDBObject(tableRowIndex);
-                            var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                            var iframeWin = top.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
                             iframeWin.loadingData(rowData);
                         }
                     },
@@ -1274,7 +1299,23 @@
                         }
                     )
                 }
+                setConsultSheet();
                 layui.form.render('select');
+            }
+
+            function setConsultSheet() {
+                if(consult_sheet_file == "" && consult_sheet_file_new == ""){
+                    $('#lookpic').attr("disabled","disabled");
+                    $('#lookpic').addClass('btnPicLightBg');
+                }else {
+                    $('#lookpic').removeAttr("disabled");
+                    $('#lookpic').removeClass('btnPicLightBg');
+                }
+                if (consult_sheet_file_new != ""){
+                    $('#delpic').removeClass('hide');
+                }else {
+                    $('#delpic').addClass('hide');
+                }
             }
         </script>
     </body>

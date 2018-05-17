@@ -3,6 +3,7 @@ document.write("<script language=javascript src='/static/js/jquery-1.11.1.min.js
 
 /*检测输入字符*/
 function detectinputtext(object){
+
 	var value = $(object).val();
 	/*替换特殊字符*/
 	if(/[^\u4E00-\u9FA5A-Za-z0-9-()（）]+/.test(value)){

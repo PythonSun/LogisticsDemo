@@ -58,7 +58,7 @@
         <div class="layui-inline">
             <label class="layui-form-label Wheat">数量：</label>
             <div class="layui-input-inline" style="max-width:120px">
-                <input type="text" id="uod_count" name="uod_count" class="layui-input Wheat" oninput="detectinputtext(this);">
+                <input type="text" id="uod_count" name="uod_count" class="layui-input Wheat" oninput="detectinputnumber(this);">
             </div>
         </div>
         <div class="layui-inline">
@@ -79,13 +79,15 @@
     <div class="layui-form-item">
         <label class="layui-form-label Wheat">定制要求：</label>
         <div class="layui-input-block">
-            <input type="text" name="uod_requirement" id="uod_requirement" class="layui-input Wheat">
+            <!--<input type="text" name="uod_requirement" id="uod_requirement" class="layui-input Wheat">-->
+            <textarea name="uod_requirement" id="uod_requirement" required lay-verify="required" placeholder="请输入" class="layui-textarea Wheat"></textarea>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label Wheat">备注：</label>
         <div class="layui-input-block">
-            <input type="text" name="uod_comment" id="uod_comment" class="layui-input Wheat">
+            <!--<input type="text" name="uod_comment" id="uod_comment" class="layui-input Wheat">-->
+            <textarea name="uod_comment" id="uod_comment" required lay-verify="required" placeholder="请输入" class="layui-textarea Wheat"></textarea>
         </div>
     </div>
 </form>
@@ -93,6 +95,8 @@
 <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="/static/UI-jquery/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="/static/js/commondetect.js"></script>
+<script type="text/javascript" src="/static/UI-jquery/jquery-ui.js" ></script>
 <script type="text/javascript">
     var uod_id = "";
     layui.use(['form', 'laydate', 'jquery', 'laydate'], function () {
@@ -108,11 +112,17 @@
 
         jq("#serachModelinfo").autocomplete({
             source: function (request, response) {
+                var product_type = jq("#product_type_id").val();
+                var brand = jq('#brand_id').val();
+                var serachText = jq("#serachModelinfo").val().trim();
+                if (product_type == "" || brand == "" || serachText == ""){
+                    return;
+                }
                 jq.ajax({
                     url: "{:url('admin/uncofginfoitem/serachmodelinfo')}",
                     type: "POST",
                     dataType: "json",
-                    data: { serrchText: jq("#serachModelinfo").val(), type: jq("#product_type_id").val(), brand: jq('#brand_id').val() },
+                    data: { serrchText:serachText, type:product_type, brand: brand},
                     success: function (data) {
                         response(jq.map(data, function (item) {
                             return {
@@ -158,7 +168,7 @@
             layer.msg('请选择品牌！', { icon: 2 });
             return null;
         }
-        var model = jq('#serachModelinfo').val();
+        var model = jq('#serachModelinfo').val().trim();
         if(model == "") {
             layer.msg('请选择型号！', { icon: 2 });
             return null;
@@ -169,6 +179,10 @@
         }
 
         var uod_count = jq('#uod_count').val();
+        if(uod_count == ""){
+            layer.msg('请填写数量！', { icon: 2 });
+            return null;
+        }
         var isright = testRgexp(/^\d+$/, uod_count);
         if(!isright) {
             layer.msg('数量必须未正整数！', { icon: 2 });
@@ -209,12 +223,13 @@
         orderItem.uod_requirement = jq('#uod_requirement').val();
         orderItem.uod_comment = jq('#uod_comment').val();
         //+判断 型号是否存在，不存在禁止录入
+        var canRet = true;
         jq.ajax({
             url: "{:url('admin/uncofginfoitem/serachproductinfo')}",
             type: "POST",
             dataType: "json",
             async: false,
-            data: { serrchText: jq("#serachModelinfo").val(), type: jq("#product_type_id").val(), brand: jq('#brand_id').val() },
+            data: { serrchText:model, type:product_type_id, brand:brand_id },
             success: function (data) {
                 if(data !="") {
                     orderItem.place_name = data.place_info.place_name;
@@ -222,19 +237,17 @@
                     //orderItem.model_text = data.product_info.product_info_name;
                     orderItem.product_info_id = data.product_info.product_info_id;
                 } else {
-                    console.log(data);
-                    layui.use('layer', function () {
-                        var layer = layui.layer;
-                        layer.msg('型号不存！', { icon: 2 });
-                    });
+                    var layer = layui.layer;
+                    top.layer.msg('型号不存在！', { icon: 2 });
+                    canRet = false;
                 }
             },
-            error:function (e) {
-                console.log(e);
-                console.log("fuck!!!!!!");
-            }
         });
-        return orderItem;
+        if (canRet){
+            return orderItem;
+        }else {
+            return null;
+        }
     }
 
     function testRgexp(re, s) { // 参数说明 re 为正则表达式 s 为要判断的字符
