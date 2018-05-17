@@ -188,6 +188,7 @@
 
     function saveOrderItem() {
         var jq = layui.jquery;
+        var layer = layui.layer;
         jq('.Wheat_disabled').attr("disabled",false);
       //  jq('.Wheat_disabled').attr("disabled","disabled");
 
@@ -239,30 +240,38 @@
         orderItem.bar_code = jq('#bar_code').val();
         orderItem.replace_reason = jq('#replace_reason').val();
         orderItem.ogl_comment = jq('#comment').val();
+        if(orderItem.model == ''){
+            layer.msg('请输入型号',{icon:2});
+            return;
+        }
         //+判断 型号是否存在，不存在禁止录入
         jq.ajax({
-            url:"{:url('admin/addconfirmorderitem/serachmodelinfo')}",
+            url:"{:url('admin/addconfirmorderitem/serachproductinfo')}",
             type:"POST",
             dataType:"json",
             async:false,
             data:{serrchText:jq("#serachModelinfo").val(),type:jq("#product_type_id").val(),brand:jq('#brand_id').val()},
             success:function(data){
-                if(data != null){
+                if(isEmptyObject(data)){
+                    top.layer.msg('型号不存在！',{icon:2});
+                    return;
+                }else{
                     orderItem.product_info_name = data[0].product_info_name;
-                    orderItem.product_info_id = data[0].product_info_id;
-                }else {
-                    layui.use('layer', function(){
-                        var layer = layui.layer;
-                        top.layer.msg('型号不存！',{icon:2});
-                    });
+                    orderItem.product_info_id = data[0].product_info_id; 
                 }
-            },
-        });
+        }});
+
         return orderItem;
     }
-    function LoadingData(data) {
 
-        console.log(data);
+    function isEmptyObject(obj){
+          for (var key in obj) {
+            return false;
+          }
+          return true;
+    }
+
+    function LoadingData(data) {
         var jq = layui.jquery;
 
         document.getElementById('product_type_id').value = data['product_type_id'];
@@ -285,7 +294,6 @@
         });
         layui.form.render('select');
         layui.form.render('radio');
-
     }
 </script>
 

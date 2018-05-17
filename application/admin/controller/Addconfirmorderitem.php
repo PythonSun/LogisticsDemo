@@ -42,4 +42,28 @@ class Addconfirmorderitem extends Controller
         $dbproductinfo = \app\index\model\Admin::serachmodelinfo($sereachText,$productType,$brand);
         return $dbproductinfo;
     }
+
+    public function coldserachmodelinfo()
+    {
+        $sereachText = $_POST['serrchText'];
+        $productType = $_POST['type'];
+        $brand = $_POST['brand'];
+        $dbproductinfo = \app\index\model\Admin::coldserachmodelinfo($sereachText,$productType,$brand);
+        return $dbproductinfo;
+    }
+
+    public function serachproductinfo(){
+        $productinfo = self::coldserachmodelinfo();
+        if (!empty($productinfo)){
+            $place_id = $productinfo[0]['place_id'];
+            $placeinfo = \app\index\model\Admin::getproductplace($place_id);
+            if(!empty($placeinfo)){
+                $retinfo = new \stdClass();
+                $retinfo->product_info = $productinfo[0];
+                $retinfo->place_info = $placeinfo[0];
+                return $retinfo;
+            }
+        }
+        return null;
+    }
 }

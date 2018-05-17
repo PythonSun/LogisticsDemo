@@ -44,8 +44,6 @@
                     <div class="layui-input-inline" style="max-width:120px">
                         <input type="text" id="ogcugi_unit" name="ogcugi_unit" class="layui-input Wheat"> </div>
                 </div>
-            </div>
-            <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">状态：</label>
                     <div class="layui-input-inline Wheat" style="max-width:120px">
@@ -63,7 +61,7 @@
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">备注：</label>
-                <div class="layui-input-inline">
+                <div class="layui-input-block">
                     <input type="text" name="ogcugi_comment" id="ogcugi_comment" class="layui-input Wheat"> </div>
             </div>
         </form>
@@ -160,7 +158,7 @@
                 async: false,
                 data: { serrchText: jq("#serachModelinfo").val(), type: jq("#product_type_id").val(), brand: jq('#brand_id').val() },
                 success: function (data) {
-                    if(data != null) {
+                    if(data != "") {
                         orderItem.place_name = data.place_info.place_name;
                         orderItem.place_id = data.place_info.place_id
                         orderItem.product_info_name = data.product_info.product_info_name;

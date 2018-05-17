@@ -684,6 +684,10 @@
                         yes:function (index,layero) {
                             var  iframeWin = window[layero.find('iframe')[0]['name']];
                             var  orderItem = iframeWin.saveOrderItem();
+                            if(isEmptyObject(orderItem)){
+                                return;
+                            }
+
                             if(orderItem.product_info_name == null){
                                 return null;
                             }
@@ -2051,6 +2055,13 @@
                     data[dataArray[i]['name']] = dataArray[i]['value'];
                 }
                 return data;
+            }
+
+            function isEmptyObject(obj){
+              for (var key in obj) {
+                return false;
+              }
+              return true;
             }
         </script>
     </body>

@@ -245,7 +245,9 @@
             }
             //新增一条表数据   rowindex：插入位置
             function addTableItem(itemData,rowIndex) {
-
+                if (itemData == null){
+                    return;
+                }
                 var jq = layui.jquery;
                 //+判断
                 var product_type_id = itemData.product_type_id;
