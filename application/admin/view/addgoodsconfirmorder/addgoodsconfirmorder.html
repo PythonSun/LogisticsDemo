@@ -66,6 +66,11 @@
             <div class="layui-form-item">
             <table class="layui-table" id="tablelogistics">
                 <colgroup>
+                    <col width="5%" style="min-width: 40px;max-width: 60px">
+                    <col width="15%">
+                    <col width="35%">
+                    <col width="35%">
+                    <col width="10%">
                 </colgroup>
                 <thead>
                 <tr class="Wheat">
@@ -156,7 +161,9 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">备注</label>
                 <div class="layui-input-block">
-                    <input type="text" name="comment" id="comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
+                    <!--<input type="text" name="comment" id="comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);">-->
+                    <textarea name="comment" id="comment" required lay-verify="required" placeholder="请输入" class="layui-textarea Wheat"></textarea>
+                </div>
             </div>
             <h3>订制情况</h3>
             <div class="layui-form-item">
@@ -167,7 +174,7 @@
                 </div>
                 <div class="layui-inline">
                 	<input type="button" id="uncofginfo" class="layui-btn" target="_blank" value="增加非定型产品订货确认单">
-                	<input type="button" id="lockuncofginfo" class="layui-btn" target="_blank" value="查看非定型产品订货确认单">
+                	<input type="button" id="lookuncofginfo" class="layui-btn" target="_blank" value="查看非定型产品订货确认单">
                 	<input type="button" id="uploadpic" name="uploadpic" class="layui-btn" target="_blank" value="上传咨询表">
                 	<input type="button" id="lookpic" class="layui-btn" target="_blank" value="查看咨询表">
                     <input type="button" id="delpic" class="layui-btn" target="_blank" value="删除咨询表" title="删除新上传的未保存的咨询表（已保存无法删除）">
@@ -574,7 +581,7 @@
                     return false;
                 })
 
-                jq('#lockuncofginfo').click(function () {
+                jq('#lookuncofginfo').click(function () {
                     top.layer.open({
                         type:2,
                         title:'查看非定型产品订货单',
@@ -971,7 +978,7 @@
                 jq(new_tr).attr("time_stamp",time_stamp);
 
                 var col_0 = new_tr.insertCell(0);//添加列
-                col_0.innerHTML = "<td><input name ='onechoose' type='checkbox'></td>";
+                col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' lay-skin='primary' style='margin: 0px'></td>";
                 var col_1 = new_tr.insertCell(1);//添加列
                 col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item' value='"+ delivery_date +"'></td>";
                 jq.each(jq(".time-item"),function(){
@@ -1281,12 +1288,11 @@
                             var input =$(this)[0];
                             //$(input).addClass('hide');
                             var id = $(input).attr('id');
-                            console.log(id);
-                            if (id != 'lockuncofginfo' && id != 'lookpic'){
+                            if (id != 'lookuncofginfo' && id != 'lookpic'){
+                                $(input).addClass('layui-disabled');
                                 $(input).attr("disabled","disabled");
                             }
                             else {
-                                console.log(id);
                             }
                         }
                     )
@@ -1298,7 +1304,10 @@
 
                         }
                     )
+                    $('#comment').attr('disabled',true);
                 }
+
+
                 setConsultSheet();
                 layui.form.render('select');
             }

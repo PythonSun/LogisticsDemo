@@ -635,6 +635,15 @@
 
                 //监听选择公司
                 form.on('select(build_organize_id)',function (data) {
+                    jq('#build_department_id').empty();
+                    jq('#build_user_id').empty();
+                    jq('#build_department_id').append("<option value='' selected>请选择</option>");
+                    jq('#build_user_id').append("<option value='' selected>请选择</option>");
+                    jq('#build_user_phone').val("");
+                    form.render('select');
+                    if (data.value == ""){
+                        return;
+                    }
                     jq.post("{:url('admin/addreplaceconfirmorder/getdepartmentinfo')}",{'param':data.value},function (data) {
                         //console.log(data);
                         for (var item in data){
@@ -645,7 +654,9 @@
                 });
                 //监听选择部门
                 form.on('select(build_department_id)',function (data) {
-
+                    jq('#build_user_id').empty();
+                    jq('#build_user_id').append("<option value='' selected>请选择</option>");
+                    jq('#build_user_phone').val("");
                     jq.post("{:url('admin/addreplaceconfirmorder/getdspmanagerinfo')}",{'param':data.value},function (data) {
                         for (var item in data){
                             jq('#build_user_id').append("<option value='" + data[item]['user_id'] + "' phone='" + data[item]['phone'] + "'>" + data[item]['fullname'] + "</option>>");
@@ -657,8 +668,11 @@
                 form.on('select(build_user_id)',function (data) {
                     var options= jq("#build_user_id option:selected");
                     var  phone = jq(options[0]).attr('phone');
-                    console.log();
-                    document.getElementById('build_user_phone').value = phone;
+                    if(phone === undefined){
+                        document.getElementById('build_user_phone').value = "";
+                    }else {
+                        document.getElementById('build_user_phone').value = phone;
+                    }
                 });
                 //监听状态选择
                 form.on('select(cs_info_state)',function (data) {
