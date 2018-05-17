@@ -63,7 +63,7 @@
                     <colgroup>
                     </colgroup>
                     <thead>
-                    <tr class="Wheat">
+                    <tr class="dark_blue">
                         <th >选择</th>
                         <th>发货日期</th>
                         <th>货场</th>
@@ -1351,16 +1351,16 @@
                 var col_0 = new_tr.insertCell(0);//添加列
                 col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' autocomplete='on' class='layui-input Wheat  dark_blue_disabled'></td>";
                 var col_1 = new_tr.insertCell(1);//添加列
-                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item dark_blue_disabled' value='"+ delivery_date +"'></td>";
+                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input dark_blue time-item dark_blue_disabled' value='"+ delivery_date +"'></td>";
                 jq.each(jq(".time-item"),function(){
                     laydate.render({ elem: this });
                 });
                 var col_2 = new_tr.insertCell(2);//添加列
-                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat  dark_blue_disabled' value='"+ goods_yard_name +"'></td>";
+                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input dark_blue  dark_blue_disabled' value='"+ goods_yard_name +"'></td>";
                 var col_3 = new_tr.insertCell(3);//添加列
-                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat dark_blue_disabled' value='"+ transfer_order_num +"'></td>";
+                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input dark_blue dark_blue_disabled' value='"+ transfer_order_num +"'></td>";
                 var col_4 = new_tr.insertCell(4);//添加列
-                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat dark_blue_disabled' value='"+ count +"'></td>";
+                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input dark_blue dark_blue_disabled' value='"+ count +"'></td>";
                 form.render('checkbox');
             }
             //修改时 经理的提交
