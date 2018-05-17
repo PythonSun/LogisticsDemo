@@ -162,7 +162,7 @@
                 <label class="layui-form-label Wheat">备注</label>
                 <div class="layui-input-block">
                     <!--<input type="text" name="comment" id="comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);">-->
-                    <textarea name="comment" id="comment" required lay-verify="required" placeholder="请输入" class="layui-textarea Wheat"></textarea>
+                    <textarea name="comment" id="comment" placeholder="请输入" class="layui-textarea Wheat"></textarea>
                 </div>
             </div>
             <h3>订制情况</h3>
@@ -658,26 +658,7 @@
                 });
                 //删除未保存咨询表
                 jq('#delpic').click(function () {
-                    if (consult_sheet_file_new == ""){
-                        return;
-                    }
-                    jq.ajax({
-                        url: "{:url('admin/addgoodsconfirmorder/delcachefile')}",//php文件路径
-                        data: {
-                            delFileName:consult_sheet_file_new
-                        },
-                        type: 'POST',
-                        success: function(res) {
-                            console.log(res)
-                            consult_sheet_file_new = "";
-                            if(res.code){
-                                top.layer.msg(res.msg,{icon:1});
-                            }else {
-                                top.layer.msg(res.msg,{icon:2});
-                            }
-                            setConsultSheet();
-                        }
-                    })
+                    delCacheConsultSheet();
                 });
             });
 
@@ -1325,6 +1306,30 @@
                 }else {
                     $('#delpic').addClass('hide');
                 }
+            }
+            //删除未保存咨询表
+            function delCacheConsultSheet() {
+                if (consult_sheet_file_new == ""){
+                    return;
+                }
+                var jq = layui.jquery;
+                jq.ajax({
+                    url: "{:url('admin/addgoodsconfirmorder/delcachefile')}",//php文件路径
+                    data: {
+                        delFileName:consult_sheet_file_new
+                    },
+                    type: 'POST',
+                    success: function(res) {
+                        console.log(res)
+                        consult_sheet_file_new = "";
+                        if(res.code){
+                            top.layer.msg(res.msg,{icon:1});
+                        }else {
+                            top.layer.msg(res.msg,{icon:2});
+                        }
+                        setConsultSheet();
+                    }
+                })
             }
         </script>
     </body>
