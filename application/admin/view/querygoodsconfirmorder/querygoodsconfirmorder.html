@@ -19,9 +19,9 @@
 			  {/if}
               
               {if condition="$deletegoodspower eq 4"}
-              {{#  if(d.cs_info_state != '取消'){ }}
-                <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="cancel">取消</a>
-              {{#  } }}
+                {{#  if(d.cs_info_state != '取消'){ }}
+                    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="cancel">取消</a>
+                {{#  } }}
               {/if}
 			</script>
 		</div>
@@ -158,7 +158,7 @@
 				      ,{field: 'cs_info_state', title: '状态', minWidth: 100}
   				      ,{field: 'transfer_fee_mode', title: '运费方式', width: 100}
 
-				      ,{fixed: 'right', title:'操作', width:150, align:'center', toolbar: '#operatebar'}
+				      ,{fixed: 'right', title:'操作', width:150, align:'left', toolbar: '#operatebar'}
 				    ]]
 				    ,id: 'querytable'
 				    ,data:[]
@@ -225,7 +225,16 @@
                             }
                         });
 				    }else if(obj.event === 'cancel'){
-				    	layer.msg('取消操作');
+                        var cs_id = data.cs_id;
+
+                        layer.confirm('确定取消？',{icon:2,title:'提示'},function(index){
+                            jq.post("{:url('admin/addgoodsconfirmorder/cancelordergoodscsinfo')}",{'cs_id':cs_id},function(data){
+                                layer.close(index);
+                                obj.update({
+                                  cs_info_state: '取消'
+                                });
+                            });
+                        });
 				    }
 			  	});
 			});

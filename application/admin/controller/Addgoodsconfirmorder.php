@@ -600,4 +600,11 @@ class Addgoodsconfirmorder extends Controller
             //.chr(125);// "}"
         return $uuid;
     }
+
+        /*将订单状态改为取消*/
+    public function cancelordergoodscsinfo(){
+        $cs_id = $_POST['cs_id'];
+        $ret = \app\index\model\Admin::cancelordergoodscsinfobyid($cs_id);
+        return $ret;
+    }
 }

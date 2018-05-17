@@ -2625,5 +2625,12 @@
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
+
+        public static function cancelordergoodscsinfobyid($cs_id){
+            $cs_info_state = 3;
+            $sql = "update dsp_logistic.order_goods_cs_info SET  cs_info_state = '{$cs_info_state}' where cs_id = '{$cs_id}'";
+            $sqlret = Db::execute($sql);
+            return $sqlret;
+        }
     }
 ?>
