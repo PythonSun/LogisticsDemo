@@ -19,7 +19,7 @@
 			  {/if}
 
 			  {if condition="$deletereturnpower eq 4"}
-			  <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+			  <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="cancel">取消</a>
 			  {/if}
 			</script>
 		</div>
@@ -176,8 +176,8 @@
 				    	layer.msg('下单日期：'+ data.write_date + ' 的查看操作');
 				    }else if(obj.event === 'edit'){
 				    	layer.msg('编辑操作');
-				    }else if(obj.event === 'delete'){
-				    	layer.msg('删除操作');
+				    }else if(obj.event === 'cancel'){
+				    	layer.msg('取消操作');
 				    }
 			  	});
 			});

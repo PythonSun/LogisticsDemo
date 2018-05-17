@@ -17,6 +17,12 @@
 			  {if condition="$editgoodspower eq 2"}
 			  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			  {/if}
+              
+              {if condition="$deletegoodspower eq 4"}
+              {{#  if(d.cs_info_state != '取消'){ }}
+                <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="cancel">取消</a>
+              {{#  } }}
+              {/if}
 			</script>
 		</div>
 		<script src="/static/layui/layui.js"></script>
@@ -218,8 +224,8 @@
                                 top.layer.close(index);
                             }
                         });
-				    }else if(obj.event === 'delete'){
-				    	layer.msg('删除操作');
+				    }else if(obj.event === 'cancel'){
+				    	layer.msg('取消操作');
 				    }
 			  	});
 			});

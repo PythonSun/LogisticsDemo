@@ -21,7 +21,6 @@
             return Session::get('user_session');
         }
 
-
 		/*获取select选项值*/
 		public static function getclassinfo($tablename,$tableID){
 			$sql = "select * from ".$tablename;
