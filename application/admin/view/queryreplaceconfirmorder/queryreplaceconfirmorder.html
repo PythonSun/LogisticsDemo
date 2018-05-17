@@ -21,12 +21,10 @@
             {{#  } }}
 
     		{if condition="$deletereplacepower eq 4"}
-    		  	<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
-		    {/if}
-               
-            {{#  if(d.cs_info_state != '取消'){ }}
-                <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="cancel">取消</a>
-            {{#  } }}
+                {{#  if(d.cs_info_state != '取消'){ }}
+                    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="cancel">取消</a>
+                {{#  } }}
+            {/if}
 			</script>
 		</div>
 		<script src="/static/layui/layui.js"></script>
