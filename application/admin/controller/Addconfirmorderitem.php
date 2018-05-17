@@ -64,6 +64,6 @@ class Addconfirmorderitem extends Controller
                 return $retinfo;
             }
         }
-        return null;
+        return '';
     }
 }

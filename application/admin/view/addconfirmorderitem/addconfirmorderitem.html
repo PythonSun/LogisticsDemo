@@ -187,16 +187,13 @@
     });
 
     function saveOrderItem() {
+        var sign = 0 ;
         var jq = layui.jquery;
         var layer = layui.layer;
         jq('.Wheat_disabled').attr("disabled",false);
       //  jq('.Wheat_disabled').attr("disabled","disabled");
-
         jq('.dark_blue_disabled').attr("disabled",false);
       //  jq('.dark_blue_disabled').attr("disabled","disabled");
-
-
-
         var orderItem = new Object();
         orderItem.product_type_id = jq('#product_type_id').val();
         var obj = document.getElementById("product_type_id");
@@ -254,14 +251,18 @@
             success:function(data){
                 if(isEmptyObject(data)){
                     top.layer.msg('型号不存在！',{icon:2});
-                    return;
+                    sign = 1;
                 }else{
-                    orderItem.product_info_name = data[0].product_info_name;
-                    orderItem.product_info_id = data[0].product_info_id; 
+                    orderItem.product_info_name = data.product_info.product_info_name;
+                    orderItem.product_info_id = data.product_info.product_info_id; 
                 }
         }});
 
-        return orderItem;
+        if(sign == 1){
+            return '';
+        }else{
+            return orderItem;
+        }
     }
 
     function isEmptyObject(obj){

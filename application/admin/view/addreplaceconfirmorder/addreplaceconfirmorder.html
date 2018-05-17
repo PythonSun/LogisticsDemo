@@ -363,7 +363,7 @@
             </div>
             <div class="layui-form-item">
                 <div class="layui-btn-container">
-                    <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled" lay-submit="" lay-filter="add_order_item" >
+                    <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled Wheat" lay-submit="" lay-filter="add_order_item" style="color: black;">
                 </div>
             </div>
             <h3>订购清单</h3>
@@ -402,10 +402,10 @@
                     <input type="text" name="ogl_explain" id="ogl_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input  dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
             </div>
             <div class="layui-form-item">
-                <div class="layui-container">
-                    <input type="button" value="保存" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save" id="save">
-                    <input type="button" value="转交" class="layui-btn" lay-submit="" lay-filter="deliver" id="deliver">
-                    <input type="button" value="取消" class="layui-btn layui-btn-primary" lay-submit="" lay-filter="cancel" id="cancel">
+                <div class="layui-btn-container">
+                    <button   class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save" id="save">保存</button>
+                    <!-- <input type="button" value="转交" class="layui-btn" lay-submit="" lay-filter="deliver" id="deliver"> -->
+                    <button   class="layui-btn layui-btn-primary" lay-submit="" lay-filter="cancel" id="cancel">取消</button>
                 </div>
             </div>
         </form>
@@ -468,14 +468,16 @@
                 form.on('submit(save)', function (uidata) {
                     return saveOrDeliverToSql(uidata,0);
                 });
+
                 //监听转交
-                form.on('submit(deliver)',function (uidata) {
-                    return saveOrDeliverToSql(uidata,1);
-                });
+                // form.on('submit(deliver)',function (uidata) {
+                //     return saveOrDeliverToSql(uidata,1);
+                // });
 
                 jq(document).ready(function(){
                     var cs_id = "<?php echo $cs_id?>";
-                    current_user_type ="<?php echo $current_user_type?>";
+                    /*转换成整形*/
+                    current_user_type = parseInt("<?php echo $current_user_type?>");
 
                     if(cs_id == ""){
                         addLogisticsItem(null);
@@ -490,11 +492,6 @@
                     //如果新增
                     //否则 addLogisticsItem(data);
                     jq.post("{:url('admin/addreplaceconfirmorder/getcsallinfo')}",{'param':cs_id},function (data) {
-                        console.log(data);
-                        //cs_belong
-                        //保存获取到的数据
-
-                        //渲染数据
                         document.getElementById('cs_belong_create_time').value = data['cs_belong_create_time'];
                         document.getElementById('transfer_fee_mode').value = data['transfer_fee_mode'];
                         jq('#build_organize_id').val(data['build_organize_id']);
@@ -687,10 +684,6 @@
                             if(isEmptyObject(orderItem)){
                                 return;
                             }
-
-                            if(orderItem.product_info_name == null){
-                                return null;
-                            }
                             //+判断
                             var row = new Object();
                             row.product_type_id = orderItem.product_type_id;
@@ -726,7 +719,7 @@
                     return false;
                 });
                 jq(document).on('click', '.edit_btn', function() {
-                    if(current_user_type != 5 || current_user_type != 1)
+                    if((current_user_type != 5) && (current_user_type != 1))
                         return ;
                     var text = jq(this).parent().parent();
                     var type = current_user_type == 5?1:0;
@@ -806,14 +799,13 @@
                     });;
                 });
                 jq(document).on('click', '.del_btn', function(){
-                    if(current_user_type != 5 || current_user_type != 1)
+                    if((current_user_type) != 5 && (current_user_type != 1))
                         return ;
                     var text = jq(this).parent().parent();
                     var id= jq(text[0].cells[0].innerHTML).attr("tag");
                     if(id != "")
                         delrowid.push(id);
                     jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
-                    console.log(delrowid);
                 });
 
                 //添加物流信息
@@ -878,8 +870,11 @@
                     jq('.dark_blue_disabled').addClass('layui-disabled');
                     jq('.dark_blue_disabled').attr('disabled',value);
 
-                    jq('.edit_disabled').addClass('layui-disabled');
-                    jq('.edit_disabled').attr('disabled',value);
+                    //jq('.edit_disabled').addClass('layui-disabled');
+                    //jq('.edit_disabled').attr('disabled',value);
+
+                    jq('.edit_disabled').addClass('hide');
+                    jq('.del_disabled').addClass('hide');
 
                 }
                 else if(current_user_type == 3)
@@ -896,8 +891,11 @@
                     jq('.dark_blue_disabled').addClass('layui-disabled');
                     jq('.dark_blue_disabled').attr('disabled',value);
 
-                    jq('.edit_disabled').addClass('layui-disabled');
-                    jq('.edit_disabled').attr('disabled',value);
+                    //jq('.edit_disabled').addClass('layui-disabled');
+                    //jq('.edit_disabled').attr('disabled',value);
+
+                    jq('.edit_disabled').addClass('hide');
+                    jq('.del_disabled').addClass('hide');
                 }
                 else if(current_user_type == 4)
                 {
@@ -913,8 +911,11 @@
                     jq('.dark_blue_disabled').addClass('layui-disabled');
                     jq('.dark_blue_disabled').attr('disabled',value);
 
-                    jq('.edit_disabled').addClass('layui-disabled');
-                    jq('.edit_disabled').attr('disabled',value);
+                    //jq('.edit_disabled').addClass('layui-disabled');
+                    //jq('.edit_disabled').attr('disabled',value);
+
+                    jq('.edit_disabled').addClass('hide');
+                    jq('.del_disabled').addClass('hide');
 
 
                 }
@@ -931,6 +932,8 @@
 
                     jq('.finance_blue_disabled').addClass('layui-disabled');
                     jq('.finance_blue_disabled').attr('disabled',value);
+
+                    jq('.del_disabled').addClass('hide');
 
                 }
                 else  if(current_user_type == 0) //只查看
@@ -950,8 +953,11 @@
                     jq('.dark_blue_disabled').addClass('layui-disabled');
                     jq('.dark_blue_disabled').attr('disabled',value);
 
-                    jq('.edit_disabled').addClass('layui-disabled');
-                    jq('.edit_disabled').attr('disabled',value);
+                    //jq('.edit_disabled').addClass('layui-disabled');
+                    //jq('.edit_disabled').attr('disabled',value);
+
+                    jq('.edit_disabled').addClass('hide');
+                    jq('.del_disabled').addClass('hide');
                 }
             }
 
@@ -995,11 +1001,18 @@
                 var col_12 = new_tr.insertCell(12);
                 col_12.innerHTML = "<td><a>"+ row.ogl_product_state +"</a></td>";
                 var col_13 = new_tr.insertCell(13);
-                col_13.innerHTML = "<td><a tag='" + row.unc_product_id + "'>"+ row.unc_product_name +"</a></td>";
+                if(row.unc_product_name == null){
+                    col_13.innerHTML = "<td></td>";
+                }else{
+                    col_13.innerHTML = "<td><a tag='" + row.unc_product_id + "'>"+ row.unc_product_name +"</a></td>";
+                }
                 var col_14 = new_tr.insertCell(14);
                 col_14.innerHTML = "<td><a>"+ row.ogl_comment +"</a></td>";
                 var col_14 = new_tr.insertCell(15);
-                col_14.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn edit_disabled'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger Wheat_disabled  del_btn'>删除</a>" +"</td>";
+                col_14.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn edit_disabled'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger Wheat_disabled  del_btn del_disabled'>删除</a>" +"</td>";
+                if(current_user_type == 5){
+                    jq('.del_disabled').addClass('hide');
+                }
             }
 
             //新增时保存或者转交 新增单  state: 0,保存  1，转交给总监
@@ -1349,7 +1362,7 @@
                 jq(new_tr).attr("time_stamp",time_stamp);
 
                 var col_0 = new_tr.insertCell(0);//添加列
-                col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' autocomplete='on' class='layui-input Wheat  dark_blue_disabled'></td>";
+                col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' autocomplete='on' class='layui-input dark_blue  dark_blue_disabled'></td>";
                 var col_1 = new_tr.insertCell(1);//添加列
                 col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input dark_blue time-item dark_blue_disabled' value='"+ delivery_date +"'></td>";
                 jq.each(jq(".time-item"),function(){
