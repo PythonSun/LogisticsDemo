@@ -124,7 +124,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="receiver_phone" id="receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="receiver_phone" id="receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputphone(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货地址</label>
@@ -161,8 +161,8 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">备注</label>
                 <div class="layui-input-block">
-                    <!--<input type="text" name="comment" id="comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);">-->
-                    <textarea name="comment" id="comment" placeholder="请输入" class="layui-textarea Wheat"></textarea>
+                    <input type="text" name="comment" id="comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);">
+                    <!--<textarea name="comment" id="comment" placeholder="请输入" class="layui-textarea Wheat"></textarea>-->
                 </div>
             </div>
             <h3>订制情况</h3>
@@ -979,7 +979,7 @@
                 var col_3 = new_tr.insertCell(3);//添加列
                 col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ transfer_order_num +"'></td>";
                 var col_4 = new_tr.insertCell(4);//添加列
-                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ count +"' oninput='detectinputtext(this);'></td>";
+                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ count +"' oninput='detectinputnumber(this);'></td>";
                 form.render('checkbox');
             }
             //将数据显示
