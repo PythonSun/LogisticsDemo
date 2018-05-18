@@ -499,12 +499,13 @@
                         LoadingManagerAndSelected(data['build_department_id'],data['build_user_id']);
                         document.getElementById('build_user_phone').value = data['build_user_phone'];
                         document.getElementById('cs_id').value = data['cs_id'];
-                        jq('department_number').value = data['build_department_id'];
+                        jq('#department_number').val(data['build_department_id']);
                         editOrderData['cs_belong_id'] = data['cs_belong_id'];
                         editOrderData['cs_belong_create_time'] = data['cs_belong_create_time'];
                         //cs_info
-                        jq('#cs_info_state').value = data['cs_info_state'];
-                        jq('date2').value = data['complete_date']; //不确定下单时间是指那个
+                        jq('#cs_info_state').val(data['cs_info_state']);
+                        if(data['complete_date'] != '2000-01-01')
+                            jq('#date2').val(data['complete_date']); //不确定下单时间是指那个
                         editOrderData['cs_id'] = data['cs_id'];
                         editOrderData['complete_date'] = data['complete_date'];
                         editOrderData['product_number'] = data['product_number'];
@@ -533,7 +534,7 @@
                                 jq(this).prop('checked',true);
                             }
                         });
-                        jq('#insure_amount').value = data['insure_amount'];
+                        jq('#insure_amount').val(data['insure_amount']);
                         jq("input[name='is_sign']").each(function(){
                             if(jq(this).attr('value') == data['is_sign']){
                                 jq(this).prop('checked',true);
@@ -1884,7 +1885,7 @@
                 cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
                 cs_info.can_edit = 0;                              //0 不可编辑
                 cs_info.cs_info_state = data['cs_info_state'];
-                cs_info.complete_date = complete_date;       //新增 无完成日期
+                cs_info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate'];       //新增 无完成日期
                 cs_info.product_number = rows;
                 console.log("以下确认单信息：");
                 console.log(cs_info);

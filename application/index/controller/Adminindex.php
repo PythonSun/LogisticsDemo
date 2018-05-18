@@ -13,6 +13,7 @@ class Adminindex extends Controller
 
         $queryuserinfo = session("user_querypower");
         $rolename = $queryuserinfo['role_name'];
+        $current_user_type = 0;
         if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员"){
             $current_user_type = 5;
         }
