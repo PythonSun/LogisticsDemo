@@ -2096,23 +2096,159 @@
             function judgeMustInput(data,cur_user_type) {
                 if(cur_user_type == 1)
                 {
-                    
+                    if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
+                        layer.msg('请选择部门！',{icon:2});
+                        return false;
+                    }
+                    if(data['build_user_id'] == ""){
+                        layer.msg('请选择经理！',{icon:2});
+                        return false;
+                    }
+
+                    if(data['build_user_id'] == ""){
+                        layer.msg('请选择经理！',{icon:2});
+                        return false;
+                    }
+
+                    if(data['build_user_phone'] == '')
+                    {
+                        layer.msg('区域经理电话不能为空！',{icon:2});
+                        return false;
+                    }
+                    //custom_info
+                    if(data['company_name'] == '')
+                    {
+                        layer.msg('客户信息-公司名称不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['company_phone'] == '')
+                    {
+                        layer.msg('客户信息-公司电话/传真不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['company_address'] == '')
+                    {
+                        layer.msg('客户信息-公司地址不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['company_address'] == '')
+                    {
+                        layer.msg('客户信息-公司地址不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['company_contact'] == '')
+                    {
+                        layer.msg('客户信息-公司联系人不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['company_contact_phone'] == '')
+                    {
+                        layer.msg('客户信息-联系人电话不能为空！',{icon:2});
+                        return false;
+                    }
+                    //delivery_info
+                    if(data['delivery_info_receiver_name'] == '')
+                    {
+                        layer.msg('发货信息-收货人姓名不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['delivery_info_receiver_phone'] == '')
+                    {
+                        layer.msg('发货信息-收货人电话不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['delivery_info_goods_yard_name'] == '')
+                    {
+                        layer.msg('发货信息-货场名称不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['delivery_info_goods_yard_phone'] == '')
+                    {
+                        layer.msg('发货信息-货场电话不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['delivery_info_receiver_address'] == '')
+                    {
+                        layer.msg('发货信息-收货地址不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['is_insure'] == 1){
+                        if(data['insure_amount'] == ""){
+                            layer.msg('发货信息-保额不能为空！',{icon:2});
+                            return false;
+                        }
+                    }
+                    if(data['transfer_fee_mode'] == ""){
+                        layer.msg('发货信息-请选择运费方式！',{icon:2});
+                        return false;
+                    }
+                    //return_info
+                    if(data['return_info_receiver_name'] == '')
+                    {
+                        layer.msg('返货信息-收货人姓名不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['return_info_receiver_phone'] == '')
+                    {
+                        layer.msg('返货信息-收货人电话不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['return_info_goods_yard_name'] == '')
+                    {
+                        layer.msg('返货信息-货场名称不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['return_info_goods_yard_phone'] == '')
+                    {
+                        layer.msg('返货信息-货场电话不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['return_order_num'] == '')
+                    {
+                        layer.msg('返货信息-返货单号不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['return_info_receiver_address'] == '')
+                    {
+                        layer.msg('返货信息-收货地址不能为空！',{icon:2});
+                        return false;
+                    }
+
                 }
                 else if(cur_user_type == 2)
                 {
+                    if(data['examinationapprovaldatefirst'] == '')
+                    {
+                        layer.msg('部门总监审批-审批日期不能为空！',{icon:2});
+                        return false;
+                    }
 
                 }
                 else if(cur_user_type == 3)
                 {
-
+                    if(data['examinationapprovaldatesecond'] == '')
+                    {
+                        layer.msg('执行总经理审批-审批日期不能为空！',{icon:2});
+                        return false;
+                    }
                 }
                 else if(cur_user_type == 4)
                 {
-
+                    if(data['examinationapprovaldatethird'] == '')
+                    {
+                        layer.msg('财务审批-审批日期不能为空！',{icon:2});
+                        return false;
+                    }
                 }
                 else if(cur_user_type == 5)
                 {
-
+                    //付款信息
+                    var  payment_info= {};
+                    payment_info['is_paid'] = data['is_paid'];
+                    payment_info['paid_date'] = data['paid_date'] == '' ? "2000-01-01":data['paid_date'];
+                    payment_info['customization_fee'] =  data['customization_fee'];
+                    payment_info['paid_bank'] = data['paid_bank'];
+                    payment_info['payment_info_comment'] = data['payment_info_comment'];
                 }
 
             }
