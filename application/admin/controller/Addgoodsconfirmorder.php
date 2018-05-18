@@ -329,12 +329,23 @@ class Addgoodsconfirmorder extends Controller
                 $unc_ofg_info['uoi_date'] = $date_now;
                 $unc_ofg_info['uoi_id'] = $uoi_id;
             }else{
-                $uoi_id = "";
+                //$uoi_id = "";
             }
             $retfee_info = \app\index\model\Admin::updateunc_ofg_info($unc_ofg_info);
             /*if (empty($retfee_info)){
                 return "错误  80";
             }*/
+        }else{
+            $uoi_id = "0";
+            $unc_ofg_info_id = $order_goods_cs_info['unc_ofg_info_id'];
+            if (!empty($unc_ofg_info_id)){
+                \app\index\model\Admin::deleterowtableid('unc_ofg_info','uoi_id',$unc_ofg_info_id);
+                $detail = \app\index\model\Admin::getclassinfobyproperty('dsp_logistic.unc_ofg_detail','unc_ofg_info_id',$unc_ofg_info_id);
+                $datail_length = count($detail);
+                for ($i = 0; $i < $datail_length; $i++){
+                    \app\index\model\Admin::deleterowtableid('unc_ofg_detail','uod_id',$detail[$i]['uod_id']);
+                }
+            }
         }
 
         if(!empty($unc_ofg_info) && !empty($unc_ofg_detail)){
@@ -386,10 +397,9 @@ class Addgoodsconfirmorder extends Controller
             }
         }
 
-        if (!empty($uoi_id)){
-            $order_goods_cs_info['unc_ofg_info_id'] = $uoi_id;
-            $retcsinfo = \app\index\model\Admin::updateordergoodscsinfo($order_goods_cs_info);
-        }
+        $order_goods_cs_info['unc_ofg_info_id'] = $uoi_id;
+        $retcsinfo = \app\index\model\Admin::updateordergoodscsinfo($order_goods_cs_info);
+
         if (!empty($del_logistics_id_arr)){
             $del_length = count($del_logistics_id_arr);
             for ($i = 0; $i < $del_length; $i++){
