@@ -174,11 +174,11 @@
                 </div>
                 <div class="layui-inline">
                 	<input type="button" id="uncofginfo" class="layui-btn" target="_blank" value="增加非定型产品订货确认单">
-                    <input type="button" id="deluncofginfo" class="layui-btn" target="_blank" value="删除非定型产品订货确认单">
                 	<input type="button" id="lookuncofginfo" class="layui-btn" target="_blank" value="查看非定型产品订货确认单">
+                    <input type="button" id="deluncofginfo" class="layui-btn" target="_blank" style="color: red" value="删除非定型产品订货确认单">
                 	<input type="button" id="uploadpic" name="uploadpic" class="layui-btn" target="_blank" value="上传咨询表">
                 	<input type="button" id="lookpic" class="layui-btn" target="_blank" value="查看咨询表">
-                    <input type="button" id="delpic" class="layui-btn" target="_blank" value="删除咨询表" title="删除新上传的未保存的咨询表（已保存无法删除）">
+                    <input type="button" id="delpic" class="layui-btn" target="_blank" style="color: red" value="删除咨询表" title="删除新上传的未保存的咨询表（已保存的咨询表无法删除）">
                	</div>
             </div>
             <h3>确认单产品</h3>
@@ -572,8 +572,13 @@
                 })
                 //删除非定型订单
                 jq('#deluncofginfo').click(function () {
-                    uncofginfo = null;
-                    setDelUncofginfoVis();
+                    top.layer.confirm('确定删除此非定型产品订货确认单？', {
+                        btn: ['确定','取消'] //按钮
+                    }, function(index){
+                        top.layer.close(index);
+                        uncofginfo = null;
+                        setDelUncofginfoVis();
+                    });
                 });
                 jq('#lookuncofginfo').click(function () {
                     top.layer.open({
@@ -652,7 +657,12 @@
                 });
                 //删除未保存咨询表
                 jq('#delpic').click(function () {
-                    delCacheConsultSheet();
+                    top.layer.confirm('删除新上传的未保存的咨询表？<br/><span style="color: red">（已保存的咨询表无法删除）</span>', {
+                        btn: ['确定','取消'] //按钮
+                    }, function(index){
+                        top.layer.close(index);
+                        delCacheConsultSheet();
+                    });
                 });
             });
 
