@@ -1556,12 +1556,21 @@
         public static function querycsinfonums($user_id,$type){
             $sql = "select count(*) from dsp_logistic.cs_examine ";
             $sql .= "left join dsp_logistic.cs_info on dsp_logistic.cs_examine.cs_id = dsp_logistic.cs_info.cs_id";
-            $sql .= " where dsp_logistic.cs_examine.examine_user_id = '$user_id' and dsp_logistic.cs_info.cs_info_type = '$type' and cs_examine_state = '1'";
+            $sql .= " where dsp_logistic.cs_examine.examine_user_id = '$user_id' and dsp_logistic.cs_info.cs_info_type = '$type' and cs_examine_state = '1' and dsp_logistic.cs_info.cs_info_state ='1'";
             $nums = Db::query($sql);
             if(empty($nums))
                 return 0;
             return $nums[0]['count(*)'];
 
+        }
+
+        /*查询物流待审核*/
+        public static function querylogsticcsinfonums($type){
+            $sql = "select count(*) from dsp_logistic.cs_info where dsp_logistic.cs_info.cs_info_type = '$type' and (dsp_logistic.cs_info.cs_info_state='1' or dsp_logistic.cs_info.cs_info_state='4')";
+            $nums = Db::query($sql);
+            if(empty($nums))
+                return 0;
+            return $nums[0]['count(*)'];
         }
 
         /*查询需要导出的更换/代用/维修/退货/配件/借样确认单  未完待续*/
