@@ -180,12 +180,12 @@
                     <input type="button" id="delpic" class="layui-btn" target="_blank" value="删除咨询表" title="删除新上传的未保存的咨询表（已保存无法删除）">
                	</div>
             </div>
-            <h3>已发货产品</h3>
+            <h3>确认单产品</h3>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">总项数</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="product_number" id="product_number" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>
+                        <input type="text" name="delivered_total" id="delivered_total" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">公共广播</label>
@@ -229,7 +229,7 @@
                 </div>
             </div>
             <div>
-                <h3 class="textcenter" style="margin-bottom: -30px">订购清单</h3>
+                <h3 class="textcenter" style="margin-bottom: -30px">未发货产品</h3>
                 <div>
                     <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="add_order_item">
                 </div>
@@ -417,9 +417,6 @@
                     console.log(data);
                     console.log('下列输入物流信息：');
                     console.log(logistics_info);
-                    var order_goods_cs_info = getorderGoodsInfo(data);
-                    console.log('下列输入订货确认单信息：');
-                    console.log(order_goods_cs_info);
                     var cs_belong = csBelong(data);
                     console.log('下列输入订货所属信息：');
                     console.log(cs_belong);
@@ -432,6 +429,7 @@
                     var order_goods_cs_undeliver_goods_info = getTableDataToDBObject();
                     console.log('下列输入清单信息：');
                     console.log(order_goods_cs_undeliver_goods_info);
+                    var product_number = order_goods_cs_undeliver_goods_info.length;
                     var unc_ofg_info = null;
                     var unc_ofg_detail = null;
                     if (uncofginfo != null){
@@ -439,6 +437,7 @@
                         unc_ofg_info = uncofginfo.unc_ofg_info;
                         var unc_ofg_items = uncofginfo.unc_ofg_items;
                         var length = unc_ofg_items.length;
+                        product_number += length;
                         for (var i = 0; i < length; i++){
                             if (unc_ofg_detail == null){
                                 unc_ofg_detail = [];
@@ -460,6 +459,11 @@
                     console.log(unc_ofg_info);
                     console.log('下列非常规清单信息：');
                     console.log(unc_ofg_detail);
+                    var order_goods_cs_info = getorderGoodsInfo(data);
+                    order_goods_cs_info.product_number = product_number;
+                    console.log('下列输入订货确认单信息：');
+                    console.log(order_goods_cs_info);
+
                     /* ***************************************************** 说明 *********************************************************** */
                     /*
                     如果表
@@ -723,7 +727,7 @@
                 order_goods_cs_info.unc_ofg_info_id = unc_ofg_info_id;
                 order_goods_cs_info.consult_sheet_file_old = consult_sheet_file;
                 order_goods_cs_info.consult_sheet_file = consult_sheet_file_new;
-                order_goods_cs_info.delivered_total = data['transfer_mode'];
+                order_goods_cs_info.delivered_total = data['delivered_total'] == "" ? 0 : data['delivered_total'];
                 order_goods_cs_info.delivered_pa = data['delivered_pa'] == "" ? 0 : data['delivered_pa'];
                 order_goods_cs_info.delivered_conference = data['delivered_conference'] == "" ? 0 : data['delivered_conference'];
                 order_goods_cs_info.delivered_customization = data['delivered_customization'] == "" ? 0 : data['delivered_customization'];
@@ -732,7 +736,7 @@
                 order_goods_cs_info.delivered_aux = data['delivered_aux'] == "" ? 0 : data['delivered_aux'];
                 order_goods_cs_info.delivered_gift = data['delivered_gift'] == "" ? 0 : data['delivered_gift'];
                 order_goods_cs_info.delivered_album = data['delivered_album'] == "" ? 0 : data['delivered_album'];
-                order_goods_cs_info.product_number = data['product_number'] == "" ? 0 : data['product_number'];
+                order_goods_cs_info.product_number = 0;
                 order_goods_cs_info.cs_info_state = data['cs_info_state'] == "" ? -1: data['cs_info_state'];
                 return order_goods_cs_info;
             }
@@ -1001,7 +1005,7 @@
                 consult_sheet_file = order_goods_cs_info.consult_sheet_file;
                 jq('#cs_id').val(cs_id);
                 jq('#order_date').val(order_goods_cs_info.order_date);
-                jq('#product_number').val(order_goods_cs_info.product_number);
+                jq('#delivered_total').val(order_goods_cs_info.delivered_total);
                 jq('#delivered_customization').val(order_goods_cs_info.delivered_customization);
                 jq('#delivered_album').val(order_goods_cs_info.delivered_album);
                 jq('#delivered_gift').val(order_goods_cs_info.delivered_gift);
@@ -1331,6 +1335,16 @@
                     }
                 })
             }
+
+
+            /*function detectinputtext(object){
+
+                var value = $(object).val();
+                console.log(value);
+                if(/[^\u4E00-\u9FA5A-Za-z0-9-()（）']+/.test(value)){
+                    $(object).val(value.replace(/[^\u4E00-\u9FA5A-Za-z0-9-()（）']+/,""));
+                }
+            }*/
         </script>
     </body>
 </html>

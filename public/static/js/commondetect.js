@@ -6,8 +6,8 @@ function detectinputtext(object){
 
 	var value = $(object).val();
 	/*替换特殊字符*/
-	if(/[^\u4E00-\u9FA5A-Za-z0-9-()（）]+/.test(value)){
-        $(object).val(value.replace(/[^\u4E00-\u9FA5A-Za-z0-9-()（）]+/,""));
+	if(/[^\u4E00-\u9FA5A-Za-z0-9-()（）']+/.test(value)){
+        $(object).val(value.replace(/[^\u4E00-\u9FA5A-Za-z0-9-()（）']+/,""));
     }
 }
 
