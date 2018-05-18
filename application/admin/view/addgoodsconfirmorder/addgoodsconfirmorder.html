@@ -395,31 +395,11 @@
 
                     jq = layui.jquery;
                     var data = uidata.field;
-                    var order_date = data['order_date'].trim();
-                    if (order_date == ""){
-                        layer.msg('请选择下单时间！',{icon:2});
+                    var retVf = verification(data);
+                    if(!retVf){
                         return false;
                     }
-                    var cs_info_state = data['cs_info_state'];
-                    if (cs_info_state == '' || cs_info_state == -1){
-                        layer.msg('请选择状态！',{icon:2});
-                        return false;
-                    }
-                    var user_id = data['user_id'];
-                    if (user_id == ""){
-                        layer.msg('请选择经理！',{icon:2});
-                        return false;
-                    }
-                    var transfer_mode = data['transfer_mode'];
-                    if (transfer_mode == "" || transfer_mode === undefined){
-                        layer.msg('请选择运费方式！',{icon:2});
-                        return false;
-                    }
-                    var delivery_date_reply = data['delivery_date_reply'].trim();
-                    if(delivery_date_reply == ""){
-                        layer.msg('请选择货期回复！',{icon:2});
-                        return false;
-                    }
+
                     console.log(data);
                     console.log('下列输入物流信息：');
                     console.log(logistics_info);
@@ -678,7 +658,7 @@
 
             //编辑或者新增Item 窗体，tableRowIndex：表序号 新增不填
             function openWindow(tableRowIndex) {
-                jq = layui.jquery;
+                var jq = layui.jquery;
                 var rowIndex = "";
                 if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
                     rowIndex = jq('#tableorder')[0].rows.length;
@@ -1158,36 +1138,14 @@
                     return false;
                 }
                 var jq = layui.jquery;
-                data = [];
+                var data = [];
                 var obj = jq("form").serializeArray();                                  //获取表单数据
                 for (var i = 0; i < obj.length;i++){
                     data[obj[i].name] = obj[i].value;
                 }
                 //var data = uidata.field;
-                var order_date = data['order_date'].trim();
-                if (order_date == ""){
-                    layer.msg('请选择下单时间！',{icon:2});
-                    return false;
-                }
-                var cs_info_state = data['cs_info_state'];
-                if (cs_info_state == '' || cs_info_state == -1){
-                    layer.msg('请选择状态！',{icon:2});
-                    return false;
-                }
-                var user_id = data['user_id'];
-                if (user_id == ""){
-                    layer.msg('请选择经理！',{icon:2});
-                    return false;
-                }
-
-                var transfer_mode = data['transfer_mode'];
-                if (transfer_mode == "" || transfer_mode === undefined){
-                    layer.msg('请选择运费方式！',{icon:2});
-                    return false;
-                }
-                var delivery_date_reply = data['delivery_date_reply'].trim();
-                if(delivery_date_reply == ""){
-                    layer.msg('请选择货期回复！',{icon:2});
+                var retVf = verification(data);
+                if(!retVf){
                     return false;
                 }
                 console.log(data);
@@ -1375,8 +1333,62 @@
                     }
                 })
             }
+            
+            function verification(data) {
+                var layer = layui.layer;
+                var order_date = data['order_date'].trim();
+                if (order_date == ""){
+                    layer.msg('请选择下单时间！',{icon:2});
+                    return false;
+                }
+                var cs_info_state = data['cs_info_state'];
+                if (cs_info_state == '' || cs_info_state == -1){
+                    layer.msg('请选择状态！',{icon:2});
+                    return false;
+                }
+                var user_id = data['user_id'];
+                if (user_id == ""){
+                    layer.msg('请选择经理！',{icon:2});
+                    return false;
+                }
+                var transfer_mode = data['transfer_mode'];
+                if (transfer_mode == "" || transfer_mode === undefined){
+                    layer.msg('请选择运费方式！',{icon:2});
+                    return false;
+                }
 
-
+                var receiver_name = data['receiver_name'].trim();
+                if (receiver_name == "" || receiver_name === undefined){
+                    layer.msg('请填写收货人姓名！',{icon:2});
+                    return false;
+                }
+                var receiver_phone = data['receiver_phone'].trim();
+                if (receiver_phone == "" || receiver_phone === undefined){
+                    layer.msg('请填写收货人电话！',{icon:2});
+                    return false;
+                }
+                var receiver_address = data['receiver_address'].trim();
+                if (receiver_address == "" || receiver_address === undefined){
+                    layer.msg('请填写收货地址！',{icon:2});
+                    return false;
+                }
+                var customization_fee = data['customization_fee'].trim();
+                if (customization_fee == "" || customization_fee === undefined){
+                    layer.msg('请填订制费用！',{icon:2});
+                    return false;
+                }
+                var transfer_fee = data['transfer_fee'].trim();
+                if (transfer_fee == "" || transfer_fee === undefined){
+                    layer.msg('请填运费！',{icon:2});
+                    return false;
+                }
+                var delivery_date_reply = data['delivery_date_reply'].trim();
+                if(delivery_date_reply == ""){
+                    layer.msg('请选择货期回复！',{icon:2});
+                    return false;
+                }
+                return true;
+            }
             /*function detectinputtext(object){
 
                 var value = $(object).val();
