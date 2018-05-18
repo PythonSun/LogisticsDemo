@@ -197,70 +197,29 @@
 				    }else if(obj.event === 'edit'){
                         if(current_user_type == 5)
                         {
-                            layer.open({
-                                type: 2,
-                                title: '编辑订单',
-                                area: ['90%', '90%'],
-                                shade: 0.9,
-                                maxmin: false,
-                                content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
-                                btn: [ '保存','取消'],
-                                yes: function (index,layero) {
-                                    var iframeWin = window[layero.find('iframe')[0]['name']];
-                                    var result = iframeWin.logisticSave();
-                                    if(result == false)
-                                        return false;
-                                    table.reload('querytable', {
-                                        page: {
-                                            curr: 1
-                                        }
-                                    });
-                                    layer.closeAll();
-                                },
-                                btn2:function () {
-                                    layer.closeAll();
-                                }
-                            });
+                            if(data['complete_date'] == '' || data['complete_date'] == '2000-01-01')
+							{
+                                logisticFirstEdit();
+							}
+							else
+							{
+                                logisticEdit();
+							}
                         }
-                        else
+                        else if(current_user_type == 2|| current_user_type == 3 || current_user_type == 4)
                         {
-                            layer.open({
-                                type: 2,
-                                title: '新增清单',
-                                area: ['90%', '90%'],
-                                shade: 0.9,
-                                maxmin: false,
-                                content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
-                                btn: ['退回', '提交','取消'],
-                                yes: function (index,layero) {
-                                    var iframeWin = window[layero.find('iframe')[0]['name']];
-                                    var result = iframeWin.returnOrder();
-                                    if(result == false)
-                                        return false;
-                                    table.reload('querytable', {
-                                        page: {
-                                            curr: 1
-                                        }
-                                    });
-                                    layer.closeAll();
-                                },
-                                btn2: function (index,layero) {
-                                    var iframeWin = window[layero.find('iframe')[0]['name']];
-                                    var result = iframeWin.editDeliver();
-                                    if(result == false)
-                                        return false;
-                                    table.reload('querytable', {
-                                        page: {
-                                            curr: 1
-                                        }
-                                    });
-                                    layer.closeAll();
-                                },
-                                btn3:function () {
-                                    layer.closeAll();
-                                }
-                            });
+                            examinerEdit();
                         }
+                        else if(current_user_type == 1)
+						{
+						    if(data['can_edit'] == 0)
+							{
+							   // layer.msg('当前不可编辑',)
+                                return false;
+							}
+
+                            managerEdit();
+						}
 
 				    }else if(obj.event === 'cancel'){
                         var cs_id = data.cs_id;
@@ -275,6 +234,138 @@
                         });
                     }
 			  	});
+				//物流首次编辑
+				function logisticFirstEdit() {
+                    layer.open({
+                        type: 2,
+                        title: '编辑订单',
+                        area: ['90%', '90%'],
+                        shade: 0.9,
+                        maxmin: false,
+                        content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
+                        btn: [ '确认接收','取消'],
+                        yes: function (index,layero) {
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            var result = iframeWin.logisticSave();
+                            if(result == false)
+                                return false;
+                            table.reload('querytable', {
+                                page: {
+                                    curr: 1
+                                }
+                            });
+                            layer.closeAll();
+                        },
+                        btn2:function () {
+                            layer.closeAll();
+                        }
+                    });
+                }
+                //物流编辑
+                function logisticEdit() {
+                    layer.open({
+                        type: 2,
+                        title: '编辑订单',
+                        area: ['90%', '90%'],
+                        shade: 0.9,
+                        maxmin: false,
+                        content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
+                        btn: [ '保存','取消'],
+                        yes: function (index,layero) {
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            var result = iframeWin.logisticSave();
+                            if(result == false)
+                                return false;
+                            table.reload('querytable', {
+                                page: {
+                                    curr: 1
+                                }
+                            });
+                            layer.closeAll();
+                        },
+                        btn2:function () {
+                            layer.closeAll();
+                        }
+                    });
+                }
+                //审批人员
+                function examinerEdit() {
+                    layer.open({
+                        type: 2,
+                        title: '新增清单',
+                        area: ['90%', '90%'],
+                        shade: 0.9,
+                        maxmin: false,
+                        content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
+                        btn: ['退回', '提交','取消'],
+                        yes: function (index,layero) {
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            var result = iframeWin.returnOrder();
+                            if(result == false)
+                                return false;
+                            table.reload('querytable', {
+                                page: {
+                                    curr: 1
+                                }
+                            });
+                            layer.closeAll();
+                        },
+                        btn2: function (index,layero) {
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            var result = iframeWin.editDeliver();
+                            if(result == false)
+                                return false;
+                            table.reload('querytable', {
+                                page: {
+                                    curr: 1
+                                }
+                            });
+                            layer.closeAll();
+                        },
+                        btn3:function () {
+                            layer.closeAll();
+                        }
+                    });
+                }
+                //经理编辑
+                function managerEdit() {
+                    layer.open({
+                        type: 2,
+                        title: '新增清单',
+                        area: ['90%', '90%'],
+                        shade: 0.9,
+                        maxmin: false,
+                        content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
+                        btn: ['保存', '提交','取消'],
+                        yes: function (index,layero) {
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            var result = iframeWin.managerSave();
+                            if(result == false)
+                                return false;
+                            table.reload('querytable', {
+                                page: {
+                                    curr: 1
+                                }
+                            });
+                            layer.closeAll();
+                        },
+                        btn2: function (index,layero) {
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            var result = iframeWin.managerDeliver();
+                            if(result == false)
+                                return false;
+                            table.reload('querytable', {
+                                page: {
+                                    curr: 1
+                                }
+                            });
+                            layer.closeAll();
+                        },
+                        btn3:function () {
+                            layer.closeAll();
+                        }
+                    });
+                }
 			});
 		</script>
 	</body>
