@@ -355,6 +355,7 @@ class Addgoodsconfirmorder extends Controller
                 if ($uod_id == ""){
                     $uod_id = \app\index\model\Admin::getmaxtableidretid('unc_ofg_detail', 'uod_id') + 1;
                     $unc_ofg_detail[$i]['uod_id'] = $uod_id;
+                    $unc_ofg_detail[$i]['unc_ofg_info_id'] = $unc_ofg_info['uoi_id'];
                 }
                 //$unc_ofg_detail[$i]['unc_ofg_info_id'] = $uoi_id;
                 $retunc_ofg_detail = \app\index\model\Admin::updateunc_ofg_detail($unc_ofg_detail[$i]);
