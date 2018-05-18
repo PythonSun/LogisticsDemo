@@ -232,10 +232,16 @@ class Addgoodsconfirmorder extends Controller
         $file_new = $order_goods_cs_info['consult_sheet_file'];
         //$file_old = $order_goods_cs_info['consult_sheet_file_old'];
         if (!empty($file_new)){
+            $path = ROOT_PATH . 'public' . DS . 'uploads';
             //文件移动
             $cachefilePath = ROOT_PATH . 'public' . DS . 'cachefile'.DS.$file_new;
             $filePath = ROOT_PATH . 'public' . DS . 'uploads'.DS.$file_new;
-            rename($cachefilePath,$filePath);
+            if(!is_dir($path)){
+                mkdir($path);
+            }
+            if(file_exists($cachefilePath)){
+                rename($cachefilePath,$filePath);
+            }
         }
         return true;
     }
