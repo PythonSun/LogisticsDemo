@@ -414,6 +414,7 @@
         <script type="text/javascript" src="/static/layui/layui.js"></script>
         <script type="text/javascript" src="/static/js/commondetect.js"></script>
         <script type="text/javascript">
+            var isloading = true;
             var delrowid = new Array();
             var complete_date = "2000-1-1";
              var cs_info_type = 1; //订单类型
@@ -476,6 +477,7 @@
                 });
 
                 jq(document).ready(function(){
+                    isloading = true;
                     var cs_id = "<?php echo $cs_id?>";
                     /*转换成整形*/
                     current_user_type = parseInt("<?php echo $current_user_type?>");
@@ -484,6 +486,7 @@
                         addLogisticsItem(null);
                         userPower();
                         form.render('select');
+                        isloading = false;
                         return ;
                     }
                     //
@@ -631,6 +634,7 @@
                         userPower();
                         layui.form.render('select');
                         layui.form.render('radio');
+                        isloading = false;
                     });
                 });
 
@@ -1905,6 +1909,9 @@
             }
             //修改时 物流提交
             function logisticSave() {
+                if (isloading){
+                    return;
+                }
                 setDisable(false);
                 var data = getFormData();
                 //判断必填项
@@ -2012,6 +2019,9 @@
             }
 
             function editDeliver() {
+                if (isloading){
+                    return;
+                }
                 setDisable(false);
                 if(current_user_type == 1)
                 {
@@ -2032,6 +2042,9 @@
             }
             //修改时 退回
             function returnOrder() {
+                if (isloading){
+                    return;
+                }
                 setDisable(false);
                 var jq = layui.jquery;
                 var data = getFormData();
