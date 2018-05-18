@@ -174,6 +174,7 @@
                 </div>
                 <div class="layui-inline">
                 	<input type="button" id="uncofginfo" class="layui-btn" target="_blank" value="增加非定型产品订货确认单">
+                    <input type="button" id="deluncofginfo" class="layui-btn" target="_blank" value="删除非定型产品订货确认单">
                 	<input type="button" id="lookuncofginfo" class="layui-btn" target="_blank" value="查看非定型产品订货确认单">
                 	<input type="button" id="uploadpic" name="uploadpic" class="layui-btn" target="_blank" value="上传咨询表">
                 	<input type="button" id="lookpic" class="layui-btn" target="_blank" value="查看咨询表">
@@ -575,7 +576,7 @@
                                 uncofginfo = ret;
                                 top.layer.close(index);
                             }
-
+                            setDelUncofginfoVis();
                         },
                         btn2: function (index) {
                             console.log(index);
@@ -584,7 +585,11 @@
                     });
                     return false;
                 })
-
+                //删除非定型订单
+                jq('#deluncofginfo').click(function () {
+                    uncofginfo = null;
+                    setDelUncofginfoVis();
+                });
                 jq('#lookuncofginfo').click(function () {
                     top.layer.open({
                         type:2,
@@ -1290,9 +1295,10 @@
                         }
                     )
                     $('#comment').attr('disabled',true);
+                }else {
+
                 }
-
-
+                setDelUncofginfoVis();
                 setConsultSheet();
                 layui.form.render('select');
             }
@@ -1309,6 +1315,32 @@
                     $('#delpic').removeClass('hide');
                 }else {
                     $('#delpic').addClass('hide');
+                }
+            }
+
+            function setDelUncofginfoVis() {
+                if (type == 0){
+                    if(uncofginfo == "" || uncofginfo == null || uncofginfo === undefined){
+                        $('#deluncofginfo').addClass('hide');
+                        $('#lookuncofginfo').attr("disabled","disabled");
+                        $('#lookuncofginfo').addClass('btnPicLightBg');
+                    }else {
+                        $('#deluncofginfo').addClass('hide');
+
+                        $('#lookuncofginfo').removeAttr("disabled");
+                        $('#lookuncofginfo').removeClass('btnPicLightBg');
+                    }
+                }else {
+                    if(uncofginfo == "" || uncofginfo == null || uncofginfo === undefined){
+                        $('#deluncofginfo').addClass('hide');
+                        $('#lookuncofginfo').attr("disabled","disabled");
+                        $('#lookuncofginfo').addClass('btnPicLightBg');
+                    }else {
+                        $('#deluncofginfo').removeClass('hide');
+
+                        $('#lookuncofginfo').removeAttr("disabled");
+                        $('#lookuncofginfo').removeClass('btnPicLightBg');
+                    }
                 }
             }
             //删除未保存咨询表
