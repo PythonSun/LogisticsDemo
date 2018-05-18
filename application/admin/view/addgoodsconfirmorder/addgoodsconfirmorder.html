@@ -266,6 +266,7 @@
         <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="/static/js/commondetect.js"></script>
         <script type="text/javascript">
+            var isLoading = true;
             //var hasUploadPic = false;
             var cs_id = "";   //订单id 新增无；
             var ofg_info_id = "";
@@ -364,16 +365,20 @@
 
                 //网页加载时  赋值使用
                 $(document).ready(function(){
+                    isLoading = true;
                     type = {$type};
                     var order_info = {$order_info};
                     if(order_info == "-1"){
                         addLogisticsItem(null);
                         setHtmlType();
+                        top.layer.closeAll('loading');
+                        isLoading = false;
                         return ;
                     }
                     setDBDateToHtml(order_info);
                     setHtmlType();
                     layui.form.render('select');
+                    isLoading = false;
                 });
                 //监听提交
                 form.on('submit(save)', function (uidata) {
@@ -390,7 +395,7 @@
 
                     jq = layui.jquery;
                     var data = uidata.field;
-                    var order_date = data['order_date'];
+                    var order_date = data['order_date'].trim();
                     if (order_date == ""){
                         layer.msg('请选择下单时间！',{icon:2});
                         return false;
@@ -410,7 +415,7 @@
                         layer.msg('请选择运费方式！',{icon:2});
                         return false;
                     }
-                    var delivery_date_reply = data['delivery_date_reply'];
+                    var delivery_date_reply = data['delivery_date_reply'].trim();
                     if(delivery_date_reply == ""){
                         layer.msg('请选择货期回复！',{icon:2});
                         return false;
@@ -803,10 +808,10 @@
                         var cellData = rowObj.cells[j].getElementsByTagName("input")[0].value;
                         rowdata[j] = cellData;
                     }
-                    var goods_yard_name = rowdata[2];
-                    var transfer_order_num = rowdata[3];
-                    var delivery_date = rowdata[1];
-                    var count = rowdata[4];
+                    var goods_yard_name = rowdata[2].trim();
+                    var transfer_order_num = rowdata[3].trim();
+                    var delivery_date = rowdata[1].trim();
+                    var count = rowdata[4].trim();
                     if (goods_yard_name == "" && transfer_order_num == "" && delivery_date == "" && count == ""){
                         continue;
                     }
@@ -1139,6 +1144,9 @@
             }
 
             function editSaveData() {
+                if(isLoading){
+                    return false;
+                }
                 var logistics_info = getlogisticsInfo();
                 if(logistics_info == null){
                     layer.msg('请填写完整物流信息！',{icon:2});
@@ -1156,7 +1164,7 @@
                     data[obj[i].name] = obj[i].value;
                 }
                 //var data = uidata.field;
-                var order_date = data['order_date'];
+                var order_date = data['order_date'].trim();
                 if (order_date == ""){
                     layer.msg('请选择下单时间！',{icon:2});
                     return false;
@@ -1177,7 +1185,7 @@
                     layer.msg('请选择运费方式！',{icon:2});
                     return false;
                 }
-                var delivery_date_reply = data['delivery_date_reply'];
+                var delivery_date_reply = data['delivery_date_reply'].trim();
                 if(delivery_date_reply == ""){
                     layer.msg('请选择货期回复！',{icon:2});
                     return false;

@@ -46,7 +46,7 @@
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">状态：</label>
-                    <div class="layui-input-inline Wheat" style="max-width:120px;z-index: 999999999">
+                    <div class="layui-input-inline Wheat" style="max-width:120px;z-index: 99">
                         <select id="ogcugi_product_state" name="ogcugi_product_state" lay-filter="ogcugi_product_state">
                             <option value="" selected>请选择</option>
                             <option value="0">未发货</option>
@@ -138,6 +138,11 @@
                 layer.msg('请选择生产地！', { icon: 2 });
                 return null;
             }
+            var ogcugi_unit = jq('#ogcugi_unit').val();
+            if(ogcugi_unit == "") {
+                layer.msg('请填写单位！', { icon: 2 });
+                return null;
+            }
             var ogcugi_product_state = jq("#ogcugi_product_state").find("option:selected").val();
             if(ogcugi_product_state == "") {
                 layer.msg('请选择状态！', { icon: 2 });
@@ -156,7 +161,7 @@
             //orderItem.place_name = obj2.options[obj2.selectedIndex].text;
             //orderItem.place = place_id
             orderItem.ogcugi_count = ogcugi_count;
-            orderItem.ogcugi_unit = jq('#ogcugi_unit').val();
+            orderItem.ogcugi_unit = ogcugi_unit;
             orderItem.ogcugi_product_state = jq("#ogcugi_product_state").find("option:selected").val();
             orderItem.ogcugi_product_state_text = jq("#ogcugi_product_state").find("option:selected").text();
             orderItem.ogcugi_comment = jq('#ogcugi_comment').val();
