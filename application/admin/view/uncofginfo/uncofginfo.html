@@ -362,12 +362,12 @@
             function getData() {
                 var jq = layui.jquery;
                 var unc_ofg_info = new Object();
-                var uoi_to = jq('#uoi_to').val();
-                var uoi_manual_ofg_id = jq('#uoi_manual_ofg_id').val();
-                var uoi_custom_name = jq('#uoi_custom_name').val();
-                var uoi_to_place = jq("#uoi_to_place").find("option:selected").val();
-                var uoi_project_name = jq('#uoi_project_name').val();
-                var uoi_provider_name = jq('#uoi_provider_name').val();
+                var uoi_to = jq('#uoi_to').val().trim();
+                var uoi_manual_ofg_id = jq('#uoi_manual_ofg_id').val().trim();
+                var uoi_custom_name = jq('#uoi_custom_name').val().trim();
+                var uoi_to_place = jq("#uoi_to_place").find("option:selected").val().trim();
+                var uoi_project_name = jq('#uoi_project_name').val().trim();
+                var uoi_provider_name = jq('#uoi_provider_name').val().trim();
                 unc_ofg_info.uoi_id = uoi_id;
                 unc_ofg_info.uoi_to = uoi_to;
                 unc_ofg_info.uoi_manual_ofg_id = uoi_manual_ofg_id;
@@ -388,6 +388,11 @@
                 }
                 if (uoi_manual_ofg_id == ""){
                     layer.msg('订单编号不能为空！',{icon:2});
+                    return false;
+                }
+                if (uoi_to == "" || uoi_manual_ofg_id == "" || uoi_custom_name == ""
+                    || uoi_to_place == "" || uoi_project_name == "" || uoi_provider_name == ""){
+                    layer.msg('请填写完整非定型订货单信息！',{icon:2});
                     return false;
                 }
                 var retbo = false;
