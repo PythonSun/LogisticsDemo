@@ -10,35 +10,65 @@ class Adminindex extends Controller
         $user_id = intval($userinfo['user_id']);
         
         $this->assign('loginusername',$userinfo["fullname"]);
+
+        $queryuserinfo = session("user_querypower");
+        $rolename = $queryuserinfo['role_name'];
+        if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员"){
+            $current_user_type = 5;
+        }
         
         /*更换确认单*/
         $type = 0x01;
-        $replaceorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
+        if($current_user_type == 5){
+            $replaceorder = \app\index\model\Admin::querylogsticcsinfonums($type);
+        }else{
+            $replaceorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
+        }
     	$this->assign('replaceorder',$replaceorder);
 
     	/*借样确认单*/
         $type = 0x02;
-        $borroworder = \app\index\model\Admin::querycsinfonums($user_id,$type);
+        if($current_user_type == 5){
+            $borroworder = \app\index\model\Admin::querylogsticcsinfonums($type);
+        }else{
+            $borroworder = \app\index\model\Admin::querycsinfonums($user_id,$type);
+        }
     	$this->assign('borroworder',$borroworder);
 
     	/*退货确认单*/
         $type = 0x03;
-        $returnorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
+        if($current_user_type == 5){
+            $returnorder = \app\index\model\Admin::querylogsticcsinfonums($type);
+        }else{
+            $returnorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
+        }
     	$this->assign('returnorder',$returnorder);
 
     	/*维修确认单*/
         $type = 0x04;
-        $repairorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
+        if($current_user_type == 5){
+            $repairorder = \app\index\model\Admin::querylogsticcsinfonums($type);
+        }else{
+            $repairorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
+        }
     	$this->assign('repairorder',$repairorder);
 
     	/*配件确认单*/
         $type = 0x05;
-        $partsorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
+        if($current_user_type == 5){
+            $partsorder = \app\index\model\Admin::querylogsticcsinfonums($type);
+        }else{
+            $partsorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
+        }
     	$this->assign('partsorder',$partsorder);
 
     	/*代用确认单*/
         $type = 0x06;
-        $alternativeorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
+        if($current_user_type == 5){
+            $alternativeorder = \app\index\model\Admin::querylogsticcsinfonums($type);
+        }else{
+            $alternativeorder = \app\index\model\Admin::querycsinfonums($user_id,$type);
+        }
     	$this->assign('alternativeorder',$alternativeorder);
 
         $userinfo = \app\index\model\Admin::getsessioninfo();
