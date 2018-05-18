@@ -32,4 +32,14 @@ function detectinputdataletter(object){
     $(object).val(value.replace(/[\W|\_]/g,""));
 }
 
+/*检测电话*/
+function detectinputphone(object){
+
+    var value = $(object).val();
+    /*替换特殊字符*/
+    if(/[^0-9-]+/.test(value)){
+        $(object).val(value.replace(/[^0-9-]+/,""));
+    }
+}
+
 

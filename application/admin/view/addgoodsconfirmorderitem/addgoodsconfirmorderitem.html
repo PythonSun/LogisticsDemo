@@ -46,7 +46,7 @@
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">状态：</label>
-                    <div class="layui-input-inline Wheat" style="max-width:120px">
+                    <div class="layui-input-inline Wheat" style="max-width:120px;z-index: 999999999">
                         <select id="ogcugi_product_state" name="ogcugi_product_state" lay-filter="ogcugi_product_state">
                             <option value="" selected>请选择</option>
                             <option value="0">未发货</option>
@@ -62,8 +62,8 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">备注：</label>
                 <div class="layui-input-block">
-                    <!--<input type="text" name="ogcugi_comment" id="ogcugi_comment" class="layui-input Wheat">-->
-                    <textarea name="ogcugi_comment" id="ogcugi_comment" required lay-verify="required" placeholder="请输入" class="layui-textarea Wheat"></textarea>
+                    <input type="text" name="ogcugi_comment" id="ogcugi_comment" class="layui-input Wheat">
+                    <!--<textarea name="ogcugi_comment" id="ogcugi_comment" required lay-verify="required" placeholder="请输入" class="layui-textarea Wheat"></textarea>-->
                 </div>
             </div>
         </form>
