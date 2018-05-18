@@ -405,7 +405,7 @@
             <div class="layui-form-item">
                 <div class="layui-btn-container">
                     <button   class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save" id="save">保存</button>
-                    <!-- <input type="button" value="转交" class="layui-btn" lay-submit="" lay-filter="deliver" id="deliver"> -->
+                    <input type="button" value="转交" class="layui-btn" lay-submit="" lay-filter="deliver" id="deliver">
                     <button   class="layui-btn layui-btn-primary" lay-submit="" lay-filter="cancel" id="cancel">取消</button>
                 </div>
             </div>
@@ -471,9 +471,9 @@
                 });
 
                 //监听转交
-                // form.on('submit(deliver)',function (uidata) {
-                //     return saveOrDeliverToSql(uidata,1);
-                // });
+                form.on('submit(deliver)',function (uidata) {
+                    return saveOrDeliverToSql(uidata,1);
+                });
 
                 jq(document).ready(function(){
                     var cs_id = "<?php echo $cs_id?>";
