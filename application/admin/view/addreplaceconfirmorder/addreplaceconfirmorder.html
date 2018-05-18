@@ -106,9 +106,9 @@
                     </div>
                 </div>
                 <div class="layui-inline">
-                    <label class="layui-form-label Wheat ">区域经理电话</label>
+                    <label class="layui-form-label Wheat " style="width: 130px">区域经理电话</label>
                     <div class="layui-input-inline Wheat">
-                        <input type="text"  name="build_user_phone" id="build_user_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled">
+                        <input type="text"  name="build_user_phone" id="build_user_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);">
                     </div>
                 </div>
             </div>
@@ -122,7 +122,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat label_change">公司电话/传真</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="company_phone" id="company_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled"> </div>
+                        <input type="text" name="company_phone" id="company_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -139,7 +139,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">法人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="legal_phone" id="legal_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled"> </div>
+                        <input type="text" name="legal_phone" id="legal_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">公司联系人</label>
@@ -149,7 +149,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">联系人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="company_contact_phone" id="company_contact_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled"> </div>
+                        <input type="text" name="company_contact_phone" id="company_contact_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled " oninput="detectinputphone(this);"> </div>
                 </div>
             </div>
             <h3>发货信息</h3>
@@ -162,7 +162,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivery_info_receiver_phone" id="delivery_info_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled"> </div>
+                        <input type="text" name="delivery_info_receiver_phone" id="delivery_info_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场名称</label>
@@ -172,7 +172,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivery_info_goods_yard_phone" id="delivery_info_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled"> </div>
+                        <input type="text" name="delivery_info_goods_yard_phone" id="delivery_info_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -235,7 +235,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="return_info_receiver_phone" id="return_info_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled"> </div>
+                        <input type="text" name="return_info_receiver_phone" id="return_info_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -247,7 +247,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="return_info_goods_yard_phone" id="return_info_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled"> </div>
+                        <input type="text" name="return_info_goods_yard_phone" id="return_info_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">返货单号</label>
@@ -1037,6 +1037,11 @@
                 var exp = getOtherExplain();
                 var ogl_explain = getOglExplain();
                 var data = uidata.field;
+                //判断必填项
+                if(judgeMustInput(data,current_user_type) == false)
+                {
+                    return false;
+                }
                 var rows = tabledata.length;
                // console.log(data);
                 //cs_info.cs_id  = data['swiftnumber'];
@@ -1395,6 +1400,13 @@
             function managerDeliver () {
                 var data = getFormData();
                 jq = layui.jquery;
+
+                //判断必填项
+                if(judgeMustInput(data,current_user_type) == false)
+                {
+                    return false;
+                }
+
                 var  tabledata = getTableContent();
                 var rows = tabledata.length;
                 console.log(data);
@@ -1583,6 +1595,13 @@
             //修改时 经理的保存
             function managerSave() {
                 var data = getFormData();
+
+                //判断必填项
+                if(judgeMustInput(data,current_user_type) == false)
+                {
+                    return false;
+                }
+
                 jq = layui.jquery;
                 var  tabledata = getTableContent();
                 var rows = tabledata.length;
@@ -1774,6 +1793,13 @@
             function departDeliver () {
                 var jq = layui.jquery;
                 var data = getFormData();
+
+                //判断必填项
+                if(judgeMustInput(data,current_user_type) == false)
+                {
+                    return false;
+                }
+
                 var cs_examine = [];
                 var curdate = new Date();
                 if(data['departmentdirectoradvice'] != "同意")
@@ -1805,6 +1831,13 @@
             function companyDeliver () {
                 var jq = layui.jquery;
                 var data = getFormData();
+
+                //判断必填项
+                if(judgeMustInput(data,current_user_type) == false)
+                {
+                    return false;
+                }
+
                 var curdate = new Date();
                 if(data['executivegeneralmanageradvice'] != "同意")
                 {
@@ -1837,6 +1870,13 @@
             function financeDeliver () {
                 var jq = layui.jquery;
                 var data = getFormData();
+
+                //判断必填项
+                if(judgeMustInput(data,current_user_type) == false)
+                {
+                    return false;
+                }
+
                 var curdate = new Date();
                 if(data['financedirectoradvice'] != "同意")
                 {
@@ -1867,6 +1907,12 @@
             function logisticSave() {
                 setDisable(false);
                 var data = getFormData();
+                //判断必填项
+                if(judgeMustInput(data,current_user_type) == false)
+                {
+                    return false;
+                }
+
                 jq = layui.jquery;
                 var  tabledata = getTableContent();
                 var rows = tabledata.length;
@@ -2243,12 +2289,21 @@
                 else if(cur_user_type == 5)
                 {
                     //付款信息
-                    var  payment_info= {};
-                    payment_info['is_paid'] = data['is_paid'];
-                    payment_info['paid_date'] = data['paid_date'] == '' ? "2000-01-01":data['paid_date'];
-                    payment_info['customization_fee'] =  data['customization_fee'];
-                    payment_info['paid_bank'] = data['paid_bank'];
-                    payment_info['payment_info_comment'] = data['payment_info_comment'];
+                    if(data['paid_date'] == '')
+                    {
+                        layer.msg('款项情况-到账日期不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['customization_fee'] == '')
+                    {
+                        layer.msg('款项情况-订制费用不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['paid_bank'] == '')
+                    {
+                        layer.msg('款项情况-运费不能为空！',{icon:2});
+                        return false;
+                    }
                 }
 
             }
