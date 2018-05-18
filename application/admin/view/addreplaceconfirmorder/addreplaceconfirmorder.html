@@ -106,9 +106,10 @@
                     </div>
                 </div>
                 <div class="layui-inline">
-                    <label class="layui-form-label Wheat label_change">区域经理电话</label>
+                    <label class="layui-form-label Wheat ">区域经理电话</label>
                     <div class="layui-input-inline Wheat">
-                        <input type="text" disabled name="build_user_phone" id="build_user_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled"> </div>
+                        <input type="text"  name="build_user_phone" id="build_user_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled">
+                    </div>
                 </div>
             </div>
             <h3>客户信息</h3>
@@ -489,9 +490,8 @@
                     jq('#save').addClass('hide');
                     jq('#deliver').addClass('hide');
                     jq('#cancel').addClass('hide');
-                    //如果新增
-                    //否则 addLogisticsItem(data);
                     jq.post("{:url('admin/addreplaceconfirmorder/getcsallinfo')}",{'param':cs_id},function (data) {
+                        console.log(data);
                         document.getElementById('cs_belong_create_time').value = data['cs_belong_create_time'];
                         document.getElementById('transfer_fee_mode').value = data['transfer_fee_mode'];
                         jq('#build_organize_id').val(data['build_organize_id']);
@@ -1017,7 +1017,7 @@
                 col_12.innerHTML = "<td><a>"+ row.ogl_product_state +"</a></td>";
                 var col_13 = new_tr.insertCell(13);
                 if(row.unc_product_name == null){
-                    col_13.innerHTML = "<td></td>";
+                    col_13.innerHTML = "<td><a tag='" + row.unc_product_id + "'>"+ row.unc_product_name +"</a></td>";
                 }else{
                     col_13.innerHTML = "<td><a tag='" + row.unc_product_id + "'>"+ row.unc_product_name +"</a></td>";
                 }
@@ -1952,6 +1952,7 @@
                     data: {cs_info:cs_info,cs_belong:cs_belong,order_goods_manager:order_goods_manager,payment_info:payment_info,logistic_info:logistic_info,logistic_info_delete_row:del_logistics_id_arr} ,
                     type: 'POST',
                     dataType: 'json',
+                    async:false,
                     success: function(e) {
                         if(e){
                             console.log('订单添加成功！');
