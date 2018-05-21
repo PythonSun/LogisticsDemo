@@ -79,6 +79,7 @@
 				    if(obj.event === 'detail') {
 				        if(current_user_type == 5)
 						{
+						    console.log(data);
                             if(data['complete_date'] == '' || data['complete_date'] == '2000-01-01')
                             {
                                 logisticFirstEdit(data);
@@ -105,7 +106,7 @@
                                     var result = iframeWin.returnOrder();
                                     if(result == false)
                                         return false;
-                                    table.reload('querytable', {
+                                    layui.table.reload('querytable', {
                                         page: {
                                             curr: 1
                                         }
@@ -153,7 +154,7 @@
                         var result = iframeWin.logisticSave();
                         if(result == false)
                             return false;
-                        table.reload('querytable', {
+                        layui.table.reload('querytable', {
                             page: {
                                 curr: 1
                             }
@@ -185,7 +186,7 @@
                         var result = iframeWin.logisticSave();
                         if(result == false)
                             return false;
-                        table.reload('querytable', {
+                        layui.table.reload('querytable', {
                             page: {
                                 curr: 1
                             }
