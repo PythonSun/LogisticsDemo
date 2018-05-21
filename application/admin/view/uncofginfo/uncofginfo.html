@@ -117,8 +117,21 @@
             var delrowid = new Array();
             var type = 1;//当前页面模式 说明：0:不可编辑 1：编辑
             $(document).ready(function() {
+                var layer = layui.layer;
                 type = {$type};
+                console.log('华丽分割线-------------1-------------');
+                console.log(window.parent);
+                var wlength = window.parent.length;
+                for (var i = 0; i < wlength; i++){
+                    if (window.parent[i]){
+
+                    }
+                }
+
+
                 var wParent = window.parent[window.parent.length - 2];
+                console.log('华丽分割线------------2--------------');
+                console.log(wParent);
                 var data = wParent.getUncofgInfoUI();
                 var jq = layui.jquery;
                 if (type == 0){
