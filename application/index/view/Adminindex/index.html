@@ -228,19 +228,27 @@
 
 	            /*确定内嵌的页面*/
 	            jq(document).ready(function(){
-	            	var element = jq('#orderList')[0];
-	            	if(jq(element).find('li').length>0){
-	            		var children_node = jq(element).find('li')[0].children[1].children[0].children[0];
-	            		var iframe_src = jq(children_node).attr('href');
-	            		jq(children_node).addClass('layui-this');
-	        		    jq('.admin-iframe').attr('src',iframe_src);
-					    jq("#iframe-mask").show();
-					    jq("#admin-iframe").load(function(){
-					       jq("#iframe-mask").fadeOut(100);
-					    });
-	            	}else{
-	            		return;
-	            	}
+	            	/*判断session是否存在，如果存在就不跳转*/
+	            	jq.post("{:url('index/adminindex/getsession')}",function(data){
+	            		if(data == ''){
+	            			/*session为空时，跳出登录*/
+	            			location.href = "/index/login/login";
+	            		}else{
+			            	var element = jq('#orderList')[0];
+			            	if(jq(element).find('li').length>0){
+			            		var children_node = jq(element).find('li')[0].children[1].children[0].children[0];
+			            		var iframe_src = jq(children_node).attr('href');
+			            		jq(children_node).addClass('layui-this');
+			        		    jq('.admin-iframe').attr('src',iframe_src);
+							    jq("#iframe-mask").show();
+							    jq("#admin-iframe").load(function(){
+							       jq("#iframe-mask").fadeOut(100);
+							    });
+			            	}else{
+			            		return;
+			            	}
+	            		}
+	            	});
 	            });
 			});
 		</script>

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>你好</title>
+		<title>审核查询条件</title>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 		<link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
 	</head>
 	<body>
-		<div style="margin:20px 10px;min-height: 180px;border: 2px solid #C7C7C7;">
+		<div style="margin:20px 10px;min-height: 180px;border: 2px solid #C7C7C7;" id="querycondition">
 			<form class="layui-form" style="padding-top:20px;">
 				<div class="layui-form-item">
 				    <div class="layui-inline">
@@ -57,5 +57,11 @@
 				</div>
 			</form>
 		</div>
+		<script src="/static/layui/layui.js"></script>
+		<script type="text/javascript">
+			layui.use(['layer','jquery','form'],function(){
+				var form = layui.form,jq = layui.jquery,layer = layui.layer;
+			});
+		</script>
 	</body>
 </html>

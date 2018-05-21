@@ -1594,11 +1594,12 @@
                         }
                     }
                 });
-                return false;
+                return true;
 
             }
             //修改时 经理的保存
             function managerSave() {
+                setDisable(false);
                 var data = getFormData();
 
                 //判断必填项
@@ -1794,6 +1795,7 @@
                         }
                     }
                 });
+                return true;
             }
             //修改时 主管提交
             function departDeliver () {

@@ -241,34 +241,26 @@ class Addreplaceconfirmorder extends Controller
     /**经理修改订单 提交内容保存**/
     public function managereditanddeliverorder()
     {
+
         $date_now = date("Y-m-d H:i:s");
 
         //cs_belong
         $cs_belong = $_POST['cs_belong'];
         $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
-        if (empty($ret_cs_belog)) {
-            return false;
-        }
 
         ///custom_info
         $custom_info = $_POST['custom_info'];
         $ret_custom_info = \app\index\model\Admin::updatecustominfo($custom_info);
-        if (empty($ret_custom_info)) {
-            return false;//添加失败删除
-        }
         //delivery_info
         $delivery_info = $_POST['delivery_info'];
         $ret_delivery_info = \app\index\model\Admin::updatedeliveryinfo($delivery_info);
-        if (empty($ret_delivery_info)) {
-            return false;
-        }
+
 
         //return_info
         $return_info = $_POST['return_info'];
         $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
-        if (empty($ret_return_info)) {
-            return false;
-        }
+
+
         //order_goods_manager  order_goods_logistics
         if(array_key_exists('order_goods_manager',$_POST)){
             $order_goods_manager = $_POST['order_goods_manager'];
@@ -299,7 +291,7 @@ class Addreplaceconfirmorder extends Controller
         $cs_examine_ids ="";
         for ($i = 0; $i < $length; $i++) {
             if ($i == 0) {
-                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '总监');
+                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($cs_belong['build_user_id'], '总监');
                 if (empty($dbleader)) {
                     return false;
                 }
@@ -307,7 +299,7 @@ class Addreplaceconfirmorder extends Controller
                 $cs_examine[$i]['cs_examine_name'] = $dbleader[0]['fullname'];
 
             } else if ($i == 1) {
-                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '总经理');
+                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($cs_belong['build_user_id'], '总经理');
                 if (empty($dbleader)) {
                     return false;
                     //return false;
@@ -315,7 +307,7 @@ class Addreplaceconfirmorder extends Controller
                 $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
                 $cs_examine[$i]['cs_examine_name'] = $dbleader[0]['fullname'];
             } else if ($i == 2) {
-                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '财务部');
+                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($cs_belong['build_user_id'], '财务部');
                 if (empty($dbleader)) {
                     return false;
                 }
@@ -333,18 +325,6 @@ class Addreplaceconfirmorder extends Controller
         $cs_info['cs_examine_ids'] = $cs_examine_ids;
         $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
 
-        if (empty($ret_confirm_order)) {
-            $cs_belong_id = \app\index\model\Admin::getmaxtableidretid('cs_belong', 'cs_belong_id');
-
-            \app\index\model\Admin::deleterowtableid('cs_belong', 'cs_belong_id', $cs_belong_id);
-            \app\index\model\Admin::deleterowtableid('custom_info', 'custom_info_id', $custom_info_id);
-            \app\index\model\Admin::deleterowtableid('delivery_info', 'delivery_info_id', $delivery_info_id);
-            \app\index\model\Admin::deleterowtableid('return_info', 'return_info_id', $return_info_id);
-            //删除上面的表
-            //还有 order_goods_manager  cs_examine
-            return false;
-        }
-
         if(array_key_exists('order_goods_delete_row',$_POST))
         {
             $order_goods_delete_row = $_POST['order_goods_delete_row'];
@@ -354,6 +334,7 @@ class Addreplaceconfirmorder extends Controller
             }
         }
 
+        return true;
 
     }
     /**经理修改订单 内容保存**/
