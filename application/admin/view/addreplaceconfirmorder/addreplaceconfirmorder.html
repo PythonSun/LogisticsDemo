@@ -876,6 +876,39 @@
                     });
                     return false;
                 });
+                //非定型订单弹窗
+                jq('#uncofginfo').click(function () {
+                    top.layer.open({
+                        type:2,
+                        title:'非定型产品订货单',
+                        area:['800px','90%'],
+                        shade: [0.7, '#393D49'],
+                        skin: 'layui-layer-molv',
+                        maxmin:true,
+                        content:"{:url('admin/uncofginfo/uncofginfo')}?type=1",
+                        btn:['确定','退出'],
+                        yes:function (index,layero) {
+                            var  iframeWin = top.window[layero.find('iframe')[0]['name']];
+                            var  ret = iframeWin.getData();
+
+                            if (ret == false){
+
+                            }else if (ret == null){
+                                uncofginfo = ret;
+                                top.layer.close(index);
+                            }else {
+                                uncofginfo = ret;
+                                top.layer.close(index);
+                            }
+                            setDelUncofginfoVis();
+                        },
+                        btn2: function (index) {
+                            console.log(index);
+                            layer.close(index);
+                        }
+                    });
+                    return false;
+                })
                 //删除非定型订单
                 jq('#deluncofginfo').click(function () {
                     top.layer.confirm('确定删除此非定型产品订货确认单？', {
@@ -2261,7 +2294,7 @@
                    console.log(result);
                 });
                 return true;
-            }
+            }ds
 
             function getFormData() {
                 var jq = layui.jquery;
@@ -2451,6 +2484,7 @@
             }
 
             function setDelUncofginfoVis() {
+                console.log('lalallalal' + current_user_type);
                 if (current_user_type != 5){
                     if(uncofginfo == "" || uncofginfo == null || uncofginfo === undefined){
                         $('#deluncofginfo').addClass('hide');
@@ -2463,17 +2497,26 @@
                         $('#lookuncofginfo').removeClass('btnPicLightBg');
                     }
                 }else {
+                    console.log(2467);
                     if(uncofginfo == "" || uncofginfo == null || uncofginfo === undefined){
                         $('#deluncofginfo').addClass('hide');
                         $('#lookuncofginfo').attr("disabled","disabled");
                         $('#lookuncofginfo').addClass('btnPicLightBg');
+                        console.log(2472);
+                        console.log(uncofginfo);
                     }else {
                         $('#deluncofginfo').removeClass('hide');
 
                         $('#lookuncofginfo').removeAttr("disabled");
                         $('#lookuncofginfo').removeClass('btnPicLightBg');
+                        console.log(2480);
+                        console.log(uncofginfo);
                     }
                 }
+            }
+            //页面间数据传递
+            function getUncofgInfoUI() {
+                return uncofginfo;
             }
         </script>
     </body>
