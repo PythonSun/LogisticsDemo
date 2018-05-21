@@ -2191,8 +2191,17 @@
                     return;
                 }
                 setDisable(false);
+
                 var jq = layui.jquery;
                 var data = getFormData();
+
+                //判断必填项
+                if(judgeMustInput(data,current_user_type) == false)
+                {
+                    setDisable(true);
+                    return false;
+                }
+
                 var curdate = new Date();
                 var cs_id = [];
                 var cs_examine = [];
@@ -2233,7 +2242,7 @@
                 depart_examine['cs_examine_date'] = data['examinationapprovaldatefirst']== ''?'2000-01-01':data['examinationapprovaldatefirst'];
                 depart_examine['cs_examine_comment'] = data['remarkfirst'];
                 depart_examine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
-                depart_examine['cs_examine_result'] = data['departmentdirectoradvice'];
+                depart_examine['cs_examine_result'] = data['departmentdirectoradvice'] === undefined ?"":data['departmentdirectoradvice'];
                 depart_examine['cs_examine_state'] = 2;
                 depart_examine['cs_examine_name'] = editOrderData['depart_examine']['cs_examine_name'];
                 depart_examine['examine_user_id'] = editOrderData['depart_examine']['examine_user_id'];
@@ -2247,7 +2256,7 @@
                 company_examine['cs_examine_date'] =data['examinationapprovaldatesecond']== ''?'2000-01-01':data['examinationapprovaldatesecond'];
                 company_examine['cs_examine_comment'] = data['remarksecond'];
                 company_examine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
-                company_examine['cs_examine_result'] = data['executivegeneralmanageradvice'];
+                company_examine['cs_examine_result'] = data['executivegeneralmanageradvice']=== undefined ?"":data['executivegeneralmanageradvice'];
                 company_examine['cs_examine_state'] = 2;
                 company_examine['cs_examine_name'] = editOrderData['company_examine']['cs_examine_name'];
                 company_examine['examine_user_id'] = editOrderData['company_examine']['examine_user_id'];
@@ -2261,7 +2270,7 @@
                 finance_examine['cs_examine_date'] = data['examinationapprovaldatethird'] == ''?'2000-01-01':data['examinationapprovaldatethird'];
                 finance_examine['cs_examine_comment'] = data['remarkthird'];
                 finance_examine['cs_examine_content'] = data['examinationapprovalcontentthird'];
-                finance_examine['cs_examine_result'] = data['financedirectoradvice'];
+                finance_examine['cs_examine_result'] = data['financedirectoradvice']=== undefined ?"":data['financedirectoradvice'];
                 finance_examine['cs_examine_state'] = 2;
                 finance_examine['cs_examine_name'] = editOrderData['finance_examine']['cs_examine_name'];
                 finance_examine['examine_user_id'] = editOrderData['finance_examine']['examine_user_id'];
@@ -2272,7 +2281,7 @@
                 cs_examine.push(finance_examine);
 
 
-
+                console.log(cs_examine);
 
                 var cs_info = new Object();
                 cs_info.custom_info_id = editOrderData['custom_info_id'];
@@ -2294,7 +2303,7 @@
                    console.log(result);
                 });
                 return true;
-            }ds
+            }
 
             function getFormData() {
                 var jq = layui.jquery;
