@@ -890,7 +890,7 @@
                         yes:function (index,layero) {
                             var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                             var  ret = iframeWin.getData();
-
+                            console.log(ret);
                             if (ret == false){
 
                             }else if (ret == null){
@@ -903,7 +903,6 @@
                             setDelUncofginfoVis();
                         },
                         btn2: function (index) {
-                            console.log(index);
                             layer.close(index);
                         }
                     });
@@ -920,6 +919,9 @@
                     });
                 });
                 jq('#lookuncofginfo').click(function () {
+                    var dd = getUncofgInfoUI();
+                    console.log('+++++++++弹窗前++++++++++++++');
+                    console.log(dd);
                     top.layer.open({
                         type:2,
                         title:'查看非定型产品订货单',

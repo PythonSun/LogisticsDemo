@@ -119,20 +119,20 @@
             $(document).ready(function() {
                 var layer = layui.layer;
                 type = {$type};
-                console.log('华丽分割线-------------1-------------');
-                console.log(window.parent);
+                var data = null;
                 var wlength = window.parent.length;
-                for (var i = 0; i < wlength; i++){
-                    if (window.parent[i]){
-
+                var wParent = window.parent[window.parent.length - 2];
+                if(wParent.getUncofgInfoUI){
+                    data = wParent.getUncofgInfoUI();
+                }else {
+                    if(wParent[0].getUncofgInfoUI){
+                        data = wParent[0].getUncofgInfoUI();
                     }
                 }
-
-
-                var wParent = window.parent[window.parent.length - 2];
-                console.log('华丽分割线------------2--------------');
-                console.log(wParent);
-                var data = wParent.getUncofgInfoUI();
+                console.log('华丽分割线--------非定型弹窗数据 加载-----------');
+                console.log(data);
+                //var wParent = window.parent[window.parent.length - 2];
+                //var data = wParent.getUncofgInfoUI();
                 var jq = layui.jquery;
                 if (type == 0){
                     $('#uoi_to').attr("disabled","disabled");
