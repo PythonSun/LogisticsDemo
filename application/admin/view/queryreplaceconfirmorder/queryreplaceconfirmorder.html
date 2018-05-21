@@ -247,6 +247,7 @@
                         content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                         btn: [ '确认接收','取消'],
                         btnAlign: 'c',
+                        async:false,
                         yes: function (index,layero) {
                             var iframeWin = window[layero.find('iframe')[0]['name']];
                             var result = iframeWin.logisticSave();
@@ -275,6 +276,7 @@
                         content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                         btn: [ '保存','取消'],
                         btnAlign: 'c',
+                        async:false,
                         yes: function (index,layero) {
                             var iframeWin = window[layero.find('iframe')[0]['name']];
                             var result = iframeWin.logisticSave();
@@ -303,6 +305,7 @@
                         content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                         btn: ['退回', '提交','取消'],
                         btnAlign: 'c',
+                        async:false,
                         yes: function (index,layero) {
                             var iframeWin = window[layero.find('iframe')[0]['name']];
                             var result = iframeWin.returnOrder();
@@ -343,6 +346,7 @@
                         btnAlign: 'c',
                         content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                         btn: ['保存', '提交','取消'],
+                        async:false,
                         yes: function (index,layero) {
                             var iframeWin = window[layero.find('iframe')[0]['name']];
                             var result = iframeWin.managerSave();
