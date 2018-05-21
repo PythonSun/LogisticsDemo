@@ -234,7 +234,10 @@ class Addreplaceconfirmorder extends Controller
 
         $cs_examine = $_POST['cs_examine'];
 
-        \app\index\model\Admin::updatecsexamine($cs_examine);
+        foreach ($cs_examine as $examine)
+        {
+            \app\index\model\Admin::updatecsexamine($examine);
+        }
         return "提交成功！";
 
     }

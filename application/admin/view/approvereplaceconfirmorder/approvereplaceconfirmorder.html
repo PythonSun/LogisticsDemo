@@ -99,7 +99,6 @@
                                 content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                                 btn: ['退回', '提交','取消'],
                                 btnAlign: 'c',
-                                skin: 'layui-layer-lan',
                                 yes: function (index,layero) {
                                     var iframeWin = window[layero.find('iframe')[0]['name']];
                                     var result = iframeWin.returnOrder();
@@ -144,7 +143,6 @@
                     content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                     btn: [ '确认接收','取消'],
                     btnAlign: 'c',
-                    skin: 'layui-layer-lan',
                     yes: function (index,layero) {
                         var iframeWin = window[layero.find('iframe')[0]['name']];
                         var result = iframeWin.logisticSave();
@@ -173,7 +171,6 @@
                     content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                     btn: [ '保存','取消'],
                     btnAlign: 'c',
-                    skin: 'layui-layer-lan',
                     yes: function (index,layero) {
                         var iframeWin = window[layero.find('iframe')[0]['name']];
                         var result = iframeWin.logisticSave();
