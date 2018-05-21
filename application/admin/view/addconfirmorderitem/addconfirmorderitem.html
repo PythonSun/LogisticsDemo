@@ -206,6 +206,8 @@
         orderItem.place_name = obj2.options[obj2.selectedIndex].text;
         orderItem.place_id = jq('#place_id').val();//
         orderItem.order_goods_manager_count = jq('#inputcount').val();
+        if(orderItem.order_goods_manager_count == '')
+            return '';
         orderItem.unit = jq('#inputunit').val();
 
 
@@ -227,6 +229,10 @@
         orderItem.specification = jq('#specification').val();
         orderItem.back_date = jq('#back_date').val() ;
 
+        if(orderItem.back_date == ''){
+            layer.msg('请输入归还日期',{icon:2});
+            return;
+        }
         orderItem.ogl_product_state = "";
 
         jq("input[name='inputstate']").each(function(){
@@ -238,7 +244,7 @@
         orderItem.replace_reason = jq('#replace_reason').val();
         orderItem.ogl_comment = jq('#comment').val();
         if(orderItem.model == ''){
-            layer.msg('请输入型号',{icon:2});
+            layer.msg('请输入数量',{icon:2});
             return;
         }
         //+判断 型号是否存在，不存在禁止录入
