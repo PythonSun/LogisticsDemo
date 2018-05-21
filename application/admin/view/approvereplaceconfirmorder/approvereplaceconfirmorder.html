@@ -79,6 +79,7 @@
 				    if(obj.event === 'detail') {
 				        if(current_user_type == 5)
 						{
+						    console.log(data);
                             if(data['complete_date'] == '' || data['complete_date'] == '2000-01-01')
                             {
                                 logisticFirstEdit(data);
@@ -92,7 +93,10 @@
 						{
                             layer.open({
                                 type: 2,
-                                title: '审批更换确认单',
+                                title: [
+                                    '审批更换确认单',
+                                    'background-color:#636363; color:#fff;'
+                                ],
                                 area: ['100%', '100%'],
                                 shade: 0.9,
                                 maxmin: false,
@@ -105,7 +109,7 @@
                                     var result = iframeWin.returnOrder();
                                     if(result == false)
                                         return false;
-                                    table.reload('querytable', {
+                                    layui.table.reload('querytable', {
                                         page: {
                                             curr: 1
                                         }
@@ -153,7 +157,7 @@
                         var result = iframeWin.logisticSave();
                         if(result == false)
                             return false;
-                        table.reload('querytable', {
+                        layui.table.reload('querytable', {
                             page: {
                                 curr: 1
                             }
@@ -185,7 +189,7 @@
                         var result = iframeWin.logisticSave();
                         if(result == false)
                             return false;
-                        table.reload('querytable', {
+                        layui.table.reload('querytable', {
                             page: {
                                 curr: 1
                             }

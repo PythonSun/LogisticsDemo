@@ -459,9 +459,8 @@ class Addreplaceconfirmorder extends Controller
         //cs_belong
         $cs_belong = $_POST['cs_belong'];
         $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
-        if (empty($ret_cs_belog)) {
-            return false;
-        }
+
+        //payment_info
         $payment_info = $_POST['payment_info'];
         \app\index\model\Admin::updatepaymentinfo($payment_info);
 
