@@ -79,9 +79,17 @@
 				    if(obj.event === 'detail') {
 				        if(current_user_type == 5)
 						{
+                            if(data['complete_date'] == '' || data['complete_date'] == '2000-01-01')
+                            {
+                                logisticFirstEdit(data);
+                            }
+                            else
+                            {
+                                logisticEdit(data);
+                            }
                             layer.open({
                                 type: 2,
-                                title: '新增清单',
+                                title: '审批更换确认单',
                                 area: ['90%', '90%'],
                                 shade: 0.9,
                                 maxmin: false,
@@ -108,7 +116,7 @@
 						{
                             layer.open({
                                 type: 2,
-                                title: '新增清单',
+                                title: '审批更换确认单',
                                 area: ['90%', '90%'],
                                 shade: 0.9,
                                 maxmin: false,
@@ -147,6 +155,60 @@
                     }
 			  	});
 			});
+            //物流首次编辑
+            function logisticFirstEdit(data) {
+                layer.open({
+                    type: 2,
+                    title: '审批更换确认单',
+                    area: ['90%', '90%'],
+                    shade: 0.9,
+                    maxmin: false,
+                    content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
+                    btn: [ '确认接收','取消'],
+                    yes: function (index,layero) {
+                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        var result = iframeWin.logisticSave();
+                        if(result == false)
+                            return false;
+                        table.reload('querytable', {
+                            page: {
+                                curr: 1
+                            }
+                        });
+                        layer.closeAll();
+                    },
+                    btn2:function () {
+                        layer.closeAll();
+                    }
+                });
+            }
+            //物流编辑
+            function logisticEdit(data) {
+                layer.open({
+                    type: 2,
+                    title: '审批更换确认单',
+                    area: ['90%', '90%'],
+                    shade: 0.9,
+                    maxmin: false,
+                    content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
+                    btn: [ '保存','取消'],
+                    yes: function (index,layero) {
+                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        var result = iframeWin.logisticSave();
+                        if(result == false)
+                            return false;
+                        table.reload('querytable', {
+                            page: {
+                                curr: 1
+                            }
+                        });
+                        layer.closeAll();
+                    },
+                    btn2:function () {
+                        layer.closeAll();
+                    }
+                });
+            }
 		</script>
 	</body>
 </html>
