@@ -2576,7 +2576,7 @@
             $unc_ofg_info_id = $allcsinfo['unc_ofg_info_id'];
             if ($unc_ofg_info_id >= 1){
                 $unc_ofg_info = \app\index\model\Admin::getclassinfobyproperty('dsp_logistic.unc_ofg_info','uoi_id',$unc_ofg_info_id);
-                if (!empty($fee_info)){
+                if (!empty($unc_ofg_info)){
                     $allcsinfo['unc_ofg_info'] = $unc_ofg_info[0];
                     $unc_ofg_detail = \app\index\model\Admin::getuncofgdetailbyid($unc_ofg_info_id);
                     if (!empty($unc_ofg_detail)){

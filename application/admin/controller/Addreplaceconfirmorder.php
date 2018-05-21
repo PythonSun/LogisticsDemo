@@ -520,6 +520,7 @@ class Addreplaceconfirmorder extends Controller
         }
 
         $uoi_id = "";
+        $unc_ofg_info = null;
         if (array_key_exists('unc_ofg_info',$_POST)){
             /*******是否新增******/
             $unc_ofg_info = $_POST['unc_ofg_info'];
@@ -545,8 +546,7 @@ class Addreplaceconfirmorder extends Controller
             }
         }
 
-        if(array_key_exists('unc_ofg_info',$_POST) && array_key_exists('unc_ofg_detail',$_POST)){
-            $unc_ofg_info = $_POST['unc_ofg_info'];
+        if(array_key_exists('unc_ofg_detail',$_POST)){
             $unc_ofg_detail = $_POST['unc_ofg_detail'];
             if (!empty($unc_ofg_info) && !empty($unc_ofg_detail)){
                 $unc_ofg_detail_length = count($unc_ofg_detail);

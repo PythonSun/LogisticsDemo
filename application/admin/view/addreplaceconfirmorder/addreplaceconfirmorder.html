@@ -6,6 +6,9 @@
         <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
         <link rel="stylesheet" type="text/css" href="/static/css/public.css"> </head>
         <style>
+            .btnPicLightBg{
+                background: #8D8D8D;
+            }
             .hide{
                 display: none;
             }
@@ -2495,7 +2498,6 @@
             }
 
             function setDelUncofginfoVis() {
-                console.log('lalallalal' + current_user_type);
                 if (current_user_type != 5){
                     if(uncofginfo == "" || uncofginfo == null || uncofginfo === undefined){
                         $('#deluncofginfo').addClass('hide');
@@ -2508,7 +2510,6 @@
                         $('#lookuncofginfo').removeClass('btnPicLightBg');
                     }
                 }else {
-                    console.log(2467);
                     if(uncofginfo == "" || uncofginfo == null || uncofginfo === undefined){
                         $('#deluncofginfo').addClass('hide');
                         $('#lookuncofginfo').attr("disabled","disabled");
