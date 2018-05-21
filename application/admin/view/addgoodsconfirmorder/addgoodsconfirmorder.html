@@ -646,19 +646,35 @@
                     }else {
                         return;
                     }
-                    var json = {
+
+                    var html1 = "<img src='"+ pathName +"'>";
+
+                    top.layer.open({
+                        type: 1,
+                        title: fileName,
+                        area: ['80%', '80%'],
+                        maxmin: true,
+                        skin: 'layui-layer-nobg', //没有背景色
+                        shadeClose: true,
+                        content: html1,
+                    });
+
+
+                    /*var json = {
                         "data": [   //相册包含的图片，数组格式
                             {
                                 "alt": fileName,
                                 "pid": 1, //图片id
                                 "src": pathName, //原图地址
+                                "skin": 'layui-layer-nobg',
                             }
                         ]
                     };
                     layer.photos({
+                        skin: 'layui-layer-nobg',
                         photos: json
                         ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
-                    });
+                    });*/
                 });
                 //删除未保存咨询表
                 jq('#delpic').click(function () {
