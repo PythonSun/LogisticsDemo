@@ -2451,7 +2451,7 @@
             }
 
             function setDelUncofginfoVis() {
-                if (type == 0){
+                if (current_user_type != 5){
                     if(uncofginfo == "" || uncofginfo == null || uncofginfo === undefined){
                         $('#deluncofginfo').addClass('hide');
                         $('#lookuncofginfo').attr("disabled","disabled");
