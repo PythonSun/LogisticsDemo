@@ -1228,13 +1228,14 @@
             $complete_date = $info['complete_date'];
             $product_number = $info['product_number'];
             $cs_examine_ids = $info['cs_examine_ids'];
-            $sql_value ="'{$cs_id}','{$custom_info_id}','{$delivery_info_id}','{$return_info_id}','{$payment_info_id}','{$cur_process_user_id}','{$pre_process_user_id}','{$cs_info_type}','{$can_edit}','{$write_date}','{$cs_info_state}','{$complete_date}','{$product_number}','$cs_examine_ids'";
+            $unc_ofg_info_id = $info['unc_ofg_info_id'];
+            $sql_value ="'{$cs_id}','{$custom_info_id}','{$delivery_info_id}','{$return_info_id}','{$payment_info_id}','{$cur_process_user_id}','{$pre_process_user_id}','{$cs_info_type}','{$can_edit}','{$write_date}','{$cs_info_state}','{$complete_date}','{$product_number}','$cs_examine_ids','{$unc_ofg_info_id}'";
             $sql = "INSERT INTO dsp_logistic.cs_info (cs_id,custom_info_id,delivery_info_id,return_info_id,payment_info_id,cur_process_user_id,pre_process_user_id
-,cs_info_type,can_edit,write_date,cs_info_state,complete_date,product_number,cs_examine_ids) VALUES ({$sql_value}) ";
+,cs_info_type,can_edit,write_date,cs_info_state,complete_date,product_number,cs_examine_ids,unc_ofg_info_id) VALUES ({$sql_value}) ";
             $sql.= "ON DUPLICATE KEY UPDATE custom_info_id = '{$custom_info_id}',delivery_info_id = '{$delivery_info_id}',return_info_id = '{$return_info_id}',payment_info_id = '{$payment_info_id}',";
             $sql.= "cur_process_user_id= '{$cur_process_user_id}',pre_process_user_id= '{$pre_process_user_id}',cs_info_type = '{$cs_info_type}',";
             $sql.= "can_edit= '{$can_edit}',write_date= '{$write_date}',cs_info_state= '{$cs_info_state}',complete_date= '{$complete_date}',product_number= '$product_number',";
-            $sql.= "cs_examine_ids= '$cs_examine_ids'";
+            $sql.= "cs_examine_ids= '$cs_examine_ids',unc_ofg_info_id='{$unc_ofg_info_id}'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
