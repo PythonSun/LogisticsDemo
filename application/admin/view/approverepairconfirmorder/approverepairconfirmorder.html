@@ -18,10 +18,8 @@
 		</div>
 		<script src="/static/layui/layui.js"></script>
 		<script type="text/javascript">
-			var  divHeight,clientHeight;
 			layui.use(['layer','jquery','laydate','form','table'],function(){
 				var form = layui.form ,layer = layui.layer,jq = layui.jquery,laydate = layui.laydate,table = layui.table;
-
 				/*时间控件渲染*/
 				laydate.render({
 				    elem: '#startdate'
@@ -46,13 +44,9 @@
 		  			return false;
 				});
 
-				divHeight = document.getElementById('querycondition').offsetHeight;   /*搜索框div高度*/
-				clientHeight = jq(window).height()-divHeight-100;                      /*定义table框高度*/
-
 				/*表格渲染*/
 				table.render({
 				    elem: '#repairorder'
-				    ,height:clientHeight
 				    ,url:"{:url('admin/approverepairconfirmorder/getexamineorder')}"     //动态获取数据
 				    ,cols: [[
                         {field:'serial_number',title:'序号',width: 80, sort: true}

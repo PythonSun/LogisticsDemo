@@ -177,12 +177,19 @@ class Adminindex extends Controller
 
         $queryalternativepower = ($role_info[0]['substitute_permission'])&0x40;
         $this->assign('queryalternativepower',$queryalternativepower);
+
 	   	return $this->fetch();
     }
 
     /*退出登录*/
     public function logout(){
         $ret = \app\index\model\Admin::logout();
+        return $ret;
+    }
+
+    /*获取登录session*/
+    public function getsession(){
+        $ret = \app\index\model\Admin::getsessioninfo();
         return $ret;
     }
 }

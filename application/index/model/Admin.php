@@ -1332,7 +1332,7 @@
             $sql.= "cs_belong_create_time= '$cs_belong_create_time',build_user_name= '$build_user_name',build_organize_name= '$build_organize_name',";
             $sql.= "build_department_id='{$build_department_id}',build_department_name='{$build_department_name}',build_user_phone = '$build_user_phone';";
             $sqlret = Db::execute($sql);
-            return 111;
+            return $sqlret;
         }
         /*update 确认单清单经理部分 order_goods_manager*/
         public static function updateordergoodsmanager($info){
