@@ -183,11 +183,13 @@
                         layer.open({
                             type: 2,
                             title: '查看订单详情',
-                            area: ['90%', '90%'],
+                            area: ['100%', '100%'],
                             shade: 0.9,
                             maxmin: false,
                             content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type= 0",
                             btn: [ '退出'],
+                            btnAlign: 'c',
+                            skin: 'layui-layer-lan',
                             yes: function (index,layero) {
 
                                 layer.closeAll();
@@ -240,11 +242,13 @@
                     layer.open({
                         type: 2,
                         title: '编辑订单',
-                        area: ['90%', '90%'],
+                        area: ['100%', '100%'],
                         shade: 0.9,
                         maxmin: false,
                         content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                         btn: [ '确认接收','取消'],
+                        btnAlign: 'c',
+                        skin: 'layui-layer-lan',
                         yes: function (index,layero) {
                             var iframeWin = window[layero.find('iframe')[0]['name']];
                             var result = iframeWin.logisticSave();
@@ -267,11 +271,13 @@
                     layer.open({
                         type: 2,
                         title: '编辑订单',
-                        area: ['90%', '90%'],
+                        area: ['100%', '100%'],
                         shade: 0.9,
                         maxmin: false,
                         content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                         btn: [ '保存','取消'],
+                        btnAlign: 'c',
+                        skin: 'layui-layer-lan',
                         yes: function (index,layero) {
                             var iframeWin = window[layero.find('iframe')[0]['name']];
                             var result = iframeWin.logisticSave();
@@ -294,11 +300,12 @@
                     layer.open({
                         type: 2,
                         title: '新增清单',
-                        area: ['90%', '90%'],
+                        area: ['100%', '100%'],
                         shade: 0.9,
                         maxmin: false,
                         content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                         btn: ['退回', '提交','取消'],
+                        btnAlign: 'c',
                         yes: function (index,layero) {
                             var iframeWin = window[layero.find('iframe')[0]['name']];
                             var result = iframeWin.returnOrder();
@@ -333,11 +340,13 @@
                     layer.open({
                         type: 2,
                         title: '新增清单',
-                        area: ['90%', '90%'],
+                        area: ['100%', '100%'],
                         shade: 0.9,
                         maxmin: false,
+                        btnAlign: 'c',
                         content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                         btn: ['保存', '提交','取消'],
+                        skin: 'layui-layer-lan',
                         yes: function (index,layero) {
                             var iframeWin = window[layero.find('iframe')[0]['name']];
                             var result = iframeWin.managerSave();

@@ -1947,6 +1947,8 @@
                 cs_info.can_edit = 0;                              //0 不可编辑
                 cs_info.cs_info_state = data['cs_info_state'];
                 cs_info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate'];       //新增 无完成日期
+                if(cs_info.complete_date == '2000-01-01')             //点击确认接收，如果没有选时间，自动补上当天时间
+                    cs_info.complete_date = new Date().toLocaleDateString();
                 cs_info.product_number = rows;
                 console.log("以下确认单信息：");
                 console.log(cs_info);
@@ -2059,7 +2061,7 @@
                 var curdate = new Date();
                 var cs_id = [];
                 var cs_examine = {};
-                cs_examine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
+
                 if(current_user_type == 2)
                 {
                     if(data['departmentdirectoradvice'] != "不同意")
@@ -2068,16 +2070,7 @@
                         setDisable(true);
                         return false;
                     }
-                    cs_examine['cs_examine_date'] = data['examinationapprovaldatefirst']== ''?'2000-01-01':data['examinationapprovaldatefirst'];
-                    cs_examine['cs_examine_comment'] = data['remarkfirst'];
-                    cs_examine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
-                    cs_examine['cs_examine_result'] = data['departmentdirectoradvice'];
-                    cs_examine['cs_examine_state'] = 2;
-                    cs_examine['cs_examine_name'] = editOrderData['depart_examine']['cs_examine_name'];
-                    cs_examine['examine_user_id'] = editOrderData['depart_examine']['examine_user_id'];
-                    cs_examine['cs_examine_id'] = editOrderData['depart_examine']['cs_examine_id'];
-                    cs_examine['cs_id'] = editOrderData['depart_examine']['cs_id'];
-                    cs_examine['submit_user_id'] = editOrderData['depart_examine']['submit_user_id'];
+
 
                 }
                 else if(current_user_type == 3)
@@ -2088,16 +2081,7 @@
                         setDisable(true);
                         return false;
                     }
-                    cs_examine['cs_examine_date'] =data['examinationapprovaldatesecond']== ''?'2000-01-01':data['examinationapprovaldatesecond'];
-                    cs_examine['cs_examine_comment'] = data['remarksecond'];
-                    cs_examine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
-                    cs_examine['cs_examine_result'] = data['executivegeneralmanageradvice'];
-                    cs_examine['cs_examine_state'] = 2;
-                    cs_examine['cs_examine_name'] = editOrderData['company_examine']['cs_examine_name'];
-                    cs_examine['examine_user_id'] = editOrderData['company_examine']['examine_user_id'];
-                    cs_examine['cs_examine_id'] = editOrderData['company_examine']['cs_examine_id'];
-                    cs_examine['cs_id'] = editOrderData['company_examine']['cs_id'];
-                    cs_examine['submit_user_id'] = editOrderData['company_examine']['submit_user_id'];
+
                     console.log(cs_examine);
                 }
                 else if(current_user_type == 4)
@@ -2108,17 +2092,44 @@
                         setDisable(true);
                         return false;
                     }
-                    cs_examine['cs_examine_date'] = data['examinationapprovaldatethird'] == ''?'2000-01-01':data['examinationapprovaldatethird'];
-                    cs_examine['cs_examine_comment'] = data['remarkthird'];
-                    cs_examine['cs_examine_content'] = data['examinationapprovalcontentthird'];
-                    cs_examine['cs_examine_result'] = data['financedirectoradvice'];
-                    cs_examine['cs_examine_state'] = 2;
-                    cs_examine['cs_examine_name'] = editOrderData['finance_examine']['cs_examine_name'];
-                    cs_examine['examine_user_id'] = editOrderData['finance_examine']['examine_user_id'];
-                    cs_examine['cs_examine_id'] = editOrderData['finance_examine']['cs_examine_id'];
-                    cs_examine['cs_id'] = editOrderData['finance_examine']['cs_id'];
-                    cs_examine['submit_user_id'] = editOrderData['finance_examine']['submit_user_id'];
+
                 }
+                cs_examine['cs_examine_date'] = data['examinationapprovaldatefirst']== ''?'2000-01-01':data['examinationapprovaldatefirst'];
+                cs_examine['cs_examine_comment'] = data['remarkfirst'];
+                cs_examine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
+                cs_examine['cs_examine_result'] = data['departmentdirectoradvice'];
+                cs_examine['cs_examine_state'] = 2;
+                cs_examine['cs_examine_name'] = editOrderData['depart_examine']['cs_examine_name'];
+                cs_examine['examine_user_id'] = editOrderData['depart_examine']['examine_user_id'];
+                cs_examine['cs_examine_id'] = editOrderData['depart_examine']['cs_examine_id'];
+                cs_examine['cs_id'] = editOrderData['depart_examine']['cs_id'];
+                cs_examine['submit_user_id'] = editOrderData['depart_examine']['submit_user_id'];
+                cs_examine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
+
+                cs_examine['cs_examine_date'] =data['examinationapprovaldatesecond']== ''?'2000-01-01':data['examinationapprovaldatesecond'];
+                cs_examine['cs_examine_comment'] = data['remarksecond'];
+                cs_examine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
+                cs_examine['cs_examine_result'] = data['executivegeneralmanageradvice'];
+                cs_examine['cs_examine_state'] = 2;
+                cs_examine['cs_examine_name'] = editOrderData['company_examine']['cs_examine_name'];
+                cs_examine['examine_user_id'] = editOrderData['company_examine']['examine_user_id'];
+                cs_examine['cs_examine_id'] = editOrderData['company_examine']['cs_examine_id'];
+                cs_examine['cs_id'] = editOrderData['company_examine']['cs_id'];
+                cs_examine['submit_user_id'] = editOrderData['company_examine']['submit_user_id'];
+                cs_examine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
+
+                cs_examine['cs_examine_date'] = data['examinationapprovaldatethird'] == ''?'2000-01-01':data['examinationapprovaldatethird'];
+                cs_examine['cs_examine_comment'] = data['remarkthird'];
+                cs_examine['cs_examine_content'] = data['examinationapprovalcontentthird'];
+                cs_examine['cs_examine_result'] = data['financedirectoradvice'];
+                cs_examine['cs_examine_state'] = 2;
+                cs_examine['cs_examine_name'] = editOrderData['finance_examine']['cs_examine_name'];
+                cs_examine['examine_user_id'] = editOrderData['finance_examine']['examine_user_id'];
+                cs_examine['cs_examine_id'] = editOrderData['finance_examine']['cs_examine_id'];
+                cs_examine['cs_id'] = editOrderData['finance_examine']['cs_id'];
+                cs_examine['submit_user_id'] = editOrderData['finance_examine']['submit_user_id'];
+                cs_examine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
+
 
                 var cs_info = new Object();
                 cs_info.custom_info_id = editOrderData['custom_info_id'];
