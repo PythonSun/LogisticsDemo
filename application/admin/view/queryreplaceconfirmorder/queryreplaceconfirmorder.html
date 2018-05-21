@@ -199,26 +199,26 @@
                         {
                             if(data['complete_date'] == '' || data['complete_date'] == '2000-01-01')
 							{
-                                logisticFirstEdit();
+                                logisticFirstEdit(data);
 							}
 							else
 							{
-                                logisticEdit();
+                                logisticEdit(data);
 							}
                         }
                         else if(current_user_type == 2|| current_user_type == 3 || current_user_type == 4)
                         {
-                            examinerEdit();
+                            examinerEdit(data);
                         }
                         else if(current_user_type == 1)
 						{
-						    if(data['can_edit'] == 0)
+						    if(data['can_edit'] == 1)
 							{
-							   // layer.msg('当前不可编辑',)
+							   	layer.msg('当前不可编辑',{icon:2});
                                 return false;
 							}
 
-                            managerEdit();
+                            managerEdit(data);
 						}
 
 				    }else if(obj.event === 'cancel'){
@@ -235,7 +235,7 @@
                     }
 			  	});
 				//物流首次编辑
-				function logisticFirstEdit() {
+				function logisticFirstEdit(data) {
                     layer.open({
                         type: 2,
                         title: '编辑订单',
@@ -262,7 +262,7 @@
                     });
                 }
                 //物流编辑
-                function logisticEdit() {
+                function logisticEdit(data) {
                     layer.open({
                         type: 2,
                         title: '编辑订单',
@@ -289,7 +289,7 @@
                     });
                 }
                 //审批人员
-                function examinerEdit() {
+                function examinerEdit(data) {
                     layer.open({
                         type: 2,
                         title: '新增清单',
@@ -328,7 +328,7 @@
                     });
                 }
                 //经理编辑
-                function managerEdit() {
+                function managerEdit(data) {
                     layer.open({
                         type: 2,
                         title: '新增清单',
@@ -351,7 +351,7 @@
                         },
                         btn2: function (index,layero) {
                             var iframeWin = window[layero.find('iframe')[0]['name']];
-                            var result = iframeWin.managerDeliver();
+                            var result = iframeWin.editDeliver();
                             if(result == false)
                                 return false;
                             table.reload('querytable', {

@@ -531,7 +531,11 @@ class Addgoodsconfirmorder extends Controller
             if($info){
                 $delFileNameMsg = '';
                 if (!empty($delFileName)){
-                    $filePath = ROOT_PATH . 'public' . DS . 'cachefile'.DS.$delFileName;
+                    $path = ROOT_PATH . 'public' . DS . 'cachefile';
+                    if(!is_dir($path)){
+                        mkdir($path);
+                    }
+                    $filePath =$path .DS.$delFileName;
                     if (file_exists($filePath)){
                         if (unlink($filePath)){
                             $delFileNameMsg = '文件删除成功！';
