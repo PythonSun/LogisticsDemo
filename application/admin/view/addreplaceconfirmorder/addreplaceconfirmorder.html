@@ -362,6 +362,20 @@
                    <input type="text" name="payment_info_comment" id="payment_info_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input   dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
 
             </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label Wheat">货期回复</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="delivery_date_reply" id="delivery_date_reply" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                </div>
+                <div class="layui-inline">
+                    <input type="button" id="uncofginfo" class="layui-btn" target="_blank" value="增加非定型产品订货确认单">
+                    <input type="button" id="lookuncofginfo" class="layui-btn" target="_blank" value="查看非定型产品订货确认单">
+                    <input type="button" id="deluncofginfo" class="layui-btn" target="_blank" style="color: red" value="删除非定型产品订货确认单">
+                </div>
+            </div>
+
             <div class="layui-form-item">
                 <div class="layui-btn-container">
                     <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled Wheat" lay-submit="" lay-filter="add_order_item" style="color: black;">
@@ -422,9 +436,11 @@
             var  editOrderData= [];
             //修改保存是谁在操作 1 经理 2 主管 3执行总监 4财务 5物流
             var current_user_type = 3;
-
-
             var del_logistics_id_arr = new Array();
+
+            var uncofginfo = null;      //非常规订单数据 包含unc_ofg_info，清单明细：搜索unc_ofg_items，删除表del_unc_ofg_detail_id_arr
+            var del_unc_ofg_detail_id_arr = new Array();//删除非定型订单明细id
+            var unc_ofg_info_id = 0;
             layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
                 var form = layui.form,
                     laydate = layui.laydate,
@@ -516,7 +532,8 @@
                         editOrderData['pre_process_user_id'] = data['pre_process_user_id'];
                         editOrderData['cur_process_user_id'] = data['cur_process_user_id'];
                         editOrderData['write_date'] = data['write_date'];
-
+                        editOrderData['unc_ofg_info_id'] = data['unc_ofg_info_id'];
+                        unc_ofg_info_id = data['unc_ofg_info_id'];                                                      //
                         //custom_info
                         document.getElementById('company_name').value = data['company_name'];
                         document.getElementById('company_phone').value = data['company_phone'];
@@ -630,6 +647,15 @@
                                 }
                             });
                             editOrderData['finance_examine'] = cs_examine_info[2];
+                        }
+
+                        var unc_ofg_detail = data.unc_ofg_detail;
+                        var unc_ofg_info = data.unc_ofg_info;
+                        if (unc_ofg_info != ""){
+                            uncofginfo = new Object();
+                            uncofginfo.unc_ofg_info = unc_ofg_info;
+                            uncofginfo.unc_ofg_items = unc_ofg_detail;
+                            uncofginfo.del_unc_ofg_detail_id_arr = null;
                         }
                         userPower();
                         layui.form.render('select');
@@ -850,11 +876,37 @@
                     });
                     return false;
                 });
-
+                //删除非定型订单
+                jq('#deluncofginfo').click(function () {
+                    top.layer.confirm('确定删除此非定型产品订货确认单？', {
+                        btn: ['确定','取消'] //按钮
+                    }, function(index){
+                        top.layer.close(index);
+                        uncofginfo = null;
+                        setDelUncofginfoVis();
+                    });
+                });
+                jq('#lookuncofginfo').click(function () {
+                    top.layer.open({
+                        type:2,
+                        title:'查看非定型产品订货单',
+                        area:['800px','90%'],
+                        shade: [0.7, '#393D49'],
+                        skin: 'layui-layer-molv',
+                        maxmin:true,
+                        content:"{:url('admin/uncofginfo/uncofginfo')}?type=0",
+                        btn:['退出'],
+                        yes:function (index,layero) {
+                            top.layer.close(index);
+                        },
+                    });
+                    return false;
+                })
             });
             //用户权限设置 屏蔽一些内容
             function userPower() {
                 setDisable(true);
+                setDelUncofginfoVis();
             }
             //删除屏蔽
             function setDisable(value) {
@@ -1072,6 +1124,7 @@
                 cs_info.cs_info_state = data['cs_info_state'];
                 cs_info.complete_date = complete_date;       //新增 无完成日期
                 cs_info.product_number = rows;
+                cs_info.unc_ofg_info_id = unc_ofg_info_id;
                 console.log("以下确认单信息：");
                 console.log(cs_info);
                 var custom_info = new Object();
@@ -1204,10 +1257,17 @@
 
                 var logistic_info = getlogisticsInfo();
 
-
                 jq.ajax({
                     url: "{:url('admin/addreplaceconfirmorder/addconfirmorder')}",//php文件路径
-                    data: {cs_info:cs_info,custom_info:custom_info,delivery_info:delivery_info,return_info:return_info,cs_belong:cs_belong,order_goods_manager:order_goods_manager,cs_examine:cs_examine,logistic_info:logistic_info,payment_info:payment_info} ,
+                    data: {cs_info:cs_info,
+                        custom_info:custom_info,
+                        delivery_info:delivery_info,
+                        return_info:return_info,
+                        cs_belong:cs_belong,
+                        order_goods_manager:order_goods_manager,
+                        cs_examine:cs_examine,
+                        logistic_info:logistic_info,
+                        payment_info:payment_info} ,
                     type: 'POST',
                     dataType: 'json',
                     success: function(e) {
@@ -1439,6 +1499,7 @@
                 cs_info.cs_info_state = 1;
                 cs_info.complete_date = complete_date;       //新增 无完成日期
                 cs_info.product_number = rows;
+                cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
                 console.log("以下确认单信息：");
                 console.log(cs_info);
                 var custom_info = new Object();
@@ -1637,6 +1698,7 @@
                 cs_info.cs_info_state = 1;
                 cs_info.complete_date = complete_date;       //新增 无完成日期
                 cs_info.product_number = rows;
+                cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
                 console.log("以下确认单信息：");
                 console.log(cs_info);
                 var custom_info = new Object();
@@ -1950,6 +2012,7 @@
                 if(cs_info.complete_date == '2000-01-01')             //点击确认接收，如果没有选时间，自动补上当天时间
                     cs_info.complete_date = new Date().toLocaleDateString();
                 cs_info.product_number = rows;
+                cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
                 console.log("以下确认单信息：");
                 console.log(cs_info);
 
@@ -2009,10 +2072,49 @@
                 console.log("以下清单信息：");
                 console.log(order_goods_manager);
 
+                var unc_ofg_info = null;
+                var unc_ofg_detail = null;
+                if (uncofginfo != null){
+                    del_unc_ofg_detail_id_arr = uncofginfo.del_unc_ofg_detail_id_arr;
+                    unc_ofg_info = uncofginfo.unc_ofg_info;
+                    var unc_ofg_items = uncofginfo.unc_ofg_items;
+                    var length = unc_ofg_items.length;
+                    for (var i = 0; i < length; i++){
+                        if (unc_ofg_detail == null){
+                            unc_ofg_detail = [];
+                        }
+                        var itemInfo = {};
+                        itemInfo.uod_id = unc_ofg_items[i].uod_id;
+                        itemInfo.unc_ofg_info_id = unc_ofg_info.uoi_id;
+                        itemInfo.product_info_id = unc_ofg_items[i].product_info_id;
+                        itemInfo.uod_count = unc_ofg_items[i].uod_count;
+                        itemInfo.uod_unit = unc_ofg_items[i].uod_unit;
+                        itemInfo.uod_requirement = unc_ofg_items[i].uod_requirement;
+                        itemInfo.uod_delivery_date = unc_ofg_items[i].uod_delivery_date;
+                        itemInfo.uod_comment = unc_ofg_items[i].uod_comment;
+                        itemInfo.unc_product_id = unc_ofg_items[i].unc_product_id;
+                        unc_ofg_detail[i] = itemInfo;
+                    }
+                }
+                console.log('下列非常规订单信息：');
+                console.log(unc_ofg_info);
+                console.log('下列非常规清单信息：');
+                console.log(unc_ofg_detail);
+                console.log(del_unc_ofg_detail_id_arr);
+
                 var logistic_info = getlogisticsInfo();
                 jq.ajax({
                     url: "{:url('admin/addreplaceconfirmorder/logisticeditandsaveorder')}",
-                    data: {cs_info:cs_info,cs_belong:cs_belong,order_goods_manager:order_goods_manager,payment_info:payment_info,logistic_info:logistic_info,logistic_info_delete_row:del_logistics_id_arr} ,
+                    data: {cs_info:cs_info,
+                        cs_belong:cs_belong,
+                        order_goods_manager:order_goods_manager,
+                        payment_info:payment_info,
+                        logistic_info:logistic_info,
+                        logistic_info_delete_row:del_logistics_id_arr,
+                        unc_ofg_info:unc_ofg_info,
+                        unc_ofg_detail:unc_ofg_detail,
+                        del_unc_ofg_detail_id_arr:del_unc_ofg_detail_id_arr,
+                    } ,
                     type: 'POST',
                     dataType: 'json',
                     async:false,
@@ -2154,7 +2256,7 @@
                 cs_info.cs_info_state = 5;
                 cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
                 cs_info.can_edit = 1;                              //0 不可编辑
-
+                cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
                 jq.post("{:url('admin/Addreplaceconfirmorder/returnorder')}",{'cs_info':cs_info,'cs_examine':cs_examine},function (result) {
                    console.log(result);
                 });
@@ -2346,6 +2448,32 @@
                     }
                 }
 
+            }
+
+            function setDelUncofginfoVis() {
+                if (type == 0){
+                    if(uncofginfo == "" || uncofginfo == null || uncofginfo === undefined){
+                        $('#deluncofginfo').addClass('hide');
+                        $('#lookuncofginfo').attr("disabled","disabled");
+                        $('#lookuncofginfo').addClass('btnPicLightBg');
+                    }else {
+                        $('#deluncofginfo').addClass('hide');
+
+                        $('#lookuncofginfo').removeAttr("disabled");
+                        $('#lookuncofginfo').removeClass('btnPicLightBg');
+                    }
+                }else {
+                    if(uncofginfo == "" || uncofginfo == null || uncofginfo === undefined){
+                        $('#deluncofginfo').addClass('hide');
+                        $('#lookuncofginfo').attr("disabled","disabled");
+                        $('#lookuncofginfo').addClass('btnPicLightBg');
+                    }else {
+                        $('#deluncofginfo').removeClass('hide');
+
+                        $('#lookuncofginfo').removeAttr("disabled");
+                        $('#lookuncofginfo').removeClass('btnPicLightBg');
+                    }
+                }
             }
         </script>
     </body>

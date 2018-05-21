@@ -455,6 +455,7 @@ class Addreplaceconfirmorder extends Controller
     public function logisticeditandsaveorder()
     {
         $date_now = date("Y-m-d H:i:s");
+        $del_unc_ofg_detail_id_arr = null;
         //cs_belong
         $cs_belong = $_POST['cs_belong'];
         $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
@@ -519,6 +520,60 @@ class Addreplaceconfirmorder extends Controller
             }
         }
 
+        $uoi_id = "";
+        if (array_key_exists('unc_ofg_info',$_POST)){
+            /*******是否新增******/
+            $unc_ofg_info = $_POST['unc_ofg_info'];
+            $uoi_id = $unc_ofg_info['uoi_id'];
+            if ($uoi_id == ""){
+                $uoi_id = \app\index\model\Admin::getmaxtableidretid('unc_ofg_info', 'uoi_id') + 1;
+                $unc_ofg_info['uoi_date'] = $date_now;
+                $unc_ofg_info['uoi_id'] = $uoi_id;
+            }else{
+                //$uoi_id = "";
+            }
+            $retfee_info = \app\index\model\Admin::updateunc_ofg_info($unc_ofg_info);
+        }else{
+            $uoi_id = "0";
+            $unc_ofg_info_id = $cs_info['unc_ofg_info_id'];
+            if (!empty($unc_ofg_info_id)){
+                \app\index\model\Admin::deleterowtableid('unc_ofg_info','uoi_id',$unc_ofg_info_id);
+                $detail = \app\index\model\Admin::getclassinfobyproperty('dsp_logistic.unc_ofg_detail','unc_ofg_info_id',$unc_ofg_info_id);
+                $datail_length = count($detail);
+                for ($i = 0; $i < $datail_length; $i++){
+                    \app\index\model\Admin::deleterowtableid('unc_ofg_detail','uod_id',$detail[$i]['uod_id']);
+                }
+            }
+        }
+
+        if(array_key_exists('unc_ofg_info',$_POST) && array_key_exists('unc_ofg_detail',$_POST)){
+            $unc_ofg_info = $_POST['unc_ofg_info'];
+            $unc_ofg_detail = $_POST['unc_ofg_detail'];
+            if (!empty($unc_ofg_info) && !empty($unc_ofg_detail)){
+                $unc_ofg_detail_length = count($unc_ofg_detail);
+                for($i = 0; $i < $unc_ofg_detail_length; $i++){
+                    $uod_id = $unc_ofg_detail[$i]['uod_id'];
+                    if ($uod_id == ""){
+                        $uod_id = \app\index\model\Admin::getmaxtableidretid('unc_ofg_detail', 'uod_id') + 1;
+                        $unc_ofg_detail[$i]['uod_id'] = $uod_id;
+                        $unc_ofg_detail[$i]['unc_ofg_info_id'] = $unc_ofg_info['uoi_id'];
+                    }
+                    $retunc_ofg_detail = \app\index\model\Admin::updateunc_ofg_detail($unc_ofg_detail[$i]);
+                }
+            }
+        }
+        $cs_info['unc_ofg_info_id'] = $uoi_id;
+        $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
+
+        if(array_key_exists('del_unc_ofg_detail_id_arr',$_POST)){
+            $del_unc_ofg_detail_id_arr = $_POST['del_unc_ofg_detail_id_arr'];
+        }
+        if (!empty($del_unc_ofg_detail_id_arr)){
+            $del_length = count($del_unc_ofg_detail_id_arr);
+            for ($i = 0; $i < $del_length; $i++){
+                \app\index\model\Admin::deleterowtableid('unc_ofg_detail','uod_id',$del_unc_ofg_detail_id_arr[$i]);
+            }
+        }
     }
 
     /*将订单状态改为取消*/
