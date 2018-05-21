@@ -476,13 +476,18 @@
                                 },
                         type: 'POST',
                         success: function(e) {
-                            if(e){
-                                console.log('订单添加成功！');
-                                console.log(e);
-                                location.href = "{:url('admin/addgoodsconfirmorder/addgoodsconfirmorder')}";
-                            }else if(!e){
-                                console.log('订单提交失败！');
-                                console.log(e);
+                            var layer = layui.layer;
+                            if (e != null){
+                                if(e.code == 1){
+                                    top.layer.alert(e.msg);
+                                    location.href = "{:url('admin/addgoodsconfirmorder/addgoodsconfirmorder')}";
+                                }else if(e.code == 0){
+                                    top.layer.alert(e.msg);
+                                }else if(e.code == -1){
+                                    top.layer.alert('异常：' + e.msg);
+                                }
+                            }else {
+                                top.layer.alert('保存失败！');
                             }
                         }
                     })
@@ -1225,14 +1230,20 @@
                     },
                     type: 'POST',
                     async: false,
-                    success: function(res) {
-
-                        if(res.code){
-                            top.layer.msg(res.msg,{icon:1});
-                            retBo = true;
-                            //location.href = "{:url('admin/addgoodsconfirmorder/addgoodsconfirmorder')}";
+                    success: function(e) {
+                        var layer = layui.layer;
+                        if (e != null){
+                            if(e.code == 1){
+                                console.log('------------------------------');
+                                retBo = true;
+                                top.layer.alert(e.msg);
+                            }else if(e.code == 0){
+                                layer.alert(e.msg)
+                            }else if(e.code == -1){
+                                top.layer.alert('异常：' + e.msg);
+                            }
                         }else {
-                            top.layer.msg(res.msg,{icon:1});
+                            top.layer.alert('保存失败！');
                         }
                     }
                 })
