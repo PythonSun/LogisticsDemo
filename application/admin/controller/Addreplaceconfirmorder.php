@@ -520,10 +520,12 @@ class Addreplaceconfirmorder extends Controller
         }
 
         $uoi_id = "";
-        $unc_ofg_info = null;
-        if (array_key_exists('unc_ofg_info',$_POST)){
+        $unc_ofg_info = $_POST['unc_ofg_info'];
+        $unc_ofg_detail = $_POST['unc_ofg_detail'];
+        $arr = array();
+        if (!empty($unc_ofg_info)){
+            array_push($arr,526);
             /*******是否新增******/
-            $unc_ofg_info = $_POST['unc_ofg_info'];
             $uoi_id = $unc_ofg_info['uoi_id'];
             if ($uoi_id == ""){
                 $uoi_id = \app\index\model\Admin::getmaxtableidretid('unc_ofg_info', 'uoi_id') + 1;
@@ -533,32 +535,32 @@ class Addreplaceconfirmorder extends Controller
                 //$uoi_id = "";
             }
             $retfee_info = \app\index\model\Admin::updateunc_ofg_info($unc_ofg_info);
+            array_push($arr,538);
         }else{
+            array_push($arr,540);
             $uoi_id = "0";
             $unc_ofg_info_id = $cs_info['unc_ofg_info_id'];
             if (!empty($unc_ofg_info_id)){
+                array_push($arr,543);
                 \app\index\model\Admin::deleterowtableid('unc_ofg_info','uoi_id',$unc_ofg_info_id);
                 $detail = \app\index\model\Admin::getclassinfobyproperty('dsp_logistic.unc_ofg_detail','unc_ofg_info_id',$unc_ofg_info_id);
                 $datail_length = count($detail);
                 for ($i = 0; $i < $datail_length; $i++){
+                    array_push($arr,548);
                     \app\index\model\Admin::deleterowtableid('unc_ofg_detail','uod_id',$detail[$i]['uod_id']);
                 }
             }
         }
-
-        if(array_key_exists('unc_ofg_detail',$_POST)){
-            $unc_ofg_detail = $_POST['unc_ofg_detail'];
-            if (!empty($unc_ofg_info) && !empty($unc_ofg_detail)){
-                $unc_ofg_detail_length = count($unc_ofg_detail);
-                for($i = 0; $i < $unc_ofg_detail_length; $i++){
-                    $uod_id = $unc_ofg_detail[$i]['uod_id'];
-                    if ($uod_id == ""){
-                        $uod_id = \app\index\model\Admin::getmaxtableidretid('unc_ofg_detail', 'uod_id') + 1;
-                        $unc_ofg_detail[$i]['uod_id'] = $uod_id;
-                        $unc_ofg_detail[$i]['unc_ofg_info_id'] = $unc_ofg_info['uoi_id'];
-                    }
-                    $retunc_ofg_detail = \app\index\model\Admin::updateunc_ofg_detail($unc_ofg_detail[$i]);
+        if (!empty($unc_ofg_info) && !empty($unc_ofg_detail)) {
+            $unc_ofg_detail_length = count($unc_ofg_detail);
+            for ($i = 0; $i < $unc_ofg_detail_length; $i++) {
+                $uod_id = $unc_ofg_detail[$i]['uod_id'];
+                if ($uod_id == "") {
+                    $uod_id = \app\index\model\Admin::getmaxtableidretid('unc_ofg_detail', 'uod_id') + 1;
+                    $unc_ofg_detail[$i]['uod_id'] = $uod_id;
+                    $unc_ofg_detail[$i]['unc_ofg_info_id'] = $unc_ofg_info['uoi_id'];
                 }
+                $retunc_ofg_detail = \app\index\model\Admin::updateunc_ofg_detail($unc_ofg_detail[$i]);
             }
         }
         $cs_info['unc_ofg_info_id'] = $uoi_id;
