@@ -99,6 +99,7 @@
                                 content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                                 btn: ['退回', '提交','取消'],
                                 btnAlign: 'c',
+                                async:false,
                                 yes: function (index,layero) {
                                     var iframeWin = window[layero.find('iframe')[0]['name']];
                                     var result = iframeWin.returnOrder();
@@ -136,13 +137,17 @@
             function logisticFirstEdit(data) {
                 layer.open({
                     type: 2,
-                    title: '审批更换确认单',
+                    title: [
+                        '审批更换确认单',
+                        'background-color:#8DCE16; color:#fff;'
+                    ],
                     area: ['100%', '100%'],
                     shade: 0.9,
                     maxmin: false,
                     content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                     btn: [ '确认接收','取消'],
                     btnAlign: 'c',
+                    async:false,
                     yes: function (index,layero) {
                         var iframeWin = window[layero.find('iframe')[0]['name']];
                         var result = iframeWin.logisticSave();
@@ -164,13 +169,17 @@
             function logisticEdit(data) {
                 layer.open({
                     type: 2,
-                    title: '审批更换确认单',
+                    title: [
+                        '审批更换确认单',
+                        'background-color:#8DCE16; color:#fff;'
+                    ],
                     area: ['100%', '100%'],
                     shade: 0.9,
                     maxmin: false,
                     content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                     btn: [ '保存','取消'],
                     btnAlign: 'c',
+					async:false,
                     yes: function (index,layero) {
                         var iframeWin = window[layero.find('iframe')[0]['name']];
                         var result = iframeWin.logisticSave();
