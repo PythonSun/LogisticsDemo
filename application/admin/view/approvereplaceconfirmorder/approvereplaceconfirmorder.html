@@ -80,7 +80,7 @@
 				        if(current_user_type == 5)
 						{
 						    console.log(data);
-                            if(data['complete_date'] == '' || data['complete_date'] == '2000-01-01')
+                            if(data['complete_date'] == '' || data['complete_date'] == '2000-01-01'||data['complete_date'] == '2000-01-01 00:00:00')
                             {
                                 logisticFirstEdit(data);
                             }
@@ -105,7 +105,7 @@
                                 btnAlign: 'c',
                                 async:false,
                                 yes: function (index,layero) {
-                                    var iframeWin = window[layero.find('iframe')[0]['name']];
+                                    var iframeWin = top.window[layero.find('iframe')[0]['name']];
                                     var result = iframeWin.returnOrder();
                                     if(result == false)
                                         return false;
@@ -117,7 +117,7 @@
                                     top.layer.closeAll();
                                 },
                                 btn2: function (index,layero) {
-                                    var iframeWin = window[layero.find('iframe')[0]['name']];
+                                    var iframeWin = top.window[layero.find('iframe')[0]['name']];
                                     var result = iframeWin.editDeliver();
                                     if(result == false)
                                         return false;
@@ -153,7 +153,7 @@
                     btnAlign: 'c',
                     async:false,
                     yes: function (index,layero) {
-                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        var iframeWin = top.window[layero.find('iframe')[0]['name']];
                         var result = iframeWin.logisticSave();
                         if(result == false)
                             return false;
@@ -185,7 +185,7 @@
                     btnAlign: 'c',
 					async:false,
                     yes: function (index,layero) {
-                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        var iframeWin = top.window[layero.find('iframe')[0]['name']];
                         var result = iframeWin.logisticSave();
                         if(result == false)
                             return false;
