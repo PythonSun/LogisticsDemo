@@ -25,7 +25,7 @@
                         <input type="text" disabled name="cs_belong_create_time" id="cs_belong_create_time" autocomplete="on" class="layui-input light_gray" value="{$date}"> </div>
                 </div>
                 <div class="layui-inline ">
-                    <label class="layui-form-label light_gray">接收时间</label>
+                    <label class="layui-form-label dark_blue">接收时间</label>
                     <div class="layui-input-inline ">
                         <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input light_gray dark_blue_disabled"> </div>
                 </div>
@@ -56,18 +56,12 @@
             </div>
             <h3>物流信息</h3>
             <div class="layui-form-item">
-                <div class="layui-btn-container">
-                    <input type="button" value="添加物流" id="btn_add_logistics_item" class="layui-btn layui-btn-normal dark_blue_disabled" lay-submit="" lay-filter="btn_add_logistics_item">
-                    <input type="button" value="删除" id="btn_del_logistics_item" class="layui-btn layui-btn-normal dark_blue_disabled" lay-submit="" lay-filter="btn_add_logistics_item">
-                </div>
-            </div>
-            <div class="layui-form-item">
                 <table class="layui-table" id="tablelogistics">
                     <colgroup>
                     </colgroup>
                     <thead>
-                    <tr class="dark_blue">
-                        <th >选择</th>
+                    <tr class="light_gray">
+                        <th>序号</th>
                         <th>发货日期</th>
                         <th>货场</th>
                         <th>物流单号</th>
@@ -214,7 +208,6 @@
                     <div class="layui-input-inline Wheat">
                         <select name="transfer_fee_mode" id="transfer_fee_mode" class="Wheat_disabled " >
                             <option value="" selected="">选择</option>
-
                             <option value="1" >到付</option>
                             <option value="2">现金</option>
                             <option value="3">代付</option>
@@ -387,19 +380,19 @@
             <h3>订购清单</h3>
             <table class="layui-table" id="tableorder">
                 <thead>
-                    <tr class="Wheat">
-                        <th>序号</th>
-                        <th>产品分类</th>
-                        <th>品牌</th>
-                        <th>产品名称</th>
-                        <th>规格</th>
-                        <th>型号</th>
-                        <th>单位</th>
-                        <th>数量</th>
-                        <th>条码</th>
-                        <th>归还日期</th>
-                        <th>归跟换代用原因</th>
-                        <th>生产地</th>
+                    <tr >
+                        <th class="Wheat">序号</th>
+                        <th class="Wheat">产品分类</th>
+                        <th class="Wheat">品牌</th>
+                        <th class="Wheat">产品名称</th>
+                        <th class="Wheat">规格</th>
+                        <th class="Wheat">型号</th>
+                        <th class="Wheat">单位</th>
+                        <th class="Wheat">数量</th>
+                        <th class="Wheat">条码</th>
+                        <th class="Wheat">归还日期</th>
+                        <th class="Wheat">归跟换代用原因</th>
+                        <th class="Wheat">生产地</th>
                         <th class="dark_blue">产品状态</th>
                         <th class="dark_blue">非常规产品</th>
                         <th class="dark_blue">备注</th>
@@ -433,7 +426,7 @@
         <script type="text/javascript">
             var isloading = true;
             var delrowid = new Array();
-            var complete_date = "2000-1-1";
+            var complete_date = "2000-01-01 00:00:00";
              var cs_info_type = 1; //订单类型
             //保存修改时根据Cs_id获取的数据
             var  editOrderData= [];
@@ -457,6 +450,7 @@
                 });
                 laydate.render({
                     elem: '#date2',
+                    type:'datetime',
                     position: 'fixed',
                     theme: 'molv'
                 });
@@ -526,7 +520,7 @@
                         editOrderData['cs_belong_create_time'] = data['cs_belong_create_time'];
                         //cs_info
                         jq('#cs_info_state').val(data['cs_info_state']);
-                        if(data['complete_date'] != '2000-01-01')
+                        if(data['complete_date'] != '2000-01-01 00:00:00' && data['complete_date'] != '2000-01-01' )
                             jq('#date2').val(data['complete_date']); //不确定下单时间是指那个
                         editOrderData['cs_id'] = data['cs_id'];
                         editOrderData['complete_date'] = data['complete_date'];
@@ -708,15 +702,7 @@
                         document.getElementById('build_user_phone').value = phone;
                     }
                 });
-                //监听状态选择
-                form.on('select(cs_info_state)',function (data) {
-                    if(data.value == '2')
-                    {
-                        var curdate = new Date();
-                        complete_date = curdate.toLocaleDateString();
-                    }
-
-                });
+                
                 jq('#btn_add_order_item').click(function () {
                     layer.open({
                         type:2,
@@ -856,29 +842,6 @@
                     jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
                 });
 
-                //添加物流信息
-                jq('#btn_add_logistics_item').click(function () {
-                    addLogisticsItem(null);
-                    return false;
-                });
-                //删除物流信息
-                jq('#btn_del_logistics_item').click(function(){
-                    console.log("删除物流信息  ---------------------");
-                    jq("input[name=onechoose]").each(function () {
-                        console.log("删除物流信息  ************************");
-                        var ischecked = jq(this).prop("checked");
-
-                        if(ischecked){
-                            var logistics_id = jq(jq(this).parent().parent()).attr("logistics_id");
-                            jq(jq(this).parent().parent()).remove();
-                            if (logistics_id === undefined || logistics_id == ""){
-                                return;
-                            }
-                            del_logistics_id_arr.push(logistics_id);
-                        }
-                    });
-                    return false;
-                });
                 //非定型订单弹窗
                 jq('#uncofginfo').click(function () {
                     top.layer.open({
@@ -1293,7 +1256,6 @@
                 console.log("以下清单信息：");
                 console.log(order_goods_manager);
 
-                var logistic_info = getlogisticsInfo();
 
                 jq.ajax({
                     url: "{:url('admin/addreplaceconfirmorder/addconfirmorder')}",//php文件路径
@@ -1304,7 +1266,6 @@
                         cs_belong:cs_belong,
                         order_goods_manager:order_goods_manager,
                         cs_examine:cs_examine,
-                        logistic_info:logistic_info,
                         payment_info:payment_info} ,
                     type: 'POST',
                     dataType: 'json',
@@ -1448,55 +1409,32 @@
             }
             //添加一条物流信息 data == null 表示新增一条空数据
             function addLogisticsItem(data,tableindex) {
+                if (data == null){
+                    return ;
+                }
+
                 var jq = layui.jquery;
                 if (!tableindex){
                     tableindex = jq('#tablelogistics')[0].rows.length;
                 }
                 var laydate = layui.laydate;
                 var form = layui.form;
-                var logistics_id = "";
-                var cs_id = "";
-                var goods_yard_name = "";
-                var transfer_order_num = "";
-                var delivery_date = "";
-                var count = "";
-                var user_id = "";//data['user_id'];                         //登陆ID
-                var time_stamp = "";                           //无
-                if (data != null){
-                    logistics_id = data.logistics_id;
-                    cs_id = data.cs_id;
-                    goods_yard_name = data.goods_yard_name;
-                    transfer_order_num = data.transfer_order_num;
-                    delivery_date = data.delivery_date;
-                    count = data.count;
-                    user_id = data.user_id;//data['user_id'];                         //登陆ID
-                    time_stamp = data.time_stamp = '2000-01-01';                           //无
-                }
 
                 var new_tr = jq('#tablelogistics')[0].insertRow(tableindex);//指定位置插入行
-                jq(new_tr).attr("logistics_id",logistics_id);
-                jq(new_tr).attr("cs_id",cs_id);
-                jq(new_tr).attr("goods_yard_name",goods_yard_name);
-                jq(new_tr).attr("transfer_order_num",transfer_order_num);
-                jq(new_tr).attr("delivery_date",delivery_date);
-                jq(new_tr).attr("count",count);
-                jq(new_tr).attr("user_id",user_id);
-                jq(new_tr).attr("time_stamp",time_stamp);
 
                 var col_0 = new_tr.insertCell(0);//添加列
-                col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' autocomplete='on' class='layui-input dark_blue  dark_blue_disabled'></td>";
+                col_0.innerHTML = "<td><input name ='text' type='text' autocomplete='on' class='layui-input  light_gray ' readonly value='"+ tableindex +"'</td>";
                 var col_1 = new_tr.insertCell(1);//添加列
-                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input dark_blue time-item dark_blue_disabled' value='"+ delivery_date +"'></td>";
+                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input  time-item light_gray ' disabled value='"+ data.delivery_date +"'></td>";
                 jq.each(jq(".time-item"),function(){
                     laydate.render({ elem: this });
                 });
                 var col_2 = new_tr.insertCell(2);//添加列
-                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input dark_blue  dark_blue_disabled' value='"+ goods_yard_name +"'></td>";
+                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input  light_gray ' readonly value='"+ data.goods_yard_name +"'></td>";
                 var col_3 = new_tr.insertCell(3);//添加列
-                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input dark_blue dark_blue_disabled' value='"+ transfer_order_num +"'></td>";
+                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input light_gray ' readonly value='"+ data.transfer_order_num +"'></td>";
                 var col_4 = new_tr.insertCell(4);//添加列
-                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input dark_blue dark_blue_disabled' value='"+ count +"'></td>";
-                form.render('checkbox');
+                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input light_gray ' readonly value='"+ data.count +"'></td>";
             }
             //修改时 经理的提交
             function managerDeliver () {
@@ -1678,10 +1616,16 @@
                 }
                 console.log("以下清单信息：");
                 console.log(order_goods_manager);
-                var logistic_info = getlogisticsInfo();
                 jq.ajax({
                     url: "{:url('admin/addreplaceconfirmorder/managereditanddeliverorder')}",
-                    data: {cs_info:cs_info,custom_info:custom_info,delivery_info:delivery_info,return_info:return_info,cs_belong:cs_belong,order_goods_manager:order_goods_manager,cs_examine:cs_examine,logistic_info:logistic_info,order_goods_delete_row:delrowid,logistic_info_delete_row:del_logistics_id_arr} ,
+                    data: {cs_info:cs_info,
+                        custom_info:custom_info,
+                        delivery_info:delivery_info,
+                        return_info:return_info,
+                        cs_belong:cs_belong,
+                        order_goods_manager:order_goods_manager,
+                        cs_examine:cs_examine,
+                        order_goods_delete_row:delrowid,} ,
                     type: 'POST',
                     dataType: 'json',
                     success: function(e) {
@@ -1886,14 +1830,18 @@
                 }
                 console.log("以下清单信息：");
                 console.log(order_goods_manager);
-                var logistic_info = getlogisticsInfo();
-
-                console.log("以下删除清单信息：");
-                console.log(delrowid);
 
                 jq.ajax({
                     url: "{:url('admin/addreplaceconfirmorder/managereditandsaveorder')}",
-                    data: {cs_info:cs_info,custom_info:custom_info,delivery_info:delivery_info,return_info:return_info,cs_belong:cs_belong,order_goods_manager:order_goods_manager,cs_examine:cs_examine,logistic_info:logistic_info,order_goods_delete_row:delrowid,logistic_info_delete_row:del_logistics_id_arr} ,
+                    data: {cs_info:cs_info,
+                        custom_info:custom_info,
+                        delivery_info:delivery_info,
+                        return_info:return_info,
+                        cs_belong:cs_belong,
+                        order_goods_manager:order_goods_manager,
+                        cs_examine:cs_examine,
+                        order_goods_delete_row:delrowid,
+                    } ,
                     type: 'POST',
                     dataType: 'json',
                     success: function(e) {
@@ -2025,7 +1973,7 @@
                 return true;
             }
             //修改时 物流提交
-            function logisticSave() {
+            function logisticSave()  {
                 if (isloading){
                     return;
                 }
@@ -2056,9 +2004,8 @@
                 cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
                 cs_info.can_edit = 0;                              //0 不可编辑
                 cs_info.cs_info_state = data['cs_info_state'];
-                cs_info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate'];       //新增 无完成日期
-                if(cs_info.complete_date == '2000-01-01')             //点击确认接收，如果没有选时间，自动补上当天时间
-                    cs_info.complete_date = new Date().toLocaleDateString();
+                cs_info.complete_date = data['orderdate'] == ''?'2000-01-01 00:00:00':data['orderdate'];       //新增 无完成日期
+
                 cs_info.product_number = rows;
                 cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
                 console.log("以下确认单信息：");
@@ -2150,15 +2097,12 @@
                 console.log(unc_ofg_detail);
                 console.log(del_unc_ofg_detail_id_arr);
 
-                var logistic_info = getlogisticsInfo();
                 jq.ajax({
                     url: "{:url('admin/addreplaceconfirmorder/logisticeditandsaveorder')}",
                     data: {cs_info:cs_info,
                         cs_belong:cs_belong,
                         order_goods_manager:order_goods_manager,
                         payment_info:payment_info,
-                        logistic_info:logistic_info,
-                        logistic_info_delete_row:del_logistics_id_arr,
                         unc_ofg_info:unc_ofg_info,
                         unc_ofg_detail:unc_ofg_detail,
                         del_unc_ofg_detail_id_arr:del_unc_ofg_detail_id_arr,
@@ -2503,6 +2447,11 @@
                     if(data['paid_bank'] == '')
                     {
                         layer.msg('款项情况-运费不能为空！',{icon:2});
+                        return false;
+                    }
+                    if(data['orderdate'] == '')
+                    {
+                        layer.msg('接受不能为空！',{icon:2});
                         return false;
                     }
                 }

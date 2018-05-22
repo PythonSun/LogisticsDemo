@@ -171,21 +171,6 @@ class Addreplaceconfirmorder extends Controller
             return false;
         }
 
-        if(array_key_exists('logistic_info',$_POST))
-        {
-            $logistic_info = $_POST['logistic_info'];
-            foreach ( $logistic_info as $item  )
-            {
-                $id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id');
-                $item['logistics_id'] = $id+1;
-                $item['time_stamp'] = $date_now;
-                $item['cs_id'] = $cs_info['cs_id'];
-                $item['user_id'] = $cs_belong['build_user_id'];
-                \app\index\model\Admin::updatelogisticinfo($item);
-            }
-        }
-
-
         return $cs_info_id;
     }
 
@@ -396,22 +381,6 @@ class Addreplaceconfirmorder extends Controller
         $cs_info = $_POST['cs_info'];
         $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
 
-        if(array_key_exists('logistic_info',$_POST))
-        {
-            $logistic_info = $_POST['logistic_info'];
-            foreach ( $logistic_info as $item  )
-            {
-                if( $item['logistics_id'] == "")
-                {
-                    $id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id');
-                    $item['logistics_id'] = $id+1;
-                    $item['time_stamp'] = $date_now;
-                    $item['cs_id'] = $cs_info['cs_id'];
-                    $item['user_id'] = $cs_belong['build_user_id'];
-                }
-                \app\index\model\Admin::updatelogisticinfo($item);
-            }
-        }
         if(array_key_exists('order_goods_delete_row',$_POST))
         {
             $order_goods_delete_row = $_POST['order_goods_delete_row'];
@@ -421,14 +390,6 @@ class Addreplaceconfirmorder extends Controller
             }
         }
 
-        if(array_key_exists('logistic_info_delete_row',$_POST))
-        {
-            $logistic_info_delete_row = $_POST['logistic_info_delete_row'];
-            foreach ($logistic_info_delete_row as $item )
-            {
-                \app\index\model\Admin::deleterowtableid('logistic_info', 'logistic_info_id', $item);
-            }
-        }
     }
 
     /**经理修改订单 内容保存**/
@@ -473,31 +434,6 @@ class Addreplaceconfirmorder extends Controller
         $cs_info = $_POST['cs_info'];
         $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
 
-        if(array_key_exists('logistic_info',$_POST))
-        {
-            $logistic_info = $_POST['logistic_info'];
-            foreach ( $logistic_info as $item  )
-            {
-                if( $item['logistics_id'] == "")
-                {
-                    $id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id');
-                    $item['logistics_id'] = $id+1;
-                    $item['time_stamp'] = $date_now;
-                    $item['cs_id'] = $cs_info['cs_id'];
-                    $item['user_id'] = $cs_belong['build_user_id'];
-                }
-                \app\index\model\Admin::updatelogisticinfo($item);
-            }
-        }
-
-        if(array_key_exists('logistic_info_delete_row',$_POST))
-        {
-            $logistic_info_delete_row = $_POST['logistic_info_delete_row'];
-            foreach ($logistic_info_delete_row as $item )
-            {
-                \app\index\model\Admin::deleterowtableid('logistic_info', 'logistic_info_id', $item);
-            }
-        }
 
         $uoi_id = "";
         $unc_ofg_info = $_POST['unc_ofg_info'];
