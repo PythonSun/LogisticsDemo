@@ -27,6 +27,11 @@ class Addgoodsconfirmorder extends Controller
         $companytable = \app\index\model\Admin::querydepartmentinfo(0);
         if (!empty($companytable))
             $this->assign("companylist", $companytable);
+
+        /*获取营销中心的组织架构*/
+        $departlist = \app\index\model\Admin::querydepartmentinfo(1);
+        if (!empty($departlist))
+            $this->assign("departlist", $departlist);
         $order_info = '-1';
         $this->assign("order_info", $order_info);
         $this->assign('type',1);
@@ -67,6 +72,11 @@ class Addgoodsconfirmorder extends Controller
         $companytable = \app\index\model\Admin::querydepartmentinfo(0);
         if (!empty($companytable))
             $this->assign("companylist", $companytable);
+
+        /*获取营销中心的组织架构*/
+        $departlist = \app\index\model\Admin::querydepartmentinfo(1);
+        if (!empty($departlist))
+            $this->assign("departlist", $departlist);
         $this->assign('type',$type);
         return $this->fetch('addgoodsconfirmorder');
     }
@@ -95,7 +105,7 @@ class Addgoodsconfirmorder extends Controller
             $user_session = session("user_session");
             $login_user_id = $user_session['user_id'];
             $date_now = date("Y-m-d H:i:s");
-            $logistics_info = $_POST['logistics_info'];
+            //$logistics_info = $_POST['logistics_info'];
             $order_goods_cs_info = $_POST['order_goods_cs_info'];
             $ofg_info = $_POST['ofg_info'];
             $fee_info = $_POST['fee_info'];
@@ -172,19 +182,19 @@ class Addgoodsconfirmorder extends Controller
                 }
             }
 
-            $logistics_info_count = count($logistics_info);
-            $logistics_id_arr =  array();
-            for ($i = 0; $i < $logistics_info_count; $i++){
-                $logistics_id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id') + 1;
-                $logistics_id_arr[$i] = $logistics_id;
-                $logistics_info[$i]['logistics_id'] = $logistics_id;
-                $logistics_info[$i]['user_id'] = $login_user_id;
-                $logistics_info[$i]['cs_id'] = $cs_info_id;
-                $ret_logistics =\app\index\model\Admin::updatelogisticsinfo($logistics_info[$i]);       //c错误
-                if (empty($ret_logistics)) {
-                    return self::retmsg(0,'保存失败，错误代码：1185');
-                }
-            }
+            // $logistics_info_count = count($logistics_info);
+            // $logistics_id_arr =  array();
+            // for ($i = 0; $i < $logistics_info_count; $i++){
+            //     $logistics_id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id') + 1;
+            //     $logistics_id_arr[$i] = $logistics_id;
+            //     $logistics_info[$i]['logistics_id'] = $logistics_id;
+            //     $logistics_info[$i]['user_id'] = $login_user_id;
+            //     $logistics_info[$i]['cs_id'] = $cs_info_id;
+            //     $ret_logistics =\app\index\model\Admin::updatelogisticsinfo($logistics_info[$i]);       //c错误
+            //     if (empty($ret_logistics)) {
+            //         return self::retmsg(0,'保存失败，错误代码：1185');
+            //     }
+            // }
             $ogcugi_id_arr =  array();
             if (!empty($order_goods_cs_undeliver_goods_info)){
                 for ($i = 0; $i < $ogcugi_length; $i++){
