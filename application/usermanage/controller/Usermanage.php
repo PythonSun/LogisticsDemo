@@ -57,4 +57,10 @@ class Usermanage extends Controller
         return $ret;
     }
 
+    /*获取登录session*/
+    public function getsession(){
+        $ret = \app\index\model\Admin::getsessioninfo();
+        return $ret;
+    }
+
 }

@@ -1297,7 +1297,8 @@
 
                 jq.ajax({
                     url: "{:url('admin/addreplaceconfirmorder/addconfirmorder')}",//php文件路径
-                    data: {cs_info:cs_info,
+                    data: {
+                        cs_info:cs_info,
                         custom_info:custom_info,
                         delivery_info:delivery_info,
                         return_info:return_info,
@@ -1307,7 +1308,7 @@
                         logistic_info:logistic_info,
                         payment_info:payment_info} ,
                     type: 'POST',
-                    dataType: 'json',
+                    //dataType: 'json',
                     success: function(e) {
                         if(e){
                             console.log('订单添加成功！');
