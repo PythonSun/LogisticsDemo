@@ -1733,7 +1733,7 @@
                 cs_info.write_date = editOrderData['write_date'];
                 cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
                 cs_info.can_edit = 1;                              //0 不可编辑
-                cs_info.cs_info_state = 1;
+                cs_info.cs_info_state = data["cs_info_state"];
                 cs_info.complete_date = complete_date;       //新增 无完成日期
                 cs_info.product_number = rows;
                 cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
@@ -1812,6 +1812,8 @@
                 directorExamine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
                 directorExamine['cs_examine_result'] = 2;
                 directorExamine['cs_examine_state'] = 1;
+                directorExamine['examine_user_id'] = editOrderData['depart_examine']['examine_user_id'];
+                directorExamine['cs_examine_name'] = editOrderData['depart_examine']['cs_examine_name'];
                 cs_examine[0] = directorExamine;
                 var generalManagerExamine = {};
                 generalManagerExamine['cs_examine_id'] =editOrderData['company_examine']['cs_examine_id'];
@@ -1823,6 +1825,8 @@
                 generalManagerExamine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
                 generalManagerExamine['cs_examine_result'] = 2;
                 generalManagerExamine['cs_examine_state'] = 0;
+                generalManagerExamine['examine_user_id'] = editOrderData['depart_examine']['examine_user_id'];
+                generalManagerExamine['cs_examine_name'] = editOrderData['depart_examine']['cs_examine_name'];
                 cs_examine[1] = generalManagerExamine;
                 var financeExamine = {};
                 financeExamine['cs_examine_id'] =editOrderData['finance_examine']['cs_examine_id'];
@@ -1834,6 +1838,8 @@
                 financeExamine['cs_examine_content'] = data['examinationapprovalcontentthird'];
                 financeExamine['cs_examine_result'] = 2;
                 financeExamine['cs_examine_state'] = 0;
+                financeExamine['examine_user_id'] = editOrderData['depart_examine']['examine_user_id'];
+                financeExamine['cs_examine_name'] = editOrderData['depart_examine']['cs_examine_name'];
                 cs_examine[2] = financeExamine;
                 console.log("以下订单审批信息：");
                 console.log(cs_examine);
@@ -1881,6 +1887,10 @@
                 console.log("以下清单信息：");
                 console.log(order_goods_manager);
                 var logistic_info = getlogisticsInfo();
+
+                console.log("以下删除清单信息：");
+                console.log(delrowid);
+
                 jq.ajax({
                     url: "{:url('admin/addreplaceconfirmorder/managereditandsaveorder')}",
                     data: {cs_info:cs_info,custom_info:custom_info,delivery_info:delivery_info,return_info:return_info,cs_belong:cs_belong,order_goods_manager:order_goods_manager,cs_examine:cs_examine,logistic_info:logistic_info,order_goods_delete_row:delrowid,logistic_info_delete_row:del_logistics_id_arr} ,

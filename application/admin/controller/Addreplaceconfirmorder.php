@@ -347,29 +347,20 @@ class Addreplaceconfirmorder extends Controller
         //cs_belong
         $cs_belong = $_POST['cs_belong'];
         $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
-        if (empty($ret_cs_belog)) {
-            return false;
-        }
 
         ///custom_info
         $custom_info = $_POST['custom_info'];
         $ret_custom_info = \app\index\model\Admin::updatecustominfo($custom_info);
-        if (empty($ret_custom_info)) {
-            return false;//添加失败删除
-        }
+
         //delivery_info
         $delivery_info = $_POST['delivery_info'];
         $ret_delivery_info = \app\index\model\Admin::updatedeliveryinfo($delivery_info);
-        if (empty($ret_delivery_info)) {
-            return false;
-        }
+
 
         //return_info
         $return_info = $_POST['return_info'];
         $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
-        if (empty($ret_return_info)) {
-            return false;
-        }
+
         //order_goods_manager  order_goods_logistics
         if(array_key_exists('order_goods_manager',$_POST)){
             $order_goods_manager = $_POST['order_goods_manager'];
@@ -405,17 +396,6 @@ class Addreplaceconfirmorder extends Controller
         $cs_info = $_POST['cs_info'];
         $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
 
-        if (empty($ret_confirm_order)) {
-            $cs_belong_id = \app\index\model\Admin::getmaxtableidretid('cs_belong', 'cs_belong_id');
-
-            \app\index\model\Admin::deleterowtableid('cs_belong', 'cs_belong_id', $cs_belong_id);
-            \app\index\model\Admin::deleterowtableid('custom_info', 'custom_info_id', $custom_info_id);
-            \app\index\model\Admin::deleterowtableid('delivery_info', 'delivery_info_id', $delivery_info_id);
-            \app\index\model\Admin::deleterowtableid('return_info', 'return_info_id', $return_info_id);
-            //删除上面的表
-            //还有 order_goods_manager  cs_examine
-            return false;
-        }
         if(array_key_exists('logistic_info',$_POST))
         {
             $logistic_info = $_POST['logistic_info'];
