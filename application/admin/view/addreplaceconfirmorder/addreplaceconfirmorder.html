@@ -372,13 +372,12 @@
                 </div>
             </div>
 
-            <div class="layui-form-item">
-                <div class="layui-btn-container">
-                    <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled Wheat" lay-submit="" lay-filter="add_order_item" style="color: black;">
-                </div>
-            </div>
+
             <h3>订购清单</h3>
-            <table class="layui-table" id="tableorder">
+            <div class="layui-form-item">
+                <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled Wheat" lay-submit="" lay-filter="add_order_item" style="color: black;">
+            </div>
+            <table class="layui-form-item layui-table" id="tableorder">
                 <thead>
                     <tr >
                         <th class="Wheat">序号</th>
@@ -742,9 +741,9 @@
                            // console.log("length: "+ jq('#tableorder')[0].rows.length);
                             row.ogl_id = "";
                             row.order_goods_manager_id = "";
-                            updateRow(row,true)
-
-                            layer.closeAll();
+                            updateRow(row,true);
+                            layer.msg('保存成功！',{icon:1});
+                            //location.href = "admin/addconfirmorderitem/addconfirmorderitem";
                         },
                         btn2: function () {
                             layer.closeAll();
@@ -2451,7 +2450,7 @@
                     }
                     if(data['orderdate'] == '')
                     {
-                        layer.msg('接受不能为空！',{icon:2});
+                        layer.msg('接收时间不能为空！',{icon:2});
                         return false;
                     }
                 }

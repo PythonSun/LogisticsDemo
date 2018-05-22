@@ -454,6 +454,10 @@
                     elseif ($mode == 4)
                     $tableobj[$i]["transfer_fee_mode"] = "公司付";
 
+                    if($tableobj[$i]["complete_date"] == "2000-01-01 00:00:00")
+                    {
+                        $tableobj[$i]["complete_date"] ="";
+                    }
 
                 }
 				return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
@@ -628,6 +632,11 @@
                         $tableobj[$i]["transfer_fee_mode"] = "现付";
                     elseif ($mode == 4)
                         $tableobj[$i]["transfer_fee_mode"] = "公司付";
+
+                    if($tableobj[$i]["complete_date"] == "2000-01-01 00:00:00")
+                    {
+                        $tableobj[$i]["complete_date"] ="";
+                    }
                 }
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
             }
@@ -747,6 +756,8 @@
             if(!empty($tableobj)){
                 for ($i = 0;$i < count($tableobj);$i++)
                 {
+
+
                     if($type == 2||$type == 5) //借样和配件没有返货信息
                     {
                         $tableobj[$i]["receiver_name"] = $tableobj[$i]["delivery_info_receiver_name"];
@@ -789,6 +800,8 @@
                         $tableobj[$i]["transfer_fee_mode"] = "现付";
                     elseif ($mode == 4)
                         $tableobj[$i]["transfer_fee_mode"] = "公司付";
+
+                    $tableobj[$i]["serial_number"] = $i+1;
                 }
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
             }
@@ -952,6 +965,8 @@
                     {
                         $tableobj[$i]["cs_info_state"] = "退回";
                     }
+
+                    $tableobj[$i]["serial_number"] = $i+1;
                 }
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
             }
