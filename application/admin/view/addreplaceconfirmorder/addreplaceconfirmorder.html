@@ -1115,7 +1115,7 @@
                 cs_info.cur_process_user_id = data['build_user_id'];                      // 当前处理用户id
                 cs_info.pre_process_user_id = data['build_user_id'];                         //     上一次处理用户id
                 cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
-                cs_info.can_edit = state == 1 ? 0 : 1;
+                cs_info.can_edit = state == 1 ? 1 : 0;
                 //cs_info.write_date = data['date1'];                   //又服务器创建
                 /*if(data['status'] == ""){
                     layer.msg('请选择是否到账！',{icon:2});
