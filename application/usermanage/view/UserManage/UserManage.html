@@ -167,7 +167,7 @@
                         var iframeWin = window[layero.find('iframe')[0]['name']];
                         var role = iframeWin.SaveRole();
                         jq.post("{:url('usermanage/rolemanage/setrolepermisson')}",{'param':role} ,function(data){
-                              console.log(data);
+                              layer.msg('保存成功！',{icon:1})
                         });
                     }
                     , btn2: function () {
