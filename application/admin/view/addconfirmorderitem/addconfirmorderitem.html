@@ -186,7 +186,8 @@
                 });
             },
             select: function (event, ui) {
-
+                jq('#serachModelinfo').val(ui.item.value);
+                jq("#serachModelinfo").blur();
             },
         });
        //型号text失去焦点
@@ -201,7 +202,6 @@
                 async: false,
                 data: { serrchText: model},
                 success: function (data) {
-                    console.log(data);
                     if(data == "" || data == null || data === undefined) {
                         console.log(173);
                         top.layer.confirm('型号: <span style="color: red">'+model+'</span> 在数据库不存在，是否录入', {
@@ -221,6 +221,7 @@
                         ///还要处理
                         layui.form.render('select');
                         product_info_id = data.product_info_id;
+                        isExistModel = true;
                     }
                 },
             });
@@ -302,7 +303,6 @@
                 async:false,
                 data:{model_info:model_info},
                 success:function(data){
-                    console.log(data);
                     if(isEmptyObject(data)){
                         top.layer.msg('录入失败！',{icon:2});
                         sign = 1;
