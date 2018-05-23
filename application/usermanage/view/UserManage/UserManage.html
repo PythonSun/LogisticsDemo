@@ -132,6 +132,16 @@
                 return false;
             });
 
+            /*读session*/
+            jq(document).ready(function(){
+                jq.post("{:url('usermanage/usermanage/getsession')}",function(data){
+                    if(data == ''){
+                            /*session为空时，跳出登录*/
+                            location.href = "/index/login/login";
+                    }
+                });
+            });
+
             /*退出*/
             jq('.logout_btn').click(function(){
                 jq.post("{:url('usermanage/usermanage/logout')}",function(ret){
