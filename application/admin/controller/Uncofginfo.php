@@ -36,7 +36,6 @@ class Uncofginfo extends Controller
         $this->assign('date',$date);
         $this->assign('type',$type);
         
-        //
         //$this->assign('user_id',$login_user_id);
         //$this->assign('user_name',$login_user_name);
         return $this->fetch();
