@@ -718,13 +718,6 @@
             //编辑或者新增Item 窗体，tableRowIndex：表序号 新增不填
             function openWindow(tableRowIndex) {
                 var jq = layui.jquery;
-                var rowIndex = "";
-                if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
-                    rowIndex = jq('#tableorder')[0].rows.length;
-                }
-                else {
-                    rowIndex = tableRowIndex;
-                }
                 var layer = layui.layer;
                 top.layer.open({
                     type: 2,
@@ -743,13 +736,15 @@
                         }
 
                         if (tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == "") {
-
+                            var rowIndex = jq('#tableorder')[0].rows.length;
+                            addTableItem(orderItem, rowIndex);
                         }
                         else {
-                            jq('#tableorder')[0].deleteRow(rowIndex);
+                            jq('#tableorder')[0].deleteRow(tableRowIndex);
+                            addTableItem(orderItem, tableRowIndex);
                         }
-                        addTableItem(orderItem, rowIndex);
-                        top.layer.close(index);
+
+                        //top.layer.close(index);
                     },
                     btn2: function (index) {
                         top.layer.close(index);
