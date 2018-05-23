@@ -840,6 +840,9 @@
                     if(id != "")
                         delrowid.push(id);
                     jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
+                    for(var i = 1; i <= document.getElementById('tableorder').rows.length;i++){
+                        document.getElementById('tableorder').rows[i].cells[0].innerHTML = "<a> "+i+"</a>";
+                    }
                 });
 
                 //非定型订单弹窗
