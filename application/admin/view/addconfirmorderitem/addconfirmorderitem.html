@@ -174,7 +174,7 @@
                     url:"{:url('admin/addconfirmorderitem/serachmodelinfo')}",
                     type:"POST",
                     dataType:"json",
-                    data:{serrchText:jq("#serachModelinfo").val(),type:jq("#product_type_id").val(),brand:jq('#brand_id').val()},
+                    data:{serrchText:jq("#serachModelinfo").val()},
                     success:function(data){
                         response(jq.map(data,function(item){
                             return{
@@ -194,15 +194,37 @@
             var model = jq('#serachModelinfo').val();
             if(model == '')
                 return ;
+            jq.ajax({
+                url: "{:url('admin/Addconfirmorderitem/coldserachmodelinfo')}",
+                type: "POST",
+                dataType: "json",
+                async: false,
+                data: { serrchText: model},
+                success: function (data) {
+                    console.log(data);
+                    if(data == "" || data == null || data === undefined) {
+                        console.log(173);
+                        top.layer.confirm('型号: <span style="color: red">'+model+'</span> 在数据库不存在，是否录入', {
+                            btn: ['是','否'] //按钮
+                        }, function(index){
+                            isExistModel = false;
+                            top.layer.close(index);
+                        } ,function () {
+                            jq('#serachModelinfo').val('');
+                        });
+                    } else {
 
-            top.layer.confirm('型号: <span style="color: red">'+model+'</span> 在数据库不存在，是否录入', {
-                btn: ['是','否'] //按钮
-            }, function(index){
-                isExistModel = false;
-                top.layer.close(index);
-            } ,function () {
-                 jq('#serachModelinfo').val('');
+                        jq('#product_info_name').val(data[0]['product_info_name']);
+                        jq('#product_type_id').val(data[0]['product_type_id']);
+                        jq('#brand_id').val(data[0]['brand_id']);
+                        jq('#place_id').val(data[0]['place_id']);
+                        ///还要处理
+                        layui.form.render('select');
+                        product_info_id = data.product_info_id;
+                    }
+                },
             });
+
 
         })
     });
@@ -267,24 +289,24 @@
         //+判断 型号是否存在，不存在禁止录入
         if(isExistModel == false)
         {
-            var model_info = [];
+            var model_info = {};
             model_info['model'] = orderItem.model;
             model_info['product_info_name'] = orderItem.product_info_name;
             model_info['product_type_id'] = orderItem.product_type_id;
             model_info['brand_id'] = orderItem.brand_id;
             model_info['place_id'] = orderItem.place_id;
             jq.ajax({
-                url:"{:url('admin/addconfirmorderitem/serachproductinfo')}",
+                url:"{:url('admin/addconfirmorderitem/addmodel')}",
                 type:"POST",
                 dataType:"json",
                 async:false,
-                data:model_info,
+                data:{model_info:model_info},
                 success:function(data){
+                    console.log(data);
                     if(isEmptyObject(data)){
-                        top.layer.msg('型号不存在！',{icon:2});
+                        top.layer.msg('录入失败！',{icon:2});
                         sign = 1;
                     }else{
-
                         orderItem.product_info_id = data['product_info_id'];
                     }
                 }});
@@ -335,7 +357,7 @@
     }
     //清空所有
     function clear() {
-
+        isExistModel = true;
         var jq = layui.jquery;
         jq('#specification').val("");
         jq('#product_info_name').val("");
