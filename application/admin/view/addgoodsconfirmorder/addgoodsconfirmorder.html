@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <div class="layui-inline">
-                    <label class="layui-form-label light_gray">下单日期</label>
+                    <label class="layui-form-label light_gray">接收时间</label>
                     <div class="layui-input-inline">
                         <input type="text" name="order_date" id="order_date" autocomplete="on" class="layui-input light_gray">
                     </div>
@@ -57,13 +57,14 @@
                 </div>
             </div>
 
-            <div>
+<!--             <div>
                 <h3 class="textcenter" style="margin-bottom: -30px">物流信息</h3>
                 <div>
                     <input type="button" value="添加物流" id="btn_add_logistics_item" class="layui-btn layui-btn-normal" lay-filter="btn_add_logistics_item">
                     <input type="button" value="删除" id="btn_del_logistics_item" class="layui-btn layui-btn-normal" lay-filter="btn_del_logistics_item">
                 </div>
-            </div>
+            </div> -->
+            <h3>物流信息</h3>
             <div class="layui-form-item">
             <table class="layui-table" id="tablelogistics">
                 <colgroup>
@@ -92,9 +93,13 @@
                     <label class="layui-form-label Wheat">总部门：</label>
                     <div class="layui-input-inline Wheat">
                         <select id="build_organize_id" name="build_organize_id" lay-filter="build_organize_id">
-                            <option value="" selected>请选择</option>
+                           <!--  <option value="" selected>请选择</option> -->
                             {volist name="companylist" id="vo"}
-                            <option value="{$vo.organize_id}">{$vo.organize_name}</option>
+                                {if condition="$vo.organize_id eq 1"}
+                                    <option value="{$vo.organize_id}" selected>{$vo.organize_name}</option>
+                                {else /}
+                                    <option value="{$vo.organize_id}">{$vo.organize_name}</option>
+                                {/if}
                             {/volist}
                         </select>
                     </div>
@@ -104,6 +109,9 @@
                     <div class="layui-input-inline Wheat">
                         <select id="build_department_id" name="build_department_id" lay-filter="build_department_id">
                             <option value="" selected>请选择</option>
+                            {volist name="departlist" id="vo"}
+                                <option value="{$vo.organize_id}">{$vo.organize_name}</option>
+                            {/volist}
                         </select>
                     </div>
                 </div>
@@ -299,11 +307,14 @@
                     ,position: 'fixed'
                     ,theme: 'molv'
                 });
+
                 laydate.render({
                     elem: '#order_date'
+                    ,type: 'datetime'
                     ,position: 'fixed'
                     ,theme: 'molv'
                 });
+
                 laydate.render({
                     elem: '#delivery_date'
                     ,position: 'fixed'
@@ -370,7 +381,7 @@
                     type = {$type};
                     var order_info = {$order_info};
                     if(order_info == "-1"){
-                        addLogisticsItem(null);
+                        //addLogisticsItem(null);      /*物流信息不需要手动填写*/
                         setHtmlType();
                         top.layer.closeAll('loading');
                         isLoading = false;
@@ -383,16 +394,17 @@
                 });
                 //监听提交
                 form.on('submit(save)', function (uidata) {
-                    var logistics_info = getlogisticsInfo();
-                    if(logistics_info == null){
-                        layer.msg('请填写完整物流信息！',{icon:2});
-                        return false;
-                    }
-                    var logistics_info_length = logistics_info.length;
-                    if(logistics_info_length < 1){
-                        layer.msg('请填写物流信息！',{icon:2});
-                        return false;
-                    }
+                    /*物流信息不需要填写*/
+                    // var logistics_info = getlogisticsInfo();
+                    // if(logistics_info == null){
+                    //     layer.msg('请填写完整物流信息！',{icon:2});
+                    //     return false;
+                    // }
+                    // var logistics_info_length = logistics_info.length;
+                    // if(logistics_info_length < 1){
+                    //     layer.msg('请填写物流信息！',{icon:2});
+                    //     return false;
+                    // }
 
                     jq = layui.jquery;
                     var data = uidata.field;
@@ -401,9 +413,6 @@
                         return false;
                     }
 
-                    console.log(data);
-                    console.log('下列输入物流信息：');
-                    console.log(logistics_info);
                     var cs_belong = csBelong(data);
                     console.log('下列输入订货所属信息：');
                     console.log(cs_belong);
@@ -450,7 +459,6 @@
                     order_goods_cs_info.product_number = product_number;
                     console.log('下列输入订货确认单信息：');
                     console.log(order_goods_cs_info);
-
                     /* ***************************************************** 说明 *********************************************************** */
                     /*
                     如果表
@@ -465,7 +473,7 @@
                         url: "{:url('admin/addgoodsconfirmorder/addcs')}",//php文件路径
                         data: {
                                 order_goods_cs_info:order_goods_cs_info,
-                                logistics_info:logistics_info,
+                                //logistics_info:logistics_info,
                                 cs_belong:cs_belong,
                                 ofg_info:ofg_info,
                                 fee_info:fee_info,
@@ -491,7 +499,7 @@
                                 top.layer.alert('保存失败！');
                             }
                         }
-                    })
+                    });
                     return false;
                 });
                 //监听选择公司
@@ -516,6 +524,10 @@
                 form.on('select(build_department_id)',function (data) {
                     jq('#user_id').empty();
                     jq('#user_id').append("<option value='' selected>请选择</option>");
+                    if(data.value == ''){
+                        form.render('select');
+                        return;
+                    }
                     jq.post("{:url('admin/addgoodsconfirmorder/getdspmanagerinfo')}",{'param':data.value},function (data) {
                         for (var item in data){
                             jq('#user_id').append("<option value='" + data[item]['user_id'] + "' phone='" + data[item]['phone'] + "'>" + data[item]['fullname'] + "</option>>");
@@ -1077,7 +1089,7 @@
                     }
                 }else {
                     console.log("111111111")
-                    addLogisticsItem(null);
+                    //addLogisticsItem(null);
                 }
                 // addLogisticsItem(null);                     //物流信息
                 //否则 addLogisticsItem(data);
@@ -1374,16 +1386,19 @@
             
             function verification(data) {
                 var layer = layui.layer;
+
                 var order_date = data['order_date'].trim();
                 if (order_date == ""){
-                    layer.msg('请选择下单时间！',{icon:2});
+                    layer.msg('请选择接收时间！',{icon:2});
                     return false;
                 }
+
                 var cs_info_state = data['cs_info_state'];
                 if (cs_info_state == '' || cs_info_state == -1){
                     layer.msg('请选择状态！',{icon:2});
                     return false;
                 }
+
                 var user_id = data['user_id'];
                 if (user_id == ""){
                     layer.msg('请选择经理！',{icon:2});

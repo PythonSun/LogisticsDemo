@@ -106,7 +106,7 @@
             </div>
             <div class="layui-form-item">
                 <div class="layui-btn-container">
-                    <input type="button" value="打印订货单" class="layui-btn layui-btn-primary" lay-submit="" lay-filter="printorder">
+                    <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="printorder">打印</button>
                 </div>
             </div>
         </form>
@@ -203,6 +203,8 @@
                     }
                     jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
                 });
+
+                /*打印非定型订单*/
             });
             //编辑或者新增Item 窗体，tableRowIndex：表序号 新增不填
             function openWindow(tableRowIndex) {

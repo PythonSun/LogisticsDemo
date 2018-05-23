@@ -58,6 +58,16 @@ class Addreplaceconfirmorder extends Controller
         $cs_info_id = \app\index\model\Admin::getcsinfomaxid('cs_belong','cs_id');
         $cs_info['write_date'] = $date_now;
         $cs_info['cs_id'] = $cs_info_id;
+        $cs_info['return_info_id'] = '-1';
+        $cs_info['custom_info_id'] = '-1';
+        $cs_info['delivery_info_id'] = '-1';
+        $cs_info['payment_info_id'] = '-1';
+        $cs_info['cs_examine_ids'] = "";
+        $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
+        if (empty($ret_confirm_order)) {
+            return false;
+        }
+
         $cs_belong['cs_id'] = $cs_info['cs_id'];
         $cs_belong['cs_belong_create_time'] = $date_now;
 
@@ -170,21 +180,6 @@ class Addreplaceconfirmorder extends Controller
             //还有 order_goods_manager  cs_examine
             return false;
         }
-
-        if(array_key_exists('logistic_info',$_POST))
-        {
-            $logistic_info = $_POST['logistic_info'];
-            foreach ( $logistic_info as $item  )
-            {
-                $id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id');
-                $item['logistics_id'] = $id+1;
-                $item['time_stamp'] = $date_now;
-                $item['cs_id'] = $cs_info['cs_id'];
-                $item['user_id'] = $cs_belong['build_user_id'];
-                \app\index\model\Admin::updatelogisticinfo($item);
-            }
-        }
-
 
         return $cs_info_id;
     }
@@ -347,29 +342,20 @@ class Addreplaceconfirmorder extends Controller
         //cs_belong
         $cs_belong = $_POST['cs_belong'];
         $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
-        if (empty($ret_cs_belog)) {
-            return false;
-        }
 
         ///custom_info
         $custom_info = $_POST['custom_info'];
         $ret_custom_info = \app\index\model\Admin::updatecustominfo($custom_info);
-        if (empty($ret_custom_info)) {
-            return false;//添加失败删除
-        }
+
         //delivery_info
         $delivery_info = $_POST['delivery_info'];
         $ret_delivery_info = \app\index\model\Admin::updatedeliveryinfo($delivery_info);
-        if (empty($ret_delivery_info)) {
-            return false;
-        }
+
 
         //return_info
         $return_info = $_POST['return_info'];
         $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
-        if (empty($ret_return_info)) {
-            return false;
-        }
+
         //order_goods_manager  order_goods_logistics
         if(array_key_exists('order_goods_manager',$_POST)){
             $order_goods_manager = $_POST['order_goods_manager'];
@@ -405,33 +391,6 @@ class Addreplaceconfirmorder extends Controller
         $cs_info = $_POST['cs_info'];
         $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
 
-        if (empty($ret_confirm_order)) {
-            $cs_belong_id = \app\index\model\Admin::getmaxtableidretid('cs_belong', 'cs_belong_id');
-
-            \app\index\model\Admin::deleterowtableid('cs_belong', 'cs_belong_id', $cs_belong_id);
-            \app\index\model\Admin::deleterowtableid('custom_info', 'custom_info_id', $custom_info_id);
-            \app\index\model\Admin::deleterowtableid('delivery_info', 'delivery_info_id', $delivery_info_id);
-            \app\index\model\Admin::deleterowtableid('return_info', 'return_info_id', $return_info_id);
-            //删除上面的表
-            //还有 order_goods_manager  cs_examine
-            return false;
-        }
-        if(array_key_exists('logistic_info',$_POST))
-        {
-            $logistic_info = $_POST['logistic_info'];
-            foreach ( $logistic_info as $item  )
-            {
-                if( $item['logistics_id'] == "")
-                {
-                    $id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id');
-                    $item['logistics_id'] = $id+1;
-                    $item['time_stamp'] = $date_now;
-                    $item['cs_id'] = $cs_info['cs_id'];
-                    $item['user_id'] = $cs_belong['build_user_id'];
-                }
-                \app\index\model\Admin::updatelogisticinfo($item);
-            }
-        }
         if(array_key_exists('order_goods_delete_row',$_POST))
         {
             $order_goods_delete_row = $_POST['order_goods_delete_row'];
@@ -441,14 +400,6 @@ class Addreplaceconfirmorder extends Controller
             }
         }
 
-        if(array_key_exists('logistic_info_delete_row',$_POST))
-        {
-            $logistic_info_delete_row = $_POST['logistic_info_delete_row'];
-            foreach ($logistic_info_delete_row as $item )
-            {
-                \app\index\model\Admin::deleterowtableid('logistic_info', 'logistic_info_id', $item);
-            }
-        }
     }
 
     /**经理修改订单 内容保存**/
@@ -493,31 +444,6 @@ class Addreplaceconfirmorder extends Controller
         $cs_info = $_POST['cs_info'];
         $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
 
-        if(array_key_exists('logistic_info',$_POST))
-        {
-            $logistic_info = $_POST['logistic_info'];
-            foreach ( $logistic_info as $item  )
-            {
-                if( $item['logistics_id'] == "")
-                {
-                    $id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id');
-                    $item['logistics_id'] = $id+1;
-                    $item['time_stamp'] = $date_now;
-                    $item['cs_id'] = $cs_info['cs_id'];
-                    $item['user_id'] = $cs_belong['build_user_id'];
-                }
-                \app\index\model\Admin::updatelogisticinfo($item);
-            }
-        }
-
-        if(array_key_exists('logistic_info_delete_row',$_POST))
-        {
-            $logistic_info_delete_row = $_POST['logistic_info_delete_row'];
-            foreach ($logistic_info_delete_row as $item )
-            {
-                \app\index\model\Admin::deleterowtableid('logistic_info', 'logistic_info_id', $item);
-            }
-        }
 
         $uoi_id = "";
         $unc_ofg_info = $_POST['unc_ofg_info'];

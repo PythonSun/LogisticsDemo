@@ -456,6 +456,10 @@
                     elseif ($mode == 4)
                     $tableobj[$i]["transfer_fee_mode"] = "公司付";
 
+                    if($tableobj[$i]["complete_date"] == "2000-01-01 00:00:00")
+                    {
+                        $tableobj[$i]["complete_date"] ="";
+                    }
 
                 }
 				return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
@@ -664,6 +668,11 @@
                         $tableobj[$i]["transfer_fee_mode"] = "现付";
                     elseif ($mode == 4)
                         $tableobj[$i]["transfer_fee_mode"] = "公司付";
+
+                    if($tableobj[$i]["complete_date"] == "2000-01-01 00:00:00")
+                    {
+                        $tableobj[$i]["complete_date"] ="";
+                    }
                 }
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
             }
@@ -683,7 +692,7 @@
             //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
           //  $sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
-            $sqlone .= "where dsp_logistic.cs_info.cs_info_type='$type' and (cs_info_state = 1 or cs_info_state = 4) ";
+            $sqlone .= "where dsp_logistic.cs_info.cs_info_type='$type'and cs_info_state = 1 and dsp_logistic.cs_info.complete_date <= '2000-01-01 00:00:00'";
 
             if($totalargs == 4){
                 if($args[3]['areamanager'] != "" ){
@@ -740,7 +749,7 @@
             //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
          //   $sqltwo .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqltwo .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
-            $sqltwo .= "where dsp_logistic.cs_info.cs_info_type='$type' and (cs_info_state = 1 or cs_info_state = 4) ";
+            $sqltwo .= "where dsp_logistic.cs_info.cs_info_type='$type' and cs_info_state = 1 and dsp_logistic.cs_info.complete_date <= '2000-01-01 00:00:00'";
             if($totalargs == 4){
                 if($args[3]['areamanager'] != ""){
                     $areamanger1 = $args[3]['areamanager'];
@@ -783,6 +792,8 @@
             if(!empty($tableobj)){
                 for ($i = 0;$i < count($tableobj);$i++)
                 {
+
+
                     if($type == 2||$type == 5) //借样和配件没有返货信息
                     {
                         $tableobj[$i]["receiver_name"] = $tableobj[$i]["delivery_info_receiver_name"];
@@ -825,6 +836,8 @@
                         $tableobj[$i]["transfer_fee_mode"] = "现付";
                     elseif ($mode == 4)
                         $tableobj[$i]["transfer_fee_mode"] = "公司付";
+
+                    $tableobj[$i]["serial_number"] = $i+1;
                 }
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
             }
@@ -988,6 +1001,8 @@
                     {
                         $tableobj[$i]["cs_info_state"] = "退回";
                     }
+
+                    $tableobj[$i]["serial_number"] = $i+1;
                 }
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
             }
@@ -1603,7 +1618,7 @@
 
         /*查询物流待审核*/
         public static function querylogsticcsinfonums($type){
-            $sql = "select count(*) from dsp_logistic.cs_info where dsp_logistic.cs_info.cs_info_type = '$type' and (dsp_logistic.cs_info.cs_info_state='1' or dsp_logistic.cs_info.cs_info_state='4')";
+            $sql = "select count(*) from dsp_logistic.cs_info where dsp_logistic.cs_info.cs_info_type = '$type' and cs_info_state = 1 and dsp_logistic.cs_info.complete_date <= '2000-01-01 00:00:00'";
             $nums = Db::query($sql);
             if(empty($nums))
                 return 0;

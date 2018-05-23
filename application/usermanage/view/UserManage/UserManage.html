@@ -132,6 +132,16 @@
                 return false;
             });
 
+            /*读session*/
+            jq(document).ready(function(){
+                jq.post("{:url('usermanage/usermanage/getsession')}",function(data){
+                    if(data == ''){
+                            /*session为空时，跳出登录*/
+                            location.href = "/index/login/login";
+                    }
+                });
+            });
+
             /*退出*/
             jq('.logout_btn').click(function(){
                 jq.post("{:url('usermanage/usermanage/logout')}",function(ret){
@@ -157,7 +167,7 @@
                         var iframeWin = window[layero.find('iframe')[0]['name']];
                         var role = iframeWin.SaveRole();
                         jq.post("{:url('usermanage/rolemanage/setrolepermisson')}",{'param':role} ,function(data){
-                              console.log(data);
+                              layer.msg('保存成功！',{icon:1})
                         });
                     }
                     , btn2: function () {
