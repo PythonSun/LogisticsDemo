@@ -1181,20 +1181,43 @@
             return $retsql;
         }
 
-        /*模糊搜索型号*/
-        public  static function serachmodelinfo($serachText, $product_type_id, $brand)
+        /*模糊搜索型号 弃用*/
+        public  static function serachmodelinfo($serachText)
         {
-            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model LIKE '%{$serachText}%' AND product_type_id = '{$product_type_id}' AND brand_id = '{$brand}'";
+            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model LIKE '%{$serachText}%' ";
             $retsql = Db::query($sql);
             return $retsql;
         }
 
-        /*精准搜索型号*/
-        public  static function coldserachmodelinfo($serachText, $product_type_id, $brand)
+        /*精准搜索型号  弃用*/
+        public  static function coldserachmodelinfo($serachText)
         {
-            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model = '{$serachText}' AND product_type_id = '{$product_type_id}' AND brand_id = '{$brand}'";
+            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model = '{$serachText}' ";
             $retsql = Db::query($sql);
             return $retsql;
+        }
+
+        /*精准搜索型号 忽略大小写*/
+        public  static function coldserachmodel($serachText)
+        {
+            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model = UPPER('{$serachText}')";
+            $retsql = Db::query($sql);
+            return $retsql;
+        }
+
+        public static function addproductinfo($info){
+            $product_info_id = $info['product_info_id'];
+            $model = $info['model'];
+            $product_info_name = $info['product_info_name'];
+            $product_type_id = $info['product_type_id'];
+            $brand_id = $info['brand_id'];
+            $place_id = $info['place_id'];
+
+            $sql_value ="'{$product_info_id}','{$model}','{$product_info_name}','{$product_type_id}','{$brand_id}','{$place_id}'";
+            $sql = "INSERT INTO dsp_logistic.product_info (product_info_id,model,product_info_name,product_type_id,brand_id,place_id) VALUES ({$sql_value}) ";
+            $sql.= "ON DUPLICATE KEY UPDATE model = '{$model}',product_info_name = '{$product_info_name}',product_type_id = '{$product_type_id}'";
+            $sql.= ",brand_id = '{$brand_id}',place_id= '{$place_id}'";
+            $sqlret = Db::execute($sql);
         }
 
         /*获取表中最大的id值*/
