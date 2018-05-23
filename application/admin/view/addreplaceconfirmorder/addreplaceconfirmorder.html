@@ -742,8 +742,9 @@
                             row.ogl_id = "";
                             row.order_goods_manager_id = "";
                             updateRow(row,true);
+                            iframeWin.clear();
                             layer.msg('保存成功！',{icon:1});
-                            //location.href = "admin/addconfirmorderitem/addconfirmorderitem";
+
                         },
                         btn2: function () {
                             layer.closeAll();
