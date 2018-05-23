@@ -3,27 +3,25 @@
     <head>
         <meta charset="UTF-8">
         <title></title>
-        <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css"> 
-    	<link rel="stylesheet" type="text/css" href="/static/css/public.css">
-    </head>
-   
+        <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/public.css"> </head>
     <body>
         <form class="layui-form layui-form-pane" action="">
-        	<div class="toph2">
-            	<h2>物流单号输入</h2>
-           </div>
+            <div class="toph2">
+                <h2>物流单号输入</h2>
+            </div>
             <div class="layui-form-item">
-            	<div class="layui-inline">
+                <div class="layui-inline">
                     <label class="layui-form-label light_gray">流水号</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="serialnumber" id="serialnumber" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
+                        <input type="text" name="cs_id" id="cs_id" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
                 </div>
-            	<div class="layui-inline">
+                <div class="layui-inline">
                     <label class="layui-form-label light_gray">收货人</label>
                     <div class="layui-input-inline">
                         <input type="text" name="consignee" id="consignee" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
                 </div>
-            	<div class="layui-inline">
+                <div class="layui-inline">
                     <label class="layui-form-label light_gray">收货人电话</label>
                     <div class="layui-input-inline">
                         <input type="text" name="consigneephone" id="consigneephone" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
@@ -33,55 +31,101 @@
                     <div class="layui-input-inline">
                         <input type="text" name="shippingaddress" id="shippingaddress" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
                 </div>
-                
             </div>
-            <div class="layui-form-item">
-            	<div class="layui-inline">
-                    <label class="layui-form-label light_blue">货场名称</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="goodsyardname" id="goodsyardname" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_blue"> </div>
-                </div>
-            	<div class="layui-inline">
-                    <label class="layui-form-label light_blue">运单号</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="waybillnumber" id="waybillnumber"  lay-verify="" autocomplete="on" placeholder="" class="layui-input light_blue"> </div>
-                </div>
-            	<div class="layui-inline">
-                    <label class="layui-form-label light_blue" style="color:red;">发货日期</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="deliverydate" id="deliverydate" autocomplete="on" class="layui-input light_blue"> </div>
-                </div>
-            </div>
-
             <div class="layui-form-item">
                 <div class="layui-inline">
-                    <button class="layui-btn" lay-submit="" lay-filter="sendmessage">发送短信</button>
+                    <label class="layui-form-label light_blue">货场名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="goods_yard_name" id="goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_blue"> </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label light_blue">运单号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="transfer_order_num" id="transfer_order_num" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_blue"> </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label light_blue" style="color:red;">发货日期</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="delivery_date" id="delivery_date" autocomplete="on" class="layui-input light_blue"> </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label light_blue">件数</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="count" id="count" autocomplete="on" class="layui-input light_blue"> </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <button class="layui-btn" lay-submit="" lay-filter="saveinfo">保存</button>
                 </div>
             </div>
         </form>
+        <h2>物流单查询结果</h2>
+        <table class="layui-hide" id="logisticstablequeryresult" lay-filter="logisticstablequeryresult"></table>
+        <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="sendmessage">发送短信</a>
+        </script>
         <script type="text/javascript" src="/static/layui/layui.js"></script>
         <script type="text/javascript">
-            layui.use(['form', 'laydate', 'jquery','layer'], function () {
+            layui.use(['form', 'laydate', 'jquery', 'layer', 'table'], function () {
                 var form = layui.form,
                     laydate = layui.laydate,
                     $ = layui.jquery,
-                    layer = layui.layer;
-                    
+                    layer = layui.layer,
+                    table = layui.table;
                 /*日期*/
                 laydate.render({
-                    elem: '#deliverydate'
-                    ,position: 'fixed'
-                    ,theme: 'molv'
+                    elem: '#delivery_date',
+                    position: 'fixed',
+                    theme: 'molv'
                 });
-
-                form.on('submit(sendmessage)',function(data){
+                form.on('submit(saveinfo)', function (data) {
                     var param = data.field;
-                    $.post("{:url('admin/inputlogisticsorder/sendmessage')}",{'param':param},function(res){
-                        console.log(res);
+                    $.post("{:url('admin/inputlogisticsorder/savemessage')}", { 'param': param }, function (res) {
+                        if(res == '1') {
+                            layer.msg('保存成功！', { icon: 6 });
+                            table.reload('logisticstablequeryresult', {
+                                
+                            });
+                        } else {
+                            layer.msg('保存失败！', { icon: 5 });
+                        }
                     });
                     return false;
                 });
-          });
+                //第一个实例
+                table.render({
+                    elem: '#logisticstablequeryresult',
+                    height: 300,
+                    url: "{:url('admin/inputlogisticsorder/loadingdata')}",
+                    page: true,
+                    limit: 10,
+                    cols: [
+                        [{ field: 'cs_id', title: '流水号', sort: true, fixed: 'left' }, { field: 'goods_yard_name', title: '货场名称' }, { field: 'transfer_order_num', title: '运单号' }, { field: 'delivery_date', title: '发货日期' }, { field: 'count', title: '件数' }, { fixed: 'right', width: 250, align: 'center', toolbar: '#barDemo' }]
+                    ]
+                });
+                //监听工具条
+                table.on('tool(logisticstablequeryresult)', function (obj) {
+                    var data = obj.data, //获得当前行数据
+                        layEvent = obj.event; //获得 lay-event 对应的值
+                    if(layEvent === 'detail') {
+                        layer.msg('查看操作');
+                    } else if(layEvent === 'del') {
+                        layer.confirm('真的删除行么', function (index) {
+                            obj.del(); //删除对应行（tr）的DOM结构
+                            layer.close(index);
+                            //向服务端发送删除指令
+                        });
+                    } else if(layEvent === 'edit') {
+                        layer.msg('编辑操作');
+                    } else if(layEvent == 'sendmessage') {
+                        layer.msg('发送短信');
+                    }
+                });
+            });
         </script>
     </body>
 </html>

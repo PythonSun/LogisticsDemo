@@ -251,6 +251,8 @@
 			//return (array('code'=>0,'msg'=>'','count'=>0,'data'=>[]));
 		}
 
+
+
 		/*查询维修，代用等订单 销售部查询时调用 */
 		/*参数:organizename(总部门) departmentname(子部门) areamanager(经理名) type  page  limit queryinfo*/
 		public static function querycsinfobysales(...$args){
@@ -459,7 +461,41 @@
 				return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
 			}
 		}
-
+		/*chenshanqiang向物流表单插入数据*/
+		public static function insertlogisticinfo($info){
+            $logistics_id = $info['logistics_id'];
+            $cs_id = $info['cs_id'];
+            $goods_yard_name = $info['goods_yard_name'];
+            $transfer_order_num = $info['transfer_order_num'];
+            $delivery_date = $info['delivery_date'];
+            $count = $info['count'];
+			$time_stamp=date("Y-m-d");
+            $sql_value ="'$logistics_id','$cs_id','$goods_yard_name','$transfer_order_num','$delivery_date','$count','$time_stamp'";
+            $sql = "INSERT INTO dsp_logistic.logistics_info (logistics_id,cs_id,goods_yard_name,transfer_order_num,delivery_date,count,time_stamp) VALUES ({$sql_value})";
+            $sqlret = Db::execute($sql);
+            return $sqlret;
+        }
+        /*chenshanqiang查询物流表数据*/
+		public static function querylogisticsinfo(...$args){
+			$type = $args[0];
+            $pagenum = intval($args[1]?$args[1]:1);
+            $length = intval($args[2]);
+			$sqlone = "select count(*) from dsp_logistic.logistics_info";
+			$countobj = Db::query($sqlone);
+			$count = $countobj[0]['count(*)'];
+			if($count == 0){
+                return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>[]));
+            }
+            $pagetot = ceil($count/$length);
+            if($pagenum >= $pagetot){
+                $pagenum = $pagetot;
+            }
+			$offset = ($pagenum - 1)*$length;
+			/*$tableobj = Db::query($sqlone);*/
+			$sqlone = "select * from dsp_logistic.logistics_info order By dsp_logistic.logistics_info.delivery_date DESC limit {$offset},{$length}";
+			$tableobj = Db::query($sqlone);
+			return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
+		}
         /*查询维修，代用等订单,物流部和财务的人查询时调用*/
         /*参数: type  page  limit queryinfo*/
         public static function querycsInfomation(...$args){
@@ -1425,7 +1461,7 @@
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
-
+		
         /*查询订单未审核的条数,未完待续*/
         public static function queryexamineordernums($cs_info_type,$cs_info_state){
             $sql = "select count(*) from dsp_logistic.cs_info where cs_info_type='$cs_info_type' and cs_info_state='$cs_info_state'";
