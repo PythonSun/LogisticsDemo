@@ -644,6 +644,12 @@
                         del_ogcugi_id_arr.push(ogcugi_id);
                     }
                     jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());
+                    var table = document.getElementById("tableorder"); //获得整个表格对象
+                    for (var i = 1; i < table.rows.length; i++) {
+                        var rowObj = table.rows[i]
+                        var cell = rowObj.cells[0];
+                        cell.innerHTML ="<a>"+ i+"</a>";
+                    }
                 });
 
                 jq('#lookpic').click(function () {

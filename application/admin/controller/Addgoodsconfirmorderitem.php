@@ -92,6 +92,11 @@ class Addgoodsconfirmorderitem extends Controller
 
     public function addmodel(){
         $model = $_POST['model'];
+        $product_type = \app\index\model\Admin::getclassinfobyproperty('dsp_logistic.product_info','model',$model);
+        $count = count($product_type);
+        if(!empty($product_type) && $count > 0){
+            return $product_type[0];
+        }
         $product_info_name = $_POST['product_info_name'];
         $product_type_id = $_POST['product_type_id'];
         $brand_id = $_POST['brand_id'];
