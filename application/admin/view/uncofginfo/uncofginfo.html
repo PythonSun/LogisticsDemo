@@ -204,22 +204,29 @@
                 //删除行
                 jq(document).on('click', '.del_btn', function(){
                     var text = jq(this).parent().parent();
+                    top.layer.confirm('是否删除此行信息？', {
+                        btn: ['是','否'] //按钮
+                    }, function(index){
+                        var uod_id = jq(text).attr("uod_id");
+                        if (uod_id === undefined || uod_id == ""){
+                            //return;
+                        }else {
+                            delrowid.push(uod_id);
+                        }
+                        jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());
 
-                    var uod_id = jq(text).attr("uod_id");
-                    if (uod_id === undefined || uod_id == ""){
-                        //return;
-                    }else {
-                        delrowid.push(uod_id);
-                    }
-                    jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());
 
+                        var table = document.getElementById("tableorder"); //获得整个表格对象
+                        for (var i = 1; i < table.rows.length; i++) {
+                            var rowObj = table.rows[i]
+                            var cell = rowObj.cells[0];
+                            cell.innerHTML ="<a>"+ i+"</a>";
+                        }
+                        top.layer.close(index);
+                    }, function(){
 
-                    var table = document.getElementById("tableorder"); //获得整个表格对象
-                    for (var i = 1; i < table.rows.length; i++) {
-                        var rowObj = table.rows[i]
-                        var cell = rowObj.cells[0];
-                        cell.innerHTML ="<a>"+ i+"</a>";
-                    }
+                    });
+
                 });
 
                 /*打印非定型订单*/
