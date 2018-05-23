@@ -893,10 +893,12 @@
                 itemInfo.ogcugi_id = ogcugi_id === undefined? "" : ogcugi_id;
                 itemInfo.cs_id = cs_id === undefined? "" : cs_id;
                 itemInfo.product_type_id = rowdata[1]['tag'];
+                itemInfo.product_info_name = rowdata[3]['text'];
                 itemInfo.brand_id = rowdata[2]['tag'];
                 itemInfo.model = rowdata[4]['text'];
                 itemInfo.product_info_id = rowdata[4]['tag'];
                 itemInfo.ogcugi_count = rowdata[6]['text'];
+                itemInfo.place_id = rowdata[7]['tag'];
                 itemInfo.ogcugi_product_state = rowdata[8]['tag'];
                 itemInfo.ogcugi_comment = rowdata[9]['text'];
                 itemInfo.ogcugi_unit = rowdata[5]['text'];
@@ -914,7 +916,7 @@
                 var product_info_id = itemData.product_info_id;
                 var model = itemData.model;
                 var ogcugi_unit = itemData.ogcugi_unit;
-                var place = itemData.place_id;
+                var place_id = itemData.place_id;
                 var place_name = itemData.place_name;
                 var ogcugi_count =itemData.ogcugi_count;
                 var ogcugi_product_state = itemData.ogcugi_product_state;
@@ -941,7 +943,7 @@
                 var col_6 = new_tr.insertCell(6);
                 col_6.innerHTML = "<td><a>"+ ogcugi_count +"</a></td>";
                 var col_7 = new_tr.insertCell(7);
-                col_7.innerHTML = "<td><a tag = '"+ place +"'>"+ place_name +"</a></td>";
+                col_7.innerHTML = "<td><a tag = '"+ place_id +"'>"+ place_name +"</a></td>";
                 var col_8 = new_tr.insertCell(8);
                 col_8.innerHTML = "<td><a tag='" + ogcugi_product_state + "'>"+ ogcugi_product_state_text +"</a></td>";
                 var col_9 = new_tr.insertCell(9);
