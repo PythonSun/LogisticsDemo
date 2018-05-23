@@ -96,7 +96,7 @@
             var form = layui.form,
                 laydate = layui.laydate,
                 jq = layui.jquery;
-            /*jq("#serachModelinfo").autocomplete({
+            jq("#serachModelinfo").autocomplete({
                 source: function (request, response) {
                     //var product_type = jq("#product_type_id").val();
                     //var brand = jq('#brand_id').val();
@@ -119,7 +119,7 @@
                         },
                     });
                 }
-            });*/
+            });
             jq("#serachModelinfo").keypress(function(e){
                 var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
                 if (eCode == 13){
