@@ -191,7 +191,6 @@
                 layer.msg('请选择型号！', { icon: 2 });
                 return null;
             }
-
             var product_info_name = jq('#product_info_name').val().trim();
             if(product_info_name == "") {
                 layer.msg('请填写产品名称！', { icon: 2 });
@@ -261,7 +260,13 @@
                 type: "POST",
                 dataType: "json",
                 async: false,
-                data: { model:model,product_info_name:product_info_name,product_type_id:product_type_id,brand_id:brand_id,place_id:place_id},
+                data: {
+                    model:model,
+                    product_info_name:product_info_name,
+                    product_type_id:product_type_id,
+                    brand_id:brand_id,
+                    place_id:place_id
+                },
                 success: function (data) {
                     if(data !="") {
                         orderItem.product_info_id = data;
