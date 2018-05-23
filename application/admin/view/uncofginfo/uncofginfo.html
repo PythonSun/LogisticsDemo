@@ -104,18 +104,27 @@
                 <div class="layui-input-block">
                     <input type="text" name="uoi_provider_name" id="uoi_provider_name" autocomplete="on" placeholder="" class="layui-input"> </div>
             </div>
-            <div class="layui-form-item">
-                <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="printorder">打印</button>
-                </div>
-            </div>
+            
+            <!--查看非定型确认单打印-->
+            {if condition="$print_power eq 8"}
+                {if condition="$type eq 0"}
+                    {if condition="$parenttype eq 0"}
+                        <div class="layui-form-item">
+                            <div class="layui-btn-container">
+                                <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="printorder">打印</button>
+                            </div>
+                        </div>
+                    {/if}
+                {/if}
+            {/if}
         </form>
         <script type="text/javascript" src="/static/layui/layui.js"></script>
         <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript">
             var uoi_id = "";
             var delrowid = new Array();
-            var type = 1;//当前页面模式 说明：0:不可编辑 1：编辑
+            var type = 1;     //当前页面模式 说明：0:不可编辑 1：编辑
+            var cs_id = "";   //当前非定型订单的流水号
             $(document).ready(function() {
                 var layer = layui.layer;
                 type = {$type};
@@ -194,7 +203,6 @@
                 //删除行
                 jq(document).on('click', '.del_btn', function(){
                     var text = jq(this).parent().parent();
-                    console.log(text);
                     var uod_id = jq(text).attr("uod_id");
                     if (uod_id === undefined || uod_id == ""){
                         //return;
@@ -205,6 +213,29 @@
                 });
 
                 /*打印非定型订单*/
+                form.on('submit(printorder)',function(){
+                    var cs_id = {$cs_id};
+                    if(cs_id == 0){
+                        return;
+                    }
+                    top.layer.open({
+                        type: 2,
+                        area: ['600px', '250px'],
+                        shade: 0.6,
+                        shadeClose:true,
+                        title: '设置导出参数',
+                        resize:false,
+                        btn: ['保存','取消'],
+                        content: "{:url('admin/setexportfileparam/setexportfileparam')}",
+                        yes:function(index,layero){
+                                var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                                var exportparam = iframeWin.getexportparam();
+                                top.layer.close(index);
+                                window.open("{:url('admin/uncofginfo/printuncofginfo')}?cs_id="+ cs_id + "&file_name=" + exportparam.file_name+ "&file_extend=" + exportparam.file_extend,"_self");
+                            }
+                        });
+                    return false;
+                });
             });
             //编辑或者新增Item 窗体，tableRowIndex：表序号 新增不填
             function openWindow(tableRowIndex) {

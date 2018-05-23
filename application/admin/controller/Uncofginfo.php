@@ -14,12 +14,29 @@ class Uncofginfo extends Controller
 {
     public function uncofginfo(){
         $type = $_GET['type'];
+        if(isset($_GET['cs_id'])){
+            $cs_id = $_GET['cs_id'];
+            $this->assign('cs_id',$cs_id);
+        }else{
+            $this->assign('cs_id',0);
+        }
+
+        if(isset($_GET['parenttype'])){
+            $parenttype = $_GET['parenttype'];
+            $this->assign('parenttype',$parenttype);
+        }
         $user_session = session("user_session");
+        $role_id = intval($user_session["role_id"]);
+        $role_info = \app\index\model\Admin::queryroleinfo($role_id);
+        $print_power = ($role_info[0]['order_goods_permission'])&0x08;
+        $this->assign('print_power',$print_power);
         $login_user_id = $user_session['user_id'];
         $login_user_name = $user_session['fullname'];
         $date = date("Y-m-d");
         $this->assign('date',$date);
         $this->assign('type',$type);
+        
+        //
         //$this->assign('user_id',$login_user_id);
         //$this->assign('user_name',$login_user_name);
         return $this->fetch();
@@ -42,5 +59,15 @@ class Uncofginfo extends Controller
             }
             return true;
         }
+    }
+
+    /*打印非常规订单确认单*/
+    public function printuncofginfo(){
+        $template_name = "非定型产品确认单.xls";
+        $file_name = $_GET['file_name'];
+        $file_extend = $_GET['file_extend'];
+        $cs_id = $_GET['cs_id'];
+        $ret = \app\index\model\Admin::queryprintuncofginfoorder($cs_id);
+        \app\index\model\Admin::printuncordergoods($file_name,$file_extend,$template_name,$ret);
     }
 }

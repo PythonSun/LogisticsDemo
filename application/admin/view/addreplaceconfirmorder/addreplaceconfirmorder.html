@@ -1255,7 +1255,6 @@
                 console.log("以下清单信息：");
                 console.log(order_goods_manager);
 
-
                 jq.ajax({
                     url: "{:url('admin/addreplaceconfirmorder/addconfirmorder')}",//php文件路径
                     data: {
@@ -1268,7 +1267,7 @@
                         cs_examine:cs_examine,
                         payment_info:payment_info} ,
                     type: 'POST',
-                    //dataType: 'json',
+                    dataType: 'json',
                     success: function(e) {
                         if(e){
                             console.log('订单添加成功！');
