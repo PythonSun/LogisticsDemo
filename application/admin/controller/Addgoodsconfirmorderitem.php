@@ -31,18 +31,14 @@ class Addgoodsconfirmorderitem extends Controller
     public function serachmodelinfo()
     {
         $sereachText = $_POST['serrchText'];
-        $productType = $_POST['type'];
-        $brand = $_POST['brand'];
-        $dbproductinfo = \app\index\model\Admin::serachmodelinfo($sereachText,$productType,$brand);
+        $dbproductinfo = \app\index\model\Admin::serachmodelinfo($sereachText);
         return $dbproductinfo;
     }
     //弃用
     public function coldserachmodelinfo()
     {
         $sereachText = $_POST['serrchText'];
-        $productType = $_POST['type'];
-        $brand = $_POST['brand'];
-        $dbproductinfo = \app\index\model\Admin::coldserachmodelinfo($sereachText,$productType,$brand);
+        $dbproductinfo = \app\index\model\Admin::coldserachmodelinfo($sereachText);
         return $dbproductinfo;
     }
     //弃用
