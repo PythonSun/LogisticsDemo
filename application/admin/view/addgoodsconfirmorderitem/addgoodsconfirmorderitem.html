@@ -101,14 +101,11 @@
                     //var product_type = jq("#product_type_id").val();
                     //var brand = jq('#brand_id').val();
                     var serachText = jq("#serachModelinfo").val().trim();;
-                    if (product_type == "" || brand == "" || serachText == ""){
-                        return;
-                    }
                     jq.ajax({
                         url: "{:url('admin/addgoodsconfirmorderitem/serachmodelinfo')}",
                         type: "POST",
                         dataType: "json",
-                        data: { serrchText:serachText, type:product_type, brand:brand },
+                        data: { serrchText:serachText},
                         success: function (data) {
                             response(jq.map(data, function (item) {
                                 return {
@@ -118,6 +115,13 @@
                             }));
                         },
                     });
+                },
+                select:function (request, response) {
+                    if (response != null && response.item != null && response.item.value != null && response.item.value != ''){
+                        jq('#serachModelinfo').val(response.item.value);
+                        jq("#serachModelinfo").blur();
+                    }
+
                 }
             });
             jq("#serachModelinfo").keypress(function(e){
@@ -277,6 +281,15 @@
             var jq = layui.jquery;
             ogcugi_id = data.ogcugi_id;
             cs_id = data.cs_id;
+
+            jq('#product_info_name').val(data.product_info_name);
+
+            jq('#product_type_id').val(data.product_type_id);
+
+            jq('#brand_id').val(data.brand_id);
+
+            jq('#place_id').val(data.place_id);
+
             //document.getElementById('product_type_id').value = data.product_type_id;
             //document.getElementById('brand_id').value = data.brand_id;
             jq('#serachModelinfo').val(data.model);

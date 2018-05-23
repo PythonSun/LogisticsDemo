@@ -379,6 +379,7 @@
                 $(document).ready(function(){
                     isLoading = true;
                     type = {$type};
+                    console.log(type);
                     var order_info = {$order_info};
                     if(order_info == "-1"){
                         //addLogisticsItem(null);      /*物流信息不需要手动填写*/
@@ -564,7 +565,7 @@
                         shade: [0.7, '#393D49'],
                         skin: 'layui-layer-molv',
                         maxmin:true,
-                        content:"{:url('admin/uncofginfo/uncofginfo')}?type=1",
+                        content:"{:url('admin/uncofginfo/uncofginfo')}?type=1&parenttype=" + {$type},
                         btn:['确定','退出'],
                         yes:function (index,layero) {
                             var  iframeWin = top.window[layero.find('iframe')[0]['name']];
@@ -599,6 +600,14 @@
                     });
                 });
                 jq('#lookuncofginfo').click(function () {
+                    var type = {$type};
+                    var url = "";
+
+                    if(type == 0){
+                        url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + {$type} + "&cs_id=" + cs_id;
+                    }else if(type == 1){
+                        url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + {$type};
+                    }
                     top.layer.open({
                         type:2,
                         title:'查看非定型产品订货单',
@@ -606,7 +615,7 @@
                         shade: [0.7, '#393D49'],
                         skin: 'layui-layer-molv',
                         maxmin:true,
-                        content:"{:url('admin/uncofginfo/uncofginfo')}?type=0",
+                        content:url,
                         btn:['退出'],
                         yes:function (index,layero) {
                             top.layer.close(index);
@@ -893,10 +902,12 @@
                 itemInfo.ogcugi_id = ogcugi_id === undefined? "" : ogcugi_id;
                 itemInfo.cs_id = cs_id === undefined? "" : cs_id;
                 itemInfo.product_type_id = rowdata[1]['tag'];
+                itemInfo.product_info_name = rowdata[3]['text'];
                 itemInfo.brand_id = rowdata[2]['tag'];
                 itemInfo.model = rowdata[4]['text'];
                 itemInfo.product_info_id = rowdata[4]['tag'];
                 itemInfo.ogcugi_count = rowdata[6]['text'];
+                itemInfo.place_id = rowdata[7]['tag'];
                 itemInfo.ogcugi_product_state = rowdata[8]['tag'];
                 itemInfo.ogcugi_comment = rowdata[9]['text'];
                 itemInfo.ogcugi_unit = rowdata[5]['text'];
@@ -914,7 +925,7 @@
                 var product_info_id = itemData.product_info_id;
                 var model = itemData.model;
                 var ogcugi_unit = itemData.ogcugi_unit;
-                var place = itemData.place_id;
+                var place_id = itemData.place_id;
                 var place_name = itemData.place_name;
                 var ogcugi_count =itemData.ogcugi_count;
                 var ogcugi_product_state = itemData.ogcugi_product_state;
@@ -941,7 +952,7 @@
                 var col_6 = new_tr.insertCell(6);
                 col_6.innerHTML = "<td><a>"+ ogcugi_count +"</a></td>";
                 var col_7 = new_tr.insertCell(7);
-                col_7.innerHTML = "<td><a tag = '"+ place +"'>"+ place_name +"</a></td>";
+                col_7.innerHTML = "<td><a tag = '"+ place_id +"'>"+ place_name +"</a></td>";
                 var col_8 = new_tr.insertCell(8);
                 col_8.innerHTML = "<td><a tag='" + ogcugi_product_state + "'>"+ ogcugi_product_state_text +"</a></td>";
                 var col_9 = new_tr.insertCell(9);
@@ -1171,16 +1182,16 @@
                 if(isLoading){
                     return false;
                 }
-                var logistics_info = getlogisticsInfo();
-                if(logistics_info == null){
-                    layer.msg('请填写完整物流信息！',{icon:2});
-                    return false;
-                }
-                var logistics_info_length = logistics_info.length;
-                if(logistics_info_length < 1){
-                    layer.msg('请填写物流信息！',{icon:2});
-                    return false;
-                }
+                // var logistics_info = getlogisticsInfo();
+                // if(logistics_info == null){
+                //     layer.msg('请填写完整物流信息！',{icon:2});
+                //     return false;
+                // }
+                // var logistics_info_length = logistics_info.length;
+                // if(logistics_info_length < 1){
+                //     layer.msg('请填写物流信息！',{icon:2});
+                //     return false;
+                // }
                 var jq = layui.jquery;
                 var data = [];
                 var obj = jq("form").serializeArray();                                  //获取表单数据
@@ -1192,9 +1203,9 @@
                 if(!retVf){
                     return false;
                 }
-                console.log(data);
-                console.log('下列输入物流信息：');
-                console.log(logistics_info);
+                // console.log(data);
+                // console.log('下列输入物流信息：');
+                // console.log(logistics_info);
                 var order_goods_cs_info = getorderGoodsInfo(data);
                 console.log('下列输入订货确认单信息：');
                 console.log(order_goods_cs_info);
@@ -1246,7 +1257,7 @@
                     url: "{:url('admin/addgoodsconfirmorder/editcs')}",//php文件路径
                     data: {
                         order_goods_cs_info:order_goods_cs_info,
-                        logistics_info:logistics_info,
+                        //logistics_info:logistics_info,
                         cs_belong:cs_belong,
                         ofg_info:ofg_info,
                         fee_info:fee_info,
