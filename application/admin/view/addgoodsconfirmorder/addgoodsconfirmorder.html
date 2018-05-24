@@ -359,7 +359,7 @@
                     ,position: 'fixed'
                     ,theme: 'molv'
                 });
-                //执行实例
+                //上传文件
                 var uploadPic = upload.render({
                     elem: '#uploadpic' //绑定元素
                     ,method: 'POST'
@@ -408,7 +408,6 @@
                 $(document).ready(function(){
                     isLoading = true;
                     type = {$type};
-                    console.log(type);
                     var order_info = {$order_info};
                     if(order_info == "-1"){
                         //addLogisticsItem(null);      /*物流信息不需要手动填写*/
@@ -417,10 +416,12 @@
                         isLoading = false;
                         return ;
                     }
+                    console.time("timer");
                     setDBDateToHtml(order_info);
                     setHtmlType();
                     layui.form.render('select');
                     isLoading = false;
+                    console.timeEnd("timer");
                 });
                 //监听提交
                 form.on('submit(save)', function (uidata) {
@@ -519,7 +520,7 @@
                             if (e != null){
                                 if(e.code == 1){
                                     isSave = true;
-                                    top.layer.alert(e.msg);
+                                    top.layer.msg(e.msg);
                                     location.href = "{:url('admin/addgoodsconfirmorder/addgoodsconfirmorder')}";
                                 }else if(e.code == 0){
                                     top.layer.alert(e.msg);
@@ -774,10 +775,12 @@
                         if (tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == "") {
                             var rowIndex = jq('#tableorder')[0].rows.length;
                             addTableItem(orderItem, rowIndex);
+                            top.layer.msg('新增清单成功，序号：'+ rowIndex,{icon:1});
                         }
                         else {
                             jq('#tableorder')[0].deleteRow(tableRowIndex);
                             addTableItem(orderItem, tableRowIndex);
+                            top.layer.close(index);
                         }
 
                         //top.layer.close(index);
@@ -1327,7 +1330,7 @@
                 return retBo;
             }
 
-            function setHtmlType() {
+            function setHtmlType(isLoading) {
                 if (type == 0){
                     var inputTextArray=$("input[type='text']");
                     inputTextArray.each(
@@ -1368,8 +1371,6 @@
                 $(".logistics").each(function(){
                     $(this).attr('disabled',true);
                 });
-
-
                 layui.form.render('select');
             }
 
@@ -1396,7 +1397,6 @@
                         $('#lookuncofginfo').addClass('btnPicLightBg');
                     }else {
                         $('#deluncofginfo').addClass('hide');
-
                         $('#lookuncofginfo').removeAttr("disabled");
                         $('#lookuncofginfo').removeClass('btnPicLightBg');
                     }
@@ -1407,7 +1407,6 @@
                         $('#lookuncofginfo').addClass('btnPicLightBg');
                     }else {
                         $('#deluncofginfo').removeClass('hide');
-
                         $('#lookuncofginfo').removeAttr("disabled");
                         $('#lookuncofginfo').removeClass('btnPicLightBg');
                     }

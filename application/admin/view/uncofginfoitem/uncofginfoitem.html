@@ -336,6 +336,8 @@
                 place_id:place_id
             },
             success: function (data) {
+                console.log('+++++++++++++++++++++++');
+                console.log(data);
                 if(data !="") {
                     orderItem.product_info_id = data;
                 } else {
