@@ -220,7 +220,7 @@
                         jq('#place_id').val(data[0]['place_id']);
                         ///还要处理
                         layui.form.render('select');
-                        product_info_id = data.product_info_id;
+                        product_info_id = data[0]['product_info_id'];
                         isExistModel = true;
                     }
                 },
