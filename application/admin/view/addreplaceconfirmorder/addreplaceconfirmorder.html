@@ -839,9 +839,11 @@
                     var id= jq(text[0].cells[0].innerHTML).attr("tag");
                     if(id != "")
                         delrowid.push(id);
-                    jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
-                    for(var i = 1; i <= document.getElementById('tableorder').rows.length;i++){
-                        document.getElementById('tableorder').rows[i].cells[0].innerHTML = "<a> "+i+"</a>";
+                    var table = document.getElementById('tableorder');
+                    table.deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
+                    console.log(table);
+                    for(var i = 1; i <= table.rows.length;i++){
+                        jq(table.children[0].children[i].children[0].children[0]).text(i);
                     }
                 });
 
