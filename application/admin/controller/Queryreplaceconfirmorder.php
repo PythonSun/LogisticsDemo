@@ -130,7 +130,6 @@ class Queryreplaceconfirmorder extends Controller
         $file_extend = 'xlsx';
 
         $ret = \app\index\model\Admin::queryprintcsinfoorder($cs_id,$type);
-        dump($ret);
-        //\app\index\model\Admin::printreplaceconfirmorder($file_name,$file_extend,$template_name,$ret,$type);
+        \app\index\model\Admin::printreplaceconfirmorder($file_name,$file_extend,$template_name,$ret,$type);
     }
 }
