@@ -2286,8 +2286,10 @@
             $objPHPExcel = $objReader->load($root_url."/templates/".$template_name);
             $objPHPExcel->setActiveSheetIndex(0);
             $objPHPExcel->getActiveSheet()->setTitle('sheet0');
+            $objPHPExcel->getActiveSheet()->setCellValue('A2', "日期：".$ret[0]['cs_belong_create_time']);
             $objPHPExcel->getActiveSheet()->setCellValue('C3', $ret[0]['build_department_name']);
             $objPHPExcel->getActiveSheet()->setCellValue('G3', $ret[0]['build_user_name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('K3', $ret[0]['build_user_phone']);
             $objPHPExcel->getActiveSheet()->setCellValue('C4', $ret[0]['company_name']);
             $objPHPExcel->getActiveSheet()->setCellValue('K4', $ret[0]['company_phone']);
             $objPHPExcel->getActiveSheet()->setCellValue('C5', $ret[0]['company_address']);
@@ -2299,13 +2301,13 @@
             if($type != 0x03){
                 $objPHPExcel->getActiveSheet()->setCellValue('C9', $ret[0]['delivery_info_receiver_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('I9', $ret[0]['is_insure']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C10', $ret[0]['receiver_phone']);
-                $objPHPExcel->getActiveSheet()->setCellValue('I10', $ret[0]['insure_amout']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C11', $ret[0]['goods_yard_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C10', $ret[0]['delivery_info_receiver_phone']);
+                $objPHPExcel->getActiveSheet()->setCellValue('I10', $ret[0]['insure_amount']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C11', $ret[0]['delivery_info_goods_yard_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('I11', $ret[0]['is_sign']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C12', $ret[0]['receiver_phone']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C12', $ret[0]['delivery_info_goods_yard_phone']);
                 $objPHPExcel->getActiveSheet()->setCellValue('I12', $ret[0]['has_contract']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C13', $ret[0]['receiver_address']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C13', $ret[0]['delivery_info_receiver_address']);
                 $objPHPExcel->getActiveSheet()->setCellValue('C14', $ret[0]['order_delivery_require']);
             }else{
                 $objPHPExcel->getActiveSheet()->setCellValue('C11', $ret[0]['return_info_goods_yard_name']);
@@ -2337,7 +2339,7 @@
                 $objPHPExcel->getActiveSheet()->setCellValue('D'.$item, $productlist[$item-$startitem]['product_info_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('E'.$item, $productlist[$item-$startitem]['model']);
                 $objPHPExcel->getActiveSheet()->setCellValue('F'.$item, $productlist[$item-$startitem]['specification']);
-                $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['uint']);
+                $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['unit']);
                 $objPHPExcel->getActiveSheet()->setCellValue('I'.$item, $productlist[$item-$startitem]['product_number']);
 
                 if(($type == 0x01)||($type == 0x06)){
@@ -2363,6 +2365,12 @@
                     $objPHPExcel->getActiveSheet()->setCellValue('L'.$item, $productlist[$item-$startitem]['fault_condition']);
                 }
             }
+
+            //$objPHPExcel->getActiveSheet()->setCellValue('B33', $ret[0]['company_contact_phone']);
+            //$objPHPExcel->getActiveSheet()->setCellValue('A36', $ret[0]['company_contact_phone']);
+
+            /*插入一行*/
+            //$objPHPExcel->getActiveSheet()->insertNewRowBefore(32,1);
 
             header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachment;filename="'.$file_name.'.'.$file_extend.'"');
