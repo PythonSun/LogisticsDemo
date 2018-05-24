@@ -18,12 +18,21 @@
     </head>
     <body>
         <form class="layui-form layui-form-pane" action="">
-        	<div class="toph2">
-            	<h2>非定型产品订货单</h2>
-            	<!--<i class="fa fa-reply fa-2x" aria-hidden="true"></i>-->
-           	</div>
+            <div style="padding-top: 20px;">
+                <h3 class="textcenter" style="margin-bottom: -30px">非定型产品订货单</h3>
+                <div style="float: right;">
+                    <!--查看非定型确认单打印-->
+                    {if condition="$print_power eq 8"}
+                        {if condition="$type eq 0"}
+                            {if condition="$parenttype eq 0"}
+                                <input style="color: red;" type="button" value="打印" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="printorder">
+                            {/if}
+                        {/if}
+                    {/if}
+                </div>
+            </div>
             
-            <div class="layui-form-item">
+            <div class="layui-form-item" style="padding-top: 10px;">
                 <label class="layui-form-label">TO:</label>
                 <div class="layui-input-block">
                     <input type="text" id="uoi_to" name="uoi_to" autocomplete="on" placeholder="" class="layui-input"> </div>
@@ -105,19 +114,6 @@
                 <div class="layui-input-block">
                     <input type="text" name="uoi_provider_name" id="uoi_provider_name" autocomplete="on" placeholder="" class="layui-input"> </div>
             </div>
-            
-            <!--查看非定型确认单打印-->
-            {if condition="$print_power eq 8"}
-                {if condition="$type eq 0"}
-                    {if condition="$parenttype eq 0"}
-                        <div class="layui-form-item">
-                            <div class="layui-btn-container">
-                                <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="printorder">打印</button>
-                            </div>
-                        </div>
-                    {/if}
-                {/if}
-            {/if}
         </form>
         <script type="text/javascript" src="/static/layui/layui.js"></script>
         <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
@@ -277,10 +273,13 @@
                         if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
                             var rowIndex = jq('#tableorder')[0].rows.length;
                             addTableItem(orderItem,rowIndex);
+                            top.layer.msg('新增清单成功，序号：'+ rowIndex,{icon:1});
+                            iframeWin.clear();
                         }
                         else {
                             jq('#tableorder')[0].deleteRow(tableRowIndex);
                             addTableItem(orderItem,tableRowIndex);
+                            top.layer.close(index);
                         }
 
                         //top.layer.close(index);

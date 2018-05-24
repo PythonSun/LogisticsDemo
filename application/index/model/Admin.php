@@ -75,11 +75,11 @@
             if($totalargs == 7){
                 if($args[6]['areamanager'] != "" && $areamanager == ""){
                     $areamanger1 = $args[6]['areamanager'];
-                    $sqlone.= " and build_user_name ='$areamanger1'";
+                    $sqlone.= " and build_user_name LIKE '%$areamanger1%'";
                 }
                 if($args[6]['departmentname'] != "" && $departmentname == ""){
                     $departmentname1 = $args[6]['departmentname'];
-                    $sqlone.= " and build_department_name ='$departmentname1'";
+                    $sqlone.= " and  build_department_name LIKE '%$departmentname1%'";
                 }
                 if($args[6]['organizename'] != "" && $organizename == ""){
                     $organizename1 = $args[6]['organizename'];
@@ -89,6 +89,10 @@
                 $enddate = $args[6]['enddate'];
                 if($startdate != "" && $enddate != "" ){
                     $sqlone.= " and order_date >='$startdate' and order_date <='$enddate'";
+                }else if($startdate != "" && $enddate == "" ){
+                    $sqlone.= " and order_date >='$startdate'";
+                }else if($startdate == "" && $enddate != "" ){
+                    $sqlone.= " and order_date <='$enddate'";
                 }
                 if($args[6]['order_id'] != "")
                 {
@@ -99,6 +103,10 @@
                 {
                     $cs_info_state = $args[6]['orderstate'];
                     $sqlone.= " and cs_info_state ='$cs_info_state'";
+                }
+                if ($args[6]['freightmode'] != ""){
+                    $transfer_mode = $args[6]['freightmode'];
+                    $sqlone.= " and dsp_logistic.fee_info.transfer_mode ='$transfer_mode'";
                 }
                 /*if($type == 2||$type == 5) //借样和配件没有返货信息
                 {
@@ -117,6 +125,7 @@
                     }
                 }*/
             }
+            //return $sqlone;
             $countobj = Db::query($sqlone);
             $count = $countobj[0]['count(*)'];
             if($count == 0){
@@ -153,11 +162,11 @@
             if($totalargs == 7){
                 if($args[6]['areamanager'] != "" && $areamanager == ""){
                     $areamanger1 = $args[6]['areamanager'];
-                    $sqltwo.= " and build_user_name ='$areamanger1'";
+                    $sqltwo.= " and build_user_name LIKE '%$areamanger1%'";
                 }
                 if($args[6]['departmentname'] != "" && $departmentname == ""){
                     $departmentname1 = $args[6]['departmentname'];
-                    $sqltwo.= " and build_department_name ='$departmentname1'";
+                    $sqltwo.= " and build_department_name LIKE '%$departmentname1%'";
                 }
                 if($args[6]['organizename'] != "" && $organizename == ""){
                     $organizename1 = $args[6]['organizename'];
@@ -167,6 +176,10 @@
                 $enddate = $args[6]['enddate'];
                 if($startdate != "" && $enddate != "" ){
                     $sqltwo.= " and order_date >='$startdate' and order_date <='$enddate'";
+                }else if($startdate != "" && $enddate == "" ){
+                    $sqltwo.= " and order_date >='$startdate'";
+                }else if($startdate == "" && $enddate != "" ){
+                    $sqltwo.= " and order_date <='$enddate'";
                 }
                 if($args[6]['order_id'] != "")
                 {
@@ -177,6 +190,10 @@
                 {
                     $cs_info_state = $args[6]['orderstate'];
                     $sqltwo.= " and cs_info_state ='$cs_info_state'";
+                }
+                if ($args[6]['freightmode'] != ""){
+                    $transfer_mode = $args[6]['freightmode'];
+                    $sqltwo.=" and dsp_logistic.fee_info.transfer_mode ='$transfer_mode'";
                 }
                 /*if($type == 2||$type == 5) //借样和配件没有返货信息
                 {
@@ -214,7 +231,7 @@
                     $tableobj[$i]["receiver_name"] = $tableobj[$i]["receiver_name"];//+++++
                     //$tableobj[$i]['write_date'] = $tableobj[$i]["order_date"];
                     $state = $tableobj[$i]["cs_info_state"];
-                    $mode =  $tableobj[$i]["delivered_total"];
+                    $mode =  $tableobj[$i]["transfer_mode"];
                     if($state == 0)
                         $tableobj[$i]["cs_info_state"] = "空";
                     elseif ($state == 1)
@@ -234,13 +251,13 @@
                         $tableobj[$i]["cs_info_state"] = "备货";
                     }
 
-                    if ($mode == 1)
+                    if ($mode == 0)
                         $tableobj[$i]["transfer_fee_mode"] = "到付";
-                    elseif ($mode == 2)
+                    elseif ($mode == 1)
                         $tableobj[$i]["transfer_fee_mode"] = "现金";
+                    elseif ($mode == 2)
+                        $tableobj[$i]["transfer_fee_mode"] = "代付";
                     elseif ($mode == 3)
-                        $tableobj[$i]["transfer_fee_mode"] = "现付";
-                    elseif ($mode == 4)
                         $tableobj[$i]["transfer_fee_mode"] = "公司付";
 
 
@@ -2247,6 +2264,15 @@
                 $tableobj[$item]['productlist'] = $productlist;
             }
 
+            /*查询其他说明和物流情况说明*/
+            $sqlthree = "select dsp_logistic.order_goods_manager.*, dsp_logistic.order_goods_logistics.* from dsp_logistic.order_goods_manager ";
+            $sqlthree .= "left join dsp_logistic.order_goods_logistics on dsp_logistic.order_goods_logistics.order_goods_manager_id = dsp_logistic.order_goods_manager.order_goods_manager_id ";
+            $sqlthree .= "where dsp_logistic.order_goods_manager.cs_id='$cs_id'";
+            $explainobj = Db::query($sqlthree);
+
+            $tableobj[0]['order_goods_manager_explain'] = $explainobj[0]['order_goods_manager_explain'];
+            $tableobj[0]['ogl_explain'] = $explainobj[0]['ogl_explain'];
+
             return $tableobj;
         }
 
@@ -2288,29 +2314,30 @@
             $objPHPExcel = $objReader->load($root_url."/templates/".$template_name);
             $objPHPExcel->setActiveSheetIndex(0);
             $objPHPExcel->getActiveSheet()->setTitle('sheet0');
-            $objPHPExcel->getActiveSheet()->setCellValue('A2', "日期：".$ret[0]['cs_belong_create_time']);
-            $objPHPExcel->getActiveSheet()->setCellValue('C3', $ret[0]['build_department_name']);
-            $objPHPExcel->getActiveSheet()->setCellValue('G3', $ret[0]['build_user_name']);
-            $objPHPExcel->getActiveSheet()->setCellValue('K3', $ret[0]['build_user_phone']);
-            $objPHPExcel->getActiveSheet()->setCellValue('C4', $ret[0]['company_name']);
-            $objPHPExcel->getActiveSheet()->setCellValue('K4', $ret[0]['company_phone']);
-            $objPHPExcel->getActiveSheet()->setCellValue('C5', $ret[0]['company_address']);
-            $objPHPExcel->getActiveSheet()->setCellValue('C6', $ret[0]['legal_representative']);
-            $objPHPExcel->getActiveSheet()->setCellValue('I6', $ret[0]['legal_phone']);
-            $objPHPExcel->getActiveSheet()->setCellValue('C7', $ret[0]['company_contact']);
-            $objPHPExcel->getActiveSheet()->setCellValue('I7', $ret[0]['company_contact_phone']);
+            $objPHPExcel->getActiveSheet()->setCellValue('A1', "日期：".$ret[0]['cs_belong_create_time']);
+            $objPHPExcel->getActiveSheet()->setCellValue('L1', "部门编号：".$ret[0]['build_department_id']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C2', $ret[0]['build_department_name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('G2', $ret[0]['build_user_name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('K2', $ret[0]['build_user_phone']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C3', $ret[0]['company_name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('K3', $ret[0]['company_phone']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C4', $ret[0]['company_address']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C5', $ret[0]['legal_representative']);
+            $objPHPExcel->getActiveSheet()->setCellValue('I5', $ret[0]['legal_phone']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C6', $ret[0]['company_contact']);
+            $objPHPExcel->getActiveSheet()->setCellValue('I6', $ret[0]['company_contact_phone']);
 
             if($type != 0x03){
-                $objPHPExcel->getActiveSheet()->setCellValue('C9', $ret[0]['delivery_info_receiver_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('I9', $ret[0]['is_insure']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C10', $ret[0]['delivery_info_receiver_phone']);
-                $objPHPExcel->getActiveSheet()->setCellValue('I10', $ret[0]['insure_amount']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C11', $ret[0]['delivery_info_goods_yard_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('I11', $ret[0]['is_sign']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C12', $ret[0]['delivery_info_goods_yard_phone']);
-                $objPHPExcel->getActiveSheet()->setCellValue('I12', $ret[0]['has_contract']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C13', $ret[0]['delivery_info_receiver_address']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C14', $ret[0]['order_delivery_require']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C8', $ret[0]['delivery_info_receiver_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('I8', $ret[0]['is_insure']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C9', $ret[0]['delivery_info_receiver_phone']);
+                $objPHPExcel->getActiveSheet()->setCellValue('I9', $ret[0]['insure_amount']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C10', $ret[0]['delivery_info_goods_yard_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('I10', $ret[0]['is_sign']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C11', $ret[0]['delivery_info_goods_yard_phone']);
+                $objPHPExcel->getActiveSheet()->setCellValue('I11', $ret[0]['has_contract']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C12', $ret[0]['delivery_info_receiver_address']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C13', $ret[0]['order_delivery_require']);
             }else{
                 $objPHPExcel->getActiveSheet()->setCellValue('C11', $ret[0]['return_info_goods_yard_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('C12', $ret[0]['return_info_goods_yard_phone']);
@@ -2320,14 +2347,14 @@
 
 
             if(($type != 0x02)||($type != 0x03)||($type != 0x05)){
-                $objPHPExcel->getActiveSheet()->setCellValue('C17', $ret[0]['return_info_goods_yard_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C18', $ret[0]['return_info_goods_yard_phone']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C19', $ret[0]['return_info_receiver_address']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C20', $ret[0]['return_order_num']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C16', $ret[0]['return_info_goods_yard_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C17', $ret[0]['return_info_goods_yard_phone']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C18', $ret[0]['return_info_receiver_address']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C19', $ret[0]['return_order_num']);
             }
 
             if(($type == 0x01)||($type == 0x06)||($type == 0x04)||($type == 0x05)){
-                $startitem = 22;
+                $startitem = 21;
             }
 
             if(($type == 0x02)||($type == 0x03)){
@@ -2368,17 +2395,61 @@
                 }
             }
 
-            //$objPHPExcel->getActiveSheet()->setCellValue('B33', $ret[0]['company_contact_phone']);
-            //$objPHPExcel->getActiveSheet()->setCellValue('A36', $ret[0]['company_contact_phone']);
+            /*其他说明和情况说明暂时都没写*/
+            $objPHPExcel->getActiveSheet()->setCellValue('B31', $ret[0]['order_goods_manager_explain']);
+            $objPHPExcel->getActiveSheet()->setCellValue('A32', "情况说明（物流部）: ".$ret[0]['ogl_explain']);
 
             /*插入一行*/
             //$objPHPExcel->getActiveSheet()->insertNewRowBefore(32,1);
+            $newrows = count($productlist) - 10;
+            $objPHPExcel->getActiveSheet()->insertNewRowBefore(31,$newrows);
+            for($i=0; $i<$newrows;$i++){
+                $objPHPExcel->getActiveSheet()->mergeCells('F'.(31+$i).':'.'G'.(31+$i));
+            }
+
+            /*超过默认行数*/
+            if(count($productlist) > 10){
+                for($item=$startitem+10;$item<(count($productlist)+$startitem);$item++){
+                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$item, $item-20);
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$item, $productlist[$item-$startitem]['product_type_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$item, $productlist[$item-$startitem]['brand_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$item, $productlist[$item-$startitem]['product_info_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$item, $productlist[$item-$startitem]['model']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$item, $productlist[$item-$startitem]['specification']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['unit']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$item, $productlist[$item-$startitem]['product_number']);
+
+                    if(($type == 0x01)||($type == 0x06)){
+                        $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['bar_code']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['back_date']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('L'.$item, $productlist[$item-$startitem]['replace_reason']);
+                    }
+
+                    if($type == 0x02){
+                        $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['back_date']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['unit_price']);
+                    }
+
+                    if($type == 0x03){
+                        $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['bar_code']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['purchase_date']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('L'.$item, $productlist[$item-$startitem]['unit_price']);
+                    }
+
+                    if($type == 0x04){
+                        $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['deal_date']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['bar_code']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('L'.$item, $productlist[$item-$startitem]['fault_condition']);
+                    }
+                }
+            }
 
             header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachment;filename="'.$file_name.'.'.$file_extend.'"');
             header('Cache-Control: max-age=0');
             ob_clean();  //关键
             flush();     //关键
+
             if($file_extend == 'xlsx'){
                 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel2007');
             }else if($file_extend == 'xls'){
