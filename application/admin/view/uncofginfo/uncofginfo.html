@@ -204,22 +204,29 @@
                 //删除行
                 jq(document).on('click', '.del_btn', function(){
                     var text = jq(this).parent().parent();
+                    top.layer.confirm('是否删除此行信息？', {
+                        btn: ['是','否'] //按钮
+                    }, function(index){
+                        var uod_id = jq(text).attr("uod_id");
+                        if (uod_id === undefined || uod_id == ""){
+                            //return;
+                        }else {
+                            delrowid.push(uod_id);
+                        }
+                        jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());
 
-                    var uod_id = jq(text).attr("uod_id");
-                    if (uod_id === undefined || uod_id == ""){
-                        //return;
-                    }else {
-                        delrowid.push(uod_id);
-                    }
-                    jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());
 
+                        var table = document.getElementById("tableorder"); //获得整个表格对象
+                        for (var i = 1; i < table.rows.length; i++) {
+                            var rowObj = table.rows[i]
+                            var cell = rowObj.cells[0];
+                            cell.innerHTML ="<a>"+ i+"</a>";
+                        }
+                        top.layer.close(index);
+                    }, function(){
 
-                    var table = document.getElementById("tableorder"); //获得整个表格对象
-                    for (var i = 1; i < table.rows.length; i++) {
-                        var rowObj = table.rows[i]
-                        var cell = rowObj.cells[0];
-                        cell.innerHTML ="<a>"+ i+"</a>";
-                    }
+                    });
+
                 });
 
                 /*打印非定型订单*/
@@ -249,16 +256,8 @@
             });
             //编辑或者新增Item 窗体，tableRowIndex：表序号 新增不填
             function openWindow(tableRowIndex) {
-                jq = layui.jquery;
-                var rowIndex = "";
-                if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
-
-                    rowIndex = jq('#tableorder')[0].rows.length;
-                }
-                else {
-                    rowIndex = tableRowIndex;
-                }
-                layer = layui.layer,
+                var jq = layui.jquery;
+                var layer = layui.layer;
                 top.layer.open({
                     type:2,
                     title:'新增清单',
@@ -276,13 +275,15 @@
                         }
 
                         if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
-
+                            var rowIndex = jq('#tableorder')[0].rows.length;
+                            addTableItem(orderItem,rowIndex);
                         }
                         else {
-                            jq('#tableorder')[0].deleteRow(rowIndex);
+                            jq('#tableorder')[0].deleteRow(tableRowIndex);
+                            addTableItem(orderItem,tableRowIndex);
                         }
-                        addTableItem(orderItem,rowIndex);
-                        top.layer.close(index);
+
+                        //top.layer.close(index);
                     },
                     btn2: function (index) {
                         top.layer.close(index);
@@ -454,7 +455,7 @@
                     return false;
                 }
                 if (uoi_to == "" || uoi_manual_ofg_id == "" || uoi_custom_name == ""
-                    || uoi_to_place == "" || uoi_project_name == "" || uoi_provider_name == ""){
+                    || uoi_to_place == ""){
                     layer.msg('请填写完整非定型订货单信息！',{icon:2});
                     return false;
                 }
