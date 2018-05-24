@@ -89,6 +89,10 @@
                 $enddate = $args[6]['enddate'];
                 if($startdate != "" && $enddate != "" ){
                     $sqlone.= " and order_date >='$startdate' and order_date <='$enddate'";
+                }else if($startdate != "" && $enddate == "" ){
+                    $sqlone.= " and order_date >='$startdate'";
+                }else if($startdate == "" && $enddate != "" ){
+                    $sqlone.= " and order_date <='$enddate'";
                 }
                 if($args[6]['order_id'] != "")
                 {
@@ -167,6 +171,10 @@
                 $enddate = $args[6]['enddate'];
                 if($startdate != "" && $enddate != "" ){
                     $sqltwo.= " and order_date >='$startdate' and order_date <='$enddate'";
+                }else if($startdate != "" && $enddate == "" ){
+                    $sqltwo.= " and order_date >='$startdate'";
+                }else if($startdate == "" && $enddate != "" ){
+                    $sqltwo.= " and order_date <='$enddate'";
                 }
                 if($args[6]['order_id'] != "")
                 {

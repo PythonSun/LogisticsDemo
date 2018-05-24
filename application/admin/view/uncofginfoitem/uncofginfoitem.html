@@ -352,6 +352,29 @@
         }
     }
 
+    function clear() {
+        var jq = layui.jquery;
+        jq('#product_info_name').val("");
+        jq('#product_type_id').val("");
+        jq('#brand_id').val("");
+        jq('#place_id').val("");
+        document.getElementById('unc_product_id').value = "";
+        //jq('#product_type_id').attr('value',data.product_type_id);
+        //jq('#brand_id').attr('value',data.brand_id);
+        jq('#serachModelinfo').val("");
+        jq('#uod_count').val("");
+        jq('#uod_unit').val("");
+        jq('#uod_requirement').val("");
+        jq('#uod_delivery_date').val("");
+        jq('#uod_comment').val("");
+        jq('#product_info_name').removeAttr("disabled");
+        jq('#product_type_id').removeAttr("disabled");
+        jq('#brand_id').removeAttr("disabled");
+        jq('#place_id').removeAttr("disabled");
+        layui.form.render('select');
+        uod_id = "";
+    }
+
     function testRgexp(re, s) { // 参数说明 re 为正则表达式 s 为要判断的字符
         return re.test(s)
     }
