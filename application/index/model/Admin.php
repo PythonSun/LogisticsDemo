@@ -75,11 +75,11 @@
             if($totalargs == 7){
                 if($args[6]['areamanager'] != "" && $areamanager == ""){
                     $areamanger1 = $args[6]['areamanager'];
-                    $sqlone.= " and build_user_name ='$areamanger1'";
+                    $sqlone.= " and build_user_name LIKE '%$areamanger1%'";
                 }
                 if($args[6]['departmentname'] != "" && $departmentname == ""){
                     $departmentname1 = $args[6]['departmentname'];
-                    $sqlone.= " and build_department_name ='$departmentname1'";
+                    $sqlone.= " and  build_department_name LIKE '%$departmentname1%'";
                 }
                 if($args[6]['organizename'] != "" && $organizename == ""){
                     $organizename1 = $args[6]['organizename'];
@@ -104,6 +104,10 @@
                     $cs_info_state = $args[6]['orderstate'];
                     $sqlone.= " and cs_info_state ='$cs_info_state'";
                 }
+                if ($args[6]['freightmode'] != ""){
+                    $transfer_mode = $args[6]['freightmode'];
+                    $sqlone.= " and dsp_logistic.fee_info.transfer_mode ='$transfer_mode'";
+                }
                 /*if($type == 2||$type == 5) //借样和配件没有返货信息
                 {
                     if($args[6]['receiver_name'] != "")
@@ -121,6 +125,7 @@
                     }
                 }*/
             }
+            //return $sqlone;
             $countobj = Db::query($sqlone);
             $count = $countobj[0]['count(*)'];
             if($count == 0){
@@ -157,11 +162,11 @@
             if($totalargs == 7){
                 if($args[6]['areamanager'] != "" && $areamanager == ""){
                     $areamanger1 = $args[6]['areamanager'];
-                    $sqltwo.= " and build_user_name ='$areamanger1'";
+                    $sqltwo.= " and build_user_name LIKE '%$areamanger1%'";
                 }
                 if($args[6]['departmentname'] != "" && $departmentname == ""){
                     $departmentname1 = $args[6]['departmentname'];
-                    $sqltwo.= " and build_department_name ='$departmentname1'";
+                    $sqltwo.= " and build_department_name LIKE '%$departmentname1%'";
                 }
                 if($args[6]['organizename'] != "" && $organizename == ""){
                     $organizename1 = $args[6]['organizename'];
@@ -185,6 +190,10 @@
                 {
                     $cs_info_state = $args[6]['orderstate'];
                     $sqltwo.= " and cs_info_state ='$cs_info_state'";
+                }
+                if ($args[6]['freightmode'] != ""){
+                    $transfer_mode = $args[6]['freightmode'];
+                    $sqltwo.=" and dsp_logistic.fee_info.transfer_mode ='$transfer_mode'";
                 }
                 /*if($type == 2||$type == 5) //借样和配件没有返货信息
                 {
@@ -222,7 +231,7 @@
                     $tableobj[$i]["receiver_name"] = $tableobj[$i]["receiver_name"];//+++++
                     //$tableobj[$i]['write_date'] = $tableobj[$i]["order_date"];
                     $state = $tableobj[$i]["cs_info_state"];
-                    $mode =  $tableobj[$i]["delivered_total"];
+                    $mode =  $tableobj[$i]["transfer_mode"];
                     if($state == 0)
                         $tableobj[$i]["cs_info_state"] = "空";
                     elseif ($state == 1)
@@ -242,13 +251,13 @@
                         $tableobj[$i]["cs_info_state"] = "备货";
                     }
 
-                    if ($mode == 1)
+                    if ($mode == 0)
                         $tableobj[$i]["transfer_fee_mode"] = "到付";
-                    elseif ($mode == 2)
+                    elseif ($mode == 1)
                         $tableobj[$i]["transfer_fee_mode"] = "现金";
+                    elseif ($mode == 2)
+                        $tableobj[$i]["transfer_fee_mode"] = "代付";
                     elseif ($mode == 3)
-                        $tableobj[$i]["transfer_fee_mode"] = "现付";
-                    elseif ($mode == 4)
                         $tableobj[$i]["transfer_fee_mode"] = "公司付";
 
 
