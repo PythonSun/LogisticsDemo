@@ -288,11 +288,41 @@
             var unc_ofg_info_id = "";
             var consult_sheet_file = "";
             var consult_sheet_file_new = "";
+            var isSave = false;
             var type = 0; //当前页面模式 说明：0：不可编辑 1：编辑
             var uncofginfo = null;      //非常规订单数据 包含unc_ofg_info，清单明细：搜索unc_ofg_items，删除表del_unc_ofg_detail_id_arr
             var del_logistics_id_arr = new Array();//删除物流信息id
             var del_unc_ofg_detail_id_arr = new Array();//删除非定型订单明细id
             var del_ogcugi_id_arr = new Array(); //删除订单明细id
+
+            window.onbeforeunload = onbeforeunload_handler;
+            function onbeforeunload_handler(e)
+            {
+                onunload_handler();
+                //return "确定离开此页面？"
+            }
+
+            function onunload_handler() {
+                console.log("离开了这个页面！！！");
+                if (consult_sheet_file_new != "" && !isSave){
+                    var index = top.layer.msg('加载中', {icon: 16});
+                    var jq = layui.jquery;
+                    jq.ajax({
+                        url: "{:url('admin/addgoodsconfirmorder/delcachefile')}",//php文件路径
+                        data: {
+                            delFileName:consult_sheet_file_new
+                        },
+                        type: 'POST',
+                        async: false,
+                        success: function(res) {
+                            console.log("没保存，删除了缓存咨询表！！！！！！！！！！！！！");
+                            consult_sheet_file_new = "";
+                            top.layer.close(index);
+                        }
+                    })
+                }
+            }
+
             layui.use(['form', 'jquery','layedit', 'laydate','upload'], function () {
                 var form = layui.form,
                     jq = layui.jquery,
@@ -350,7 +380,7 @@
                             jq(this).attr('url',url);
                         }
                         console.log(this);
-                        top.layer.load(); //上传loading
+                        top.layer.load({icon:16}); //上传loading
                         setConsultSheet();
                     }
                     ,done: function(res){
@@ -488,6 +518,7 @@
                             var layer = layui.layer;
                             if (e != null){
                                 if(e.code == 1){
+                                    isSave = true;
                                     top.layer.alert(e.msg);
                                     location.href = "{:url('admin/addgoodsconfirmorder/addgoodsconfirmorder')}";
                                 }else if(e.code == 0){
@@ -1280,7 +1311,7 @@
                         var layer = layui.layer;
                         if (e != null){
                             if(e.code == 1){
-                                console.log('------------------------------');
+                                isSave = true;
                                 retBo = true;
                                 top.layer.msg(e.msg);
                             }else if(e.code == 0){

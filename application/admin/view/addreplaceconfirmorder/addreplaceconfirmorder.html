@@ -1307,7 +1307,6 @@
             //获取子部门并选中
             function LoadingDepartmentAndSelected(value,selectValue) {
                 var jq = layui.jquery;
-                var form1 = layui.form;
                 jq.post("{:url('admin/addreplaceconfirmorder/getdepartmentinfo')}",{'param':value},function(data){
                     for(var  item in data){
                         //console.log(data[item]['organize_name']);
@@ -1326,7 +1325,6 @@
             //获取经理并选中
             function LoadingManagerAndSelected(value,selectValue) {
                 var jq = layui.jquery;
-                var form1 = layui.form;
                 jq.post("{:url('admin/addreplaceconfirmorder/getdspmanagerinfo')}",{'param':value},function(data){
                     for(var  item in data){
                         //console.log(data[item]['organize_name']);
@@ -1347,14 +1345,12 @@
                 if (data == null){
                     return ;
                 }
-
                 var jq = layui.jquery;
                 if (!tableindex){
                     tableindex = jq('#tablelogistics')[0].rows.length;
                 }
                 var laydate = layui.laydate;
                 var form = layui.form;
-
                 var new_tr = jq('#tablelogistics')[0].insertRow(tableindex);//指定位置插入行
 
                 var col_0 = new_tr.insertCell(0);//添加列
@@ -1374,7 +1370,7 @@
             //修改时 经理的提交
             function managerDeliver () {
                 var data = getFormData();
-                jq = layui.jquery;
+                var jq = layui.jquery;
 
                 //判断必填项
                 if(judgeMustInput(data,current_user_type) == false)
@@ -1561,7 +1557,6 @@
             function managerSave() {
                 setDisable(false);
                 var data = getFormData();
-
                 //判断必填项
                 if(judgeMustInput(data,current_user_type) == false)
                 {
@@ -1569,7 +1564,7 @@
                     return false;
                 }
 
-                jq = layui.jquery;
+                var jq = layui.jquery;
                 var  tabledata = getTableContent();
                 var rows = tabledata.length;
                 console.log(data);
@@ -2012,7 +2007,6 @@
                     dataType: 'json',
                     async:false,
                     success: function(e) {
-                        console.log('++++++++++++++++++++++++++++++++++');
                         console.log(e);
                         if(e){
                             console.log('订单添加成功！');
@@ -2393,6 +2387,11 @@
             function getUncofgInfoUI() {
                 return uncofginfo;
             }
+
+            function getCsInfo(data,isSave,isEdit) {
+
+            }
+
         </script>
     </body>
 </html>

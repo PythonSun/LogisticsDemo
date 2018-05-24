@@ -253,9 +253,14 @@
 
                         top.layer.confirm('确定取消？',{icon:2,title:'提示'},function(index){
                             jq.post("{:url('admin/addreplaceconfirmorder/cancelcsinfo')}",{'cs_id':cs_id},function(data){
-                                layer.close(index);
-                                obj.update({
-                                  cs_info_state: '取消'
+                                top.layer.close(index);
+                                // obj.update({
+                                //   cs_info_state: '取消'
+                                // });
+                                table.reload('querytable', {
+                                    page: {
+                                        curr: 1
+                                    }
                                 });
                             });
                         });
