@@ -79,6 +79,7 @@
                         <th>序号</th>
                         <th>产品分类</th>
                         <th>品牌</th>
+                        <th>产品名称</th>
                         <th>生产地</th>
                         <th>型号</th>
                         <th>非常规产品</th>
@@ -203,13 +204,29 @@
                 //删除行
                 jq(document).on('click', '.del_btn', function(){
                     var text = jq(this).parent().parent();
-                    var uod_id = jq(text).attr("uod_id");
-                    if (uod_id === undefined || uod_id == ""){
-                        //return;
-                    }else {
-                        delrowid.push(uod_id);
-                    }
-                    jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
+                    top.layer.confirm('是否删除此行信息？', {
+                        btn: ['是','否'] //按钮
+                    }, function(index){
+                        var uod_id = jq(text).attr("uod_id");
+                        if (uod_id === undefined || uod_id == ""){
+                            //return;
+                        }else {
+                            delrowid.push(uod_id);
+                        }
+                        jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());
+
+
+                        var table = document.getElementById("tableorder"); //获得整个表格对象
+                        for (var i = 1; i < table.rows.length; i++) {
+                            var rowObj = table.rows[i]
+                            var cell = rowObj.cells[0];
+                            cell.innerHTML ="<a>"+ i+"</a>";
+                        }
+                        top.layer.close(index);
+                    }, function(){
+
+                    });
+
                 });
 
                 /*打印非定型订单*/
@@ -239,16 +256,8 @@
             });
             //编辑或者新增Item 窗体，tableRowIndex：表序号 新增不填
             function openWindow(tableRowIndex) {
-                jq = layui.jquery;
-                var rowIndex = "";
-                if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
-
-                    rowIndex = jq('#tableorder')[0].rows.length;
-                }
-                else {
-                    rowIndex = tableRowIndex;
-                }
-                layer = layui.layer,
+                var jq = layui.jquery;
+                var layer = layui.layer;
                 top.layer.open({
                     type:2,
                     title:'新增清单',
@@ -266,13 +275,15 @@
                         }
 
                         if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
-
+                            var rowIndex = jq('#tableorder')[0].rows.length;
+                            addTableItem(orderItem,rowIndex);
                         }
                         else {
-                            jq('#tableorder')[0].deleteRow(rowIndex);
+                            jq('#tableorder')[0].deleteRow(tableRowIndex);
+                            addTableItem(orderItem,tableRowIndex);
                         }
-                        addTableItem(orderItem,rowIndex);
-                        top.layer.close(index);
+
+                        //top.layer.close(index);
                     },
                     btn2: function (index) {
                         top.layer.close(index);
@@ -301,6 +312,7 @@
                 var brand_id = itemData.brand_id;
                 var brand_name = itemData.brand_name;
                 var product_info_id = itemData.product_info_id;
+                var product_info_name = itemData.product_info_name;
                 var model = itemData.model;
 
                 var place_id = itemData.place_id;
@@ -324,30 +336,37 @@
                 col_1.innerHTML = "<td><a tag='"+ product_type_id +"'>"+ product_type_name +"</a></td>";
                 var col_2 = new_tr.insertCell(2);
                 col_2.innerHTML = "<td><a tag='"+ brand_id +"'>"+ brand_name +"</a></td>";
+
                 var col_3 = new_tr.insertCell(3);
-                col_3.innerHTML = "<td><a tag = '"+ place_id +"'>"+ place_name +"</a></td>";
+                col_3.innerHTML = "<td><a>"+ product_info_name +"</a></td>";//-------产品名称-------
+
                 var col_4 = new_tr.insertCell(4);
-                col_4.innerHTML = "<td><a tag='" + product_info_id + "'>"+ model +"</a></td>";
+                col_4.innerHTML = "<td><a tag = '"+ place_id +"'>"+ place_name +"</a></td>";
+
+
 
                 var col_5 = new_tr.insertCell(5);
-                col_5.innerHTML = "<td><a tag='" + unc_product_id + "'>"+ unc_product_name +"</a></td>";
+                col_5.innerHTML = "<td><a tag='" + product_info_id + "'>"+ model +"</a></td>";
 
                 var col_6 = new_tr.insertCell(6);
-                col_6.innerHTML = "<td><a>"+ uod_count +"</a></td>";
+                col_6.innerHTML = "<td><a tag='" + unc_product_id + "'>"+ unc_product_name +"</a></td>";
+
                 var col_7 = new_tr.insertCell(7);
-                col_7.innerHTML = "<td><a>"+ uod_unit +"</a></td>";
+                col_7.innerHTML = "<td><a>"+ uod_count +"</a></td>";
                 var col_8 = new_tr.insertCell(8);
-                col_8.innerHTML = "<td><a>"+ uod_requirement +"</a></td>";
+                col_8.innerHTML = "<td><a>"+ uod_unit +"</a></td>";
                 var col_9 = new_tr.insertCell(9);
-                col_9.innerHTML = "<td><a>"+ uod_delivery_date +"</a></td>";
+                col_9.innerHTML = "<td><a>"+ uod_requirement +"</a></td>";
                 var col_10 = new_tr.insertCell(10);
-                col_10.innerHTML = "<td><a>"+ uod_comment +"</a></td>";
+                col_10.innerHTML = "<td><a>"+ uod_delivery_date +"</a></td>";
+                var col_11 = new_tr.insertCell(11);
+                col_11.innerHTML = "<td><a>"+ uod_comment +"</a></td>";
                 if (type == 1){
-                    var col_11 = new_tr.insertCell(11);
-                    col_11.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
+                    var col_12 = new_tr.insertCell(12);
+                    col_12.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
                 }else {
-                    var col_11 = new_tr.insertCell(11);
-                    col_11.innerHTML = "<td></td>";
+                    var col_12 = new_tr.insertCell(12);
+                    col_12.innerHTML = "<td></td>";
                 }
             }
             //获取整个表数据
@@ -385,21 +404,22 @@
                 itemInfo.brand_id = rowdata[2]['tag'];
                 itemInfo.brand_name = rowdata[2]['text'];
                 //DB product_place
-                itemInfo.place_id = rowdata[3]['tag'];
-                itemInfo.place_name = rowdata[3]['text'];
+                itemInfo.place_id = rowdata[4]['tag'];
+                itemInfo.place_name = rowdata[4]['text'];
                 //DB product_info
-                itemInfo.product_info_id = rowdata[4]['tag'];
-                itemInfo.model = rowdata[4]['text'];
+                itemInfo.product_info_name = rowdata[3]['text'];
+                itemInfo.product_info_id = rowdata[5]['tag'];
+                itemInfo.model = rowdata[5]['text'];
                 //DB unc_ofg_detail
                 itemInfo.uod_id = uod_id === undefined ? "": uod_id;
-                itemInfo.uod_count = rowdata[6]['text'];
-                itemInfo.uod_unit = rowdata[7]['text'];
-                itemInfo.uod_requirement = rowdata[8]['text'];
-                itemInfo.uod_delivery_date = rowdata[9]['text'];
-                itemInfo.uod_comment = rowdata[10]['text'];
+                itemInfo.uod_count = rowdata[7]['text'];
+                itemInfo.uod_unit = rowdata[8]['text'];
+                itemInfo.uod_requirement = rowdata[9]['text'];
+                itemInfo.uod_delivery_date = rowdata[10]['text'];
+                itemInfo.uod_comment = rowdata[11]['text'];
 
-                itemInfo.unc_product_id = rowdata[5]['tag'];
-                itemInfo.unc_product_name = rowdata[5]['text'];
+                itemInfo.unc_product_id = rowdata[6]['tag'];
+                itemInfo.unc_product_name = rowdata[6]['text'];
                 return itemInfo;
             }
             //父级调用 获取参数
@@ -435,7 +455,7 @@
                     return false;
                 }
                 if (uoi_to == "" || uoi_manual_ofg_id == "" || uoi_custom_name == ""
-                    || uoi_to_place == "" || uoi_project_name == "" || uoi_provider_name == ""){
+                    || uoi_to_place == ""){
                     layer.msg('请填写完整非定型订货单信息！',{icon:2});
                     return false;
                 }

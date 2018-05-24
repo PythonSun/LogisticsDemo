@@ -37,18 +37,14 @@ class Addconfirmorderitem extends Controller
     public function serachmodelinfo()
     {
         $sereachText = $_POST['serrchText'];
-        $productType = $_POST['type'];
-        $brand = $_POST['brand'];
-        $dbproductinfo = \app\index\model\Admin::serachmodelinfo($sereachText,$productType,$brand);
+        $dbproductinfo = \app\index\model\Admin::serachmodelinfo($sereachText);
         return $dbproductinfo;
     }
 
     public function coldserachmodelinfo()
     {
         $sereachText = $_POST['serrchText'];
-        $productType = $_POST['type'];
-        $brand = $_POST['brand'];
-        $dbproductinfo = \app\index\model\Admin::coldserachmodelinfo($sereachText,$productType,$brand);
+        $dbproductinfo = \app\index\model\Admin::coldserachmodel($sereachText);
         return $dbproductinfo;
     }
 
@@ -65,5 +61,20 @@ class Addconfirmorderitem extends Controller
             }
         }
         return '';
+    }
+
+    public function addmodel(){
+        if(!array_key_exists('model_info',$_POST))
+        {
+            return $_POST;
+        }
+
+        $model = $_POST['model_info'];
+        $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+        $model['product_info_id'] = $product_info_id;
+        $retsql = \app\index\model\Admin::addproductinfo($model);
+        if($retsql == null)
+            return  '';
+        return $model;
     }
 }

@@ -1218,6 +1218,7 @@
             $sql.= "ON DUPLICATE KEY UPDATE model = '{$model}',product_info_name = '{$product_info_name}',product_type_id = '{$product_type_id}'";
             $sql.= ",brand_id = '{$brand_id}',place_id= '{$place_id}'";
             $sqlret = Db::execute($sql);
+            return $sqlret;
         }
 
         /*获取表中最大的id值*/
