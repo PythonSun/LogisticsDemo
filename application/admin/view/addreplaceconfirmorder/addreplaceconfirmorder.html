@@ -361,14 +361,14 @@
 
             <div class="layui-form-item">
                 <div class="layui-inline">
-                    <label class="layui-form-label Wheat">货期回复</label>
+                    <label class="layui-form-label dark_blue">货期回复</label>
                     <div class="layui-input-inline">
                         <input type="text" name="delivery_date_reply" id="delivery_date_reply" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
                 </div>
                 <div class="layui-inline">
-                    <input type="button" id="uncofginfo" class="layui-btn" target="_blank" value="增加非定型产品订货确认单">
-                    <input type="button" id="lookuncofginfo" class="layui-btn" target="_blank" value="查看非定型产品订货确认单">
-                    <input type="button" id="deluncofginfo" class="layui-btn" target="_blank" style="color: red" value="删除非定型产品订货确认单">
+                    <input type="button" id="uncofginfo" class="layui-btn dark_blue" target="_blank" value="增加非定型产品订货确认单">
+                    <input type="button" id="lookuncofginfo" class="layui-btn dark_blue" target="_blank" value="查看非定型产品订货确认单">
+                    <input type="button" id="deluncofginfo" class="layui-btn dark_blue" target="_blank" style="color: red" value="删除非定型产品订货确认单">
                 </div>
             </div>
 
@@ -478,6 +478,11 @@
                     position: 'fixed',
                     theme: 'molv'
                 });
+                laydate.render({
+                    elem: '#delivery_date_reply',
+                    position: 'fixed',
+                    theme: 'molv'
+                });
                 //监听保存
                 form.on('submit(save)', function (uidata) {
                     return saveOrDeliverToSql(uidata,0);
@@ -521,6 +526,8 @@
                         jq('#cs_info_state').val(data['cs_info_state']);
                         if(data['complete_date'] != '2000-01-01 00:00:00' && data['complete_date'] != '2000-01-01' )
                             jq('#date2').val(data['complete_date']); //不确定下单时间是指那个
+                        if(data['delivery_date_reply'] != '2000-01-01 00:00:00' && data['complete_date'] != '2000-01-01' )
+                            jq('#delivery_date_reply').val(data['delivery_date_reply']); //不确定下单时间是指那个
                         editOrderData['cs_id'] = data['cs_id'];
                         editOrderData['complete_date'] = data['complete_date'];
                         editOrderData['product_number'] = data['product_number'];
@@ -718,6 +725,7 @@
                                 return;
                             }
                             //+判断
+                            //console.log(orderItem);
                             var row = new Object();
                             row.product_type_id = orderItem.product_type_id;
                             row.product_type_name = orderItem.product_type_name;
@@ -1094,43 +1102,30 @@
 
             //新增时保存或者转交 新增单  state: 0,保存  1，转交给总监
             function saveOrDeliverToSql(uidata,state) {
-                jq = layui.jquery;
+                var jq = layui.jquery;
                 var  tabledata = getTableContent();
-                var exp = getOtherExplain();
-                var ogl_explain = getOglExplain();
+                console.log(tabledata);
                 var data = uidata.field;
+                setDisable(false);
                 //判断必填项
                 if(judgeMustInput(data,current_user_type) == false)
                 {
                     return false;
                 }
                 var rows = tabledata.length;
-               // console.log(data);
-                //cs_info.cs_id  = data['swiftnumber'];
-                if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
-                    layer.msg('请选择部门！',{icon:2});
-                    return false;
-                }
-                if(data['build_user_id'] == ""){
-                    layer.msg('请选择经理！',{icon:2});
-                    return false;
-                }
+
                 var cs_info = new Object();
                 cs_info.payment_info_id = -1;
                 cs_info.cur_process_user_id = data['build_user_id'];                      // 当前处理用户id
                 cs_info.pre_process_user_id = data['build_user_id'];                         //     上一次处理用户id
                 cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
                 cs_info.can_edit = state == 1 ? 1 : 0;
-                //cs_info.write_date = data['date1'];                   //又服务器创建
-                /*if(data['status'] == ""){
-                    layer.msg('请选择是否到账！',{icon:2});
-                    return false;
-                }*/
                 cs_info.cs_examine_ids = "";
                 cs_info.cs_info_state = data['cs_info_state'];
                 cs_info.complete_date = complete_date;       //新增 无完成日期
                 cs_info.product_number = rows;
                 cs_info.unc_ofg_info_id = unc_ofg_info_id;
+                cs_info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
                 console.log("以下确认单信息：");
                 console.log(cs_info);
                 var custom_info = new Object();
@@ -1151,22 +1146,8 @@
                 delivery_info.delivery_info_receiver_address = data['delivery_info_receiver_address'];
                 delivery_info.is_insure = data['is_insure'];
                 delivery_info.insure_amount = data['insure_amount'] == ''?0:data['insure_amount'];
-                if(data['is_insure'] == 1){
-                    if(data['insure_amount'] == ""){
-                        layer.msg('请选择填写保额！',{icon:2});
-                        return false;
-                    }
-                    else
-                    {
-
-                    }
-                }
                 delivery_info.is_sign = data['is_sign'];
                 delivery_info.has_contract = data['has_contract'];
-                if(data['transfer_fee_mode'] == ""){
-                    layer.msg('请选择运费方式！',{icon:2});
-                    return false;
-                }
                 delivery_info.transfer_fee_mode = data['transfer_fee_mode'];//freightway 运费方式
                 delivery_info.order_delivery_require = data['order_delivery_require'];
                 console.log("以下发货信息：");
@@ -1285,6 +1266,7 @@
                         }
                     }
                 })
+                setDisable(true);
                 return false;
             }
             //获取订购清单明细
@@ -1322,20 +1304,9 @@
                 console.log(data);
                 return data;
             }
-            //获取清单其它说明（经理部分）
-            function getOtherExplain(){
-                var exp = document.getElementById('order_goods_manager_explain').text;
-                return exp;
-            }
-            //获取物流情况说明
-            function getOglExplain(){
-                var exp = document.getElementById('ogl_explain').text;
-                return exp;
-            }
             //获取子部门并选中
             function LoadingDepartmentAndSelected(value,selectValue) {
                 var jq = layui.jquery;
-                var form1 = layui.form;
                 jq.post("{:url('admin/addreplaceconfirmorder/getdepartmentinfo')}",{'param':value},function(data){
                     for(var  item in data){
                         //console.log(data[item]['organize_name']);
@@ -1354,7 +1325,6 @@
             //获取经理并选中
             function LoadingManagerAndSelected(value,selectValue) {
                 var jq = layui.jquery;
-                var form1 = layui.form;
                 jq.post("{:url('admin/addreplaceconfirmorder/getdspmanagerinfo')}",{'param':value},function(data){
                     for(var  item in data){
                         //console.log(data[item]['organize_name']);
@@ -1370,61 +1340,17 @@
                     layui.form.render('select');
                 });
             }
-            //获取物流信息
-            function getlogisticsInfo() {
-                var jq = layui.jquery;
-                var mytable = document.getElementById('tablelogistics');
-                var rows = mytable.rows.length;
-                var retArray = [];
-                for(var i = 1; i < rows; i++){
-                    var rowdata = {};
-                    var rowObj = mytable.rows[i]
-                    for(var j = 0,cells=mytable.rows[i].cells.length; j<cells; j++){
-                        var cellData = mytable.rows[i].cells[j].getElementsByTagName("input")[0].value;
-                        rowdata[j] = cellData;
-                    }
-                    var goods_yard_name = rowdata[2];
-                    var transfer_order_num = rowdata[3];
-                    var delivery_date = rowdata[1];
-                    var count = rowdata[4];
-                    if (goods_yard_name == "" && transfer_order_num == "" && delivery_date == "" && count == ""){
-                        continue;
-                    }
-                    if (goods_yard_name == "" || transfer_order_num == "" || delivery_date == "" || count == ""){
-
-                        return null;
-                    }
-                    var logistics_info = new Object();
-                    var logistics_id = jq(rowObj).attr('logistics_id');
-                    var cs_id = jq(rowObj).attr('cs_id');
-                    var user_id = jq(rowObj).attr('user_id');
-                    var time_stamp = jq(rowObj).attr('time_stamp');
-                    logistics_info.logistics_id = logistics_id === undefined ? "": logistics_id;
-                    logistics_info.cs_id = logistics_id === undefined ? "": cs_id;
-                    logistics_info.goods_yard_name = goods_yard_name;
-                    logistics_info.transfer_order_num = transfer_order_num;
-                    logistics_info.delivery_date = delivery_date;
-                    logistics_info.count = count;
-                    logistics_info.user_id = user_id === undefined ? "": user_id;                         //登陆ID
-                    logistics_info.time_stamp = time_stamp === undefined ? "2000-01-01": time_stamp;                          //无
-                    console.log(logistics_info);
-                    retArray[i - 1] = logistics_info;
-                }
-                return retArray;
-            }
             //添加一条物流信息 data == null 表示新增一条空数据
             function addLogisticsItem(data,tableindex) {
                 if (data == null){
                     return ;
                 }
-
                 var jq = layui.jquery;
                 if (!tableindex){
                     tableindex = jq('#tablelogistics')[0].rows.length;
                 }
                 var laydate = layui.laydate;
                 var form = layui.form;
-
                 var new_tr = jq('#tablelogistics')[0].insertRow(tableindex);//指定位置插入行
 
                 var col_0 = new_tr.insertCell(0);//添加列
@@ -1444,7 +1370,7 @@
             //修改时 经理的提交
             function managerDeliver () {
                 var data = getFormData();
-                jq = layui.jquery;
+                var jq = layui.jquery;
 
                 //判断必填项
                 if(judgeMustInput(data,current_user_type) == false)
@@ -1456,15 +1382,6 @@
                 var  tabledata = getTableContent();
                 var rows = tabledata.length;
                 console.log(data);
-
-                if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
-                    layer.msg('请选择部门！',{icon:2});
-                    return false;
-                }
-                if(data['build_user_id'] == ""){
-                    layer.msg('请选择经理！',{icon:2});
-                    return false;
-                }
                 var cs_info = new Object();
                 cs_info.custom_info_id = editOrderData['custom_info_id'];
                 cs_info.delivery_info_id = editOrderData['delivery_info_id'];
@@ -1481,6 +1398,7 @@
                 cs_info.complete_date = complete_date;       //新增 无完成日期
                 cs_info.product_number = rows;
                 cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
+                cs_info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
                 console.log("以下确认单信息：");
                 console.log(cs_info);
                 var custom_info = new Object();
@@ -1503,18 +1421,8 @@
                 delivery_info.delivery_info_receiver_address = data['delivery_info_receiver_address'];
                 delivery_info.is_insure = data['is_insure'];
                 delivery_info.insure_amount = data['insure_amount'] == ''?0:data['insure_amount'];
-                if(data['is_insure'] == 1){
-                    if(data['insure_amount'] == ""){
-                        layer.msg('请选择填写保额！',{icon:2});
-                        return false;
-                    }
-                }
                 delivery_info.is_sign = data['is_sign'];
                 delivery_info.has_contract = data['has_contract'];
-                if(data['transfer_fee_mode'] == ""){
-                    layer.msg('请选择运费方式！',{icon:2});
-                    return false;
-                }
                 delivery_info.transfer_fee_mode = data['transfer_fee_mode'];//freightway 运费方式
                 delivery_info.order_delivery_require = data['order_delivery_require'];
                 console.log("以下发货信息：");
@@ -1649,7 +1557,6 @@
             function managerSave() {
                 setDisable(false);
                 var data = getFormData();
-
                 //判断必填项
                 if(judgeMustInput(data,current_user_type) == false)
                 {
@@ -1657,19 +1564,11 @@
                     return false;
                 }
 
-                jq = layui.jquery;
+                var jq = layui.jquery;
                 var  tabledata = getTableContent();
                 var rows = tabledata.length;
                 console.log(data);
 
-                if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
-                    layer.msg('请选择部门！',{icon:2});
-                    return false;
-                }
-                if(data['build_user_id'] == ""){
-                    layer.msg('请选择经理！',{icon:2});
-                    return false;
-                }
                 var cs_info = new Object();
                 cs_info.custom_info_id = editOrderData['custom_info_id'];
                 cs_info.delivery_info_id = editOrderData['delivery_info_id'];
@@ -1686,6 +1585,7 @@
                 cs_info.complete_date = complete_date;       //新增 无完成日期
                 cs_info.product_number = rows;
                 cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
+                cs_info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
                 console.log("以下确认单信息：");
                 console.log(cs_info);
                 var custom_info = new Object();
@@ -1708,18 +1608,8 @@
                 delivery_info.delivery_info_receiver_address = data['delivery_info_receiver_address'];
                 delivery_info.is_insure = data['is_insure'];
                 delivery_info.insure_amount = data['insure_amount'] == ''?0:data['insure_amount'];
-                if(data['is_insure'] == 1){
-                    if(data['insure_amount'] == ""){
-                        layer.msg('请选择填写保额！',{icon:2});
-                        return false;
-                    }
-                }
                 delivery_info.is_sign = data['is_sign'];
                 delivery_info.has_contract = data['has_contract'];
-                if(data['transfer_fee_mode'] == ""){
-                    layer.msg('请选择运费方式！',{icon:2});
-                    return false;
-                }
                 delivery_info.transfer_fee_mode = data['transfer_fee_mode'];//freightway 运费方式
                 delivery_info.order_delivery_require = data['order_delivery_require'];
                 console.log("以下发货信息：");
@@ -2013,6 +1903,7 @@
 
                 cs_info.product_number = rows;
                 cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
+                cs_info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
                 console.log("以下确认单信息：");
                 console.log(cs_info);
 
@@ -2116,7 +2007,6 @@
                     dataType: 'json',
                     async:false,
                     success: function(e) {
-                        console.log('++++++++++++++++++++++++++++++++++');
                         console.log(e);
                         if(e){
                             console.log('订单添加成功！');
@@ -2265,6 +2155,7 @@
                 cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
                 cs_info.can_edit = 1;                              //0 不可编辑
                 cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
+                cs_info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
                 jq.post("{:url('admin/Addreplaceconfirmorder/returnorder')}",{'cs_info':cs_info,'cs_examine':cs_examine},function (result) {
                    console.log(result);
                 });
@@ -2496,6 +2387,11 @@
             function getUncofgInfoUI() {
                 return uncofginfo;
             }
+
+            function getCsInfo(data,isSave,isEdit) {
+
+            }
+
         </script>
     </body>
 </html>

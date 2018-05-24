@@ -190,13 +190,31 @@
                             shade: 0.9,
                             maxmin: false,
                             content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type= 0",
-                            btn: [ '退出'],
+                            btn: [ '退出','打印'],
                             btnAlign: 'c',
                             yes: function (index,layero) {
-
                                 top.layer.closeAll();
+                            },
+                            btn2:function(){
+                                var cs_id = data.cs_id;
+                                top.layer.open({
+                                type: 2,
+                                area: ['600px', '250px'],
+                                shade: 0.6,
+                                shadeClose:true,
+                                title: '设置打印参数',
+                                resize:false,
+                                btn: ['保存','取消'],
+                                content: "{:url('admin/setexportfileparam/setexportfileparam')}",
+                                yes:function(index2,layero){
+                                        var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                                        var exportparam = iframeWin.getexportparam();
+                                        top.layer.closeAll();
+                                        window.open("{:url('admin/queryreplaceconfirmorder/printreplaceconfirmorder')}?cs_id="+ cs_id + "&file_name=" + exportparam.file_name+ "&file_extend=" + exportparam.file_extend,"_self");
+                                    }
+                                });
+                                return false;
                             }
-
                         });
 				    }else if(obj.event === 'edit'){
                         if(current_user_type == 5)
@@ -216,7 +234,7 @@
                         }
                         else if(current_user_type == 1)
 						{
-						    if(data['can_edit'] == 0)
+						    if(data['can_edit'] == 1)
 							{
 							   	layer.msg('当前不可编辑',{icon:2});
                                 return false;
@@ -231,9 +249,14 @@
 
                         top.layer.confirm('确定取消？',{icon:2,title:'提示'},function(index){
                             jq.post("{:url('admin/addreplaceconfirmorder/cancelcsinfo')}",{'cs_id':cs_id},function(data){
-                                layer.close(index);
-                                obj.update({
-                                  cs_info_state: '取消'
+                                top.layer.close(index);
+                                // obj.update({
+                                //   cs_info_state: '取消'
+                                // });
+                                table.reload('querytable', {
+                                    page: {
+                                        curr: 1
+                                    }
                                 });
                             });
                         });

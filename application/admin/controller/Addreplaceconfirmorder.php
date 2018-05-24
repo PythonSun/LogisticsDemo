@@ -167,19 +167,7 @@ class Addreplaceconfirmorder extends Controller
         $cs_info['delivery_info_id'] = $delivery_info_id +1;
         $cs_info['payment_info_id'] = $payment_info_id +1;
         $cs_info['cs_examine_ids'] = $cs_examine_ids;
-        $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
-
-        if (empty($ret_confirm_order)) {
-            $cs_belong_id = \app\index\model\Admin::getmaxtableidretid('cs_belong', 'cs_belong_id');
-
-            \app\index\model\Admin::deleterowtableid('cs_belong', 'cs_belong_id', $cs_belong_id);
-            \app\index\model\Admin::deleterowtableid('custom_info', 'custom_info_id', $custom_info_id);
-            \app\index\model\Admin::deleterowtableid('delivery_info', 'delivery_info_id', $delivery_info_id);
-            \app\index\model\Admin::deleterowtableid('return_info', 'return_info_id', $return_info_id);
-            //删除上面的表
-            //还有 order_goods_manager  cs_examine
-            return false;
-        }
+        \app\index\model\Admin::updateconfirmorder($cs_info);
 
         return $cs_info_id;
     }
