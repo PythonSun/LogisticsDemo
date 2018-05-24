@@ -9,7 +9,7 @@
 	</head>
 	<body>
 		{include file="publictemplate/querysearchcondition"/}
-		<div style="margin:20px 10px;">
+		<div style="margin:5px 10px;">
 			<div><h2>订货单查询</h2></div>
 			<table class="layui-hide" id="querygoodsorder" lay-filter="querygoodsorder"></table>
 			<script type="text/html" id="operatebar">
@@ -139,7 +139,11 @@
 				});
 
 				divHeight = document.getElementById('serachcondition').offsetHeight;   /*搜索框div高度*/
-				clientHeight = jq(window).height()-divHeight-100;
+				clientHeight = jq(window).height()-divHeight-70;
+
+                if(clientHeight < 350){
+                    clientHeight = 350;
+                }
 
 				/*表格渲染*/
 				table.render({

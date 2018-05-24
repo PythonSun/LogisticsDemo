@@ -2368,12 +2368,12 @@
                 }
             }
 
-            //$objPHPExcel->getActiveSheet()->setCellValue('B33', $ret[0]['company_contact_phone']);
-            //$objPHPExcel->getActiveSheet()->setCellValue('A36', $ret[0]['company_contact_phone']);
+            /*其他说明和情况说明暂时都没写*/
+            //$objPHPExcel->getActiveSheet()->setCellValue('B33', $ret[0]['explain']);
+            //$objPHPExcel->getActiveSheet()->setCellValue('A36', $ret[0]['ogl_explain']);
 
             /*插入一行*/
             //$objPHPExcel->getActiveSheet()->insertNewRowBefore(32,1);
-
             header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachment;filename="'.$file_name.'.'.$file_extend.'"');
             header('Cache-Control: max-age=0');

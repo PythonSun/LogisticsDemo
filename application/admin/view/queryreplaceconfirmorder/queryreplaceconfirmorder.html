@@ -9,7 +9,7 @@
 	</head>
 	<body>
 		{include file="publictemplate/querysearchcondition"/}
-		<div style="margin:20px 10px;">
+		<div style="margin:5px 10px;">
 			<div><h2>更换单查询</h2></div>
 			<table class="layui-hide" id="queryreplaceorder" lay-filter="queryreplaceorder"></table>
 			<script type="text/html" id="operatebar">
@@ -145,8 +145,12 @@
 				});
 
 				divHeight = document.getElementById('serachcondition').offsetHeight;   /*搜索框div高度*/
-				clientHeight = jq(window).height()-divHeight-100;                      /*定义table框高度*/
+				clientHeight = jq(window).height()-divHeight-70;                      /*定义table框高度*/
 
+                if(clientHeight < 350){
+                    clientHeight = 350;
+                }
+                
 				/*表格渲染*/
 				table.render({
 				    elem: '#queryreplaceorder'
