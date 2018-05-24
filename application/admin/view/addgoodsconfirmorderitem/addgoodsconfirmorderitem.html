@@ -306,6 +306,34 @@
             layui.form.render('select');
         }
 
+        function clear() {
+            var jq = layui.jquery;
+            ogcugi_id = "";
+            cs_id = "";
+
+            jq('#product_info_name').val("");
+
+            jq('#product_type_id').val("");
+
+            jq('#brand_id').val("");
+
+            jq('#place_id').val("");
+
+            //document.getElementById('product_type_id').value = data.product_type_id;
+            //document.getElementById('brand_id').value = data.brand_id;
+            jq('#serachModelinfo').val("");
+            //data.product_info_id;
+            jq('#ogcugi_count').val("");
+            jq('#ogcugi_product_state').val("");
+            jq('#ogcugi_comment').val("");
+            jq('#ogcugi_unit').val("");
+            jq('#product_info_name').removeAttr("disabled");
+            jq('#product_type_id').removeAttr("disabled");
+            jq('#brand_id').removeAttr("disabled");
+            jq('#place_id').removeAttr("disabled");
+            layui.form.render('select');
+        }
+
         function testRgexp(re, s) { // 参数说明 re 为正则表达式 s 为要判断的字符
             return re.test(s)
         }

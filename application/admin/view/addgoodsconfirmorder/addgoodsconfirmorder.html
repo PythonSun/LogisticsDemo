@@ -776,6 +776,7 @@
                             var rowIndex = jq('#tableorder')[0].rows.length;
                             addTableItem(orderItem, rowIndex);
                             top.layer.msg('新增清单成功，序号：'+ rowIndex,{icon:1});
+                            iframeWin.clear();
                         }
                         else {
                             jq('#tableorder')[0].deleteRow(tableRowIndex);
