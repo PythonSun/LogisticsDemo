@@ -426,7 +426,7 @@ class Addgoodsconfirmorder extends Controller
         }catch(Exception $e){
             return self::retmsg(-1,$e->getMessage());
         }
-        return self::retmsg(1,'修改成功！');
+        return self::retmsg(1,'保存成功！');
     }
 
     public function getorderinfo($cs_id,$cs_belong_id,$fee_info_id,$ofg_info_id,$unc_ofg_info_id){
