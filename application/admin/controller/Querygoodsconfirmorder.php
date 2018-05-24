@@ -69,7 +69,12 @@ class Querygoodsconfirmorder extends Controller
         }
         if(isset($_GET['queryInfo'])){
             $queryInfo = $_GET['queryInfo'];
-            $queryInfo["organizename"] = $queryInfo["departname"];
+            if(array_key_exists("organizename",$queryInfo)){
+                $queryInfo["organizename"] = $queryInfo["organizename"];
+            }else{
+                $queryInfo["organizename"] = "";
+            }
+
             $queryInfo["departmentname"] = $queryInfo["departname"];
             $tablelist = \app\index\model\Admin::querygoodsorderinfo($organizename,$departmentname,$areamanager,$type,$page,$limit,$queryInfo);
         }else{
