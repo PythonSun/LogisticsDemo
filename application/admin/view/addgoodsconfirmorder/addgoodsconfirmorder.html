@@ -68,15 +68,14 @@
             <div class="layui-form-item">
             <table class="layui-table" id="tablelogistics">
                 <colgroup>
-                    <col width="5%" style="min-width: 40px;max-width: 60px">
-                    <col width="15%">
-                    <col width="35%">
-                    <col width="35%">
+                    <col width="20%">
+                    <col width="45%">
+                    <col width="25%">
                     <col width="10%">
                 </colgroup>
                 <thead>
                 <tr class="Wheat">
-                    <th>选择</th>
+                    <!--<th>选择</th>-->
                     <th>发货日期</th>
                     <th>货场</th>
                     <th>物流单号</th>
@@ -537,7 +536,7 @@
                     })
                 });
                 //添加物流信息
-                jq('#btn_add_logistics_item').click(function () {
+                /*jq('#btn_add_logistics_item').click(function () {
                     addLogisticsItem(null);
                     return false;
                 });
@@ -555,7 +554,7 @@
                         }
                     });
                     return false;
-                });
+                });*/
                 //非定型订单弹窗
                 jq('#uncofginfo').click(function () {
                     top.layer.open({
@@ -637,19 +636,25 @@
                 //删除行
                 jq(document).on('click', '.del_btn', function(){
                     var text = jq(this).parent().parent();
-                    var ogcugi_id = jq(text).attr("ogcugi_id");
-                    if (ogcugi_id === undefined || ogcugi_id == ""){
-                        //return;
-                    }else {
-                        del_ogcugi_id_arr.push(ogcugi_id);
-                    }
-                    jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());
-                    var table = document.getElementById("tableorder"); //获得整个表格对象
-                    for (var i = 1; i < table.rows.length; i++) {
-                        var rowObj = table.rows[i]
-                        var cell = rowObj.cells[0];
-                        cell.innerHTML ="<a>"+ i+"</a>";
-                    }
+
+                    top.layer.confirm('确定删除这条未发货产品清单？', {
+                        btn: ['确定','取消'] //按钮
+                    }, function(index){
+                        top.layer.close(index);
+                        var ogcugi_id = jq(text).attr("ogcugi_id");
+                        if (ogcugi_id === undefined || ogcugi_id == ""){
+                            //return;
+                        }else {
+                            del_ogcugi_id_arr.push(ogcugi_id);
+                        }
+                        jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());
+                        var table = document.getElementById("tableorder"); //获得整个表格对象
+                        for (var i = 1; i < table.rows.length; i++) {
+                            var rowObj = table.rows[i]
+                            var cell = rowObj.cells[0];
+                            cell.innerHTML ="<a>"+ i+"</a>";
+                        }
+                    });
                 });
 
                 jq('#lookpic').click(function () {
@@ -842,10 +847,10 @@
                         var cellData = rowObj.cells[j].getElementsByTagName("input")[0].value;
                         rowdata[j] = cellData;
                     }
-                    var goods_yard_name = rowdata[2].trim();
-                    var transfer_order_num = rowdata[3].trim();
-                    var delivery_date = rowdata[1].trim();
-                    var count = rowdata[4].trim();
+                    var goods_yard_name = rowdata[1].trim();
+                    var transfer_order_num = rowdata[2].trim();
+                    var delivery_date = rowdata[0].trim();
+                    var count = rowdata[3].trim();
                     if (goods_yard_name == "" && transfer_order_num == "" && delivery_date == "" && count == ""){
                         continue;
                     }
@@ -1008,19 +1013,19 @@
                 jq(new_tr).attr("user_id",user_id);
                 jq(new_tr).attr("time_stamp",time_stamp);
 
+                // var col_0 = new_tr.insertCell(0);//添加列
+                // col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' lay-skin='primary' style='margin: 0px'></td>";
                 var col_0 = new_tr.insertCell(0);//添加列
-                col_0.innerHTML = "<td><input name ='onechoose' type='checkbox' lay-skin='primary' style='margin: 0px'></td>";
-                var col_1 = new_tr.insertCell(1);//添加列
-                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item' value='"+ delivery_date +"'></td>";
+                col_0.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat time-item logistics' value='"+ delivery_date +"'></td>";
                 jq.each(jq(".time-item"),function(){
                     laydate.render({ elem: this });
                 });
+                var col_1 = new_tr.insertCell(1);//添加列
+                col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat logistics' value='"+ goods_yard_name +"'></td>";
                 var col_2 = new_tr.insertCell(2);//添加列
-                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ goods_yard_name +"'></td>";
+                col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat logistics' value='"+ transfer_order_num +"'></td>";
                 var col_3 = new_tr.insertCell(3);//添加列
-                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ transfer_order_num +"'></td>";
-                var col_4 = new_tr.insertCell(4);//添加列
-                col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat' value='"+ count +"' oninput='detectinputnumber(this);'></td>";
+                col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input Wheat logistics' value='"+ count +"' oninput='detectinputnumber(this);'></td>";
                 form.render('checkbox');
             }
             //将数据显示
@@ -1277,7 +1282,7 @@
                             if(e.code == 1){
                                 console.log('------------------------------');
                                 retBo = true;
-                                top.layer.alert(e.msg);
+                                top.layer.msg(e.msg);
                             }else if(e.code == 0){
                                 layer.alert(e.msg)
                             }else if(e.code == -1){
@@ -1328,6 +1333,12 @@
                 }
                 setDelUncofginfoVis();
                 setConsultSheet();
+                //屏蔽物流，禁止修改
+                $(".logistics").each(function(){
+                    $(this).attr('disabled',true);
+                });
+
+
                 layui.form.render('select');
             }
 
