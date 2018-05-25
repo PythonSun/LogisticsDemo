@@ -12,6 +12,16 @@
         <form class="layui-form layui-form-pane" style="margin-top:40px;">
             <div class="layui-form-item">
                 <div class="layui-inline">
+                    <label class="layui-form-label Wheat">型号：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="serachModelinfo" name="inputmodel" class="layui-input Wheat"> </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label Wheat">产品名称：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="product_info_name" name="product_info_name" class="layui-input Wheat"> </div>
+                </div>
+                <div class="layui-inline">
                     <label class="layui-form-label Wheat">产品分类：</label>
                     <div class="layui-input-inline Wheat" style="max-width:120px">
                         <select id="product_type_id" name="type_name" lay-filter="type_name">
@@ -28,9 +38,15 @@
                     </div>
                 </div>
                 <div class="layui-inline">
-                    <label class="layui-form-label Wheat">型号：</label>
-                    <div class="layui-input-inline">
-                        <input type="text" id="serachModelinfo" name="inputmodel" class="layui-input Wheat"> </div>
+                    <label class="layui-form-label  Wheat">生产地：</label>
+                    <div class="layui-input-inline Wheat"  >
+                        <select id="place_id" name="place_name" lay-filter="place_name" class="Wheat_disabled">
+                            <option value="" selected>请选择</option>
+                            {volist name="placelist" id="vo"}
+                            <option value={$vo.place_id}>{$vo.place_name}</option>
+                            {/volist}
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -82,17 +98,14 @@
                 jq = layui.jquery;
             jq("#serachModelinfo").autocomplete({
                 source: function (request, response) {
-                    var product_type = jq("#product_type_id").val();
-                    var brand = jq('#brand_id').val();
+                    //var product_type = jq("#product_type_id").val();
+                    //var brand = jq('#brand_id').val();
                     var serachText = jq("#serachModelinfo").val().trim();;
-                    if (product_type == "" || brand == "" || serachText == ""){
-                        return;
-                    }
                     jq.ajax({
                         url: "{:url('admin/addgoodsconfirmorderitem/serachmodelinfo')}",
                         type: "POST",
                         dataType: "json",
-                        data: { serrchText:serachText, type:product_type, brand:brand },
+                        data: { serrchText:serachText},
                         success: function (data) {
                             response(jq.map(data, function (item) {
                                 return {
@@ -102,27 +115,104 @@
                             }));
                         },
                     });
+                },
+                select:function (request, response) {
+                    if (response != null && response.item != null && response.item.value != null && response.item.value != ''){
+                        jq('#serachModelinfo').val(response.item.value);
+                        jq("#serachModelinfo").blur();
+                    }
+
                 }
             });
+            jq("#serachModelinfo").keypress(function(e){
+                var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+                if (eCode == 13){
+                    jq("#serachModelinfo").blur();
+                }
+            })
+            jq("#serachModelinfo").blur(function () {
+                var model = jq('#serachModelinfo').val().trim();
+                if(model == "") {
+                    layer.msg('请选择型号！', { icon: 2 });
+                    return null;
+                }
+                jq('#product_info_name').removeAttr("disabled");
+                jq('#product_type_id').removeAttr("disabled");
+                jq('#brand_id').removeAttr("disabled");
+                jq('#place_id').removeAttr("disabled");
+                jq.ajax({
+                    url: "{:url('admin/addgoodsconfirmorderitem/coldserachmodel')}",
+                    type: "POST",
+                    dataType: "json",
+                    async: false,
+                    data: { serrchText: model},
+                    success: function (data) {
+                        console.log(data);
+                        if(data == "" || data == null || data === undefined) {
+                            console.log(173);
+                            top.layer.confirm('"'+ model +'" 型号不存在，是否录入？', {
+                                btn: ['是','否']
+                            }, function(index){
+                                layui.form.render('select');
+                                top.layer.close(index);
+                            }, function(){
+                                jq('#serachModelinfo').val("");
+                            });
+                        } else {
+
+                            jq('#product_info_name').attr("disabled","disabled");
+                            jq('#product_type_id').attr("disabled","disabled");
+                            jq('#brand_id').attr("disabled","disabled");
+                            jq('#place_id').attr("disabled","disabled");
+
+                            var product_info = data.product_info;
+                            var product_type = data.product_type;
+                            var product_brand = data.product_brand;
+                            var product_place = data.product_place;
+                            jq('#product_info_name').val(product_info.product_info_name);
+
+                            jq('#product_type_id').val(product_type.product_type_id);
+
+                            jq('#brand_id').val(product_brand.brand_id);
+
+                            jq('#place_id').val(product_place.place_id);
+                                                                                                        ///还要处理
+                            layui.form.render('select');
+                        }
+                    },
+                });
+            })
         });
         //父级调用
         function saveOrderItem() {
             var jq = layui.jquery;
+            var model = jq('#serachModelinfo').val().trim();
+            if(model == "") {
+                layer.msg('请选择型号！', { icon: 2 });
+                return null;
+            }
+            var product_info_name = jq('#product_info_name').val().trim();
+            if(product_info_name == "") {
+                layer.msg('请填写产品名称！', { icon: 2 });
+                return null;
+            }
             var product_type_id = jq('#product_type_id').val();
-            var brand_id = jq('#brand_id').val();
             if(product_type_id == "") {
                 layer.msg('请选择产品分类！', { icon: 2 });
                 return null;
             }
+            var brand_id = jq('#brand_id').val();
             if(brand_id == "") {
                 layer.msg('请选择品牌！', { icon: 2 });
                 return null;
             }
-            var modeltext = jq('#serachModelinfo').val().trim();
-            if(modeltext == "") {
-                layer.msg('请选择型号！', { icon: 2 });
+
+            var place_id = jq('#place_id').val();
+            if(place_id == "") {
+                layer.msg('请生产地！', { icon: 2 });
                 return null;
             }
+
             var ogcugi_count = jq('#ogcugi_count').val();
             if (ogcugi_count == ""){
                 layer.msg('请填写数量！', { icon: 2 });
@@ -131,11 +221,6 @@
             var isright = testRgexp(/^\d+$/, ogcugi_count);
             if(!isright) {
                 layer.msg('数量必须未正整数！', { icon: 2 });
-                return null;
-            }
-            var place_id = jq('#place_id').val();
-            if(place_id == "") {
-                layer.msg('请选择生产地！', { icon: 2 });
                 return null;
             }
             var ogcugi_unit = jq('#ogcugi_unit').val();
@@ -148,7 +233,6 @@
                 layer.msg('请选择状态！', { icon: 2 });
                 return null;
             }
-            //place_id
             var orderItem = new Object();
             orderItem.product_type_id = product_type_id;
             var obj = document.getElementById("product_type_id");
@@ -156,10 +240,12 @@
             orderItem.brand_id = brand_id;
             var obj1 = document.getElementById("brand_id");
             orderItem.brand_name = obj1.options[obj1.selectedIndex].text;
-            orderItem.model = modeltext;
+
             var obj2 = document.getElementById("place_id");
-            //orderItem.place_name = obj2.options[obj2.selectedIndex].text;
-            //orderItem.place = place_id
+            orderItem.place_name = obj2.options[obj2.selectedIndex].text;
+            orderItem.place_id = place_id;
+            orderItem.product_info_name = product_info_name;
+            orderItem.model = model;
             orderItem.ogcugi_count = ogcugi_count;
             orderItem.ogcugi_unit = ogcugi_unit;
             orderItem.ogcugi_product_state = jq("#ogcugi_product_state").find("option:selected").val();
@@ -170,20 +256,21 @@
             //+判断 型号是否存在，不存在禁止录入
             var canRet = true;
             jq.ajax({
-                url: "{:url('admin/addgoodsconfirmorderitem/serachproductinfo')}",
+                url: "{:url('admin/addgoodsconfirmorderitem/addmodel')}",
                 type: "POST",
                 dataType: "json",
                 async: false,
-                data: { serrchText: modeltext, type: product_type_id, brand: brand_id},
+                data: {
+                    model:model,
+                    product_info_name:product_info_name,
+                    product_type_id:product_type_id,
+                    brand_id:brand_id,
+                    place_id:place_id
+                },
                 success: function (data) {
-                    if(data != "") {
-                        orderItem.place_name = data.place_info.place_name;
-                        orderItem.place_id = data.place_info.place_id
-                        orderItem.product_info_name = data.product_info.product_info_name;
-                        orderItem.product_info_id = data.product_info.product_info_id;
+                    if(data !="") {
+                        orderItem.product_info_id = data;
                     } else {
-                        var layer = layui.layer;
-                        top.layer.msg('型号不存在！', { icon: 2 });
                         canRet = false;
                     }
                 },
@@ -199,14 +286,51 @@
             var jq = layui.jquery;
             ogcugi_id = data.ogcugi_id;
             cs_id = data.cs_id;
-            document.getElementById('product_type_id').value = data.product_type_id;
-            document.getElementById('brand_id').value = data.brand_id;
+
+            jq('#product_info_name').val(data.product_info_name);
+
+            jq('#product_type_id').val(data.product_type_id);
+
+            jq('#brand_id').val(data.brand_id);
+
+            jq('#place_id').val(data.place_id);
+
+            //document.getElementById('product_type_id').value = data.product_type_id;
+            //document.getElementById('brand_id').value = data.brand_id;
             jq('#serachModelinfo').val(data.model);
             //data.product_info_id;
             jq('#ogcugi_count').val(data.ogcugi_count);
             jq('#ogcugi_product_state').val(data.ogcugi_product_state);
             jq('#ogcugi_comment').val(data.ogcugi_comment);
             jq('#ogcugi_unit').val(data.ogcugi_unit);
+            layui.form.render('select');
+        }
+
+        function clear() {
+            var jq = layui.jquery;
+            ogcugi_id = "";
+            cs_id = "";
+
+            jq('#product_info_name').val("");
+
+            jq('#product_type_id').val("");
+
+            jq('#brand_id').val("");
+
+            jq('#place_id').val("");
+
+            //document.getElementById('product_type_id').value = data.product_type_id;
+            //document.getElementById('brand_id').value = data.brand_id;
+            jq('#serachModelinfo').val("");
+            //data.product_info_id;
+            jq('#ogcugi_count').val("");
+            jq('#ogcugi_product_state').val("");
+            jq('#ogcugi_comment').val("");
+            jq('#ogcugi_unit').val("");
+            jq('#product_info_name').removeAttr("disabled");
+            jq('#product_type_id').removeAttr("disabled");
+            jq('#brand_id').removeAttr("disabled");
+            jq('#place_id').removeAttr("disabled");
             layui.form.render('select');
         }
 

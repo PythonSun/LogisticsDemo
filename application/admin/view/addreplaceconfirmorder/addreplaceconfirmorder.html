@@ -13,7 +13,7 @@
                 display: none;
             }
         </style>
-    <body>
+    <body >
         <form class="layui-form layui-form-pane" action="">
             <div class="toph2">
                 <h2>更换确认单</h2>
@@ -73,7 +73,6 @@
                 </table>
             </div>
 
-           
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">总部门：</label>
@@ -208,10 +207,10 @@
                     <div class="layui-input-inline Wheat">
                         <select name="transfer_fee_mode" id="transfer_fee_mode" class="Wheat_disabled " >
                             <option value="" selected="">选择</option>
-                            <option value="1" >到付</option>
-                            <option value="2">现金</option>
-                            <option value="3">代付</option>
-                            <option value="4">公司付</option>
+                            <option value="0" >到付</option>
+                            <option value="1">现金</option>
+                            <option value="2">代付</option>
+                            <option value="3">公司付</option>
                         </select>
                     </div>
                 </div>
@@ -361,14 +360,14 @@
 
             <div class="layui-form-item">
                 <div class="layui-inline">
-                    <label class="layui-form-label Wheat">货期回复</label>
+                    <label class="layui-form-label dark_blue">货期回复</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="delivery_date_reply" id="delivery_date_reply" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
+                        <input type="text" name="delivery_date_reply" id="delivery_date_reply" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled"> </div>
                 </div>
                 <div class="layui-inline">
-                    <input type="button" id="uncofginfo" class="layui-btn" target="_blank" value="增加非定型产品订货确认单">
-                    <input type="button" id="lookuncofginfo" class="layui-btn" target="_blank" value="查看非定型产品订货确认单">
-                    <input type="button" id="deluncofginfo" class="layui-btn" target="_blank" style="color: red" value="删除非定型产品订货确认单">
+                    <input type="button" id="uncofginfo" class="layui-btn dark_blue" target="_blank" value="增加非定型产品订货确认单">
+                    <input type="button" id="lookuncofginfo" class="layui-btn dark_blue" target="_blank" value="查看非定型产品订货确认单">
+                    <input type="button" id="deluncofginfo" class="layui-btn dark_blue" target="_blank" style="color: red" value="删除非定型产品订货确认单">
                 </div>
             </div>
 
@@ -441,43 +440,7 @@
                     laydate = layui.laydate,
                     jq = layui.jquery,
                     layer = layui.layer;
-                /*日期*/
-                laydate.render({
-                    elem: '#cs_belong_create_time',
-                    position: 'fixed',
-                    theme: 'molv'
-                });
-                laydate.render({
-                    elem: '#date2',
-                    type:'datetime',
-                    position: 'fixed',
-                    theme: 'molv'
-                });
-                laydate.render({
-                    elem: '#date3',
-                    position: 'fixed',
-                    theme: 'molv'
-                });
-                laydate.render({
-                    elem: '#date4',
-                    position: 'fixed',
-                    theme: 'molv'
-                });
-                laydate.render({
-                    elem: '#date5',
-                    position: 'fixed',
-                    theme: 'molv'
-                });
-                laydate.render({
-                    elem: '#date6',
-                    position: 'fixed',
-                    theme: 'molv'
-                });
-                laydate.render({
-                    elem: '#paid_date',
-                    position: 'fixed',
-                    theme: 'molv'
-                });
+
                 //监听保存
                 form.on('submit(save)', function (uidata) {
                     return saveOrDeliverToSql(uidata,0);
@@ -493,7 +456,7 @@
                     var cs_id = "<?php echo $cs_id?>";
                     /*转换成整形*/
                     current_user_type = parseInt("<?php echo $current_user_type?>");
-
+                    setDatePopup();
                     if(cs_id == ""){
                         addLogisticsItem(null);
                         userPower();
@@ -521,6 +484,8 @@
                         jq('#cs_info_state').val(data['cs_info_state']);
                         if(data['complete_date'] != '2000-01-01 00:00:00' && data['complete_date'] != '2000-01-01' )
                             jq('#date2').val(data['complete_date']); //不确定下单时间是指那个
+                        if(data['delivery_date_reply'] != '2000-01-01 00:00:00' && data['delivery_date_reply'] != '2000-01-01' )
+                            jq('#delivery_date_reply').val(data['delivery_date_reply']); //不确定下单时间是指那个
                         editOrderData['cs_id'] = data['cs_id'];
                         editOrderData['complete_date'] = data['complete_date'];
                         editOrderData['product_number'] = data['product_number'];
@@ -718,6 +683,7 @@
                                 return;
                             }
                             //+判断
+                            //console.log(orderItem);
                             var row = new Object();
                             row.product_type_id = orderItem.product_type_id;
                             row.product_type_name = orderItem.product_type_name;
@@ -742,8 +708,9 @@
                             row.ogl_id = "";
                             row.order_goods_manager_id = "";
                             updateRow(row,true);
+                            iframeWin.clear();
                             layer.msg('保存成功！',{icon:1});
-                            //location.href = "admin/addconfirmorderitem/addconfirmorderitem";
+
                         },
                         btn2: function () {
                             layer.closeAll();
@@ -760,7 +727,7 @@
                         type:2,
                         title:'修改清单',
                         area:['800px','90%'],
-                        shade:0,
+                        shade:0.9,
                         maxmin:false,
                         content:"{:url('admin/addconfirmorderitem/addconfirmorderitem')}?type="+ type,
                         btn:['保存','退出'],
@@ -793,9 +760,9 @@
                             row.replace_reason = orderItem.replace_reason;
                             row.ogl_comment = orderItem.ogl_comment;
                             // console.log("length: "+ jq('#tableorder')[0].rows.length);
-                            row.order_goods_manager_id = jq(text[0].cells[0].innerHTML).attr("tag");
-                            row.ogl_id = jq(text[0].cells[0].innerHTML).attr("ogl_id");
-                            row.num = jq(text[0].cells[0].innerHTML).text();
+                            row.order_goods_manager_id = text.attr("order_goods_manager_id");
+                            row.ogl_id = text.attr("ogl_id");
+                            row.num = text.attr("num");
                             updateRow(row,false)
 
                             layer.closeAll();
@@ -806,30 +773,31 @@
                         success:function (layero, index) {
                             var orderItem = new Object();
                             //var text = jq(this).parent().parent();
-                            orderItem.product_type_id = jq(text[0].cells[1].innerHTML).attr("tag");
-                            orderItem.product_type_name = jq(text[0].cells[1].innerHTML).text();
-                            orderItem.brand_id = jq(text[0].cells[2].innerHTML).attr("tag");
-                            orderItem.brand_name = jq(text[0].cells[2].innerHTML).text();
-                            orderItem.model = jq(text[0].cells[5].innerHTML).text();
-                            orderItem.order_goods_manager_count = jq(text[0].cells[7].innerHTML).text();
-                            orderItem.unit = jq(text[0].cells[6].innerHTML).text();
-                            orderItem.specification = jq(text[0].cells[7].innerHTML).text();
-                            orderItem.bar_code = jq(text[0].cells[8].innerHTML).text();
-                            orderItem.back_date = jq(text[0].cells[9].innerHTML).text();
-                            orderItem.replace_reason = jq(text[0].cells[10].innerHTML).text();
-                            orderItem.place_name = jq(text[0].cells[11].innerHTML).text();
-                            orderItem.place_id = jq(text[0].cells[11].innerHTML).attr("tag");//
-                            orderItem.ogl_product_state = jq(text[0].cells[12].innerHTML).text();
-                            orderItem.unc_product_name = jq(text[0].cells[13].innerHTML).text();
-                            orderItem.unc_product_id = jq(text[0].cells[13].innerHTML).attr("tag");
-                            orderItem.ogl_comment = jq(text[0].cells[14].innerHTML).text();
-
+                            orderItem.product_type_id = text.attr("product_type_id");
+                            orderItem.product_type_name = text.attr("product_type_name");
+                            orderItem.brand_id = text.attr("brand_id");
+                            orderItem.brand_name = text.attr("brand_name");
+                            orderItem.model = text.attr("model");
+                            orderItem.order_goods_manager_count = text.attr("order_goods_manager_count");
+                            orderItem.unit = text.attr("unit");
+                            orderItem.specification = text.attr("specification");
+                            orderItem.bar_code = text.attr("bar_code");
+                            orderItem.back_date = text.attr("back_date");
+                            orderItem.replace_reason = text.attr("replace_reason");
+                            orderItem.place_name = text.attr("place_name");
+                            orderItem.place_id = text.attr("place_id");
+                            orderItem.ogl_product_state = text.attr("ogl_product_state");
+                            orderItem.unc_product_name = text.attr("unc_product_name");
+                            orderItem.unc_product_id = text.attr("unc_product_id");
+                            orderItem.ogl_comment = text.attr("ogl_comment");
+                            orderItem.product_info_id = text.attr("product_info_id");
+                            orderItem.product_info_name = text.attr("product_info_name");
                             var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
 
                             iframeWin.LoadingData(orderItem);
-
+                            console.log(orderItem);
                         }
-                    });;
+                    });
                 });
                 jq(document).on('click', '.del_btn', function(){
                     if((current_user_type) != 5 && (current_user_type != 1))
@@ -838,7 +806,12 @@
                     var id= jq(text[0].cells[0].innerHTML).attr("tag");
                     if(id != "")
                         delrowid.push(id);
-                    jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
+                    var table = document.getElementById('tableorder');
+                    table.deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
+                    console.log(table);
+                    for(var i = 1; i <= table.rows.length;i++){
+                        jq(table.children[0].children[i].children[0].children[0]).text(i);
+                    }
                 });
 
                 //非定型订单弹窗
@@ -902,13 +875,87 @@
                     });
                     return false;
                 })
+
+                //开启日期弹框
+                function setDatePopup() {
+                    if(current_user_type == 1)
+                    {
+                        /*日期*/
+                        laydate.render({
+                            elem: '#cs_belong_create_time',
+                            position: 'fixed',
+                            theme: 'molv'
+                        });
+
+                        laydate.render({
+                            elem: '#date3',
+                            position: 'fixed',
+                            theme: 'molv'
+                        });
+
+
+
+
+
+                    }
+                    else if(current_user_type == 2)
+                    {
+                        laydate.render({
+                            elem: '#date4',
+                            position: 'fixed',
+                            theme: 'molv'
+                        });
+
+                    }
+                    else if(current_user_type == 3)
+                    {
+                        laydate.render({
+                            elem: '#date5',
+                            position: 'fixed',
+                            theme: 'molv'
+                        });
+                    }
+                    else if(current_user_type == 4)
+                    {
+                        laydate.render({
+                            elem: '#date6',
+                            position: 'fixed',
+                            theme: 'molv'
+                        });
+
+                    }
+                    else if(current_user_type == 5)
+                    {
+                        laydate.render({
+                            elem: '#date2',
+                            type:'datetime',
+                            position: 'fixed',
+                            theme: 'molv'
+                        });
+                        laydate.render({
+                            elem: '#paid_date',
+                            position: 'fixed',
+                            theme: 'molv'
+                        });
+                        laydate.render({
+                            elem: '#delivery_date_reply',
+                            position: 'fixed',
+                            theme: 'molv'
+                        });
+
+                    }
+                    else  if(current_user_type == 0) //只查看
+                    {
+
+                    }
+                }
             });
             //用户权限设置 屏蔽一些内容
             function userPower() {
                 setDisable(true);
                 setDelUncofginfoVis();
             }
-            //删除屏蔽
+            //屏蔽
             function setDisable(value) {
                 //disabled 色值#CD3700
                 var jq = layui.jquery;
@@ -1032,6 +1079,7 @@
                 }
             }
 
+            
             function updateRow(row ,isAdd) {
                 //console.log(row);
                 var jq = layui.jquery;
@@ -1041,19 +1089,46 @@
                     rows = row.num;
                     jq('#tableorder')[0].deleteRow(rows)
                 }
+                console.log(row);
                 var new_tr = jq('#tableorder')[0].insertRow(rows);//指定位置插入行
+
+                jq(new_tr).attr('product_type_id',row.product_type_id);
+                jq(new_tr).attr('product_type_name',row.product_type_name);
+                jq(new_tr).attr('brand_id',row.brand_id);
+                jq(new_tr).attr('brand_name',row.brand_name);
+                jq(new_tr).attr('product_info_name',row.product_info_name);
+                jq(new_tr).attr('product_info_id',row.product_info_id);
+                jq(new_tr).attr('model',row.model);
+                jq(new_tr).attr('unit',row.unit);
+                jq(new_tr).attr('place_id',row.place_id);
+                jq(new_tr).attr('place_name',row.place_name);
+                jq(new_tr).attr('order_goods_manager_count',row.order_goods_manager_count);
+                jq(new_tr).attr('unc_product_name',row.unc_product_name);
+                jq(new_tr).attr('unc_product_id',row.unc_product_id);
+                jq(new_tr).attr('specification',row.specification);
+                jq(new_tr).attr('back_date',row.back_date);
+                jq(new_tr).attr('ogl_product_state',row.ogl_product_state);
+                jq(new_tr).attr('bar_code',row.bar_code);
+                jq(new_tr).attr('replace_reason',row.replace_reason);
+                jq(new_tr).attr('ogl_comment',row.ogl_comment);
+                // console.log("length: "+ jq('#tableorder')[0].rows.length);
+                jq(new_tr).attr('order_goods_manager_id', row.order_goods_manager_id);
+                jq(new_tr).attr('ogl_id',row.ogl_id);
+                jq(new_tr).attr('num',rows);
+
+
                 var col_0 = new_tr.insertCell(0);//添加列
-                col_0.innerHTML = "<td><a tag = '"+row.order_goods_manager_id+"' ogl_id = '"+row.ogl_id+"'>"+ rows+"</a></td>"; //id是保存在数据库的id,新增时为空
+                col_0.innerHTML = "<td><a>"+ rows+"</a></td>"; //id是保存在数据库的id,新增时为空
                 var col_1 = new_tr.insertCell(1);//添加列
-                col_1.innerHTML = "<td><a tag='"+ row.product_type_id +"'>"+ row.product_type_name +"</a></td>";
+                col_1.innerHTML = "<td><a >"+ row.product_type_name +"</a></td>";
                 var col_2 = new_tr.insertCell(2);//添加列
-                col_2.innerHTML = "<td><a tag='"+ row.brand_id +"'>"+ row.brand_name +"</a></td>";
+                col_2.innerHTML = "<td><a >"+ row.brand_name +"</a></td>";
                 var col_3 = new_tr.insertCell(3);
                 col_3.innerHTML = "<td><a>"+ row.product_info_name +"</a></td>";//-------产品名称-------
                 var col_4 = new_tr.insertCell(4);
                 col_4.innerHTML = "<td><a>"+ row.specification +"</a></td>";
                 var col_5 = new_tr.insertCell(5);
-                col_5.innerHTML = "<td><a tag='" + row.product_info_id + "'>"+ row.model +"</a></td>";
+                col_5.innerHTML = "<td><a >"+ row.model +"</a></td>";
                 var col_6 = new_tr.insertCell(6);
                 col_6.innerHTML = "<td><a>"+ row.unit +"</a></td>";
                 var col_7 = new_tr.insertCell(7);
@@ -1068,14 +1143,14 @@
                 var col_10 = new_tr.insertCell(10);
                 col_10.innerHTML = "<td><a>"+ row.replace_reason +"</a></td>";
                 var col_11 = new_tr.insertCell(11);
-                col_11.innerHTML = "<td><a tag = '"+ row.place_id +"'>"+ row.place_name +"</a></td>";
+                col_11.innerHTML = "<td><a >"+ row.place_name +"</a></td>";
                 var col_12 = new_tr.insertCell(12);
                 col_12.innerHTML = "<td><a>"+ row.ogl_product_state +"</a></td>";
                 var col_13 = new_tr.insertCell(13);
                 if(row.unc_product_name == null){
-                    col_13.innerHTML = "<td><a tag='" + row.unc_product_id + "'>"+ row.unc_product_name +"</a></td>";
+                    col_13.innerHTML = "<td><a >"+ row.unc_product_name +"</a></td>";
                 }else{
-                    col_13.innerHTML = "<td><a tag='" + row.unc_product_id + "'>"+ row.unc_product_name +"</a></td>";
+                    col_13.innerHTML = "<td><a >"+ row.unc_product_name +"</a></td>";
                 }
                 var col_14 = new_tr.insertCell(14);
                 col_14.innerHTML = "<td><a>"+ row.ogl_comment +"</a></td>";
@@ -1088,173 +1163,52 @@
 
             //新增时保存或者转交 新增单  state: 0,保存  1，转交给总监
             function saveOrDeliverToSql(uidata,state) {
-                jq = layui.jquery;
+                var jq = layui.jquery;
                 var  tabledata = getTableContent();
-                var exp = getOtherExplain();
-                var ogl_explain = getOglExplain();
-                var data = uidata.field;
+                console.log(tabledata);
+
+                setDisable(false);
+                var data = getFormData();
                 //判断必填项
                 if(judgeMustInput(data,current_user_type) == false)
                 {
+                    setDisable(true);
                     return false;
                 }
-                var rows = tabledata.length;
-               // console.log(data);
-                //cs_info.cs_id  = data['swiftnumber'];
-                if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
-                    layer.msg('请选择部门！',{icon:2});
-                    return false;
-                }
-                if(data['build_user_id'] == ""){
-                    layer.msg('请选择经理！',{icon:2});
-                    return false;
-                }
-                var cs_info = new Object();
-                cs_info.payment_info_id = -1;
-                cs_info.cur_process_user_id = data['build_user_id'];                      // 当前处理用户id
-                cs_info.pre_process_user_id = data['build_user_id'];                         //     上一次处理用户id
-                cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
-                cs_info.can_edit = state == 1 ? 1 : 0;
-                //cs_info.write_date = data['date1'];                   //又服务器创建
-                /*if(data['status'] == ""){
-                    layer.msg('请选择是否到账！',{icon:2});
-                    return false;
-                }*/
-                cs_info.cs_examine_ids = "";
-                cs_info.cs_info_state = data['cs_info_state'];
-                cs_info.complete_date = complete_date;       //新增 无完成日期
-                cs_info.product_number = rows;
-                cs_info.unc_ofg_info_id = unc_ofg_info_id;
+                var cs_info = getCsInfo(data,state == 0?true:false,false,state);
                 console.log("以下确认单信息：");
                 console.log(cs_info);
-                var custom_info = new Object();
-                custom_info.company_name = data['company_name'];
-                custom_info.company_phone = data['company_phone'];
-                custom_info.company_address = data['company_address'];
-                custom_info.legal_representative = data['legal_representative'];
-                custom_info.legal_phone = data['legal_phone'];
-                custom_info.company_contact = data['company_contact'];
-                custom_info.company_contact_phone = data['company_contact_phone'];
+                var custom_info = getCustomInfo(data,false);
                 console.log("以下客户信息：");
                 console.log(custom_info);
-                var delivery_info = new Object();
-                delivery_info.delivery_info_receiver_name = data['delivery_info_receiver_name'];
-                delivery_info.delivery_info_receiver_phone = data['delivery_info_receiver_phone'];
-                delivery_info.delivery_info_goods_yard_name = data['delivery_info_goods_yard_name'];
-                delivery_info.delivery_info_goods_yard_phone = data['delivery_info_goods_yard_phone'];
-                delivery_info.delivery_info_receiver_address = data['delivery_info_receiver_address'];
-                delivery_info.is_insure = data['is_insure'];
-                delivery_info.insure_amount = data['insure_amount'] == ''?0:data['insure_amount'];
-                if(data['is_insure'] == 1){
-                    if(data['insure_amount'] == ""){
-                        layer.msg('请选择填写保额！',{icon:2});
-                        return false;
-                    }
-                    else
-                    {
-
-                    }
-                }
-                delivery_info.is_sign = data['is_sign'];
-                delivery_info.has_contract = data['has_contract'];
-                if(data['transfer_fee_mode'] == ""){
-                    layer.msg('请选择运费方式！',{icon:2});
-                    return false;
-                }
-                delivery_info.transfer_fee_mode = data['transfer_fee_mode'];//freightway 运费方式
-                delivery_info.order_delivery_require = data['order_delivery_require'];
+                var delivery_info = getDeliveryInfo(data,false);
                 console.log("以下发货信息：");
                 console.log(delivery_info);
 
-                var return_info = new Object();
-                return_info.return_info_receiver_name = data['return_info_receiver_name'];
-                return_info.return_info_receiver_phone = data['return_info_receiver_phone'];
-                return_info.return_info_goods_yard_name = data['return_info_goods_yard_name'];
-                return_info.return_info_goods_yard_phone = data['return_info_goods_yard_phone'];
-                return_info.return_order_num = data['return_order_num'];
-                return_info.return_info_receiver_address = data['return_info_receiver_address'];
+                var return_info = getReturnInfo(data,false);
                 console.log("以下返货信息：");
                 console.log(return_info);
 
-                var cs_belong = new Object();
-                //cs_belong.cs_id = data['cs_id'];
-                cs_belong.build_organize_id = data['build_organize_id'];
-                cs_belong.build_department_id = data['build_department_id'];
-                cs_belong.build_user_id = data['build_user_id'];
-                cs_belong.build_department_name = jq("#build_department_id").find("option:selected").text();                //缺
-                //cs_belong.cs_belong_create_time = data['cs_belong_create_time'];
-                cs_belong.build_user_name = jq("#build_user_id").find("option:selected").text();
-                cs_belong.build_organize_name = jq("#build_organize_id").find("option:selected").text();
-                cs_belong.build_user_phone = data['build_user_phone'];
+                var cs_belong = getCsBelong(data,false);
                 console.log("以下订单所属信息：");
                 console.log(cs_belong);
 
                 var cs_examine = [];
-                var directorExamine = {};
-                directorExamine['submit_user_id'] = data['build_user_id'];
-                directorExamine['cs_examine_date'] = '2000-01-01';
-                directorExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00'
-                directorExamine['cs_examine_comment'] = "";
-                directorExamine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
-                directorExamine['cs_examine_result'] = "";
-                directorExamine['cs_examine_state'] = state;
+                var directorExamine = getDirectorExamine(data,false,state);
                 cs_examine[0] = directorExamine;
-                var generalManagerExamine = {};
-                generalManagerExamine['submit_user_id'] = data['build_user_id'];
-                generalManagerExamine['cs_examine_date'] = '2000-01-01';
-                generalManagerExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00';
-                generalManagerExamine['cs_examine_comment'] = "";
-                generalManagerExamine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
-                generalManagerExamine['cs_examine_result'] = "";
-                generalManagerExamine['cs_examine_state'] = state;
+                var generalManagerExamine = getGeneralManagerExamine(data,false,state);
                 cs_examine[1] = generalManagerExamine;
-                var financeExamine = {};
-                financeExamine['submit_user_id'] = data['build_user_id'];
-                financeExamine['cs_examine_date'] = '2000-01-01';
-                financeExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00';
-                financeExamine['cs_examine_comment'] = "";
-                financeExamine['cs_examine_content'] = data['examinationapprovalcontentthird'];
-                financeExamine['cs_examine_result'] = "";
-                financeExamine['cs_examine_state'] = state;
+                var financeExamine = getFinanceExamine(data,false,state);
                 cs_examine[2] = financeExamine;
                 console.log("以下订单审批信息：");
                 console.log(cs_examine);
                 //付款信息
-                var  payment_info= {};
-                payment_info['is_paid'] = data['is_paid'];
-                payment_info['paid_date'] = data['paid_date'] == '' ? "2000-01-01":data['paid_date'];
-                payment_info['customization_fee'] =  data['customization_fee'];
-                payment_info['paid_bank'] = data['paid_bank'];
-                payment_info['payment_info_comment'] = data['payment_info_comment'];
+                var  payment_info= getPaymentInfo(data,false);
 
                 //处理清单
-                var order_goods_manager= [];
-                for(var i = 0; i < rows; i++){
-                    var order_goods_manager_item = {};
-                    order_goods_manager_item['product_info_id']= tabledata[i][5]['tag'];
-                    order_goods_manager_item['unit'] = tabledata[i][6]['text'];
-                    order_goods_manager_item['order_goods_manager_count'] = tabledata[i][7]['text'];
-                    order_goods_manager_item['specification'] = tabledata[i][4]['text'];
-                    order_goods_manager_item['type'] = 1;                                             //1：更换 详细看数据库
-                    order_goods_manager_item['comment'] = tabledata[i][14]['text'];
-                    order_goods_manager_item['bar_code'] = tabledata[i][8]['text'];
-                    order_goods_manager_item['back_date'] = tabledata[i][9]['text'] == '' ? '2000-01-01' : tabledata[i][9]['text'];
-                    order_goods_manager_item['replace_reason'] = tabledata[i][10]['text'];
-                    order_goods_manager_item['order_goods_manager_explain'] = data['order_goods_manager_explain'];
-
-                    order_goods_manager_item['purchase_date'] = '2000-01-01';
-                    order_goods_manager_item['deal_date'] = '2000-01-01';
-                    order_goods_manager_item['fault_condition'] = "";
-                    order_goods_manager_item['unit_price'] = -1;
-                    order_goods_manager_item['ogl_product_state'] = tabledata[i][12]['text'];
-                    order_goods_manager_item['unc_product_id'] =tabledata[i][13]['tag'] ;
-                    order_goods_manager_item['ogl_comment'] = tabledata[i][14]['text'];
-                    order_goods_manager_item['ogl_explain'] = data['ogl_explain'];
-                    order_goods_manager[i] = order_goods_manager_item;
-                }
+                var order_goods_manager= getOrderGoods(data,false);
                 console.log("以下清单信息：");
                 console.log(order_goods_manager);
-
 
                 jq.ajax({
                     url: "{:url('admin/addreplaceconfirmorder/addconfirmorder')}",//php文件路径
@@ -1268,7 +1222,7 @@
                         cs_examine:cs_examine,
                         payment_info:payment_info} ,
                     type: 'POST',
-                    //dataType: 'json',
+                    dataType: 'json',
                     success: function(e) {
                         if(e){
                             console.log('订单添加成功！');
@@ -1280,6 +1234,7 @@
                         }
                     }
                 })
+                setDisable(true);
                 return false;
             }
             //获取订购清单明细
@@ -1290,47 +1245,35 @@
                 var index = 0;
                 for(var i = 1,rows = mytable.rows.length; i < rows; i++){
                     var rowdata = {};
-                    for(var j = 0,cells=mytable.rows[i].cells.length; j<cells; j++){
-                        var tag = jq(mytable.rows[i].cells[j].innerHTML).attr('tag');
-                        var text = jq(mytable.rows[i].cells[j].innerHTML).text();
-                        var mymap = {};
-                        if(j == 0)
-                        {
-                            mymap['tag'] = jq(mytable.rows[i].cells[j].innerHTML).attr('tag');
-                            mymap['ogl_id'] = jq(mytable.rows[i].cells[j].innerHTML).attr('ogl_id');
-                            mymap['text'] = jq(mytable.rows[i].cells[j].innerHTML).text();
-                        }
-                        else
-                        {
-                            mymap['tag'] = tag;
-                            mymap['text'] = text;
-                        }
-
-
-                        rowdata[j] = mymap;
-                    }
-                    if(rowdata[13]['tag'] == '')
-                        rowdata[13]['tag'] = -1;
+                    var row = jq(mytable.rows[i]);
+                    rowdata.product_type_id = row.attr('product_type_id');
+                    rowdata.product_type_name = row.attr('product_type_name');
+                    rowdata.brand_id = row.attr('brand_id');
+                    rowdata.brand_name = row.attr('brand_name');
+                    rowdata.product_info_name = row.attr('product_info_name');
+                    rowdata.product_info_id = row.attr('product_info_id');
+                    rowdata.model = row.attr('model');
+                    rowdata.unit = row.attr('unit');
+                    rowdata.place_id = row.attr('place_id');
+                    rowdata.place_name = row.attr('place_name');
+                    rowdata.order_goods_manager_count = row.attr('order_goods_manager_count');
+                    rowdata.unc_product_name = row.attr('unc_product_name');
+                    rowdata.unc_product_id = row.attr('unc_product_id');
+                    rowdata.specification = row.attr('specification');
+                    rowdata.back_date = row.attr('back_date');
+                    rowdata.ogl_product_state = row.attr('ogl_product_state');
+                    rowdata.bar_code = row.attr('bar_code');
+                    rowdata.replace_reason = row.attr('replace_reason');
+                    rowdata.ogl_comment = row.attr('ogl_comment') == undefined?'':row.attr('ogl_comment');
+                    rowdata.order_goods_manager_id = row.attr('order_goods_manager_id');
+                    rowdata.ogl_id = row.attr('ogl_id');
                     data[index] = rowdata;
-                    index++;
                 }
-                console.log(data);
                 return data;
-            }
-            //获取清单其它说明（经理部分）
-            function getOtherExplain(){
-                var exp = document.getElementById('order_goods_manager_explain').text;
-                return exp;
-            }
-            //获取物流情况说明
-            function getOglExplain(){
-                var exp = document.getElementById('ogl_explain').text;
-                return exp;
             }
             //获取子部门并选中
             function LoadingDepartmentAndSelected(value,selectValue) {
                 var jq = layui.jquery;
-                var form1 = layui.form;
                 jq.post("{:url('admin/addreplaceconfirmorder/getdepartmentinfo')}",{'param':value},function(data){
                     for(var  item in data){
                         //console.log(data[item]['organize_name']);
@@ -1349,7 +1292,6 @@
             //获取经理并选中
             function LoadingManagerAndSelected(value,selectValue) {
                 var jq = layui.jquery;
-                var form1 = layui.form;
                 jq.post("{:url('admin/addreplaceconfirmorder/getdspmanagerinfo')}",{'param':value},function(data){
                     for(var  item in data){
                         //console.log(data[item]['organize_name']);
@@ -1365,61 +1307,17 @@
                     layui.form.render('select');
                 });
             }
-            //获取物流信息
-            function getlogisticsInfo() {
-                var jq = layui.jquery;
-                var mytable = document.getElementById('tablelogistics');
-                var rows = mytable.rows.length;
-                var retArray = [];
-                for(var i = 1; i < rows; i++){
-                    var rowdata = {};
-                    var rowObj = mytable.rows[i]
-                    for(var j = 0,cells=mytable.rows[i].cells.length; j<cells; j++){
-                        var cellData = mytable.rows[i].cells[j].getElementsByTagName("input")[0].value;
-                        rowdata[j] = cellData;
-                    }
-                    var goods_yard_name = rowdata[2];
-                    var transfer_order_num = rowdata[3];
-                    var delivery_date = rowdata[1];
-                    var count = rowdata[4];
-                    if (goods_yard_name == "" && transfer_order_num == "" && delivery_date == "" && count == ""){
-                        continue;
-                    }
-                    if (goods_yard_name == "" || transfer_order_num == "" || delivery_date == "" || count == ""){
-
-                        return null;
-                    }
-                    var logistics_info = new Object();
-                    var logistics_id = jq(rowObj).attr('logistics_id');
-                    var cs_id = jq(rowObj).attr('cs_id');
-                    var user_id = jq(rowObj).attr('user_id');
-                    var time_stamp = jq(rowObj).attr('time_stamp');
-                    logistics_info.logistics_id = logistics_id === undefined ? "": logistics_id;
-                    logistics_info.cs_id = logistics_id === undefined ? "": cs_id;
-                    logistics_info.goods_yard_name = goods_yard_name;
-                    logistics_info.transfer_order_num = transfer_order_num;
-                    logistics_info.delivery_date = delivery_date;
-                    logistics_info.count = count;
-                    logistics_info.user_id = user_id === undefined ? "": user_id;                         //登陆ID
-                    logistics_info.time_stamp = time_stamp === undefined ? "2000-01-01": time_stamp;                          //无
-                    console.log(logistics_info);
-                    retArray[i - 1] = logistics_info;
-                }
-                return retArray;
-            }
             //添加一条物流信息 data == null 表示新增一条空数据
             function addLogisticsItem(data,tableindex) {
                 if (data == null){
                     return ;
                 }
-
                 var jq = layui.jquery;
                 if (!tableindex){
                     tableindex = jq('#tablelogistics')[0].rows.length;
                 }
                 var laydate = layui.laydate;
                 var form = layui.form;
-
                 var new_tr = jq('#tablelogistics')[0].insertRow(tableindex);//指定位置插入行
 
                 var col_0 = new_tr.insertCell(0);//添加列
@@ -1439,7 +1337,7 @@
             //修改时 经理的提交
             function managerDeliver () {
                 var data = getFormData();
-                jq = layui.jquery;
+                var jq = layui.jquery;
 
                 //判断必填项
                 if(judgeMustInput(data,current_user_type) == false)
@@ -1447,175 +1345,37 @@
                     setDisable(true);
                     return false;
                 }
-
-                var  tabledata = getTableContent();
-                var rows = tabledata.length;
-                console.log(data);
-
-                if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
-                    layer.msg('请选择部门！',{icon:2});
-                    return false;
-                }
-                if(data['build_user_id'] == ""){
-                    layer.msg('请选择经理！',{icon:2});
-                    return false;
-                }
-                var cs_info = new Object();
-                cs_info.custom_info_id = editOrderData['custom_info_id'];
-                cs_info.delivery_info_id = editOrderData['delivery_info_id'];
-                cs_info.return_info_id = editOrderData['return_info_id'];
-                cs_info.payment_info_id = editOrderData['payment_info_id'];
-                cs_info.cur_process_user_id = editOrderData['cur_process_user_id'];                      // 当前处理用户id
-                cs_info.pre_process_user_id = editOrderData['pre_process_user_id'];
-                cs_info.cs_id = editOrderData['cs_id'];
-                cs_info.cs_examine_ids = editOrderData['cs_examine_ids'];
-                cs_info.write_date = editOrderData['write_date'];
-                cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
-                cs_info.can_edit = 0;                              //0 不可编辑
-                cs_info.cs_info_state = 1;
-                cs_info.complete_date = complete_date;       //新增 无完成日期
-                cs_info.product_number = rows;
-                cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
+                var cs_info = getCsInfo(data,false,true,1);
                 console.log("以下确认单信息：");
                 console.log(cs_info);
-                var custom_info = new Object();
-                custom_info.custom_info_id = editOrderData['custom_info_id'];
-                custom_info.company_name = data['company_name'];
-                custom_info.company_phone = data['company_phone'];
-                custom_info.company_address = data['company_address'];
-                custom_info.legal_representative = data['legal_representative'];
-                custom_info.legal_phone = data['legal_phone'];
-                custom_info.company_contact = data['company_contact'];
-                custom_info.company_contact_phone = data['company_contact_phone'];
+
+                var custom_info = getCustomInfo(data,true);
                 console.log("以下客户信息：");
                 console.log(custom_info);
-                var delivery_info = new Object();
-                delivery_info.delivery_info_id = editOrderData['delivery_info_id'];
-                delivery_info.delivery_info_receiver_name = data['delivery_info_receiver_name'];
-                delivery_info.delivery_info_receiver_phone = data['delivery_info_receiver_phone'];
-                delivery_info.delivery_info_goods_yard_name = data['delivery_info_goods_yard_name'];
-                delivery_info.delivery_info_goods_yard_phone = data['delivery_info_goods_yard_phone'];
-                delivery_info.delivery_info_receiver_address = data['delivery_info_receiver_address'];
-                delivery_info.is_insure = data['is_insure'];
-                delivery_info.insure_amount = data['insure_amount'] == ''?0:data['insure_amount'];
-                if(data['is_insure'] == 1){
-                    if(data['insure_amount'] == ""){
-                        layer.msg('请选择填写保额！',{icon:2});
-                        return false;
-                    }
-                }
-                delivery_info.is_sign = data['is_sign'];
-                delivery_info.has_contract = data['has_contract'];
-                if(data['transfer_fee_mode'] == ""){
-                    layer.msg('请选择运费方式！',{icon:2});
-                    return false;
-                }
-                delivery_info.transfer_fee_mode = data['transfer_fee_mode'];//freightway 运费方式
-                delivery_info.order_delivery_require = data['order_delivery_require'];
+
+                var delivery_info = getDeliveryInfo(data,true);
                 console.log("以下发货信息：");
                 console.log(delivery_info);
 
-                var return_info = new Object();
-                return_info.return_info_id = editOrderData['return_info_id'];
-                return_info.return_info_receiver_name = data['return_info_receiver_name'];
-                return_info.return_info_receiver_phone = data['return_info_receiver_phone'];
-                return_info.return_info_goods_yard_name = data['return_info_goods_yard_name'];
-                return_info.return_info_goods_yard_phone = data['return_info_goods_yard_phone'];
-                return_info.return_order_num = data['return_order_num'];
-                return_info.return_info_receiver_address = data['return_info_receiver_address'];
+                var return_info = getReturnInfo(data,true);
                 console.log("以下返货信息：");
                 console.log(return_info);
 
-                var cs_belong = new Object();
-                cs_belong.cs_belong_id = editOrderData['cs_belong_id'];
-                cs_belong.cs_id = editOrderData['cs_id'];
-                cs_belong.build_organize_id = data['build_organize_id'];
-                cs_belong.build_department_id = data['build_department_id'];
-                cs_belong.build_user_id = data['build_user_id'];
-                cs_belong.build_department_name = jq("#build_department_id").find("option:selected").text();                //缺
-                cs_belong.cs_belong_create_time = editOrderData['cs_belong_create_time'];
-                cs_belong.build_user_name = jq("#build_user_id").find("option:selected").text();
-                cs_belong.build_organize_name = jq("#build_organize_id").find("option:selected").text();
-                cs_belong.build_user_phone = data['build_user_phone'];
+                var cs_belong = getCsBelong(data,true);
                 console.log("以下订单所属信息：");
                 console.log(cs_belong);
 
                 var cs_examine = [];
-                var directorExamine = {};
-                directorExamine['cs_id'] = editOrderData['cs_id'];
-                directorExamine['submit_user_id'] = data['build_user_id'];
-                directorExamine['cs_examine_date'] = '2000-01-01';
-                directorExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00'
-                directorExamine['cs_examine_comment'] = "";
-                directorExamine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
-                directorExamine['cs_examine_result'] = "";
-                directorExamine['cs_examine_state'] = 1;
-                cs_examine[0] = directorExamine;
-                var generalManagerExamine = {};
-                generalManagerExamine['cs_id'] = editOrderData['cs_id'];
-                generalManagerExamine['submit_user_id'] = data['build_user_id'];
-                generalManagerExamine['cs_examine_date'] = '2000-01-01';
-                generalManagerExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00';
-                generalManagerExamine['cs_examine_comment'] = "";
-                generalManagerExamine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
-                generalManagerExamine['cs_examine_result'] = "";
-                generalManagerExamine['cs_examine_state'] = 1;
-                cs_examine[1] = generalManagerExamine;
-                var financeExamine = {};
-                financeExamine['cs_id'] = editOrderData['cs_id'];
-                financeExamine['submit_user_id'] = data['build_user_id'];
-                financeExamine['cs_examine_date'] = '2000-01-01';
-                financeExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00';
-                financeExamine['cs_examine_comment'] = "";
-                financeExamine['cs_examine_content'] = data['examinationapprovalcontentthird'];
-                financeExamine['cs_examine_result'] = "";
-                financeExamine['cs_examine_state'] = 1;
-                cs_examine[2] = financeExamine;
+                cs_examine[0] = getDirectorExamine(data,true,1);
+                cs_examine[1] = getGeneralManagerExamine(data,true,1);
+                cs_examine[2] = getFinanceExamine(data,true,1);
                 console.log("以下订单审批信息：");
                 console.log(cs_examine);
-                //付款信息
-                var  payment_info= {};
-                payment_info['payment_info_id'] = editOrderData['payment_info_id'];
-                payment_info['is_paid'] = data['is_paid'];
-                payment_info['paid_date'] = data['paid_date'] == '' ? "2000-01-01":data['paid_date'];
-                payment_info['customization_fee'] =  data['customization_fee'];
-                payment_info['paid_bank'] = data['paid_bank'];
-                payment_info['payment_info_comment'] = data['payment_info_comment'];
 
-
-
-                //处理清单
-                var order_goods_manager= [];
-                for(var i = 0; i < rows; i++){
-                    var order_goods_manager_item = {};
-                    order_goods_manager_item['order_goods_manager_id']= tabledata[i][0]['tag'];
-                    order_goods_manager_item['cs_id']= editOrderData['cs_id'];
-                    order_goods_manager_item['product_info_id']= tabledata[i][5]['tag'];
-                    order_goods_manager_item['unit'] = tabledata[i][6]['text'];
-                    order_goods_manager_item['order_goods_manager_count'] = tabledata[i][7]['text'];
-                    order_goods_manager_item['specification'] = tabledata[i][4]['text'];
-                    order_goods_manager_item['type'] = cs_info_type;                                             //1：更换 详细看数据库
-                    order_goods_manager_item['unit_price'] = -1;
-                    order_goods_manager_item['order_goods_manager_explain'] = data['order_goods_manager_explain'];
-
-                    order_goods_manager_item['comment'] = tabledata[i][14]['text'];
-                    order_goods_manager_item['bar_code'] = tabledata[i][8]['text'];
-                    order_goods_manager_item['back_date'] = tabledata[i][9]['text'] == '' ? '2000-01-01' : tabledata[i][9]['text'];
-                    order_goods_manager_item['replace_reason'] = tabledata[i][10]['text'];
-                    order_goods_manager_item['purchase_date'] = '2000-01-01';
-                    order_goods_manager_item['deal_date'] = '2000-01-01';
-                    order_goods_manager_item['fault_condition'] = "";
-
-
-                    order_goods_manager_item['ogl_id'] = tabledata[i][0]['ogl_id'];
-                    order_goods_manager_item['ogl_product_state'] = tabledata[i][12]['text'];
-                    order_goods_manager_item['unc_product_id'] =tabledata[i][13]['tag'];
-                    order_goods_manager_item['ogl_comment'] = tabledata[i][14]['text'];
-                    order_goods_manager_item['ogl_explain'] = data['ogl_explain'];
-                    order_goods_manager[i] = order_goods_manager_item;
-                }
+                var order_goods_manager= getOrderGoods(data,true);
                 console.log("以下清单信息：");
                 console.log(order_goods_manager);
+
                 jq.ajax({
                     url: "{:url('admin/addreplaceconfirmorder/managereditanddeliverorder')}",
                     data: {cs_info:cs_info,
@@ -1644,190 +1404,44 @@
             function managerSave() {
                 setDisable(false);
                 var data = getFormData();
-
                 //判断必填项
                 if(judgeMustInput(data,current_user_type) == false)
                 {
                     setDisable(true);
                     return false;
                 }
+                var jq = layui.jquery;
 
-                jq = layui.jquery;
-                var  tabledata = getTableContent();
-                var rows = tabledata.length;
-                console.log(data);
-
-                if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
-                    layer.msg('请选择部门！',{icon:2});
-                    return false;
-                }
-                if(data['build_user_id'] == ""){
-                    layer.msg('请选择经理！',{icon:2});
-                    return false;
-                }
-                var cs_info = new Object();
-                cs_info.custom_info_id = editOrderData['custom_info_id'];
-                cs_info.delivery_info_id = editOrderData['delivery_info_id'];
-                cs_info.return_info_id = editOrderData['return_info_id'];
-                cs_info.payment_info_id = editOrderData['payment_info_id'];
-                cs_info.cur_process_user_id = editOrderData['cur_process_user_id'];                      // 当前处理用户id
-                cs_info.pre_process_user_id = editOrderData['pre_process_user_id'];
-                cs_info.cs_id = editOrderData['cs_id'];
-                cs_info.cs_examine_ids = editOrderData['cs_examine_ids'];
-                cs_info.write_date = editOrderData['write_date'];
-                cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
-                cs_info.can_edit = 1;                              //0 不可编辑
-                cs_info.cs_info_state = data["cs_info_state"];
-                cs_info.complete_date = complete_date;       //新增 无完成日期
-                cs_info.product_number = rows;
-                cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
+                var cs_info = getCsInfo(data,true,true,data['cs_info_state']);
                 console.log("以下确认单信息：");
                 console.log(cs_info);
-                var custom_info = new Object();
-                custom_info.custom_info_id = editOrderData['custom_info_id'];
-                custom_info.company_name = data['company_name'];
-                custom_info.company_phone = data['company_phone'];
-                custom_info.company_address = data['company_address'];
-                custom_info.legal_representative = data['legal_representative'];
-                custom_info.legal_phone = data['legal_phone'];
-                custom_info.company_contact = data['company_contact'];
-                custom_info.company_contact_phone = data['company_contact_phone'];
+                var custom_info = getCustomInfo(data,true);
                 console.log("以下客户信息：");
                 console.log(custom_info);
-                var delivery_info = new Object();
-                delivery_info.delivery_info_id = editOrderData['delivery_info_id'];
-                delivery_info.delivery_info_receiver_name = data['delivery_info_receiver_name'];
-                delivery_info.delivery_info_receiver_phone = data['delivery_info_receiver_phone'];
-                delivery_info.delivery_info_goods_yard_name = data['delivery_info_goods_yard_name'];
-                delivery_info.delivery_info_goods_yard_phone = data['delivery_info_goods_yard_phone'];
-                delivery_info.delivery_info_receiver_address = data['delivery_info_receiver_address'];
-                delivery_info.is_insure = data['is_insure'];
-                delivery_info.insure_amount = data['insure_amount'] == ''?0:data['insure_amount'];
-                if(data['is_insure'] == 1){
-                    if(data['insure_amount'] == ""){
-                        layer.msg('请选择填写保额！',{icon:2});
-                        return false;
-                    }
-                }
-                delivery_info.is_sign = data['is_sign'];
-                delivery_info.has_contract = data['has_contract'];
-                if(data['transfer_fee_mode'] == ""){
-                    layer.msg('请选择运费方式！',{icon:2});
-                    return false;
-                }
-                delivery_info.transfer_fee_mode = data['transfer_fee_mode'];//freightway 运费方式
-                delivery_info.order_delivery_require = data['order_delivery_require'];
+                var delivery_info = getDeliveryInfo(data,true);
                 console.log("以下发货信息：");
                 console.log(delivery_info);
 
-                var return_info = new Object();
-                return_info.return_info_id = editOrderData['return_info_id'];
-                return_info.return_info_receiver_name = data['return_info_receiver_name'];
-                return_info.return_info_receiver_phone = data['return_info_receiver_phone'];
-                return_info.return_info_goods_yard_name = data['return_info_goods_yard_name'];
-                return_info.return_info_goods_yard_phone = data['return_info_goods_yard_phone'];
-                return_info.return_order_num = data['return_order_num'];
-                return_info.return_info_receiver_address = data['return_info_receiver_address'];
+                var return_info =getReturnInfo(data,true);
                 console.log("以下返货信息：");
                 console.log(return_info);
 
-                var cs_belong = new Object();
-                cs_belong.cs_belong_id = editOrderData['cs_belong_id'];
-                cs_belong.cs_id = editOrderData['cs_id'];
-                cs_belong.build_organize_id = data['build_organize_id'];
-                cs_belong.build_department_id = data['build_department_id'];
-                cs_belong.build_user_id = data['build_user_id'];
-                cs_belong.build_department_name = jq("#build_department_id").find("option:selected").text();                //缺
-                cs_belong.cs_belong_create_time = editOrderData['cs_belong_create_time'];
-                cs_belong.build_user_name = jq("#build_user_id").find("option:selected").text();
-                cs_belong.build_organize_name = jq("#build_organize_id").find("option:selected").text();
-                cs_belong.build_user_phone = data['build_user_phone'];
+                var cs_belong = getCsBelong(data,true);
                 console.log("以下订单所属信息：");
                 console.log(cs_belong);
 
                 var cs_examine = [];
-                var directorExamine = {};
-                directorExamine['cs_examine_id'] =editOrderData['depart_examine']['cs_examine_id'];
-                directorExamine['cs_id'] = editOrderData['cs_id'];
-                directorExamine['submit_user_id'] = data['build_user_id'];
-                directorExamine['cs_examine_date'] = '2000-01-01';
-                directorExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00'
-                directorExamine['cs_examine_comment'] = "";
-                directorExamine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
-                directorExamine['cs_examine_result'] = 2;
-                directorExamine['cs_examine_state'] = 1;
-                directorExamine['examine_user_id'] = editOrderData['depart_examine']['examine_user_id'];
-                directorExamine['cs_examine_name'] = editOrderData['depart_examine']['cs_examine_name'];
+                var directorExamine = getDirectorExamine(data,true,2);
                 cs_examine[0] = directorExamine;
-                var generalManagerExamine = {};
-                generalManagerExamine['cs_examine_id'] =editOrderData['company_examine']['cs_examine_id'];
-                generalManagerExamine['cs_id'] = editOrderData['cs_id'];
-                generalManagerExamine['submit_user_id'] = data['build_user_id'];
-                generalManagerExamine['cs_examine_date'] = '2000-01-01';
-                generalManagerExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00';
-                generalManagerExamine['cs_examine_comment'] = "";
-                generalManagerExamine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
-                generalManagerExamine['cs_examine_result'] = 2;
-                generalManagerExamine['cs_examine_state'] = 0;
-                generalManagerExamine['examine_user_id'] = editOrderData['depart_examine']['examine_user_id'];
-                generalManagerExamine['cs_examine_name'] = editOrderData['depart_examine']['cs_examine_name'];
+                var generalManagerExamine = getGeneralManagerExamine(data,true,2);
                 cs_examine[1] = generalManagerExamine;
-                var financeExamine = {};
-                financeExamine['cs_examine_id'] =editOrderData['finance_examine']['cs_examine_id'];
-                financeExamine['cs_id'] = editOrderData['cs_id'];
-                financeExamine['submit_user_id'] = data['build_user_id'];
-                financeExamine['cs_examine_date'] = '2000-01-01';
-                financeExamine['cs_examine_time_stamp'] = '2000-01-01 00:00:00';
-                financeExamine['cs_examine_comment'] = "";
-                financeExamine['cs_examine_content'] = data['examinationapprovalcontentthird'];
-                financeExamine['cs_examine_result'] = 2;
-                financeExamine['cs_examine_state'] = 0;
-                financeExamine['examine_user_id'] = editOrderData['depart_examine']['examine_user_id'];
-                financeExamine['cs_examine_name'] = editOrderData['depart_examine']['cs_examine_name'];
+                var financeExamine = getFinanceExamine(data,true,2);
                 cs_examine[2] = financeExamine;
                 console.log("以下订单审批信息：");
                 console.log(cs_examine);
-                //付款信息
-                var  payment_info= {};
-                payment_info['payment_info_id'] = editOrderData['payment_info_id'];
-                payment_info['is_paid'] = data['is_paid'];
-                payment_info['paid_date'] = data['paid_date'] == '' ? "2000-01-01":data['paid_date'];
-                payment_info['customization_fee'] =  data['customization_fee'];
-                payment_info['paid_bank'] = data['paid_bank'];
-                payment_info['payment_info_comment'] = data['payment_info_comment'];
-
-
 
                 //处理清单
-                var order_goods_manager= [];
-                for(var i = 0; i < rows; i++){
-                    var order_goods_manager_item = {};
-                    order_goods_manager_item['order_goods_manager_id']= tabledata[i][0]['tag'];
-                    order_goods_manager_item['cs_id']= editOrderData['cs_id'];
-                    order_goods_manager_item['product_info_id']= tabledata[i][5]['tag'];
-                    order_goods_manager_item['unit'] = tabledata[i][6]['text'];
-                    order_goods_manager_item['order_goods_manager_count'] = tabledata[i][7]['text'];
-                    order_goods_manager_item['specification'] = tabledata[i][4]['text'];
-                    order_goods_manager_item['type'] = cs_info_type;                                             //1：更换 详细看数据库
-                    order_goods_manager_item['unit_price'] = -1;
-                    order_goods_manager_item['order_goods_manager_explain'] = data['order_goods_manager_explain'];
-
-                    order_goods_manager_item['comment'] = tabledata[i][14]['text'];
-                    order_goods_manager_item['bar_code'] = tabledata[i][8]['text'];
-                    order_goods_manager_item['back_date'] = tabledata[i][9]['text'] == '' ? '2000-01-01' : tabledata[i][9]['text'];
-                    order_goods_manager_item['replace_reason'] = tabledata[i][10]['text'];
-                    order_goods_manager_item['purchase_date'] = '2000-01-01';
-                    order_goods_manager_item['deal_date'] = '2000-01-01';
-                    order_goods_manager_item['fault_condition'] = "";
-
-
-                    order_goods_manager_item['ogl_id'] = tabledata[i][0]['ogl_id'];
-                    order_goods_manager_item['ogl_product_state'] = tabledata[i][12]['text'];
-                    order_goods_manager_item['unc_product_id'] =tabledata[i][13]['tag'];
-                    order_goods_manager_item['ogl_comment'] = tabledata[i][14]['text'];
-                    order_goods_manager_item['ogl_explain'] = data['ogl_explain'];
-                    order_goods_manager[i] = order_goods_manager_item;
-                }
+                var order_goods_manager= getOrderGoods(data,true);
                 console.log("以下清单信息：");
                 console.log(order_goods_manager);
 
@@ -1985,85 +1599,19 @@
                     setDisable(true);
                     return false;
                 }
+                var jq = layui.jquery;
 
-                jq = layui.jquery;
-                var  tabledata = getTableContent();
-                var rows = tabledata.length;
-                console.log(data);
-
-                var cs_info = new Object();
-                cs_info.custom_info_id = editOrderData['custom_info_id'];
-                cs_info.delivery_info_id = editOrderData['delivery_info_id'];
-                cs_info.return_info_id = editOrderData['return_info_id'];
-                cs_info.payment_info_id = editOrderData['payment_info_id'];
-                cs_info.cur_process_user_id = editOrderData['cur_process_user_id'];                      // 当前处理用户id
-                cs_info.pre_process_user_id = editOrderData['pre_process_user_id'];
-                cs_info.cs_id = editOrderData['cs_id'];
-                cs_info.cs_examine_ids = editOrderData['cs_examine_ids'];
-                cs_info.write_date = editOrderData['write_date'];
-                cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
-                cs_info.can_edit = 0;                              //0 不可编辑
-                cs_info.cs_info_state = data['cs_info_state'];
-                cs_info.complete_date = data['orderdate'] == ''?'2000-01-01 00:00:00':data['orderdate'];       //新增 无完成日期
-
-                cs_info.product_number = rows;
-                cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
+                var cs_info = getCsInfo(data,false,true,data['cs_info_state']);
                 console.log("以下确认单信息：");
                 console.log(cs_info);
 
-                var cs_belong = new Object();
-                cs_belong.cs_belong_id = editOrderData['cs_belong_id'];
-                cs_belong.cs_id = editOrderData['cs_id'];
-                cs_belong.build_organize_id = data['build_organize_id'];
-                cs_belong.build_department_id = data['build_department_id'];
-                cs_belong.build_user_id = data['build_user_id'];
-                cs_belong.build_department_name = jq("#build_department_id").find("option:selected").text();                //缺
-                cs_belong.cs_belong_create_time = editOrderData['cs_belong_create_time'];
-                cs_belong.build_user_name = jq("#build_user_id").find("option:selected").text();
-                cs_belong.build_organize_name = jq("#build_organize_id").find("option:selected").text();
-                cs_belong.build_user_phone = data['build_user_phone'];
-                console.log("以下订单所属信息：");
-                console.log(cs_belong);
-
                 //付款信息
-                var  payment_info= {};
-                payment_info['payment_info_id'] = editOrderData['payment_info_id'];
-                payment_info['is_paid'] = data['is_paid'];
-                payment_info['paid_date'] = data['paid_date'] == '' ? "2000-01-01":data['paid_date'];
-                payment_info['customization_fee'] =  data['customization_fee'];
-                payment_info['paid_bank'] = data['paid_bank'];
-                payment_info['payment_info_comment'] = data['payment_info_comment'];
+                var  payment_info= getPaymentInfo(data,true);
+                console.log("以下付款信息：");
+                console.log(payment_info);
 
                 //处理清单
-                var order_goods_manager= [];
-                for(var i = 0; i < rows; i++){
-                    var order_goods_manager_item = {};
-                    order_goods_manager_item['order_goods_manager_id']= tabledata[i][0]['tag'];
-                    order_goods_manager_item['cs_id']= editOrderData['cs_id'];
-                    order_goods_manager_item['product_info_id']= tabledata[i][5]['tag'];
-                    order_goods_manager_item['unit'] = tabledata[i][6]['text'];
-                    order_goods_manager_item['order_goods_manager_count'] = tabledata[i][7]['text'];
-                    order_goods_manager_item['specification'] = tabledata[i][4]['text'];
-                    order_goods_manager_item['type'] = cs_info_type;                                             //1：更换 详细看数据库
-                    order_goods_manager_item['unit_price'] = -1;
-                    order_goods_manager_item['order_goods_manager_explain'] = data['order_goods_manager_explain'];
-
-                    order_goods_manager_item['comment'] = tabledata[i][14]['text'];
-                    order_goods_manager_item['bar_code'] = tabledata[i][8]['text'];
-                    order_goods_manager_item['back_date'] = tabledata[i][9]['text'] == '' ? '2000-1-1' : tabledata[i][9]['text'];
-                    order_goods_manager_item['replace_reason'] = tabledata[i][10]['text'];
-                    order_goods_manager_item['purchase_date'] = '2000-01-01';
-                    order_goods_manager_item['deal_date'] = '2000-01-01';
-                    order_goods_manager_item['fault_condition'] = "";
-
-
-                    order_goods_manager_item['ogl_id'] = tabledata[i][0]['ogl_id'];
-                    order_goods_manager_item['ogl_product_state'] = tabledata[i][12]['text'];
-                    order_goods_manager_item['unc_product_id'] =tabledata[i][13]['tag'] ;
-                    order_goods_manager_item['ogl_comment'] = tabledata[i][14]['text'];
-                    order_goods_manager_item['ogl_explain'] = data['ogl_explain'];
-                    order_goods_manager[i] = order_goods_manager_item;
-                }
+                var order_goods_manager= getOrderGoods(data,true);
                 console.log("以下清单信息：");
                 console.log(order_goods_manager);
 
@@ -2097,21 +1645,30 @@
                 console.log(unc_ofg_detail);
                 console.log(del_unc_ofg_detail_id_arr);
 
+                var cs_examine = [];
+                if(editOrderData['complete_date'] == ''||editOrderData['complete_date'] == '2000-01-01'||editOrderData['complete_date'] == '2000-01-01 00:00:00')
+                {
+                    cs_examine[0] = getDirectorExamine(data,true,2);
+                    cs_examine[1] = getGeneralManagerExamine(data,true,2);
+                    cs_examine[2] = getFinanceExamine(data,true,2);
+                }
+                console.log("以下订单审批信息：");
+                console.log(cs_examine);
+
                 jq.ajax({
                     url: "{:url('admin/addreplaceconfirmorder/logisticeditandsaveorder')}",
                     data: {cs_info:cs_info,
-                        cs_belong:cs_belong,
                         order_goods_manager:order_goods_manager,
                         payment_info:payment_info,
                         unc_ofg_info:unc_ofg_info,
                         unc_ofg_detail:unc_ofg_detail,
                         del_unc_ofg_detail_id_arr:del_unc_ofg_detail_id_arr,
+                        cs_examine:cs_examine,
                     } ,
                     type: 'POST',
                     dataType: 'json',
                     async:false,
                     success: function(e) {
-                        console.log('++++++++++++++++++++++++++++++++++');
                         console.log(e);
                         if(e){
                             console.log('订单添加成功！');
@@ -2199,51 +1756,16 @@
                     }
 
                 }
-                var depart_examine = {};
-                depart_examine['cs_examine_date'] = data['examinationapprovaldatefirst']== ''?'2000-01-01':data['examinationapprovaldatefirst'];
-                depart_examine['cs_examine_comment'] = data['remarkfirst'];
-                depart_examine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
-                depart_examine['cs_examine_result'] = data['departmentdirectoradvice'] === undefined ?"":data['departmentdirectoradvice'];
-                depart_examine['cs_examine_state'] = 2;
-                depart_examine['cs_examine_name'] = editOrderData['depart_examine']['cs_examine_name'];
-                depart_examine['examine_user_id'] = editOrderData['depart_examine']['examine_user_id'];
-                depart_examine['cs_examine_id'] = editOrderData['depart_examine']['cs_examine_id'];
-                depart_examine['cs_id'] = editOrderData['depart_examine']['cs_id'];
-                depart_examine['submit_user_id'] = editOrderData['depart_examine']['submit_user_id'];
-                depart_examine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
+                var depart_examine = getDirectorExamine(data,true,2);
                 cs_examine.push(depart_examine);
 
-                var company_examine = {};
-                company_examine['cs_examine_date'] =data['examinationapprovaldatesecond']== ''?'2000-01-01':data['examinationapprovaldatesecond'];
-                company_examine['cs_examine_comment'] = data['remarksecond'];
-                company_examine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
-                company_examine['cs_examine_result'] = data['executivegeneralmanageradvice']=== undefined ?"":data['executivegeneralmanageradvice'];
-                company_examine['cs_examine_state'] = 2;
-                company_examine['cs_examine_name'] = editOrderData['company_examine']['cs_examine_name'];
-                company_examine['examine_user_id'] = editOrderData['company_examine']['examine_user_id'];
-                company_examine['cs_examine_id'] = editOrderData['company_examine']['cs_examine_id'];
-                company_examine['cs_id'] = editOrderData['company_examine']['cs_id'];
-                company_examine['submit_user_id'] = editOrderData['company_examine']['submit_user_id'];
-                company_examine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
+                var company_examine = getGeneralManagerExamine(data,true,2);
                 cs_examine.push(company_examine);
 
-                var finance_examine = {};
-                finance_examine['cs_examine_date'] = data['examinationapprovaldatethird'] == ''?'2000-01-01':data['examinationapprovaldatethird'];
-                finance_examine['cs_examine_comment'] = data['remarkthird'];
-                finance_examine['cs_examine_content'] = data['examinationapprovalcontentthird'];
-                finance_examine['cs_examine_result'] = data['financedirectoradvice']=== undefined ?"":data['financedirectoradvice'];
-                finance_examine['cs_examine_state'] = 2;
-                finance_examine['cs_examine_name'] = editOrderData['finance_examine']['cs_examine_name'];
-                finance_examine['examine_user_id'] = editOrderData['finance_examine']['examine_user_id'];
-                finance_examine['cs_examine_id'] = editOrderData['finance_examine']['cs_examine_id'];
-                finance_examine['cs_id'] = editOrderData['finance_examine']['cs_id'];
-                finance_examine['submit_user_id'] = editOrderData['finance_examine']['submit_user_id'];
-                finance_examine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
+                var finance_examine = getFinanceExamine(data,true,2);
                 cs_examine.push(finance_examine);
 
-
                 console.log(cs_examine);
-
                 var cs_info = new Object();
                 cs_info.custom_info_id = editOrderData['custom_info_id'];
                 cs_info.delivery_info_id = editOrderData['delivery_info_id'];
@@ -2260,6 +1782,7 @@
                 cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
                 cs_info.can_edit = 1;                              //0 不可编辑
                 cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
+                cs_info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
                 jq.post("{:url('admin/Addreplaceconfirmorder/returnorder')}",{'cs_info':cs_info,'cs_examine':cs_examine},function (result) {
                    console.log(result);
                 });
@@ -2491,6 +2014,189 @@
             function getUncofgInfoUI() {
                 return uncofginfo;
             }
+
+            function getCsInfo(data,isSave,isEdit,csState) {
+                console.log(data);
+                var info = new Object();
+                info.custom_info_id = isEdit == true?editOrderData['custom_info_id']:-1;
+                info.delivery_info_id = isEdit == true?editOrderData['delivery_info_id']:-1;
+                info.return_info_id = isEdit == true?editOrderData['return_info_id']:-1;
+                info.payment_info_id = isEdit == true?editOrderData['payment_info_id']:-1;
+                info.cur_process_user_id = isEdit == true?editOrderData['cur_process_user_id']:data['build_user_id'];                      // 当前处理用户id
+                info.pre_process_user_id = isEdit == true?editOrderData['pre_process_user_id']:data['build_user_id'];
+                info.cs_id = isEdit == true?editOrderData['cs_id']:'';
+                info.cs_examine_ids = isEdit == true?editOrderData['cs_examine_ids']:'';
+                info.write_date = isEdit == true?editOrderData['write_date']:'';
+                info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
+                info.can_edit = isSave == true?1:0;                              //0 不可编辑
+                info.cs_info_state = csState;
+                info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate']; //cs_info       //新增 无完成日期
+                info.product_number = document.getElementById('tableorder').rows.length;
+                info.unc_ofg_info_id = isEdit == true?editOrderData['unc_ofg_info_id']:0;
+                info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
+                return info;
+            }
+
+            function getCustomInfo(data,isEdit) {
+                var info = new Object();
+                info.custom_info_id = isEdit == true?editOrderData['custom_info_id']:'';
+                info.company_name = data['company_name'];
+                info.company_phone = data['company_phone'];
+                info.company_address = data['company_address'];
+                info.legal_representative = data['legal_representative'];
+                info.legal_phone = data['legal_phone'];
+                info.company_contact = data['company_contact'];
+                info.company_contact_phone = data['company_contact_phone'];
+                return info;
+            }
+
+            function getDeliveryInfo(data,isEdit) {
+                var info = new Object();
+                info.delivery_info_id = isEdit == true?editOrderData['delivery_info_id']:'';
+                info.delivery_info_receiver_name = data['delivery_info_receiver_name'];
+                info.delivery_info_receiver_phone = data['delivery_info_receiver_phone'];
+                info.delivery_info_goods_yard_name = data['delivery_info_goods_yard_name'];
+                info.delivery_info_goods_yard_phone = data['delivery_info_goods_yard_phone'];
+                info.delivery_info_receiver_address = data['delivery_info_receiver_address'];
+                info.is_insure = data['is_insure'];
+                info.insure_amount = data['insure_amount'] == ''?0:data['insure_amount'];
+                info.is_sign = data['is_sign'];
+                info.has_contract = data['has_contract'];
+                info.transfer_fee_mode = data['transfer_fee_mode'];//freightway 运费方式
+                info.order_delivery_require = data['order_delivery_require'];
+                return info;
+            }
+
+            function getReturnInfo(data,isEdit) {
+
+                var info = new Object();
+                info.return_info_id = editOrderData['return_info_id'];
+                info.return_info_receiver_name = data['return_info_receiver_name'];
+                info.return_info_receiver_phone = data['return_info_receiver_phone'];
+                info.return_info_goods_yard_name = data['return_info_goods_yard_name'];
+                info.return_info_goods_yard_phone = data['return_info_goods_yard_phone'];
+                info.return_order_num = data['return_order_num'];
+                info.return_info_receiver_address = data['return_info_receiver_address'];
+                return info;
+            }
+
+            function getCsBelong(data,isEdit) {
+                var jq = layui.jquery;
+                var info = new Object();
+                info.cs_belong_id = isEdit == true?editOrderData['cs_belong_id']:'';
+                info.cs_id = isEdit == true?editOrderData['cs_id']:'';
+                info.build_organize_id = data['build_organize_id'];
+                info.build_department_id = data['build_department_id'];
+                info.build_user_id = data['build_user_id'];
+                info.build_department_name = jq("#build_department_id").find("option:selected").text();                //缺
+                info.cs_belong_create_time = isEdit == true?editOrderData['cs_belong_create_time']:new Date().toLocaleDateString();
+                info.build_user_name = jq("#build_user_id").find("option:selected").text();
+                info.build_organize_name = jq("#build_organize_id").find("option:selected").text();
+                info.build_user_phone = data['build_user_phone'];
+                return info;
+            }
+
+            function getOrderGoods(data,isEdit) {
+                var  tabledata = getTableContent();
+                var rows = tabledata.length;
+                var info= [];
+                for(var i = 0; i < rows; i++){
+                    var order_goods_manager_item = {};
+                    order_goods_manager_item['order_goods_manager_id']= tabledata[i]['order_goods_manager_id'];
+                    order_goods_manager_item['cs_id']= isEdit==true?editOrderData['cs_id']:'';
+                    order_goods_manager_item['product_info_id']= tabledata[i]['product_info_id'];
+                    order_goods_manager_item['unit'] = tabledata[i]['unit'];
+                    order_goods_manager_item['order_goods_manager_count'] = tabledata[i]['order_goods_manager_count'];
+                    order_goods_manager_item['specification'] = tabledata[i]['specification'];
+                    order_goods_manager_item['type'] = cs_info_type;                                             //1：更换 详细看数据库
+                    order_goods_manager_item['unit_price'] = -1;
+                    order_goods_manager_item['order_goods_manager_explain'] = data['order_goods_manager_explain'];
+
+                    order_goods_manager_item['comment'] = tabledata[i]['comment'] == undefined?'':tabledata[i]['comment'];
+                    order_goods_manager_item['bar_code'] = tabledata[i]['bar_code'];
+                    order_goods_manager_item['back_date'] = tabledata[i]['back_date'] == '' ? '2000-01-01' : tabledata[i]['back_date'];
+                    order_goods_manager_item['replace_reason'] = tabledata[i]['replace_reason'];
+                    order_goods_manager_item['purchase_date'] = '2000-01-01';
+                    order_goods_manager_item['deal_date'] = '2000-01-01';
+                    order_goods_manager_item['fault_condition'] = "";
+
+
+                    order_goods_manager_item['ogl_id'] = tabledata[i]['ogl_id'];
+                    order_goods_manager_item['ogl_product_state'] = tabledata[i]['ogl_product_state'];
+                    order_goods_manager_item['unc_product_id'] =tabledata[i]['unc_product_id'] == ''?-1:tabledata[i]['unc_product_id'];
+                    order_goods_manager_item['ogl_comment'] = tabledata[i]['ogl_comment'];
+                    order_goods_manager_item['ogl_explain'] = data['ogl_explain'];
+                    info[i] = order_goods_manager_item;
+                }
+                return info;
+            }
+
+            function getDirectorExamine(data,isEdit,state) {
+                var info = {};
+                info['cs_examine_date'] = data['examinationapprovaldatefirst']== ''?'2000-01-01':data['examinationapprovaldatefirst'];
+                info['cs_examine_comment'] = data['remarkfirst'];
+                info['cs_examine_content'] = data['examinationapprovalcontentfirst'];
+                info['cs_examine_result'] = data['departmentdirectoradvice'] === undefined ?"":data['departmentdirectoradvice'];
+                info['cs_examine_state'] = state;
+                info['cs_examine_name'] = isEdit == true?editOrderData['depart_examine']['cs_examine_name']:'';
+                info['examine_user_id'] = isEdit == true?editOrderData['depart_examine']['examine_user_id']:'';
+                info['cs_examine_id'] = isEdit == true?editOrderData['depart_examine']['cs_examine_id']:'';
+                info['cs_id'] = isEdit == true?editOrderData['depart_examine']['cs_id']:'';
+                info['submit_user_id'] = isEdit == true?editOrderData['depart_examine']['submit_user_id']:data['build_user_id'];
+                info['cs_examine_time_stamp'] = state == 2?new Date().toLocaleDateString():'2000-01-01';
+                return info;
+            }
+
+            function getGeneralManagerExamine(data,isEdit,state) {
+                var info = {};
+                info['cs_examine_date'] =data['examinationapprovaldatesecond']== ''?'2000-01-01':data['examinationapprovaldatesecond'];
+                info['cs_examine_comment'] = data['remarksecond'];
+                info['cs_examine_content'] = data['examinationapprovalcontentsecond'];
+                info['cs_examine_result'] = data['executivegeneralmanageradvice']=== undefined ?"":data['executivegeneralmanageradvice'];
+                info['cs_examine_state'] = state;
+                info['cs_examine_name'] = isEdit == true?editOrderData['company_examine']['cs_examine_name']:'';
+                info['examine_user_id'] = isEdit == true?editOrderData['company_examine']['examine_user_id']:'';
+                info['cs_examine_id'] = isEdit == true?editOrderData['company_examine']['cs_examine_id']:'';
+                info['cs_id'] = isEdit == true?editOrderData['company_examine']['cs_id']:'';
+                info['submit_user_id'] = isEdit == true?editOrderData['company_examine']['submit_user_id']:data['build_user_id'];
+                info['cs_examine_time_stamp'] = state == 2?new Date().toLocaleDateString():'2000-01-01';
+                return info;
+            }
+
+            function getFinanceExamine(data,isEdit,state) {
+                var info = {};
+                info['cs_examine_date'] = data['examinationapprovaldatethird'] == ''?'2000-01-01':data['examinationapprovaldatethird'];
+                info['cs_examine_comment'] = data['remarkthird'];
+                info['cs_examine_content'] = data['examinationapprovalcontentthird'];
+                info['cs_examine_result'] = data['financedirectoradvice']=== undefined ?"":data['financedirectoradvice'];
+                info['cs_examine_state'] = state;
+                info['cs_examine_name'] = isEdit == true?editOrderData['finance_examine']['cs_examine_name']:'';
+                info['examine_user_id'] = isEdit == true?editOrderData['finance_examine']['examine_user_id']:'';
+                info['cs_examine_id'] = isEdit == true?editOrderData['finance_examine']['cs_examine_id']:'';
+                info['cs_id'] = isEdit == true?editOrderData['finance_examine']['cs_id']:'';
+                info['submit_user_id'] = isEdit == true?editOrderData['finance_examine']['submit_user_id']:data['build_user_id'];
+                info['cs_examine_time_stamp'] = state == 2?new Date().toLocaleDateString():'2000-01-01';
+
+                return info;
+            }
+
+            function getPaymentInfo(data,isEdit) {
+                var  info= {};
+                info['payment_info_id'] = isEdit == true?editOrderData['payment_info_id']:'';
+                info['is_paid'] = data['is_paid'];
+                info['paid_date'] = data['paid_date'] == '' ? "2000-01-01":data['paid_date'];
+                info['customization_fee'] =  data['customization_fee'];
+                info['paid_bank'] = data['paid_bank'];
+                info['payment_info_comment'] = data['payment_info_comment'];
+                return info;
+            }
+
+            document.onkeydown = function keyLogin(e) {
+                var event = (typeof event!= 'undefined') ? window.event : e;
+                if(event.keyCode==8) //屏蔽delete键
+                    return false;
+            }
+
         </script>
     </body>
 </html>

@@ -55,51 +55,76 @@
             $sqlone .= "left join dsp_logistic.fee_info on dsp_logistic.fee_info.fee_info_id = dsp_logistic.order_goods_cs_info.fee_info_id ";
             $sqlone .= "left join dsp_logistic.unc_ofg_info on dsp_logistic.unc_ofg_info.uoi_id = dsp_logistic.order_goods_cs_info.unc_ofg_info_id ";
             //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
-            //$sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
+            $sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
 
-            $sqlone .= "where dsp_logistic.order_goods_cs_info.cs_id like '%%' ";
+            $sqloneCondition = "where dsp_logistic.order_goods_cs_info.cs_id like '%%' ";
             if($organizename != "")
             {
-                $sqlone .= "and build_organize_name='$organizename' ";
+                $sqloneCondition .= "and build_organize_name='$organizename' ";
             }
             if($departmentname != "")
             {
-                $sqlone .= "and build_department_name='$departmentname' ";
+                $sqloneCondition .= "and build_department_name='$departmentname' ";
             }
             if($areamanager != "")
             {
-                $sqlone .= "and build_user_name='$areamanager' ";
+                $sqloneCondition .= "and build_user_name='$areamanager' ";
             }
 
             if($totalargs == 7){
                 if($args[6]['areamanager'] != "" && $areamanager == ""){
                     $areamanger1 = $args[6]['areamanager'];
-                    $sqlone.= " and build_user_name ='$areamanger1'";
+                    $sqloneCondition.= " and build_user_name LIKE '%$areamanger1%'";
                 }
                 if($args[6]['departmentname'] != "" && $departmentname == ""){
                     $departmentname1 = $args[6]['departmentname'];
-                    $sqlone.= " and build_department_name ='$departmentname1'";
+                    $sqloneCondition.= " and  build_department_name LIKE '%$departmentname1%'";
                 }
                 if($args[6]['organizename'] != "" && $organizename == ""){
                     $organizename1 = $args[6]['organizename'];
-                    $sqlone.= " and build_organize_name ='$organizename1'";
+                    $sqloneCondition.= " and build_organize_name ='$organizename1'";
                 }
                 $startdate = $args[6]['startdate'];
                 $enddate = $args[6]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqlone.= " and order_date >='$startdate' and order_date <='$enddate'";
+                    $sqloneCondition.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate'";
+                }else if($startdate != "" && $enddate == "" ){
+                    $sqloneCondition.= " and cs_belong_create_time >='$startdate'";
+                }else if($startdate == "" && $enddate != "" ){
+                    $sqloneCondition.= " and cs_belong_create_time <='$enddate'";
                 }
                 if($args[6]['order_id'] != "")
                 {
                     $cs_id = $args[6]['order_id'];
-                    $sqlone.= " and dsp_logistic.order_goods_cs_info.cs_id ='$cs_id'";
+                    $sqloneCondition.= " and dsp_logistic.order_goods_cs_info.cs_id ='$cs_id'";
                 }
                 if($args[6]['orderstate'] != "")
                 {
                     $cs_info_state = $args[6]['orderstate'];
-                    $sqlone.= " and cs_info_state ='$cs_info_state'";
+                    $sqloneCondition.= " and cs_info_state ='$cs_info_state'";
                 }
+                if ($args[6]['freightmode'] != ""){
+                    $transfer_mode = $args[6]['freightmode'];
+                    $sqloneCondition.= " and dsp_logistic.fee_info.transfer_mode ='$transfer_mode'";
+                }
+                if ($args[6]['receiver_name'] != ""){
+                    $receiver_name = $args[6]['receiver_name'];
+                    $sqloneCondition.= " and receiver_name LIKE '%$receiver_name%'";
+                }
+                if ($args[6]['couriernumber'] != "" || $args[6]['yard'] != ""){
+                    //$sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
+                    if ($args[6]['couriernumber'] != ""){
+                        $transfer_order_num = $args[6]['couriernumber'];
+                        $sqloneCondition.= " and transfer_order_num = '$transfer_order_num'";
+                    }
+                    if ($args[6]['yard'] != ""){
+                        $goods_yard_name = $args[6]['yard'];
+                        $sqloneCondition.= " and goods_yard_name LIKE '%$goods_yard_name%'";
+                    }
+                }
+
+
                 /*if($type == 2||$type == 5) //借样和配件没有返货信息
                 {
                     if($args[6]['receiver_name'] != "")
@@ -117,6 +142,8 @@
                     }
                 }*/
             }
+            //return $sqlone;
+            $sqlone = $sqlone.$sqloneCondition;
             $countobj = Db::query($sqlone);
             $count = $countobj[0]['count(*)'];
             if($count == 0){
@@ -129,54 +156,81 @@
 
             $offset = ($pagenum - 1)*$length;
             //$sqltwo ="select  dsp_logistic.cs_belong.* ,dsp_logistic.order_goods_cs_info.*,dsp_logistic.fee_info.transfer_mode,dsp_logistic.logistics_info.transfer_order_num,";
-            $sqltwo ="select  dsp_logistic.cs_belong.* ,dsp_logistic.order_goods_cs_info.*,dsp_logistic.fee_info.transfer_mode,";
-            $sqltwo .= "dsp_logistic.ofg_info.receiver_name from dsp_logistic.order_goods_cs_info ";
-            $sqltwo .= "left join dsp_logistic.ofg_info on dsp_logistic.ofg_info.ofg_info_id = dsp_logistic.order_goods_cs_info.ofg_info_id ";
+            $sqltwo_h ="select  dsp_logistic.cs_belong.* ,dsp_logistic.order_goods_cs_info.*,dsp_logistic.fee_info.transfer_mode,dsp_logistic.ofg_info.receiver_name";
+            $sqltwo_h .= ",dsp_logistic.logistics_info.delivery_date from dsp_logistic.order_goods_cs_info ";
+            //$sqltwo_h .= "dsp_logistic.ofg_info.receiver_name,dsp_logistic.logistics_info.delivery_date from dsp_logistic.order_goods_cs_info ";
+            $sqltwo = "left join dsp_logistic.ofg_info on dsp_logistic.ofg_info.ofg_info_id = dsp_logistic.order_goods_cs_info.ofg_info_id ";
             $sqltwo .= "left join dsp_logistic.fee_info on dsp_logistic.fee_info.fee_info_id = dsp_logistic.order_goods_cs_info.fee_info_id ";
             $sqltwo .= "left join dsp_logistic.unc_ofg_info on dsp_logistic.unc_ofg_info.uoi_id = dsp_logistic.order_goods_cs_info.unc_ofg_info_id ";
             //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
-            //$sqltwo .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
+            $sqltwo .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
             $sqltwo .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
-            $sqltwo .= "where dsp_logistic.order_goods_cs_info.cs_id like '%%' ";
+            $sqltwoCondition = "where dsp_logistic.order_goods_cs_info.cs_id like '%%' ";
             if($organizename != "")
             {
-                $sqltwo .= "and build_organize_name='$organizename' ";
+                $sqltwoCondition .= "and build_organize_name='$organizename' ";
             }
             if($departmentname != "")
             {
-                $sqltwo .= "and build_department_name='$departmentname' ";
+                $sqltwoCondition .= "and build_department_name='$departmentname' ";
             }
             if($areamanager != "")
             {
-                $sqltwo .= "and build_user_name='$areamanager' ";
+                $sqltwoCondition .= "and build_user_name='$areamanager' ";
             }
             if($totalargs == 7){
                 if($args[6]['areamanager'] != "" && $areamanager == ""){
                     $areamanger1 = $args[6]['areamanager'];
-                    $sqltwo.= " and build_user_name ='$areamanger1'";
+                    $sqltwoCondition .= " and build_user_name LIKE '%$areamanger1%'";
                 }
                 if($args[6]['departmentname'] != "" && $departmentname == ""){
                     $departmentname1 = $args[6]['departmentname'];
-                    $sqltwo.= " and build_department_name ='$departmentname1'";
+                    $sqltwoCondition .= " and build_department_name LIKE '%$departmentname1%'";
                 }
                 if($args[6]['organizename'] != "" && $organizename == ""){
                     $organizename1 = $args[6]['organizename'];
-                    $sqltwo.= " and build_organize_name ='$organizename1'";
+                    $sqltwoCondition .= " and build_organize_name ='$organizename1'";
                 }
                 $startdate = $args[6]['startdate'];
                 $enddate = $args[6]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqltwo.= " and order_date >='$startdate' and order_date <='$enddate'";
+                    $sqltwoCondition .= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate'";
+                }else if($startdate != "" && $enddate == "" ){
+                    $sqltwoCondition .= " and cs_belong_create_time >='$startdate'";
+                }else if($startdate == "" && $enddate != "" ){
+                    $sqltwoCondition .= " and cs_belong_create_time <='$enddate'";
                 }
                 if($args[6]['order_id'] != "")
                 {
                     $cs_id = $args[6]['order_id'];
-                    $sqltwo.= " and dsp_logistic.order_goods_cs_info.cs_id ='$cs_id'";
+                    $sqltwoCondition .= " and dsp_logistic.order_goods_cs_info.cs_id ='$cs_id'";
                 }
                 if($args[6]['orderstate'] != "")
                 {
                     $cs_info_state = $args[6]['orderstate'];
-                    $sqltwo.= " and cs_info_state ='$cs_info_state'";
+                    $sqltwoCondition .= " and cs_info_state ='$cs_info_state'";
+                }
+                if ($args[6]['freightmode'] != ""){
+                    $transfer_mode = $args[6]['freightmode'];
+                    $sqltwoCondition .=" and dsp_logistic.fee_info.transfer_mode ='$transfer_mode'";
+                }
+                if ($args[6]['receiver_name'] != ""){
+                    $receiver_name = $args[6]['receiver_name'];
+                    $sqltwoCondition .= " and receiver_name LIKE '%$receiver_name%'";
+                }
+                if ($args[6]['couriernumber'] != "" || $args[6]['yard'] != ""){
+                    //$sqltwo_h .= ",dsp_logistic.logistics_info.delivery_date from dsp_logistic.order_goods_cs_info ";
+                    //$sqltwo .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
+                    if ($args[6]['couriernumber'] != ""){
+                        $transfer_order_num = $args[6]['couriernumber'];
+                        $sqltwoCondition .= " and transfer_order_num = '$transfer_order_num'";
+                    }
+                    if ($args[6]['yard'] != ""){
+                        $goods_yard_name = $args[6]['yard'];
+                        $sqltwoCondition .= " and goods_yard_name LIKE '%$goods_yard_name%'";
+                    }
+                }else{
+                    //$sqltwo_h .= " from dsp_logistic.order_goods_cs_info ";
                 }
                 /*if($type == 2||$type == 5) //借样和配件没有返货信息
                 {
@@ -195,8 +249,9 @@
                     }
                 }*/
             }
-            $sqltwo .= "order By dsp_logistic.order_goods_cs_info.cs_id DESC limit {$offset},{$length} ;";
-            $tableobj = Db::query($sqltwo);
+            $sqltwoCondition .= "order By dsp_logistic.order_goods_cs_info.cs_id DESC limit {$offset},{$length} ;";
+            $sql = $sqltwo_h.$sqltwo.$sqltwoCondition;
+            $tableobj = Db::query($sql);
             if(!empty($tableobj)){
                 $tableobjcount = count($tableobj);
                 for ($i = 0;$i < $tableobjcount;$i++)
@@ -214,7 +269,7 @@
                     $tableobj[$i]["receiver_name"] = $tableobj[$i]["receiver_name"];//+++++
                     //$tableobj[$i]['write_date'] = $tableobj[$i]["order_date"];
                     $state = $tableobj[$i]["cs_info_state"];
-                    $mode =  $tableobj[$i]["delivered_total"];
+                    $mode =  $tableobj[$i]["transfer_mode"];
                     if($state == 0)
                         $tableobj[$i]["cs_info_state"] = "空";
                     elseif ($state == 1)
@@ -234,18 +289,16 @@
                         $tableobj[$i]["cs_info_state"] = "备货";
                     }
 
-                    if ($mode == 1)
+                    if ($mode == 0)
                         $tableobj[$i]["transfer_fee_mode"] = "到付";
-                    elseif ($mode == 2)
+                    elseif ($mode == 1)
                         $tableobj[$i]["transfer_fee_mode"] = "现金";
+                    elseif ($mode == 2)
+                        $tableobj[$i]["transfer_fee_mode"] = "代付";
                     elseif ($mode == 3)
-                        $tableobj[$i]["transfer_fee_mode"] = "现付";
-                    elseif ($mode == 4)
                         $tableobj[$i]["transfer_fee_mode"] = "公司付";
 
-
                 }
-
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
             }
 			//return (array('code'=>0,'msg'=>'','count'=>0,'data'=>[]));
@@ -317,18 +370,44 @@
                 {
                     if($args[6]['receiver_name'] != "")
                     {
-                        $delivery_info_receiver_name = $args[6]['receiver_name'];
-                        $sqlone.= " and delivery_info_receiver_name ='$delivery_info_receiver_name'";
+                        $delivery_info_receiver_name = $args[3]['receiver_name'];
+                        $sqlone.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
+                    }
+
+                    if($args[6]['yard'] != "")
+                    {
+                        $yard = $args[3]['yard'];
+                        $sqlone.= " and delivery_info_goods_yard_name ='$yard' ";
                     }
                 }
                 else
                 {
                     if($args[6]['receiver_name'] != "")
                     {
-                        $return_info_receiver_name = $args[6]['receiver_name'];
-                        $sqlone.= " and return_info_receiver_name ='$return_info_receiver_name'";
+                        $return_info_receiver_name = $args[3]['receiver_name'];
+                        $sqlone.= " and return_info_receiver_name ='$return_info_receiver_name' ";
+                    }
+                    if($args[6]['yard'] != "")
+                    {
+                        $yard = $args[3]['yard'];
+                        $sqlone.= " and return_info_goods_yard_name ='$yard' ";
                     }
                 }
+
+                if($args[6]['couriernumber'] != "")
+                {
+                    $num = $args[6]['couriernumber'];
+                    $sqlone.= " and transfer_order_num ='$num' ";
+                }
+                if(array_key_exists('freightmode',$args[6]))
+                {
+                    if($args[6]['freightmode'] != "")
+                    {
+                        $freightmode = $args[6]['freightmode'];
+                        $sqlone.= " and transfer_fee_mode ='$freightmode' ";
+                    }
+                }
+
             }
 			$countobj = Db::query($sqlone);
 			$count = $countobj[0]['count(*)'];
@@ -394,16 +473,42 @@
                 {
                     if($args[6]['receiver_name'] != "")
                     {
-                        $delivery_info_receiver_name = $args[6]['receiver_name'];
-                        $sqltwo.= " and delivery_info_receiver_name ='$delivery_info_receiver_name'";
+                        $delivery_info_receiver_name = $args[3]['receiver_name'];
+                        $sqltwo.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
+                    }
+
+                    if($args[6]['yard'] != "")
+                    {
+                        $yard = $args[3]['yard'];
+                        $sqltwo.= " and delivery_info_goods_yard_name ='$yard' ";
                     }
                 }
                 else
                 {
                     if($args[6]['receiver_name'] != "")
                     {
-                        $return_info_receiver_name = $args[6]['receiver_name'];
-                        $sqltwo.= " and return_info_receiver_name ='$return_info_receiver_name'";
+                        $return_info_receiver_name = $args[3]['receiver_name'];
+                        $sqltwo.= " and return_info_receiver_name ='$return_info_receiver_name' ";
+                    }
+                    if($args[6]['yard'] != "")
+                    {
+                        $yard = $args[3]['yard'];
+                        $sqltwo.= " and return_info_goods_yard_name ='$yard' ";
+                    }
+                }
+
+                if($args[6]['couriernumber'] != "")
+                {
+                    $num = $args[6]['couriernumber'];
+                    $sqltwo.= " and transfer_order_num ='$num' ";
+                }
+
+                if(array_key_exists('freightmode',$args[6]))
+                {
+                    if($args[6]['freightmode'] != "")
+                    {
+                        $freightmode = $args[6]['freightmode'];
+                        $sqlone.= " and transfer_fee_mode ='$freightmode' ";
                     }
                 }
 			}
@@ -447,14 +552,14 @@
                         $tableobj[$i]["cs_info_state"] = "退回";
                     }
 
-                    if ($mode == 1)
-                    $tableobj[$i]["transfer_fee_mode"] = "到付";
+                    if ($mode == 0)
+                        $tableobj[$i]["transfer_fee_mode"] = "到付";
+                    elseif ($mode == 1)
+                        $tableobj[$i]["transfer_fee_mode"] = "现金";
                     elseif ($mode == 2)
-                    $tableobj[$i]["transfer_fee_mode"] = "现金";
+                        $tableobj[$i]["transfer_fee_mode"] = "现付";
                     elseif ($mode == 3)
-                    $tableobj[$i]["transfer_fee_mode"] = "现付";
-                    elseif ($mode == 4)
-                    $tableobj[$i]["transfer_fee_mode"] = "公司付";
+                        $tableobj[$i]["transfer_fee_mode"] = "公司付";
 
                     if($tableobj[$i]["complete_date"] == "2000-01-01 00:00:00")
                     {
@@ -519,6 +624,7 @@
             $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
             $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
             //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
+
             $sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqlone .= "where dsp_logistic.cs_info.cs_info_type='$type' ";
@@ -535,7 +641,7 @@
                 $startdate = $args[3]['startdate'];
                 $enddate = $args[3]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqlone.= " and write_date >='$startdate' and write_date <='$enddate' ";
+                    $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
                 }
                 if($args[3]['order_id'] != "")
                 {
@@ -554,6 +660,12 @@
                         $delivery_info_receiver_name = $args[3]['receiver_name'];
                         $sqlone.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
                     }
+
+                    if($args[3]['yard'] != "")
+                    {
+                        $yard = $args[3]['yard'];
+                        $sqlone.= " and delivery_info_goods_yard_name ='$yard' ";
+                    }
                 }
                 else
                 {
@@ -561,6 +673,26 @@
                     {
                         $return_info_receiver_name = $args[3]['receiver_name'];
                         $sqlone.= " and return_info_receiver_name ='$return_info_receiver_name' ";
+                    }
+                    if($args[3]['yard'] != "")
+                    {
+                        $yard = $args[3]['yard'];
+                        $sqlone.= " and return_info_goods_yard_name ='$yard' ";
+                    }
+                }
+
+                if($args[3]['couriernumber'] != "")
+                {
+                    $num = $args[3]['couriernumber'];
+                    $sqlone.= " and transfer_order_num ='$num' ";
+                }
+
+                if(array_key_exists('freightmode',$args[3]))
+                {
+                    if($args[3]['freightmode'] != "")
+                    {
+                        $freightmode = $args[3]['freightmode'];
+                        $sqlone.= " and transfer_fee_mode ='$freightmode' ";
                     }
                 }
             }
@@ -575,12 +707,17 @@
             }
 
             $offset = ($pagenum - 1)*$length;
-            $sqltwo ="select  dsp_logistic.cs_belong.* ,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.transfer_fee_mode,dsp_logistic.logistics_info.transfer_order_num,";
+            $sqltwo ="select  dsp_logistic.cs_belong.* ,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.transfer_fee_mode,";
+
+
+            $sqltwo .="dsp_logistic.logistics_info.transfer_order_num,dsp_logistic.logistics_info.delivery_date,";
+
             $sqltwo .= "dsp_logistic.delivery_info.delivery_info_receiver_name,dsp_logistic.return_info.return_info_receiver_name from dsp_logistic.cs_info ";
             $sqltwo .= "left join dsp_logistic.custom_info on dsp_logistic.custom_info.custom_info_id = dsp_logistic.cs_info.custom_info_id ";
             $sqltwo .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
             $sqltwo .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
             //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
+
             $sqltwo .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqltwo .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqltwo .= "where dsp_logistic.cs_info.cs_info_type='$type' ";
@@ -597,7 +734,7 @@
                 $startdate = $args[3]['startdate'];
                 $enddate = $args[3]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqltwo.= " and write_date >='$startdate' and write_date <='$enddate' ";
+                    $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
                 }
                 if($args[3]['order_id'] != "")
                 {
@@ -616,6 +753,12 @@
                         $delivery_info_receiver_name = $args[3]['receiver_name'];
                         $sqltwo.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
                     }
+
+                    if($args[3]['yard'] != "")
+                    {
+                        $yard = $args[3]['yard'];
+                        $sqltwo.= " and delivery_info_goods_yard_name ='$yard' ";
+                    }
                 }
                 else
                 {
@@ -624,7 +767,30 @@
                         $return_info_receiver_name = $args[3]['receiver_name'];
                         $sqltwo.= " and return_info_receiver_name ='$return_info_receiver_name' ";
                     }
+                    if($args[3]['yard'] != "")
+                    {
+                        $yard = $args[3]['yard'];
+                        $sqltwo.= " and return_info_goods_yard_name ='$yard' ";
+                    }
                 }
+
+                if($args[3]['couriernumber'] != "")
+                {
+                    $num = $args[3]['couriernumber'];
+                    $sqltwo.= " and transfer_order_num ='$num' ";
+                }
+
+                if(array_key_exists('freightmode',$args[3]))
+                {
+                    if($args[3]['freightmode'] != "")
+                    {
+                        $freightmode = $args[3]['freightmode'];
+                        $sqlone.= " and transfer_fee_mode ='$freightmode' ";
+                    }
+                }
+
+
+
             }
             $sqltwo .= "order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length} ;";
             $tableobj = Db::query($sqltwo);
@@ -665,13 +831,13 @@
                         $tableobj[$i]["cs_info_state"] = "退回";
                     }
 
-                    if ($mode == 1)
+                    if ($mode == 0)
                         $tableobj[$i]["transfer_fee_mode"] = "到付";
-                    elseif ($mode == 2)
+                    elseif ($mode == 1)
                         $tableobj[$i]["transfer_fee_mode"] = "现金";
-                    elseif ($mode == 3)
+                    elseif ($mode == 2)
                         $tableobj[$i]["transfer_fee_mode"] = "现付";
-                    elseif ($mode == 4)
+                    elseif ($mode == 3)
                         $tableobj[$i]["transfer_fee_mode"] = "公司付";
 
                     if($tableobj[$i]["complete_date"] == "2000-01-01 00:00:00")
@@ -683,7 +849,7 @@
             }
         }
 
-        /*物流人员根据条件查询审批确认单，五个参数最少四个: type  page  limit queryinfo*/
+        /*物流人员根据条件查询审批确认单，五个参数最少san个: type  page  limit queryinfo*/
         public static function logisticQueryApproveConfirmOrder(...$args){
             $totalargs = count($args);
             $type = $args[0];
@@ -711,29 +877,14 @@
                 $startdate = $args[3]['startdate'];
                 $enddate = $args[3]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqlone.= " and write_date >='$startdate' and write_date <='$enddate' ";
+                    $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
                 }
                 if($args[3]['order_id'] != "")
                 {
                     $cs_id = $args[3]['order_id'];
                     $sqlone.= " and dsp_logistic.cs_info.cs_id ='$cs_id' ";
                 }
-                if($type == 2||$type == 5) //借样和配件没有返货信息
-                {
-                    if($args[3]['receiver_name'] != "")
-                    {
-                        $delivery_info_receiver_name = $args[3]['receiver_name'];
-                        $sqlone.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
-                    }
-                }
-                else
-                {
-                    if($args[3]['receiver_name'] != "")
-                    {
-                        $return_info_receiver_name = $args[3]['receiver_name'];
-                        $sqlone.= " and return_info_receiver_name ='$return_info_receiver_name' ";
-                    }
-                }
+
             }
             $countobj = Db::query($sqlone);
             $count = $countobj[0]['count(*)'];
@@ -768,31 +919,16 @@
                 $startdate = $args[3]['startdate'];
                 $enddate = $args[3]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqltwo.= " and write_date >='$startdate' and write_date <='$enddate' ";
+                    $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
                 }
                 if($args[3]['order_id'] != "")
                 {
                     $cs_id = $args[3]['order_id'];
                     $sqltwo.= " and dsp_logistic.cs_info.cs_id ='$cs_id' ";
                 }
-                if($type == 2||$type == 5) //借样和配件没有返货信息
-                {
-                    if($args[3]['receiver_name'] != "")
-                    {
-                        $delivery_info_receiver_name = $args[3]['receiver_name'];
-                        $sqltwo.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
-                    }
-                }
-                else
-                {
-                    if($args[3]['receiver_name'] != "")
-                    {
-                        $return_info_receiver_name = $args[3]['receiver_name'];
-                        $sqltwo.= " and return_info_receiver_name ='$return_info_receiver_name' ";
-                    }
-                }
+
             }
-            $sqltwo .= "order By dsp_logistic.cs_belong.cs_belong_create_time DESC limit {$offset},{$length} ;";
+            $sqltwo .= "order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length} ;";
             $tableobj = Db::query($sqltwo);
             if(!empty($tableobj)){
                 for ($i = 0;$i < count($tableobj);$i++)
@@ -867,28 +1003,12 @@
                 $startdate = $args[4]['startdate'];
                 $enddate = $args[4]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqlone.= " and write_date >='$startdate' and write_date <='$enddate' ";
+                    $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
                 }
                 if($args[4]['order_id'] != "")
                 {
                     $cs_id = $args[4]['order_id'];
                     $sqlone.= " and dsp_logistic.cs_info.cs_id ='$cs_id' ";
-                }
-                if($type == 2||$type == 5) //借样和配件没有返货信息
-                {
-                    if($args[4]['receiver_name'] != "")
-                    {
-                        $delivery_info_receiver_name = $args[4]['receiver_name'];
-                        $sqlone.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
-                    }
-                }
-                else
-                {
-                    if($args[4]['receiver_name'] != "")
-                    {
-                        $return_info_receiver_name = $args[4]['receiver_name'];
-                        $sqlone.= " and return_info_receiver_name ='$return_info_receiver_name' ";
-                    }
                 }
                 if($args[4]['departname'] != "")
                 {
@@ -930,28 +1050,12 @@
                 $startdate = $args[4]['startdate'];
                 $enddate = $args[4]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqltwo.= " and write_date >='$startdate' and write_date <='$enddate' ";
+                    $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
                 }
                 if($args[4]['order_id'] != "")
                 {
                     $cs_id = $args[4]['order_id'];
                     $sqltwo.= " and dsp_logistic.cs_info.cs_id ='$cs_id' ";
-                }
-                if($type == 2||$type == 5) //借样和配件没有返货信息
-                {
-                    if($args[4]['receiver_name'] != "")
-                    {
-                        $delivery_info_receiver_name = $args[4]['receiver_name'];
-                        $sqltwo.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
-                    }
-                }
-                else
-                {
-                    if($args[4]['receiver_name'] != "")
-                    {
-                        $return_info_receiver_name = $args[4]['receiver_name'];
-                        $sqltwo.= " and return_info_receiver_name ='$return_info_receiver_name' ";
-                    }
                 }
                 if($args[4]['departname'] != "")
                 {
@@ -967,7 +1071,7 @@
 
                 }
             }
-            $sqltwo .= " order By dsp_logistic.cs_belong.cs_belong_create_time DESC limit {$offset},{$length} ;";
+            $sqltwo .= " order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length} ;";
             $tableobj = Db::query($sqltwo);
             if(!empty($tableobj)){
                 $count = count($tableobj);
@@ -1222,20 +1326,44 @@
             return $retsql;
         }
 
-        /*模糊搜索型号*/
-        public  static function serachmodelinfo($serachText, $product_type_id, $brand)
+        /*模糊搜索型号 弃用*/
+        public  static function serachmodelinfo($serachText)
         {
-            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model LIKE '%{$serachText}%' AND product_type_id = '{$product_type_id}' AND brand_id = '{$brand}'";
+            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model LIKE '%{$serachText}%' ";
             $retsql = Db::query($sql);
             return $retsql;
         }
 
-        /*精准搜索型号*/
-        public  static function coldserachmodelinfo($serachText, $product_type_id, $brand)
+        /*精准搜索型号  弃用*/
+        public  static function coldserachmodelinfo($serachText)
         {
-            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model = '{$serachText}' AND product_type_id = '{$product_type_id}' AND brand_id = '{$brand}'";
+            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model = '{$serachText}' ";
             $retsql = Db::query($sql);
             return $retsql;
+        }
+
+        /*精准搜索型号 忽略大小写*/
+        public  static function coldserachmodel($serachText)
+        {
+            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model = UPPER('{$serachText}')";
+            $retsql = Db::query($sql);
+            return $retsql;
+        }
+
+        public static function addproductinfo($info){
+            $product_info_id = $info['product_info_id'];
+            $model = $info['model'];
+            $product_info_name = $info['product_info_name'];
+            $product_type_id = $info['product_type_id'];
+            $brand_id = $info['brand_id'];
+            $place_id = $info['place_id'];
+
+            $sql_value ="'{$product_info_id}','{$model}','{$product_info_name}','{$product_type_id}','{$brand_id}','{$place_id}'";
+            $sql = "INSERT INTO dsp_logistic.product_info (product_info_id,model,product_info_name,product_type_id,brand_id,place_id) VALUES ({$sql_value}) ";
+            $sql.= "ON DUPLICATE KEY UPDATE model = '{$model}',product_info_name = '{$product_info_name}',product_type_id = '{$product_type_id}'";
+            $sql.= ",brand_id = '{$brand_id}',place_id= '{$place_id}'";
+            $sqlret = Db::execute($sql);
+            return $sqlret;
         }
 
         /*获取表中最大的id值*/
@@ -1285,13 +1413,14 @@
             $product_number = $info['product_number'];
             $cs_examine_ids = $info['cs_examine_ids'];
             $unc_ofg_info_id = $info['unc_ofg_info_id'];
-            $sql_value ="'{$cs_id}','{$custom_info_id}','{$delivery_info_id}','{$return_info_id}','{$payment_info_id}','{$cur_process_user_id}','{$pre_process_user_id}','{$cs_info_type}','{$can_edit}','{$write_date}','{$cs_info_state}','{$complete_date}','{$product_number}','$cs_examine_ids','{$unc_ofg_info_id}'";
+            $delivery_date_reply = $info['delivery_date_reply'];
+            $sql_value ="'{$cs_id}','{$custom_info_id}','{$delivery_info_id}','{$return_info_id}','{$payment_info_id}','{$cur_process_user_id}','{$pre_process_user_id}','{$cs_info_type}','{$can_edit}','{$write_date}','{$cs_info_state}','{$complete_date}','{$product_number}','$cs_examine_ids','{$unc_ofg_info_id}','$delivery_date_reply'";
             $sql = "INSERT INTO dsp_logistic.cs_info (cs_id,custom_info_id,delivery_info_id,return_info_id,payment_info_id,cur_process_user_id,pre_process_user_id
-,cs_info_type,can_edit,write_date,cs_info_state,complete_date,product_number,cs_examine_ids,unc_ofg_info_id) VALUES ({$sql_value}) ";
+,cs_info_type,can_edit,write_date,cs_info_state,complete_date,product_number,cs_examine_ids,unc_ofg_info_id,delivery_date_reply) VALUES ({$sql_value}) ";
             $sql.= "ON DUPLICATE KEY UPDATE custom_info_id = '{$custom_info_id}',delivery_info_id = '{$delivery_info_id}',return_info_id = '{$return_info_id}',payment_info_id = '{$payment_info_id}',";
             $sql.= "cur_process_user_id= '{$cur_process_user_id}',pre_process_user_id= '{$pre_process_user_id}',cs_info_type = '{$cs_info_type}',";
             $sql.= "can_edit= '{$can_edit}',write_date= '{$write_date}',cs_info_state= '{$cs_info_state}',complete_date= '{$complete_date}',product_number= '$product_number',";
-            $sql.= "cs_examine_ids= '$cs_examine_ids',unc_ofg_info_id='{$unc_ofg_info_id}'";
+            $sql.= "cs_examine_ids= '$cs_examine_ids',unc_ofg_info_id='{$unc_ofg_info_id}',delivery_date_reply ='$delivery_date_reply'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
@@ -1632,14 +1761,21 @@
 
         /*查询需要导出的更换/代用/维修/退货/配件/借样确认单  未完待续*/
         public static function queryexportcsinfoconfirmorder($param,$type){
-            $sqlone ="select dsp_logistic.cs_belong.*,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.* from dsp_logistic.cs_info ";
+            $sqlone ="select dsp_logistic.cs_belong.*,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.*,dsp_logistic.return_info.* from dsp_logistic.cs_info ";
             $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
+            $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqlone .= "where dsp_logistic.cs_info.cs_info_type='$type' ";
             if((property_exists($param,'startdate'))&&(property_exists($param,'enddate'))){
                $startdate = $param->startdate;
                $enddate = $param->enddate;
-               $sqlone.= " and write_date >='$startdate' and write_date <='$enddate' ";
+               $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
+            }else if(property_exists($param,'startdate')){
+                $startdate = $param->startdate;
+                $sqlone.= " and cs_belong_create_time >='$startdate'";
+            }else if(property_exists($param,'enddate')){
+                $enddate = $param->enddate;
+                $sqlone.= " and cs_belong_create_time <='$enddate'";
             }
 
             if(property_exists($param,'departname')){
@@ -1662,9 +1798,16 @@
                 $sqlone.= " and dsp_logistic.cs_info.cs_id ='$order_id' ";
             }
 
-            if(property_exists($param,'receiver_name')){
-                $receiver_name = $param->receiver_name;
-                $sqlone.= " and dsp_logistic.elivery_info.delivery_info_receiver_name ='$receiver_name' ";
+            if($type == 2||$type == 5){
+                if(property_exists($param,'receiver_name')){
+                    $delivery_info_receiver_name = $param->receiver_name;
+                    $sqlone.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
+                }
+            }else{
+                if(property_exists($param,'receiver_name')){
+                    $return_info_receiver_name = $param->receiver_name;
+                    $sqlone.= " and return_info_receiver_name ='$return_info_receiver_name' ";
+                }
             }
 
             /*运费付费模式*/
@@ -1673,15 +1816,6 @@
                 $sqlone .= "and dsp_logistic.delivery_info.transfer_fee_mode = '$freightmode' ";
             }
 
-            // if(property_exists($param,'yard')){
-            //     $yard = $param->yard;
-            //     $sqlone.= " and goods_yard_name ='$yard' ";
-            // }
-
-            // if(property_exists($param,'couriernumber')){
-            //     $couriernumber = $param->couriernumber;
-            //     $sqlone.= " and transfer_order_num ='$couriernumber' ";
-            // }
             $tableobj = Db::query($sqlone);
             if(empty($tableobj))
                 return null;
@@ -1729,6 +1863,16 @@
 
                 $onelistobj = Db::query($sqltwo);
                 $tableobj[$i]['ofg_productlist'] = $onelistobj;
+            }
+
+            // /*单独查询发货日期*/
+            if(count($tableobj) > 0){
+                for($i=0; $i < count($tableobj); $i++){
+                    $cs_id = $tableobj[$i]['cs_id'];
+                    $sqlfour = "select dsp_logistic.logistics_info.delivery_date from dsp_logistic.logistics_info where cs_id='$cs_id'";
+                    $dateobj = Db::query($sqlfour);
+                    $tableobj[$i]['logistic_date'] = $dateobj;
+                }
             }
 
             /*统计缺货的,产品明细，非常规部分*/
@@ -1811,6 +1955,14 @@
                 $tableobj[$i]['unc_interlligencesoft_num'] = $unc_interlligencesoft_num;
 
                 $tableobj[$i]['lessproductlist'] = $lessproductlist;
+
+                /*发货日期*/
+                $logistic_date = $tableobj[$i]['logistic_date'];
+                $delivery_logistic_date = "";
+                for($l = 0 ; $l < count($logistic_date) ; $l++){
+                    $delivery_logistic_date .= $logistic_date[$l]['delivery_date'].',';
+                }
+                $tableobj[$i]['delivery_logistic_date'] = $delivery_logistic_date;
             }
             return $tableobj;
         }
@@ -1828,8 +1980,8 @@
 
             $liststart = 0 ;
             for($item=3; $item < count($ret)+3; $item++){
-                $objPHPExcel->getActiveSheet()->setCellValue('A'.($item+$liststart), $ret[$item-3]['write_date']);
-                //$objPHPExcel->getActiveSheet()->setCellValue('B3', $ret[$item]['发货日期']);
+                $objPHPExcel->getActiveSheet()->setCellValue('A'.($item+$liststart), $ret[$item-3]['cs_belong_create_time']);
+                $objPHPExcel->getActiveSheet()->setCellValue('B'.($item+$liststart), $ret[$item-3]['delivery_logistic_date']);
                 $objPHPExcel->getActiveSheet()->setCellValue('C'.($item+$liststart), $ret[$item-3]['build_department_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('D'.($item+$liststart), $ret[$item-3]['build_user_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('E'.($item+$liststart), $ret[$item-3]['delivery_info_receiver_name']);
@@ -1901,7 +2053,7 @@
             exit;        //关键
         }
 
-        /*查询需要导出的订货确认单  未完待续*/
+        /*查询需要导出的订货确认单*/
         public static function queryexportgoodsconfirmorder($param){
             $sqlone = "select dsp_logistic.cs_belong.*,dsp_logistic.order_goods_cs_info.*,dsp_logistic.ofg_info.*,dsp_logistic.fee_info.* from dsp_logistic.order_goods_cs_info ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
@@ -1912,7 +2064,13 @@
             if((property_exists($param,'startdate'))&&(property_exists($param,'enddate'))){
                $startdate = $param->startdate;
                $enddate = $param->enddate;
-               $sqlone.= " and order_date >='$startdate' and order_date <='$enddate' ";
+               $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
+            }else if(property_exists($param,'startdate')){
+                    $startdate = $param->startdate;
+                    $sqlone.= " and cs_belong_create_time >='$startdate'";
+            }else if(property_exists($param,'enddate')){
+                    $enddate = $param->enddate;
+                    $sqlone.= " and cs_belong_create_time <='$enddate'";
             }
 
             if(property_exists($param,'departname')){
@@ -1939,16 +2097,6 @@
                 $receiver_name = $param->receiver_name;
                 $sqlone.= " and receiver_name ='$receiver_name' ";
             }
-
-            // if(property_exists($param,'yard')){
-            //     $yard = $param->yard;
-            //     $sqlone.= " and goods_yard_name ='$yard' ";
-            // }
-
-            // if(property_exists($param,'couriernumber')){
-            //     $couriernumber = $param->couriernumber;
-            //     $sqlone.= " and transfer_order_num ='$couriernumber' ";
-            // }
 
             /*运费付费模式*/
             if(property_exists($param,'freightmode')){
@@ -2000,44 +2148,68 @@
                 }
 
                 $listobjone = Db::query($sqltwo);
-                $tableobj[$i]['unc_productlist'] = $listobjone;;
+                $tableobj[$i]['unc_productlist'] = $listobjone;
+                
+                /*查询非常规单*/
+                if(!property_exists($param,'customproduct')){
+                    //常规产品详细
+                    $cs_id = $tableobj[$i]['cs_id'];
+                    $sqlthree = "select dsp_logistic.product_info.*,dsp_logistic.product_brand.brand_name,dsp_logistic.product_type.product_type_name,dsp_logistic.product_place.place_name,dsp_logistic.order_goods_cs_undeliver_goods_info.* from dsp_logistic.order_goods_cs_undeliver_goods_info ";
+                    $sqlthree .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.order_goods_cs_undeliver_goods_info.product_info_id ";
+                    $sqlthree .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
+                    $sqlthree .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
+                    $sqlthree .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
+                    $sqlthree .= "where dsp_logistic.order_goods_cs_undeliver_goods_info.cs_id ='$cs_id' ";
+                    if(property_exists($param,'productclass')){
+                        $productclass = intval($param->productclass);
+                        $sqlthree .= "and dsp_logistic.product_type.product_type_id = '$productclass' ";
+                    }
 
-                //常规产品详细
-                $cs_id = $tableobj[$i]['cs_id'];
-                $sqlthree = "select dsp_logistic.product_info.*,dsp_logistic.product_brand.brand_name,dsp_logistic.product_type.product_type_name,dsp_logistic.product_place.place_name,dsp_logistic.order_goods_cs_undeliver_goods_info.* from dsp_logistic.order_goods_cs_undeliver_goods_info ";
-                $sqlthree .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.order_goods_cs_undeliver_goods_info.product_info_id ";
-                $sqlthree .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
-                $sqlthree .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
-                $sqlthree .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
-                $sqlthree .= "where dsp_logistic.order_goods_cs_undeliver_goods_info.cs_id ='$cs_id' ";
-                if(property_exists($param,'productclass')){
-                    $productclass = intval($param->productclass);
-                    $sqlthree .= "and dsp_logistic.product_type.product_type_id = '$productclass' ";
+                    /*品牌*/
+                    if(property_exists($param,'brand')){
+                        $brand = intval($param->brand);
+                        $sqlthree .= "and dsp_logistic.product_brand.brand_id = '$brand' ";
+                    }
+
+                    /*产品型号*/
+                    if(property_exists($param,'producttype')){
+                        $producttype = $param->producttype;
+                        $sqlthree .= "and dsp_logistic.product_info.model = '$producttype' ";
+                    }
+
+                    /*生产地*/
+                    if(property_exists($param,'productarea')){
+                        $productarea = intval($param->productarea);
+                        $sqlthree .= "and dsp_logistic.product_place.place_id = '$productarea' ";
+                    }
+
+                    $listobjtwo = Db::query($sqlthree);
+                    $tableobj[$i]['ofg_productlist'] = $listobjtwo;
+
+                    if((empty($listobjone))&&(empty($listobjtwo))){
+                        $tableobj[$i]  = null;
+                    }
+                }else{
+                    if(empty($listobjone)){
+                        $tableobj[$i]  = null;
+                    }else{
+                        $tableobj[$i]['ofg_productlist']= [];
+                     }
                 }
-
-                /*品牌*/
-                if(property_exists($param,'brand')){
-                    $brand = intval($param->brand);
-                    $sqlthree .= "and dsp_logistic.product_brand.brand_id = '$brand' ";
-                }
-
-                /*产品型号*/
-                if(property_exists($param,'producttype')){
-                    $producttype = $param->producttype;
-                    $sqlthree .= "and dsp_logistic.product_info.model = '$producttype' ";
-                }
-
-                /*生产地*/
-                if(property_exists($param,'productarea')){
-                    $productarea = intval($param->productarea);
-                    $sqlthree .= "and dsp_logistic.product_place.place_id = '$productarea' ";
-                }
-
-                $listobjtwo = Db::query($sqlthree);
-                $tableobj[$i]['ofg_productlist'] = $listobjtwo;
-
             }
 
+            /*删除数组中空值*/
+            $tableobj = array_filter($tableobj);
+
+            // /*单独查询发货日期*/
+            if(count($tableobj) > 0){
+                for($i=0; $i < count($tableobj); $i++){
+                    $cs_id = $tableobj[$i]['cs_id'];
+                    $sqlfour = "select dsp_logistic.logistics_info.delivery_date from dsp_logistic.logistics_info where cs_id='$cs_id'";
+                    $dateobj = Db::query($sqlfour);
+                    $tableobj[$i]['logistic_date'] = $dateobj;
+                }
+            }
             /*统计出缺货，产品分类，非常规数据*/
             for($i = 0 ; $i < count($tableobj);$i++){
                 /*公共广播，会议等产品数量*/
@@ -2073,7 +2245,7 @@
                     if($ofg_productlist[$j]['product_type_name'] == '录播')
                         $record_num++;
 
-                    if($ofg_productlist[$j]['ogcugi_product_state'] == 1){
+                    if($ofg_productlist[$j]['ogcugi_product_state'] == 5){
                         $model_param['place_name'] = $ofg_productlist[$j]['place_name'];
                         $model_param['brand_name'] = $ofg_productlist[$j]['brand_name'];
                         $model_param['model'] = $ofg_productlist[$j]['model'];
@@ -2089,9 +2261,8 @@
                 $tableobj[$i]['auxdi_num'] = $auxdi_num;
                 $tableobj[$i]['record_num'] = $record_num;
 
-                /*缺货产品列表*/
+                //缺货产品列表
                 $tableobj[$i]['lessproductlist'] = $lessproductlist;
-
                 $unc_productlist = $tableobj[$i]['unc_productlist'];
                 for($k = 0 ; $k < count($unc_productlist) ; $k++){
                     if($unc_productlist[$k]['unc_product_name'] == '研发'){
@@ -2129,6 +2300,15 @@
                 $tableobj[$i]['unc_register_num'] = $unc_register_num;
                 $tableobj[$i]['unc_networksoft_num'] = $unc_networksoft_num;
                 $tableobj[$i]['unc_interlligencesoft_num'] = $unc_interlligencesoft_num;
+
+
+                /*发货日期*/
+                $logistic_date = $tableobj[$i]['logistic_date'];
+                $delivery_logistic_date = "";
+                for($l = 0 ; $l < count($logistic_date) ; $l++){
+                    $delivery_logistic_date .= $logistic_date[$l]['delivery_date'].',';
+                }
+                $tableobj[$i]['delivery_logistic_date'] = $delivery_logistic_date;
             }
 
             return $tableobj;
@@ -2147,8 +2327,8 @@
 
             $liststart = 0 ;
             for($item=3; $item < count($ret)+3; $item++){
-                $objPHPExcel->getActiveSheet()->setCellValue('A'.($item+$liststart), $ret[$item-3]['order_date']);
-                //$objPHPExcel->getActiveSheet()->setCellValue('B3', $ret[$item]['发货日期']);
+                $objPHPExcel->getActiveSheet()->setCellValue('A'.($item+$liststart), $ret[$item-3]['cs_belong_create_time']);
+                $objPHPExcel->getActiveSheet()->setCellValue('B'.($item+$liststart), $ret[$item-3]['delivery_logistic_date']);
                 $objPHPExcel->getActiveSheet()->setCellValue('C'.($item+$liststart), $ret[$item-3]['build_department_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('D'.($item+$liststart), $ret[$item-3]['build_user_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('E'.($item+$liststart), $ret[$item-3]['receiver_name']);
@@ -2263,6 +2443,15 @@
                 $tableobj[$item]['productlist'] = $productlist;
             }
 
+            /*查询其他说明和物流情况说明*/
+            $sqlthree = "select dsp_logistic.order_goods_manager.*, dsp_logistic.order_goods_logistics.* from dsp_logistic.order_goods_manager ";
+            $sqlthree .= "left join dsp_logistic.order_goods_logistics on dsp_logistic.order_goods_logistics.order_goods_manager_id = dsp_logistic.order_goods_manager.order_goods_manager_id ";
+            $sqlthree .= "where dsp_logistic.order_goods_manager.cs_id='$cs_id'";
+            $explainobj = Db::query($sqlthree);
+
+            $tableobj[0]['order_goods_manager_explain'] = $explainobj[0]['order_goods_manager_explain'];
+            $tableobj[0]['ogl_explain'] = $explainobj[0]['ogl_explain'];
+
             return $tableobj;
         }
 
@@ -2304,27 +2493,30 @@
             $objPHPExcel = $objReader->load($root_url."/templates/".$template_name);
             $objPHPExcel->setActiveSheetIndex(0);
             $objPHPExcel->getActiveSheet()->setTitle('sheet0');
-            $objPHPExcel->getActiveSheet()->setCellValue('C3', $ret[0]['build_department_name']);
-            $objPHPExcel->getActiveSheet()->setCellValue('G3', $ret[0]['build_user_name']);
-            $objPHPExcel->getActiveSheet()->setCellValue('C4', $ret[0]['company_name']);
-            $objPHPExcel->getActiveSheet()->setCellValue('K4', $ret[0]['company_phone']);
-            $objPHPExcel->getActiveSheet()->setCellValue('C5', $ret[0]['company_address']);
-            $objPHPExcel->getActiveSheet()->setCellValue('C6', $ret[0]['legal_representative']);
-            $objPHPExcel->getActiveSheet()->setCellValue('I6', $ret[0]['legal_phone']);
-            $objPHPExcel->getActiveSheet()->setCellValue('C7', $ret[0]['company_contact']);
-            $objPHPExcel->getActiveSheet()->setCellValue('I7', $ret[0]['company_contact_phone']);
+            $objPHPExcel->getActiveSheet()->setCellValue('A1', "日期：".$ret[0]['cs_belong_create_time']);
+            $objPHPExcel->getActiveSheet()->setCellValue('L1', "部门编号：".$ret[0]['build_department_id']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C2', $ret[0]['build_department_name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('G2', $ret[0]['build_user_name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('K2', $ret[0]['build_user_phone']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C3', $ret[0]['company_name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('K3', $ret[0]['company_phone']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C4', $ret[0]['company_address']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C5', $ret[0]['legal_representative']);
+            $objPHPExcel->getActiveSheet()->setCellValue('I5', $ret[0]['legal_phone']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C6', $ret[0]['company_contact']);
+            $objPHPExcel->getActiveSheet()->setCellValue('I6', $ret[0]['company_contact_phone']);
 
             if($type != 0x03){
-                $objPHPExcel->getActiveSheet()->setCellValue('C9', $ret[0]['delivery_info_receiver_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('I9', $ret[0]['is_insure']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C10', $ret[0]['receiver_phone']);
-                $objPHPExcel->getActiveSheet()->setCellValue('I10', $ret[0]['insure_amout']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C11', $ret[0]['goods_yard_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('I11', $ret[0]['is_sign']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C12', $ret[0]['receiver_phone']);
-                $objPHPExcel->getActiveSheet()->setCellValue('I12', $ret[0]['has_contract']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C13', $ret[0]['receiver_address']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C14', $ret[0]['order_delivery_require']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C8', $ret[0]['delivery_info_receiver_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('I8', $ret[0]['is_insure']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C9', $ret[0]['delivery_info_receiver_phone']);
+                $objPHPExcel->getActiveSheet()->setCellValue('I9', $ret[0]['insure_amount']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C10', $ret[0]['delivery_info_goods_yard_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('I10', $ret[0]['is_sign']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C11', $ret[0]['delivery_info_goods_yard_phone']);
+                $objPHPExcel->getActiveSheet()->setCellValue('I11', $ret[0]['has_contract']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C12', $ret[0]['delivery_info_receiver_address']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C13', $ret[0]['order_delivery_require']);
             }else{
                 $objPHPExcel->getActiveSheet()->setCellValue('C11', $ret[0]['return_info_goods_yard_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('C12', $ret[0]['return_info_goods_yard_phone']);
@@ -2334,14 +2526,14 @@
 
 
             if(($type != 0x02)||($type != 0x03)||($type != 0x05)){
-                $objPHPExcel->getActiveSheet()->setCellValue('C17', $ret[0]['return_info_goods_yard_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C18', $ret[0]['return_info_goods_yard_phone']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C19', $ret[0]['return_info_receiver_address']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C20', $ret[0]['return_order_num']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C16', $ret[0]['return_info_goods_yard_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C17', $ret[0]['return_info_goods_yard_phone']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C18', $ret[0]['return_info_receiver_address']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C19', $ret[0]['return_order_num']);
             }
 
             if(($type == 0x01)||($type == 0x06)||($type == 0x04)||($type == 0x05)){
-                $startitem = 22;
+                $startitem = 21;
             }
 
             if(($type == 0x02)||($type == 0x03)){
@@ -2355,7 +2547,7 @@
                 $objPHPExcel->getActiveSheet()->setCellValue('D'.$item, $productlist[$item-$startitem]['product_info_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('E'.$item, $productlist[$item-$startitem]['model']);
                 $objPHPExcel->getActiveSheet()->setCellValue('F'.$item, $productlist[$item-$startitem]['specification']);
-                $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['uint']);
+                $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['unit']);
                 $objPHPExcel->getActiveSheet()->setCellValue('I'.$item, $productlist[$item-$startitem]['product_number']);
 
                 if(($type == 0x01)||($type == 0x06)){
@@ -2382,11 +2574,61 @@
                 }
             }
 
+            /*其他说明和情况说明暂时都没写*/
+            $objPHPExcel->getActiveSheet()->setCellValue('B31', $ret[0]['order_goods_manager_explain']);
+            $objPHPExcel->getActiveSheet()->setCellValue('A32', "情况说明（物流部）: ".$ret[0]['ogl_explain']);
+
+            /*插入一行*/
+            //$objPHPExcel->getActiveSheet()->insertNewRowBefore(32,1);
+            $newrows = count($productlist) - 10;
+            $objPHPExcel->getActiveSheet()->insertNewRowBefore(31,$newrows);
+            for($i=0; $i<$newrows;$i++){
+                $objPHPExcel->getActiveSheet()->mergeCells('F'.(31+$i).':'.'G'.(31+$i));
+            }
+
+            /*超过默认行数*/
+            if(count($productlist) > 10){
+                for($item=$startitem+10;$item<(count($productlist)+$startitem);$item++){
+                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$item, $item-20);
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$item, $productlist[$item-$startitem]['product_type_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$item, $productlist[$item-$startitem]['brand_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$item, $productlist[$item-$startitem]['product_info_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$item, $productlist[$item-$startitem]['model']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$item, $productlist[$item-$startitem]['specification']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['unit']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$item, $productlist[$item-$startitem]['product_number']);
+
+                    if(($type == 0x01)||($type == 0x06)){
+                        $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['bar_code']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['back_date']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('L'.$item, $productlist[$item-$startitem]['replace_reason']);
+                    }
+
+                    if($type == 0x02){
+                        $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['back_date']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['unit_price']);
+                    }
+
+                    if($type == 0x03){
+                        $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['bar_code']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['purchase_date']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('L'.$item, $productlist[$item-$startitem]['unit_price']);
+                    }
+
+                    if($type == 0x04){
+                        $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['deal_date']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['bar_code']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('L'.$item, $productlist[$item-$startitem]['fault_condition']);
+                    }
+                }
+            }
+
             header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachment;filename="'.$file_name.'.'.$file_extend.'"');
             header('Cache-Control: max-age=0');
             ob_clean();  //关键
             flush();     //关键
+
             if($file_extend == 'xlsx'){
                 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel2007');
             }else if($file_extend == 'xls'){
@@ -2407,10 +2649,11 @@
             $objPHPExcel = $objReader->load($root_url."/templates/".$template_name);
             $objPHPExcel->setActiveSheetIndex(0);
             $objPHPExcel->getActiveSheet()->setTitle('sheet0');
+            $objPHPExcel->getActiveSheet()->setCellValue('B2', $ret[0]['uoi_to']);
             $objPHPExcel->getActiveSheet()->setCellValue('C3', $ret[0]['uoi_manual_ofg_id']);
             $objPHPExcel->getActiveSheet()->setCellValue('H3', $ret[0]['uoi_custom_name']);
             //$objPHPExcel->getActiveSheet()->setCellValue('L3', $ret['uoi_custom_name']);
-            //$objPHPExcel->getActiveSheet()->setCellValue('C4', $ret['uoi_manual_ofg_id']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C4', $ret[0]['user_name']);
             $objPHPExcel->getActiveSheet()->setCellValue('H4', $ret[0]['uoi_date']);
             $objPHPExcel->getActiveSheet()->setCellValue('L4', $ret[0]['uoi_to_place']);
 
@@ -2421,7 +2664,31 @@
                 $objPHPExcel->getActiveSheet()->setCellValue('D'.$item, $productlist[$item-7]['uod_unit']);
                 $objPHPExcel->getActiveSheet()->setCellValue('E'.$item, $productlist[$item-7]['uod_requirement']);
                 $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-7]['uod_delivery_date']);
-                $objPHPExcel->getActiveSheet()->setCellValue('L'.$item, $productlist[$item-7]['uod_comment']);
+                $objPHPExcel->getActiveSheet()->setCellValue('N'.$item, $productlist[$item-7]['uod_comment']);
+            }
+
+            $objPHPExcel->getActiveSheet()->setCellValue('A15', "项目名称：".$ret[0]['uoi_project_name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('A16', "提供商：".$ret[0]['uoi_provider_name']);
+            /*插入多行数据*/
+            $newrows = count($productlist) - 8;
+            $objPHPExcel->getActiveSheet()->insertNewRowBefore(15,$newrows);
+            for($i=0; $i<$newrows;$i++){
+                $objPHPExcel->getActiveSheet()->mergeCells('E'.(15+$i).':'.'J'.(15+$i));
+                $objPHPExcel->getActiveSheet()->mergeCells('K'.(15+$i).':'.'L'.(15+$i));
+                $objPHPExcel->getActiveSheet()->mergeCells('N'.(15+$i).':'.'Q'.(15+$i));
+            }
+
+            /*超过默认行数*/
+            if(count($productlist) > 8){
+                for($item=15;$item<(count($productlist)+15-8);$item++){
+                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$item, $item-6);
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$item, $productlist[$item-7]['model']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$item, $productlist[$item-7]['uod_count']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$item, $productlist[$item-7]['uod_unit']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$item, $productlist[$item-7]['uod_requirement']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-7]['uod_delivery_date']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('N'.$item, $productlist[$item-7]['uod_comment']);
+                }
             }
 
             header('Content-Type: application/vnd.ms-excel');
@@ -2475,7 +2742,7 @@
             $sql .= "delivered_gift,delivered_album,product_number,order_date,cs_info_state) VALUES ({$sql_value})";
             $sql .= " ON DUPLICATE KEY UPDATE cs_id = '{$cs_id}',ofg_info_id = '{$ofg_info_id}',fee_info_id = '{$fee_info_id}',delivery_date_reply = '{$delivery_date_reply}'";
             $sql .= ",unc_ofg_info_id = '{$unc_ofg_info_id}',consult_sheet_file = '{$consult_sheet_file}',delivered_total = '{$delivered_total}'";
-            $sql .",delivered_pa = '{$delivered_pa}',delivered_conference = '{$delivered_conference}',delivered_customization = '{$delivered_customization}'";
+            $sql .=",delivered_pa = '{$delivered_pa}',delivered_conference = '{$delivered_conference}',delivered_customization = '{$delivered_customization}'";
             $sql .= ",delivered_record = '{$delivered_record}',delivered_metro = '{$delivered_metro}',delivered_aux = '{$delivered_aux}'";
             $sql .= ",delivered_gift = '{$delivered_gift}',delivered_album = '{$delivered_album}',product_number = '{$product_number}',order_date = '{$order_date}',cs_info_state = '{$cs_info_state}'";
             $sqlret = Db::execute($sql);
@@ -2713,5 +2980,58 @@
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
-    }
+
+        public  static  function getreceiverbycsid($cs_id)
+        {
+            //经理部分的确认单
+            $sqlone = "select dsp_logistic.delivery_info.*,dsp_logistic.return_info.*,dsp_logistic.cs_info.* form dsp_logistic.cs_info ";
+            $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
+            $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
+            $sqlone.= "where dsp_logistic.cs_info.cs_id = '$cs_id'";
+            $tableobj = Db::query($sqlone);
+            if(!empty($tableobj))
+            {
+                if($tableobj[0]['cs_info_type'] == 2|| $tableobj[0]['cs_info_type'] == 5)
+                {
+                    $info = Array();
+                    $info['receiver_name'] = $tableobj[0]['delivery_info_receiver_name'];
+                    $info['receiver_phone'] = $tableobj[0]['delivery_info_receiver_phone'];
+                    $info['receiver_address'] = $tableobj[0]['delivery_info_receiver_address'];
+                    return $info;
+                }
+                else
+                {
+                    $info = Array();
+                    $info['receiver_name'] = $tableobj[0]['return_info_receiver_name'];
+                    $info['receiver_phone'] = $tableobj[0]['return_info_receiver_phone'];
+                    $info['receiver_address'] = $tableobj[0]['return_info_receiver_address'];
+                    return $info;
+                }
+            }
+            //物流单
+            $sqlone = "select dsp_logistic.order_goods_info.*,dsp_logistic.order_goods_cs_info.* form dsp_logistic.order_goods_cs_info ";
+            $sqlone .= "left join dsp_logistic.order_goods_info on dsp_logistic.order_goods_info.ofg_info_id = dsp_logistic.order_goods_cs_info.ofg_info_id ";
+            $sqlone.= "where dsp_logistic.order_goods_cs_info.cs_id = '$cs_id'";
+            $tableobj = Db::query($sqlone);
+            if(!empty($tableobj))
+            {
+                $info = Array();
+                $info['receiver_name'] = $tableobj[0]['receiver_name'];
+                $info['receiver_phone'] = $tableobj[0]['receiver_phone'];
+                $info['receiver_address'] = $tableobj[0]['receiver_address'];
+                return $info;
+            }
+            return null;
+        }
+        
+        /*cs_product*/
+        public static function getcsproduct(){
+            $sql = "select * from dsp_logistic.cs_product";
+            $sql.= ' order by number';
+            $tableobj = Db::query($sql);
+            if(!empty($tableobj)){
+                return $tableobj;
+            }
+        }
+	}
 ?>

@@ -167,19 +167,7 @@ class Addreplaceconfirmorder extends Controller
         $cs_info['delivery_info_id'] = $delivery_info_id +1;
         $cs_info['payment_info_id'] = $payment_info_id +1;
         $cs_info['cs_examine_ids'] = $cs_examine_ids;
-        $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
-
-        if (empty($ret_confirm_order)) {
-            $cs_belong_id = \app\index\model\Admin::getmaxtableidretid('cs_belong', 'cs_belong_id');
-
-            \app\index\model\Admin::deleterowtableid('cs_belong', 'cs_belong_id', $cs_belong_id);
-            \app\index\model\Admin::deleterowtableid('custom_info', 'custom_info_id', $custom_info_id);
-            \app\index\model\Admin::deleterowtableid('delivery_info', 'delivery_info_id', $delivery_info_id);
-            \app\index\model\Admin::deleterowtableid('return_info', 'return_info_id', $return_info_id);
-            //删除上面的表
-            //还有 order_goods_manager  cs_examine
-            return false;
-        }
+        \app\index\model\Admin::updateconfirmorder($cs_info);
 
         return $cs_info_id;
     }
@@ -402,18 +390,18 @@ class Addreplaceconfirmorder extends Controller
 
     }
 
-    /**经理修改订单 内容保存**/
+    /**物流修改订单 内容保存**/
     public function logisticeditandsaveorder()
     {
         $date_now = date("Y-m-d H:i:s");
         $del_unc_ofg_detail_id_arr = null;
-        //cs_belong
-        $cs_belong = $_POST['cs_belong'];
-        $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
 
         //payment_info
         $payment_info = $_POST['payment_info'];
         \app\index\model\Admin::updatepaymentinfo($payment_info);
+
+
+        $cs_info = $_POST['cs_info'];
 
         //order_goods_manager  order_goods_logistics
         if(array_key_exists('order_goods_manager',$_POST)){
@@ -434,15 +422,13 @@ class Addreplaceconfirmorder extends Controller
                     $order_goods_manager[$i]['ogl_id'] = $ogl_id+1;
                 }
                 $order_goods_manager[$i]['ogl_time_stamp'] = $date_now;
-                $order_goods_manager[$i]['user_id'] = $cs_belong['build_user_id']; //暂时不知道是报那个的id,先写经理的
+                $order_goods_manager[$i]['user_id'] = $cs_info['cur_process_user_id']; //暂时不知道是报那个的id,先写经理的
                 $retmanager = \app\index\model\Admin::updateordergoodslogistics($order_goods_manager[$i]);
             }
 
         }
 
-        //cs_info
-        $cs_info = $_POST['cs_info'];
-        $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
+
 
 
         $uoi_id = "";
@@ -489,17 +475,37 @@ class Addreplaceconfirmorder extends Controller
                 $retunc_ofg_detail = \app\index\model\Admin::updateunc_ofg_detail($unc_ofg_detail[$i]);
             }
         }
+        //cs_info
         $cs_info['unc_ofg_info_id'] = $uoi_id;
         $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
 
         if(array_key_exists('del_unc_ofg_detail_id_arr',$_POST)){
             $del_unc_ofg_detail_id_arr = $_POST['del_unc_ofg_detail_id_arr'];
-        }
-        if (!empty($del_unc_ofg_detail_id_arr)){
-            $del_length = count($del_unc_ofg_detail_id_arr);
-            for ($i = 0; $i < $del_length; $i++){
-                \app\index\model\Admin::deleterowtableid('unc_ofg_detail','uod_id',$del_unc_ofg_detail_id_arr[$i]);
+            if(!empty($del_unc_ofg_detail_id_arr))
+            {
+                foreach ($del_unc_ofg_detail_id_arr as $item)
+                {
+                    \app\index\model\Admin::deleterowtableid('unc_ofg_detail','uod_id',$item);
+                }
             }
+
+
+        }
+
+        //cs_examine
+        if(array_key_exists('cs_examine',$_POST)){
+            $cs_examine = $_POST['cs_examine'];
+            if(!empty($cs_examine) && count($cs_examine)>0)
+            {
+                foreach ( $cs_examine as $item  )
+                {
+                    \app\index\model\Admin::updatecsexamine($item);
+                }
+            }
+
+
+
+
         }
     }
 

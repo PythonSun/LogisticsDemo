@@ -13,6 +13,7 @@ class Addgoodsconfirmorder extends Controller
         $producttype = \app\index\model\Admin::getclassinfo('product_type','product_type_id');
         $brand = \app\index\model\Admin::getclassinfo('product_brand','brand_id');
         $place = \app\index\model\Admin::getclassinfo('product_place','place_id');
+        $productlist =  \app\index\model\Admin::getcsproduct();
         if (!empty($brand)){
             $this->assign('producttypelist',$producttype);
         }
@@ -35,6 +36,8 @@ class Addgoodsconfirmorder extends Controller
         $order_info = '-1';
         $this->assign("order_info", $order_info);
         $this->assign('type',1);
+        if (!empty($productlist))
+            $this->assign("productlist", json_encode($productlist));
     	return $this->fetch();
     }
 
@@ -58,6 +61,7 @@ class Addgoodsconfirmorder extends Controller
         $producttype = \app\index\model\Admin::getclassinfo('product_type','product_type_id');
         $brand = \app\index\model\Admin::getclassinfo('product_brand','brand_id');
         $place = \app\index\model\Admin::getclassinfo('product_place','place_id');
+        $productlist =  \app\index\model\Admin::getcsproduct();
         if (!empty($brand)){
             $this->assign('producttypelist',$producttype);
         }
@@ -78,6 +82,8 @@ class Addgoodsconfirmorder extends Controller
         if (!empty($departlist))
             $this->assign("departlist", $departlist);
         $this->assign('type',$type);
+        if (!empty($productlist))
+            $this->assign("productlist", json_encode($productlist));
         return $this->fetch('addgoodsconfirmorder');
     }
 
@@ -269,7 +275,7 @@ class Addgoodsconfirmorder extends Controller
             $user_session = session("user_session");
             $login_user_id = $user_session['user_id'];
             $date_now = date("Y-m-d H:i:s");
-            $logistics_info = $_POST['logistics_info'];
+            //$logistics_info = $_POST['logistics_info'];
             $order_goods_cs_info = $_POST['order_goods_cs_info'];
             $ofg_info = $_POST['ofg_info'];
             $fee_info = $_POST['fee_info'];
@@ -358,19 +364,19 @@ class Addgoodsconfirmorder extends Controller
                 }
             }
 
-            $logistics_info_count = count($logistics_info);
-            $logistics_id_arr =  array();
-            for ($i = 0; $i < $logistics_info_count; $i++){
-                $logistics_id = $logistics_info[$i]['logistics_id'];
-                if (empty($logistics_id)){
-                    $logistics_id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id') + 1;
-                    $logistics_id_arr[$i] = $logistics_id;
-                    $logistics_info[$i]['logistics_id'] = $logistics_id;
-                    $logistics_info[$i]['user_id'] = $login_user_id;
-                    $logistics_info[$i]['cs_id'] = $cs_info_id;
-                }
-                $ret_logistics =\app\index\model\Admin::updatelogisticsinfo($logistics_info[$i]);
-            }
+            // $logistics_info_count = count($logistics_info);
+            // $logistics_id_arr =  array();
+            // for ($i = 0; $i < $logistics_info_count; $i++){
+            //     $logistics_id = $logistics_info[$i]['logistics_id'];
+            //     if (empty($logistics_id)){
+            //         $logistics_id = \app\index\model\Admin::getmaxtableidretid('logistics_info', 'logistics_id') + 1;
+            //         $logistics_id_arr[$i] = $logistics_id;
+            //         $logistics_info[$i]['logistics_id'] = $logistics_id;
+            //         $logistics_info[$i]['user_id'] = $login_user_id;
+            //         $logistics_info[$i]['cs_id'] = $cs_info_id;
+            //     }
+            //     $ret_logistics =\app\index\model\Admin::updatelogisticsinfo($logistics_info[$i]);
+            // }
             if (!empty($order_goods_cs_undeliver_goods_info)){
                 for ($i = 0; $i < $ogcugi_length; $i++){
                     $ogcugi_id = $order_goods_cs_undeliver_goods_info[$i]['ogcugi_id'];
@@ -426,7 +432,7 @@ class Addgoodsconfirmorder extends Controller
         }catch(Exception $e){
             return self::retmsg(-1,$e->getMessage());
         }
-        return self::retmsg(1,'修改成功！');
+        return self::retmsg(1,'保存成功！');
     }
 
     public function getorderinfo($cs_id,$cs_belong_id,$fee_info_id,$ofg_info_id,$unc_ofg_info_id){

@@ -9,7 +9,7 @@
 	</head>
 	<body>
 		{include file="publictemplate/querysearchcondition"/}
-		<div style="margin:20px 10px;">
+		<div style="margin:5px 10px;">
 			<div><h2>更换单查询</h2></div>
 			<table class="layui-hide" id="queryreplaceorder" lay-filter="queryreplaceorder"></table>
 			<script type="text/html" id="operatebar">
@@ -145,8 +145,12 @@
 				});
 
 				divHeight = document.getElementById('serachcondition').offsetHeight;   /*搜索框div高度*/
-				clientHeight = jq(window).height()-divHeight-100;                      /*定义table框高度*/
+				clientHeight = jq(window).height()-divHeight-70;                      /*定义table框高度*/
 
+                if(clientHeight < 350){
+                    clientHeight = 350;
+                }
+                
 				/*表格渲染*/
 				table.render({
 				    elem: '#queryreplaceorder'
@@ -154,8 +158,8 @@
 				    ,url:"{:url('admin/queryreplaceconfirmorder/getexamineorder')}"     //动态获取数据
 				    ,cols: [[
                         {type:'checkbox'}
-                        ,{field: 'write_date', title: '下单日期', width: 150, sort: true}
-                        ,{field:'complete_date',title:'接收日期',width:150,sort:true}
+                        ,{field: 'cs_belong_create_time', title: '下单日期', width: 150, sort: true}
+                        ,{field:'delivery_date',title:'发货日期',width:150,sort:true}
                         ,{field: 'cs_id',title: '流水号', minWidth: 150,sort:true}
                         ,{field: 'build_department_name', title: '部门', minWidth: 150}
                         ,{field: 'build_user_name', title: '区域经理', minWidth: 100}
@@ -190,13 +194,31 @@
                             shade: 0.9,
                             maxmin: false,
                             content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type= 0",
-                            btn: [ '退出'],
+                            btn: [ '退出','打印'],
                             btnAlign: 'c',
                             yes: function (index,layero) {
-
                                 top.layer.closeAll();
+                            },
+                            btn2:function(){
+                                var cs_id = data.cs_id;
+                                top.layer.open({
+                                type: 2,
+                                area: ['600px', '250px'],
+                                shade: 0.6,
+                                shadeClose:true,
+                                title: '设置打印参数',
+                                resize:false,
+                                btn: ['保存','取消'],
+                                content: "{:url('admin/setexportfileparam/setexportfileparam')}",
+                                yes:function(index2,layero){
+                                        var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                                        var exportparam = iframeWin.getexportparam();
+                                        top.layer.closeAll();
+                                        window.open("{:url('admin/queryreplaceconfirmorder/printreplaceconfirmorder')}?cs_id="+ cs_id + "&file_name=" + exportparam.file_name+ "&file_extend=" + exportparam.file_extend,"_self");
+                                    }
+                                });
+                                return false;
                             }
-
                         });
 				    }else if(obj.event === 'edit'){
                         if(current_user_type == 5)
@@ -231,9 +253,14 @@
 
                         top.layer.confirm('确定取消？',{icon:2,title:'提示'},function(index){
                             jq.post("{:url('admin/addreplaceconfirmorder/cancelcsinfo')}",{'cs_id':cs_id},function(data){
-                                layer.close(index);
-                                obj.update({
-                                  cs_info_state: '取消'
+                                top.layer.close(index);
+                                // obj.update({
+                                //   cs_info_state: '取消'
+                                // });
+                                table.reload('querytable', {
+                                    page: {
+                                        curr: 1
+                                    }
                                 });
                             });
                         });
