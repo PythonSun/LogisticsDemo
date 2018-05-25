@@ -481,19 +481,31 @@ class Addreplaceconfirmorder extends Controller
 
         if(array_key_exists('del_unc_ofg_detail_id_arr',$_POST)){
             $del_unc_ofg_detail_id_arr = $_POST['del_unc_ofg_detail_id_arr'];
-            $del_length = count($del_unc_ofg_detail_id_arr);
-            for ($i = 0; $i < $del_length; $i++){
-                \app\index\model\Admin::deleterowtableid('unc_ofg_detail','uod_id',$del_unc_ofg_detail_id_arr[$i]);
+            if(!empty($del_unc_ofg_detail_id_arr))
+            {
+                foreach ($del_unc_ofg_detail_id_arr as $item)
+                {
+                    \app\index\model\Admin::deleterowtableid('unc_ofg_detail','uod_id',$item);
+                }
             }
+
+
         }
 
         //cs_examine
-        if(array_key_exists('del_unc_ofg_detail_id_arr',$_POST)){
+        if(array_key_exists('cs_examine',$_POST)){
             $cs_examine = $_POST['cs_examine'];
-            $length = count($cs_examine);
-            for ($i = 0; $i < $length; $i++) {
-                \app\index\model\Admin::updatecsexamine($cs_examine[$i]);
+            if(!empty($cs_examine) && count($cs_examine)>0)
+            {
+                foreach ( $cs_examine as $item  )
+                {
+                    \app\index\model\Admin::updatecsexamine($item);
+                }
             }
+
+
+
+
         }
     }
 
