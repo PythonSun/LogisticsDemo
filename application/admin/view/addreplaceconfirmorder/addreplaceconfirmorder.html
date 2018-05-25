@@ -425,7 +425,8 @@
             var isloading = true;
             var delrowid = new Array();
             var complete_date = "2000-01-01 00:00:00";
-             var cs_info_type = 1; //订单类型
+            var cs_info_type = 1; //订单类型
+            var user_info =null;//只有当经理登陆使用到
             //保存修改时根据Cs_id获取的数据
             var  editOrderData= [];
             //修改保存是谁在操作 1 经理 2 主管 3执行总监 4财务 5物流
@@ -456,12 +457,21 @@
                     var cs_id = "<?php echo $cs_id?>";
                     /*转换成整形*/
                     current_user_type = parseInt("<?php echo $current_user_type?>");
+                    user_info = {$userinfo};
                     setDatePopup();
                     if(cs_id == ""){
-                        addLogisticsItem(null);
                         userPower();
-                        form.render('select');
                         isloading = false;
+                        console.log(current_user_type);
+                        if(current_user_type == 1)
+                        {
+                            jq('#build_organize_id').val(user_info['organize_id']);
+                            LoadingDepartmentAndSelected(user_info['organize_id'],user_info['department_id']);
+                            LoadingManagerAndSelected(user_info['department_id'],user_info['user_id']);
+                            document.getElementById('build_user_phone').value = user_info['phone'];
+                        }
+                        form.render('select');
+
                         return ;
                     }
                     //
@@ -1819,11 +1829,11 @@
                         return false;
                     }
 
-                    if(data['build_user_id'] == ""){
-                        layer.msg('请选择经理！',{icon:2});
+                    if(data['build_organize_id'] != user_info['organize_id'] || data['build_department_id'] != user_info['department_id']||data['build_user_id'] != user_info['user_id'])
+                    {
+                        layer.msg('区域经理有误,只能录自己的单！',{icon:2});
                         return false;
                     }
-
                     if(data['build_user_phone'] == '')
                     {
                         layer.msg('区域经理电话不能为空！',{icon:2});
