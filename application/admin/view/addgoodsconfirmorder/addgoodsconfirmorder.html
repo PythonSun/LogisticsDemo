@@ -337,12 +337,12 @@
                     ,theme: 'molv'
                 });
 
-                laydate.render({
+                /*laydate.render({
                     elem: '#order_date'
                     ,type: 'datetime'
                     ,position: 'fixed'
                     ,theme: 'molv'
-                });
+                });*/
 
                 laydate.render({
                     elem: '#delivery_date'
@@ -763,6 +763,89 @@
                         delCacheConsultSheet();
                     });
                 });
+
+                var isOpen = false;
+                jq('#order_date').focus(function () {
+                    if(isOpen){
+                        return;
+                    }
+                    var value = jq('#order_date').val();
+                    var strDate = '';
+                    var strTime = '';
+                    if(value != ""){
+                        var date = new Date(value);
+                        var year = date.getFullYear();    //年
+                        var month = date.getMonth() + 1;   //月
+                        var day = date.getDate();      //日
+                        strDate = year + '-' + month + '-' + day;
+                        var hour = date.getHours(); //小时
+                        var minute = date.getMinutes();//分
+                        var secend = date.getSeconds(); //秒
+                        strTime = hour + ':' + minute + ':' + secend;
+                    }else {
+                        var now = new Date();
+                        var year = now.getFullYear();    //年
+                        var month = now.getMonth() + 1;   //月
+                        var day = now.getDate();      //日
+                        strDate = year + '-' + month + '-' + day;
+                        var hour = now.getHours(); //小时
+                        var minute = now.getMinutes();//分
+                        var secend = now.getSeconds(); //秒
+                        strTime = hour + ':' + minute + ':' + secend;
+                    }
+                    var html = '<div><div class="layui-inline" id="divdate"></div><div class="layui-inline" id="divtime"></div></div>';
+                    var index =  layer.open({
+                        type: 1,
+                        title: false,
+                        closeBtn: 0,
+                        shadeClose: true,
+                        offset:  ['100px', '200px'],
+                        area: ['548px', '324px'],
+                        content: html
+                        ,success: function(){
+                            isOpen = true;
+                        }
+                        ,end: function () {
+                            isOpen = false;
+                        }
+                    });
+                    var  date1 = ''
+                    laydate.render({
+                        elem: '#divdate'
+                        ,position: 'static'
+                        ,btns:['now']
+                        ,value:strDate
+                        ,done: function(value, date, endDate){
+                            console.log(value); //得到日期生成的值，如：2017-08-18
+                            if(value != null){
+                                date1 = value;
+                            }
+                        }
+                    });
+                    laydate.render({
+                        elem: '#divtime'
+                        ,type: 'time'
+                        ,value:strTime
+                        ,position: 'static'
+                        ,done: function(value, date, endDate){
+                            console.log(date);
+                            if(value != null && value != ""){
+                                var now = new Date();
+                                var year = now.getFullYear();    //年
+                                var month = now.getMonth() + 1;   //月
+                                var day = now.getDate();      //日
+                                var strDate = year + '-' + month + '-' + day;
+                                date1 = date1 == ''? strDate:date1;
+                                var val = date1 + " " + value;
+                                jq('#order_date').val(val);
+                                layer.close(index);
+                            }else {
+                                jq('#order_date').val("");
+                                layer.close(index);
+                            }
+                        }
+                    });
+                })
             });
 
             //编辑或者新增Item 窗体，tableRowIndex：表序号 新增不填
