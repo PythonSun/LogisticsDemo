@@ -55,59 +55,76 @@
             $sqlone .= "left join dsp_logistic.fee_info on dsp_logistic.fee_info.fee_info_id = dsp_logistic.order_goods_cs_info.fee_info_id ";
             $sqlone .= "left join dsp_logistic.unc_ofg_info on dsp_logistic.unc_ofg_info.uoi_id = dsp_logistic.order_goods_cs_info.unc_ofg_info_id ";
             //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
-            //$sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
+            $sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
 
-            $sqlone .= "where dsp_logistic.order_goods_cs_info.cs_id like '%%' ";
+            $sqloneCondition = "where dsp_logistic.order_goods_cs_info.cs_id like '%%' ";
             if($organizename != "")
             {
-                $sqlone .= "and build_organize_name='$organizename' ";
+                $sqloneCondition .= "and build_organize_name='$organizename' ";
             }
             if($departmentname != "")
             {
-                $sqlone .= "and build_department_name='$departmentname' ";
+                $sqloneCondition .= "and build_department_name='$departmentname' ";
             }
             if($areamanager != "")
             {
-                $sqlone .= "and build_user_name='$areamanager' ";
+                $sqloneCondition .= "and build_user_name='$areamanager' ";
             }
 
             if($totalargs == 7){
                 if($args[6]['areamanager'] != "" && $areamanager == ""){
                     $areamanger1 = $args[6]['areamanager'];
-                    $sqlone.= " and build_user_name LIKE '%$areamanger1%'";
+                    $sqloneCondition.= " and build_user_name LIKE '%$areamanger1%'";
                 }
                 if($args[6]['departmentname'] != "" && $departmentname == ""){
                     $departmentname1 = $args[6]['departmentname'];
-                    $sqlone.= " and  build_department_name LIKE '%$departmentname1%'";
+                    $sqloneCondition.= " and  build_department_name LIKE '%$departmentname1%'";
                 }
                 if($args[6]['organizename'] != "" && $organizename == ""){
                     $organizename1 = $args[6]['organizename'];
-                    $sqlone.= " and build_organize_name ='$organizename1'";
+                    $sqloneCondition.= " and build_organize_name ='$organizename1'";
                 }
                 $startdate = $args[6]['startdate'];
                 $enddate = $args[6]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqlone.= " and order_date >='$startdate' and order_date <='$enddate'";
+                    $sqloneCondition.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate'";
                 }else if($startdate != "" && $enddate == "" ){
-                    $sqlone.= " and order_date >='$startdate'";
+                    $sqloneCondition.= " and cs_belong_create_time >='$startdate'";
                 }else if($startdate == "" && $enddate != "" ){
-                    $sqlone.= " and order_date <='$enddate'";
+                    $sqloneCondition.= " and cs_belong_create_time <='$enddate'";
                 }
                 if($args[6]['order_id'] != "")
                 {
                     $cs_id = $args[6]['order_id'];
-                    $sqlone.= " and dsp_logistic.order_goods_cs_info.cs_id ='$cs_id'";
+                    $sqloneCondition.= " and dsp_logistic.order_goods_cs_info.cs_id ='$cs_id'";
                 }
                 if($args[6]['orderstate'] != "")
                 {
                     $cs_info_state = $args[6]['orderstate'];
-                    $sqlone.= " and cs_info_state ='$cs_info_state'";
+                    $sqloneCondition.= " and cs_info_state ='$cs_info_state'";
                 }
                 if ($args[6]['freightmode'] != ""){
                     $transfer_mode = $args[6]['freightmode'];
-                    $sqlone.= " and dsp_logistic.fee_info.transfer_mode ='$transfer_mode'";
+                    $sqloneCondition.= " and dsp_logistic.fee_info.transfer_mode ='$transfer_mode'";
                 }
+                if ($args[6]['receiver_name'] != ""){
+                    $receiver_name = $args[6]['receiver_name'];
+                    $sqloneCondition.= " and receiver_name LIKE '%$receiver_name%'";
+                }
+                if ($args[6]['couriernumber'] != "" || $args[6]['yard'] != ""){
+                    //$sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
+                    if ($args[6]['couriernumber'] != ""){
+                        $transfer_order_num = $args[6]['couriernumber'];
+                        $sqloneCondition.= " and transfer_order_num = '$transfer_order_num'";
+                    }
+                    if ($args[6]['yard'] != ""){
+                        $goods_yard_name = $args[6]['yard'];
+                        $sqloneCondition.= " and goods_yard_name LIKE '%$goods_yard_name%'";
+                    }
+                }
+
+
                 /*if($type == 2||$type == 5) //借样和配件没有返货信息
                 {
                     if($args[6]['receiver_name'] != "")
@@ -126,6 +143,7 @@
                 }*/
             }
             //return $sqlone;
+            $sqlone = $sqlone.$sqloneCondition;
             $countobj = Db::query($sqlone);
             $count = $countobj[0]['count(*)'];
             if($count == 0){
@@ -138,62 +156,81 @@
 
             $offset = ($pagenum - 1)*$length;
             //$sqltwo ="select  dsp_logistic.cs_belong.* ,dsp_logistic.order_goods_cs_info.*,dsp_logistic.fee_info.transfer_mode,dsp_logistic.logistics_info.transfer_order_num,";
-            $sqltwo ="select  dsp_logistic.cs_belong.* ,dsp_logistic.order_goods_cs_info.*,dsp_logistic.fee_info.transfer_mode,";
-            $sqltwo .= "dsp_logistic.ofg_info.receiver_name from dsp_logistic.order_goods_cs_info ";
-            $sqltwo .= "left join dsp_logistic.ofg_info on dsp_logistic.ofg_info.ofg_info_id = dsp_logistic.order_goods_cs_info.ofg_info_id ";
+            $sqltwo_h ="select  dsp_logistic.cs_belong.* ,dsp_logistic.order_goods_cs_info.*,dsp_logistic.fee_info.transfer_mode,dsp_logistic.ofg_info.receiver_name";
+            $sqltwo_h .= ",dsp_logistic.logistics_info.delivery_date from dsp_logistic.order_goods_cs_info ";
+            //$sqltwo_h .= "dsp_logistic.ofg_info.receiver_name,dsp_logistic.logistics_info.delivery_date from dsp_logistic.order_goods_cs_info ";
+            $sqltwo = "left join dsp_logistic.ofg_info on dsp_logistic.ofg_info.ofg_info_id = dsp_logistic.order_goods_cs_info.ofg_info_id ";
             $sqltwo .= "left join dsp_logistic.fee_info on dsp_logistic.fee_info.fee_info_id = dsp_logistic.order_goods_cs_info.fee_info_id ";
             $sqltwo .= "left join dsp_logistic.unc_ofg_info on dsp_logistic.unc_ofg_info.uoi_id = dsp_logistic.order_goods_cs_info.unc_ofg_info_id ";
             //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
-            //$sqltwo .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
+            $sqltwo .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
             $sqltwo .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
-            $sqltwo .= "where dsp_logistic.order_goods_cs_info.cs_id like '%%' ";
+            $sqltwoCondition = "where dsp_logistic.order_goods_cs_info.cs_id like '%%' ";
             if($organizename != "")
             {
-                $sqltwo .= "and build_organize_name='$organizename' ";
+                $sqltwoCondition .= "and build_organize_name='$organizename' ";
             }
             if($departmentname != "")
             {
-                $sqltwo .= "and build_department_name='$departmentname' ";
+                $sqltwoCondition .= "and build_department_name='$departmentname' ";
             }
             if($areamanager != "")
             {
-                $sqltwo .= "and build_user_name='$areamanager' ";
+                $sqltwoCondition .= "and build_user_name='$areamanager' ";
             }
             if($totalargs == 7){
                 if($args[6]['areamanager'] != "" && $areamanager == ""){
                     $areamanger1 = $args[6]['areamanager'];
-                    $sqltwo.= " and build_user_name LIKE '%$areamanger1%'";
+                    $sqltwoCondition .= " and build_user_name LIKE '%$areamanger1%'";
                 }
                 if($args[6]['departmentname'] != "" && $departmentname == ""){
                     $departmentname1 = $args[6]['departmentname'];
-                    $sqltwo.= " and build_department_name LIKE '%$departmentname1%'";
+                    $sqltwoCondition .= " and build_department_name LIKE '%$departmentname1%'";
                 }
                 if($args[6]['organizename'] != "" && $organizename == ""){
                     $organizename1 = $args[6]['organizename'];
-                    $sqltwo.= " and build_organize_name ='$organizename1'";
+                    $sqltwoCondition .= " and build_organize_name ='$organizename1'";
                 }
                 $startdate = $args[6]['startdate'];
                 $enddate = $args[6]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqltwo.= " and order_date >='$startdate' and order_date <='$enddate'";
+                    $sqltwoCondition .= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate'";
                 }else if($startdate != "" && $enddate == "" ){
-                    $sqltwo.= " and order_date >='$startdate'";
+                    $sqltwoCondition .= " and cs_belong_create_time >='$startdate'";
                 }else if($startdate == "" && $enddate != "" ){
-                    $sqltwo.= " and order_date <='$enddate'";
+                    $sqltwoCondition .= " and cs_belong_create_time <='$enddate'";
                 }
                 if($args[6]['order_id'] != "")
                 {
                     $cs_id = $args[6]['order_id'];
-                    $sqltwo.= " and dsp_logistic.order_goods_cs_info.cs_id ='$cs_id'";
+                    $sqltwoCondition .= " and dsp_logistic.order_goods_cs_info.cs_id ='$cs_id'";
                 }
                 if($args[6]['orderstate'] != "")
                 {
                     $cs_info_state = $args[6]['orderstate'];
-                    $sqltwo.= " and cs_info_state ='$cs_info_state'";
+                    $sqltwoCondition .= " and cs_info_state ='$cs_info_state'";
                 }
                 if ($args[6]['freightmode'] != ""){
                     $transfer_mode = $args[6]['freightmode'];
-                    $sqltwo.=" and dsp_logistic.fee_info.transfer_mode ='$transfer_mode'";
+                    $sqltwoCondition .=" and dsp_logistic.fee_info.transfer_mode ='$transfer_mode'";
+                }
+                if ($args[6]['receiver_name'] != ""){
+                    $receiver_name = $args[6]['receiver_name'];
+                    $sqltwoCondition .= " and receiver_name LIKE '%$receiver_name%'";
+                }
+                if ($args[6]['couriernumber'] != "" || $args[6]['yard'] != ""){
+                    //$sqltwo_h .= ",dsp_logistic.logistics_info.delivery_date from dsp_logistic.order_goods_cs_info ";
+                    //$sqltwo .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
+                    if ($args[6]['couriernumber'] != ""){
+                        $transfer_order_num = $args[6]['couriernumber'];
+                        $sqltwoCondition .= " and transfer_order_num = '$transfer_order_num'";
+                    }
+                    if ($args[6]['yard'] != ""){
+                        $goods_yard_name = $args[6]['yard'];
+                        $sqltwoCondition .= " and goods_yard_name LIKE '%$goods_yard_name%'";
+                    }
+                }else{
+                    //$sqltwo_h .= " from dsp_logistic.order_goods_cs_info ";
                 }
                 /*if($type == 2||$type == 5) //借样和配件没有返货信息
                 {
@@ -212,8 +249,9 @@
                     }
                 }*/
             }
-            $sqltwo .= "order By dsp_logistic.order_goods_cs_info.cs_id DESC limit {$offset},{$length} ;";
-            $tableobj = Db::query($sqltwo);
+            $sqltwoCondition .= "order By dsp_logistic.order_goods_cs_info.cs_id DESC limit {$offset},{$length} ;";
+            $sql = $sqltwo_h.$sqltwo.$sqltwoCondition;
+            $tableobj = Db::query($sql);
             if(!empty($tableobj)){
                 $tableobjcount = count($tableobj);
                 for ($i = 0;$i < $tableobjcount;$i++)
@@ -260,9 +298,7 @@
                     elseif ($mode == 3)
                         $tableobj[$i]["transfer_fee_mode"] = "公司付";
 
-
                 }
-
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
             }
 			//return (array('code'=>0,'msg'=>'','count'=>0,'data'=>[]));
