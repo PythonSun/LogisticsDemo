@@ -20,8 +20,46 @@ class Addreplaceconfirmorder extends Controller
         if (!empty($companytable))
             $this->assign("companylist", $companytable);
         $this->assign("cs_id", "");
-        $this->assign("current_user_type", 1);
+        $this->assign("current_user_type", $this->getcurrentusertype());
+
+        $userinfo = Array();
+        $userinfo['user_id'] =$organizeid['user_id'];
+        $userinfo['department_id'] =$organizeid['organize_id'];
+        $ret= \app\index\model\Admin::getclassinfobyproperty('organize','organize_id',$userinfo['department_id']);
+        $userinfo['organize_id'] =0;
+        if(!empty($ret))
+            $userinfo['organize_id'] = $ret[0]['parent_id'];
+        $userinfo['phone'] =$organizeid['phone'];
+        $this->assign("userinfo", json_encode($userinfo));
+
         return $this->fetch();
+    }
+
+    public function  getcurrentusertype()
+    {
+        $queryuserinfo = session("user_querypower");
+        $rolename = $queryuserinfo['role_name'];
+        if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员")
+        {
+            return 5;
+        }
+        elseif ($rolename == "财务部")
+        {
+            return 4;
+        }
+
+        elseif($rolename == "总经理")
+        {
+            return 3;
+        }
+        elseif($rolename == "总监")
+        {
+            return 2;
+        }
+        elseif($rolename == "经理")
+        {
+            return 1;
+        }
     }
 
     public function editreplaceconfirmorder()
@@ -42,6 +80,16 @@ class Addreplaceconfirmorder extends Controller
             $this->assign("companylist", $companytable);
         $this->assign("cs_id", $cs_id);
         $this->assign("current_user_type", $current_user_type);
+
+        $userinfo = array();
+        $userinfo['user_id'] =$organizeid['user_id'];
+        $userinfo['department_id'] =$organizeid['organize_id'];
+        $ret= \app\index\model\Admin::getclassinfobyproperty('organize','organize_id',$userinfo['department_id']);
+        $userinfo['organize_id'] =0;
+        if(!empty($ret))
+            $userinfo['organize_id'] = $ret[0]['parent_id'];
+        $userinfo['phone'] =$organizeid['phone'];
+        $this->assign("userinfo", json_encode($userinfo));
         return $this->fetch('addreplaceconfirmorder');
     }
     /**新增订单（包含审批 清单）**/
