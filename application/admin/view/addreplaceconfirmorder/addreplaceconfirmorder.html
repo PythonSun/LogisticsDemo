@@ -13,7 +13,7 @@
                 display: none;
             }
         </style>
-    <body>
+    <body >
         <form class="layui-form layui-form-pane" action="">
             <div class="toph2">
                 <h2>更换确认单</h2>
@@ -207,10 +207,10 @@
                     <div class="layui-input-inline Wheat">
                         <select name="transfer_fee_mode" id="transfer_fee_mode" class="Wheat_disabled " >
                             <option value="" selected="">选择</option>
-                            <option value="1" >到付</option>
-                            <option value="2">现金</option>
-                            <option value="3">代付</option>
-                            <option value="4">公司付</option>
+                            <option value="0" >到付</option>
+                            <option value="1">现金</option>
+                            <option value="2">代付</option>
+                            <option value="3">公司付</option>
                         </select>
                     </div>
                 </div>
@@ -2026,7 +2026,7 @@
                 info.pre_process_user_id = isEdit == true?editOrderData['pre_process_user_id']:data['build_user_id'];
                 info.cs_id = isEdit == true?editOrderData['cs_id']:'';
                 info.cs_examine_ids = isEdit == true?editOrderData['cs_examine_ids']:'';
-                info.write_date = isEdit == true?editOrderData['write_date']:new Date().toLocaleDateString();
+                info.write_date = isEdit == true?editOrderData['write_date']:'';
                 info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
                 info.can_edit = isSave == true?1:0;                              //0 不可编辑
                 info.cs_info_state = csState;
@@ -2189,6 +2189,12 @@
                 info['paid_bank'] = data['paid_bank'];
                 info['payment_info_comment'] = data['payment_info_comment'];
                 return info;
+            }
+
+            document.onkeydown = function keyLogin(e) {
+                var event = (typeof event!= 'undefined') ? window.event : e;
+                if(event.keyCode==8) //屏蔽delete键
+                    return false;
             }
 
         </script>
