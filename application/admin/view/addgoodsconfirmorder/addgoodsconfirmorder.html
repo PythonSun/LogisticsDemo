@@ -190,52 +190,52 @@
                	</div>
             </div>
             <h3>确认单产品</h3>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">总项数</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="delivered_total" id="delivered_total" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">公共广播</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="delivered_pa" id="delivered_pa" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">会议系统</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="delivered_conference" id="delivered_conference" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">订制</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="delivered_customization" id="delivered_customization" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">录播</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="delivered_record" id="delivered_record" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">地铁事业</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="delivered_metro" id="delivered_metro" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">澳斯迪</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="delivered_aux" id="delivered_aux" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">礼品</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="delivered_gift" id="delivered_gift" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">画册</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="delivered_album" id="delivered_album" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>
-                </div>
+            <div class="layui-form-item" id="divorderproduct">
+                <!--<div class="layui-inline">-->
+                    <!--<label class="layui-form-label Wheat">总项数</label>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<input type="text" name="delivered_total" id="delivered_total" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
+                <!--</div>-->
+                <!--<div class="layui-inline">-->
+                    <!--<label class="layui-form-label Wheat">公共广播</label>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<input type="text" name="delivered_pa" id="delivered_pa" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
+                <!--</div>-->
+                <!--<div class="layui-inline">-->
+                    <!--<label class="layui-form-label Wheat">会议系统</label>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<input type="text" name="delivered_conference" id="delivered_conference" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
+                <!--</div>-->
+                <!--<div class="layui-inline">-->
+                    <!--<label class="layui-form-label Wheat">订制</label>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<input type="text" name="delivered_customization" id="delivered_customization" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
+                <!--</div>-->
+                <!--<div class="layui-inline">-->
+                    <!--<label class="layui-form-label Wheat">录播</label>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<input type="text" name="delivered_record" id="delivered_record" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
+                <!--</div>-->
+                <!--<div class="layui-inline">-->
+                    <!--<label class="layui-form-label Wheat">地铁事业</label>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<input type="text" name="delivered_metro" id="delivered_metro" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
+                <!--</div>-->
+                <!--<div class="layui-inline">-->
+                    <!--<label class="layui-form-label Wheat">澳斯迪</label>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<input type="text" name="delivered_aux" id="delivered_aux" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
+                <!--</div>-->
+                <!--<div class="layui-inline">-->
+                    <!--<label class="layui-form-label Wheat">礼品</label>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<input type="text" name="delivered_gift" id="delivered_gift" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
+                <!--</div>-->
+                <!--<div class="layui-inline">-->
+                    <!--<label class="layui-form-label Wheat">画册</label>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<input type="text" name="delivered_album" id="delivered_album" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
+                <!--</div>-->
             </div>
             <div>
                 <h3 class="textcenter" style="margin-bottom: -30px">未发货产品</h3>
@@ -408,7 +408,20 @@
                 $(document).ready(function(){
                     isLoading = true;
                     type = {$type};
+                    /*********test*********/
+                    var list = {$productlist};
+                    console.log(list);
+                    for (var obj in list){
+                        $('#divorderproduct').append(
+                            '<div class="layui-inline"><label class="layui-form-label Wheat">'+list[obj].cs_product_name+'</label>' +
+                            '<div class="layui-input-inline"><input type="text" name="'+list[obj].cs_product_id+'" id="'+ list[obj].cs_product_id +'" lay-verify="" autocomplete="on" ' +
+                            'placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div></div>')
+                    }
+
+                    layui.form.render();
+                    /******************/
                     var order_info = {$order_info};
+                    console.log(order_info);
                     if(order_info == "-1"){
                         //addLogisticsItem(null);      /*物流信息不需要手动填写*/
                         setHtmlType();
@@ -811,7 +824,13 @@
                 order_goods_cs_info.unc_ofg_info_id = unc_ofg_info_id;
                 order_goods_cs_info.consult_sheet_file_old = consult_sheet_file;
                 order_goods_cs_info.consult_sheet_file = consult_sheet_file_new;
-                order_goods_cs_info.delivered_total = data['delivered_total'] == "" ? 0 : data['delivered_total'];
+                order_goods_cs_info.cs_info_state = data['cs_info_state'] == "" ? -1: data['cs_info_state'];
+                order_goods_cs_info.product_number = 0;
+
+                $("#divorderproduct input[type='text']").each(function(){
+                    order_goods_cs_info[this.id] = this.value == "" ? 0:this.value;
+                });
+                /*order_goods_cs_info.delivered_total = data['delivered_total'] == "" ? 0 : data['delivered_total'];
                 order_goods_cs_info.delivered_pa = data['delivered_pa'] == "" ? 0 : data['delivered_pa'];
                 order_goods_cs_info.delivered_conference = data['delivered_conference'] == "" ? 0 : data['delivered_conference'];
                 order_goods_cs_info.delivered_customization = data['delivered_customization'] == "" ? 0 : data['delivered_customization'];
@@ -819,9 +838,9 @@
                 order_goods_cs_info.delivered_metro = data['delivered_metro'] == "" ? 0 : data['delivered_metro'];
                 order_goods_cs_info.delivered_aux = data['delivered_aux'] == "" ? 0 : data['delivered_aux'];
                 order_goods_cs_info.delivered_gift = data['delivered_gift'] == "" ? 0 : data['delivered_gift'];
-                order_goods_cs_info.delivered_album = data['delivered_album'] == "" ? 0 : data['delivered_album'];
-                order_goods_cs_info.product_number = 0;
-                order_goods_cs_info.cs_info_state = data['cs_info_state'] == "" ? -1: data['cs_info_state'];
+                order_goods_cs_info.delivered_album = data['delivered_album'] == "" ? 0 : data['delivered_album'];*/
+
+
                 return order_goods_cs_info;
             }
             //订单信息
@@ -1091,7 +1110,15 @@
                 consult_sheet_file = order_goods_cs_info.consult_sheet_file;
                 jq('#cs_id').val(cs_id);
                 jq('#order_date').val(order_goods_cs_info.order_date);
-                jq('#delivered_total').val(order_goods_cs_info.delivered_total);
+
+                $("#divorderproduct input[type='text']").each(function(){
+                    for(var p in order_goods_cs_info){
+                        if(this.id == p){
+                            this.value = order_goods_cs_info[p];
+                        }
+                    }
+                });
+                /*jq('#delivered_total').val(order_goods_cs_info.delivered_total);
                 jq('#delivered_customization').val(order_goods_cs_info.delivered_customization);
                 jq('#delivered_album').val(order_goods_cs_info.delivered_album);
                 jq('#delivered_gift').val(order_goods_cs_info.delivered_gift);
@@ -1099,7 +1126,8 @@
                 jq('#delivered_metro').val(order_goods_cs_info.delivered_metro);
                 jq('#delivered_record').val(order_goods_cs_info.delivered_record);
                 jq('#delivered_conference').val(order_goods_cs_info.delivered_conference);
-                jq('#delivered_pa').val(order_goods_cs_info.delivered_pa);
+                jq('#delivered_pa').val(order_goods_cs_info.delivered_pa);*/
+
                 //consult_sheet_file = order_goods_cs_info.consult_sheet_file;
                 //jq('#unc_ofg_info_id').val(order_goods_cs_info.unc_ofg_info_id);
                 jq('#delivery_date_reply').val(order_goods_cs_info.delivery_date_reply);
@@ -1140,7 +1168,6 @@
                         addLogisticsItem(logistic_info[i],i + 1);
                     }
                 }else {
-                    console.log("111111111")
                     //addLogisticsItem(null);
                 }
                 // addLogisticsItem(null);                     //物流信息

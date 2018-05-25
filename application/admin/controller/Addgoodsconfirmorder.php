@@ -13,6 +13,7 @@ class Addgoodsconfirmorder extends Controller
         $producttype = \app\index\model\Admin::getclassinfo('product_type','product_type_id');
         $brand = \app\index\model\Admin::getclassinfo('product_brand','brand_id');
         $place = \app\index\model\Admin::getclassinfo('product_place','place_id');
+        $productlist =  \app\index\model\Admin::getcsproduct();
         if (!empty($brand)){
             $this->assign('producttypelist',$producttype);
         }
@@ -35,6 +36,8 @@ class Addgoodsconfirmorder extends Controller
         $order_info = '-1';
         $this->assign("order_info", $order_info);
         $this->assign('type',1);
+        if (!empty($productlist))
+            $this->assign("productlist", json_encode($productlist));
     	return $this->fetch();
     }
 
@@ -58,6 +61,7 @@ class Addgoodsconfirmorder extends Controller
         $producttype = \app\index\model\Admin::getclassinfo('product_type','product_type_id');
         $brand = \app\index\model\Admin::getclassinfo('product_brand','brand_id');
         $place = \app\index\model\Admin::getclassinfo('product_place','place_id');
+        $productlist =  \app\index\model\Admin::getcsproduct();
         if (!empty($brand)){
             $this->assign('producttypelist',$producttype);
         }
@@ -78,6 +82,8 @@ class Addgoodsconfirmorder extends Controller
         if (!empty($departlist))
             $this->assign("departlist", $departlist);
         $this->assign('type',$type);
+        if (!empty($productlist))
+            $this->assign("productlist", json_encode($productlist));
         return $this->fetch('addgoodsconfirmorder');
     }
 

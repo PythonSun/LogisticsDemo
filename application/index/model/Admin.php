@@ -2599,7 +2599,7 @@
             $sql .= "delivered_gift,delivered_album,product_number,order_date,cs_info_state) VALUES ({$sql_value})";
             $sql .= " ON DUPLICATE KEY UPDATE cs_id = '{$cs_id}',ofg_info_id = '{$ofg_info_id}',fee_info_id = '{$fee_info_id}',delivery_date_reply = '{$delivery_date_reply}'";
             $sql .= ",unc_ofg_info_id = '{$unc_ofg_info_id}',consult_sheet_file = '{$consult_sheet_file}',delivered_total = '{$delivered_total}'";
-            $sql .",delivered_pa = '{$delivered_pa}',delivered_conference = '{$delivered_conference}',delivered_customization = '{$delivered_customization}'";
+            $sql .=",delivered_pa = '{$delivered_pa}',delivered_conference = '{$delivered_conference}',delivered_customization = '{$delivered_customization}'";
             $sql .= ",delivered_record = '{$delivered_record}',delivered_metro = '{$delivered_metro}',delivered_aux = '{$delivered_aux}'";
             $sql .= ",delivered_gift = '{$delivered_gift}',delivered_album = '{$delivered_album}',product_number = '{$product_number}',order_date = '{$order_date}',cs_info_state = '{$cs_info_state}'";
             $sqlret = Db::execute($sql);
@@ -2837,5 +2837,15 @@
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
-    }
+
+        /*cs_product*/
+        public static function getcsproduct(){
+            $sql = "select * from dsp_logistic.cs_product";
+            $sql.= ' order by number';
+            $tableobj = Db::query($sql);
+            if(!empty($tableobj)){
+                return $tableobj;
+            }
+        }
+	}
 ?>
