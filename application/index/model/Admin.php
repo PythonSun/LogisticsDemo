@@ -2138,17 +2138,24 @@
                 }else{
                     if(empty($listobjone)){
                         $tableobj[$i]  = null;
-                    }
-                    $tableobj[$i]['ofg_productlist']= "";
+                    }else{
+                        $tableobj[$i]['ofg_productlist']= [];
+                     }
                 }
-
-
-                /*单独查发货日期*/
             }
 
             /*删除数组中空值*/
             $tableobj = array_filter($tableobj);
 
+            // /*单独查询发货日期*/
+            if(count($tableobj) > 0){
+                for($i=0; $i < count($tableobj); $i++){
+                    $cs_id = $tableobj[$i]['cs_id'];
+                    $sqlfour = "select dsp_logistic.logistics_info.delivery_date from dsp_logistic.logistics_info where cs_id='$cs_id'";
+                    $dateobj = Db::query($sqlfour);
+                    $tableobj[$i]['logistic_date'] = $dateobj;
+                }
+            }
             /*统计出缺货，产品分类，非常规数据*/
             for($i = 0 ; $i < count($tableobj);$i++){
                 /*公共广播，会议等产品数量*/
@@ -2200,9 +2207,8 @@
                 $tableobj[$i]['auxdi_num'] = $auxdi_num;
                 $tableobj[$i]['record_num'] = $record_num;
 
-                /*缺货产品列表*/
+                //缺货产品列表
                 $tableobj[$i]['lessproductlist'] = $lessproductlist;
-
                 $unc_productlist = $tableobj[$i]['unc_productlist'];
                 for($k = 0 ; $k < count($unc_productlist) ; $k++){
                     if($unc_productlist[$k]['unc_product_name'] == '研发'){
@@ -2240,6 +2246,15 @@
                 $tableobj[$i]['unc_register_num'] = $unc_register_num;
                 $tableobj[$i]['unc_networksoft_num'] = $unc_networksoft_num;
                 $tableobj[$i]['unc_interlligencesoft_num'] = $unc_interlligencesoft_num;
+
+
+                /*发货日期*/
+                $logistic_date = $tableobj[$i]['logistic_date'];
+                $delivery_logistic_date = "";
+                for($l = 0 ; $l < count($logistic_date) ; $l++){
+                    $delivery_logistic_date .= $logistic_date[$l]['delivery_date'].',';
+                }
+                $tableobj[$i]['delivery_logistic_date'] = $delivery_logistic_date;
             }
 
             return $tableobj;
@@ -2259,7 +2274,7 @@
             $liststart = 0 ;
             for($item=3; $item < count($ret)+3; $item++){
                 $objPHPExcel->getActiveSheet()->setCellValue('A'.($item+$liststart), $ret[$item-3]['cs_belong_create_time']);
-                //$objPHPExcel->getActiveSheet()->setCellValue('B3', $ret[$item]['发货日期']);
+                $objPHPExcel->getActiveSheet()->setCellValue('B'.($item+$liststart), $ret[$item-3]['delivery_logistic_date']);
                 $objPHPExcel->getActiveSheet()->setCellValue('C'.($item+$liststart), $ret[$item-3]['build_department_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('D'.($item+$liststart), $ret[$item-3]['build_user_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('E'.($item+$liststart), $ret[$item-3]['receiver_name']);
@@ -2673,7 +2688,7 @@
             $sql .= "delivered_gift,delivered_album,product_number,order_date,cs_info_state) VALUES ({$sql_value})";
             $sql .= " ON DUPLICATE KEY UPDATE cs_id = '{$cs_id}',ofg_info_id = '{$ofg_info_id}',fee_info_id = '{$fee_info_id}',delivery_date_reply = '{$delivery_date_reply}'";
             $sql .= ",unc_ofg_info_id = '{$unc_ofg_info_id}',consult_sheet_file = '{$consult_sheet_file}',delivered_total = '{$delivered_total}'";
-            $sql .",delivered_pa = '{$delivered_pa}',delivered_conference = '{$delivered_conference}',delivered_customization = '{$delivered_customization}'";
+            $sql .=",delivered_pa = '{$delivered_pa}',delivered_conference = '{$delivered_conference}',delivered_customization = '{$delivered_customization}'";
             $sql .= ",delivered_record = '{$delivered_record}',delivered_metro = '{$delivered_metro}',delivered_aux = '{$delivered_aux}'";
             $sql .= ",delivered_gift = '{$delivered_gift}',delivered_album = '{$delivered_album}',product_number = '{$product_number}',order_date = '{$order_date}',cs_info_state = '{$cs_info_state}'";
             $sqlret = Db::execute($sql);
@@ -2912,6 +2927,7 @@
             return $sqlret;
         }
 
+<<<<<<< HEAD
         public  static  function getreceiverbycsid($cs_id)
         {
             //经理部分的确认单
@@ -2956,4 +2972,16 @@
         }
 
     }
+=======
+        /*cs_product*/
+        public static function getcsproduct(){
+            $sql = "select * from dsp_logistic.cs_product";
+            $sql.= ' order by number';
+            $tableobj = Db::query($sql);
+            if(!empty($tableobj)){
+                return $tableobj;
+            }
+        }
+	}
+>>>>>>> 4b232092285bb316332f8883991439931f0f1953
 ?>
