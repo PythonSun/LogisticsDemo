@@ -1669,14 +1669,21 @@
 
         /*查询需要导出的更换/代用/维修/退货/配件/借样确认单  未完待续*/
         public static function queryexportcsinfoconfirmorder($param,$type){
-            $sqlone ="select dsp_logistic.cs_belong.*,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.* from dsp_logistic.cs_info ";
+            $sqlone ="select dsp_logistic.cs_belong.*,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.*,dsp_logistic.return_info.* from dsp_logistic.cs_info ";
             $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
+            $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqlone .= "where dsp_logistic.cs_info.cs_info_type='$type' ";
             if((property_exists($param,'startdate'))&&(property_exists($param,'enddate'))){
                $startdate = $param->startdate;
                $enddate = $param->enddate;
-               $sqlone.= " and write_date >='$startdate' and write_date <='$enddate' ";
+               $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
+            }else if(property_exists($param,'startdate')){
+                $startdate = $param->startdate;
+                $sqlone.= " and cs_belong_create_time >='$startdate'";
+            }else if(property_exists($param,'enddate')){
+                $enddate = $param->enddate;
+                $sqlone.= " and cs_belong_create_time <='$enddate'";
             }
 
             if(property_exists($param,'departname')){
@@ -1699,9 +1706,16 @@
                 $sqlone.= " and dsp_logistic.cs_info.cs_id ='$order_id' ";
             }
 
-            if(property_exists($param,'receiver_name')){
-                $receiver_name = $param->receiver_name;
-                $sqlone.= " and dsp_logistic.elivery_info.delivery_info_receiver_name ='$receiver_name' ";
+            if($type == 2||$type == 5){
+                if(property_exists($param,'receiver_name')){
+                    $delivery_info_receiver_name = $param->receiver_name;
+                    $sqlone.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
+                }
+            }else{
+                if(property_exists($param,'receiver_name')){
+                    $return_info_receiver_name = $param->receiver_name;
+                    $sqlone.= " and return_info_receiver_name ='$return_info_receiver_name' ";
+                }
             }
 
             /*运费付费模式*/
@@ -1710,15 +1724,6 @@
                 $sqlone .= "and dsp_logistic.delivery_info.transfer_fee_mode = '$freightmode' ";
             }
 
-            // if(property_exists($param,'yard')){
-            //     $yard = $param->yard;
-            //     $sqlone.= " and goods_yard_name ='$yard' ";
-            // }
-
-            // if(property_exists($param,'couriernumber')){
-            //     $couriernumber = $param->couriernumber;
-            //     $sqlone.= " and transfer_order_num ='$couriernumber' ";
-            // }
             $tableobj = Db::query($sqlone);
             if(empty($tableobj))
                 return null;
@@ -1766,6 +1771,16 @@
 
                 $onelistobj = Db::query($sqltwo);
                 $tableobj[$i]['ofg_productlist'] = $onelistobj;
+            }
+
+            // /*单独查询发货日期*/
+            if(count($tableobj) > 0){
+                for($i=0; $i < count($tableobj); $i++){
+                    $cs_id = $tableobj[$i]['cs_id'];
+                    $sqlfour = "select dsp_logistic.logistics_info.delivery_date from dsp_logistic.logistics_info where cs_id='$cs_id'";
+                    $dateobj = Db::query($sqlfour);
+                    $tableobj[$i]['logistic_date'] = $dateobj;
+                }
             }
 
             /*统计缺货的,产品明细，非常规部分*/
@@ -1848,6 +1863,14 @@
                 $tableobj[$i]['unc_interlligencesoft_num'] = $unc_interlligencesoft_num;
 
                 $tableobj[$i]['lessproductlist'] = $lessproductlist;
+
+                /*发货日期*/
+                $logistic_date = $tableobj[$i]['logistic_date'];
+                $delivery_logistic_date = "";
+                for($l = 0 ; $l < count($logistic_date) ; $l++){
+                    $delivery_logistic_date .= $logistic_date[$l]['delivery_date'].',';
+                }
+                $tableobj[$i]['delivery_logistic_date'] = $delivery_logistic_date;
             }
             return $tableobj;
         }
@@ -1865,8 +1888,8 @@
 
             $liststart = 0 ;
             for($item=3; $item < count($ret)+3; $item++){
-                $objPHPExcel->getActiveSheet()->setCellValue('A'.($item+$liststart), $ret[$item-3]['write_date']);
-                //$objPHPExcel->getActiveSheet()->setCellValue('B3', $ret[$item]['发货日期']);
+                $objPHPExcel->getActiveSheet()->setCellValue('A'.($item+$liststart), $ret[$item-3]['cs_belong_create_time']);
+                $objPHPExcel->getActiveSheet()->setCellValue('B'.($item+$liststart), $ret[$item-3]['delivery_logistic_date']);
                 $objPHPExcel->getActiveSheet()->setCellValue('C'.($item+$liststart), $ret[$item-3]['build_department_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('D'.($item+$liststart), $ret[$item-3]['build_user_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('E'.($item+$liststart), $ret[$item-3]['delivery_info_receiver_name']);
@@ -1938,7 +1961,7 @@
             exit;        //关键
         }
 
-        /*查询需要导出的订货确认单  未完待续*/
+        /*查询需要导出的订货确认单*/
         public static function queryexportgoodsconfirmorder($param){
             $sqlone = "select dsp_logistic.cs_belong.*,dsp_logistic.order_goods_cs_info.*,dsp_logistic.ofg_info.*,dsp_logistic.fee_info.* from dsp_logistic.order_goods_cs_info ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
@@ -1982,16 +2005,6 @@
                 $receiver_name = $param->receiver_name;
                 $sqlone.= " and receiver_name ='$receiver_name' ";
             }
-
-            // if(property_exists($param,'yard')){
-            //     $yard = $param->yard;
-            //     $sqlone.= " and goods_yard_name ='$yard' ";
-            // }
-
-            // if(property_exists($param,'couriernumber')){
-            //     $couriernumber = $param->couriernumber;
-            //     $sqlone.= " and transfer_order_num ='$couriernumber' ";
-            // }
 
             /*运费付费模式*/
             if(property_exists($param,'freightmode')){
