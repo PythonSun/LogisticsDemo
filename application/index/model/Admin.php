@@ -2927,7 +2927,6 @@
             return $sqlret;
         }
 
-<<<<<<< HEAD
         public  static  function getreceiverbycsid($cs_id)
         {
             //经理部分的确认单
@@ -2970,9 +2969,7 @@
             }
             return null;
         }
-
-    }
-=======
+        
         /*cs_product*/
         public static function getcsproduct(){
             $sql = "select * from dsp_logistic.cs_product";
@@ -2983,5 +2980,4 @@
             }
         }
 	}
->>>>>>> 4b232092285bb316332f8883991439931f0f1953
 ?>
