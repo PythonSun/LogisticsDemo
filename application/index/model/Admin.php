@@ -500,6 +500,11 @@
 			$tableobj = Db::query($sqlone);
 			return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
 		}
+		 /*chenshanqiang更改物流表数据*/
+		 public static function updatelogisticsinfofirst($args){
+			$sql = "up count(*) from dsp_logistic.cs_info ";
+			return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
+		}
         /*查询维修，代用等订单,物流部和财务的人查询时调用*/
         /*参数: type  page  limit queryinfo*/
         public static function querycsInfomation(...$args){

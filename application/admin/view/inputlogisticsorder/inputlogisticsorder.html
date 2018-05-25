@@ -66,7 +66,7 @@
             <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="sendmessage">发送短信</a>
+            <a class="layui-btn layui-btn-xs" lay-event="sendmessage">发送短信</a>
         </script>
         <script type="text/javascript" src="/static/layui/layui.js"></script>
         <script type="text/javascript">
@@ -87,9 +87,7 @@
                     $.post("{:url('admin/inputlogisticsorder/savemessage')}", { 'param': param }, function (res) {
                         if(res == '1') {
                             layer.msg('保存成功！', { icon: 6 });
-                            table.reload('logisticstablequeryresult', {
-                                
-                            });
+                            table.reload('logisticstablequeryresult', {});
                         } else {
                             layer.msg('保存失败！', { icon: 5 });
                         }
@@ -111,16 +109,76 @@
                 table.on('tool(logisticstablequeryresult)', function (obj) {
                     var data = obj.data, //获得当前行数据
                         layEvent = obj.event; //获得 lay-event 对应的值
+                    console.log(data);
                     if(layEvent === 'detail') {
-                        layer.msg('查看操作');
+                        top.layer.open({
+                            type: 2,
+                            area: ['80%', '70%'],
+                            shade: 0.9,
+                            title: ['物流单详情', 'background-color:#636363; color:#fff;'],
+                            content: "{:url('admin/inputlogistics/inputlogistics')}?cs_id=" + data.cs_id + "&goods_yard_name=" + data.goods_yard_name + "&transfer_order_num=" + data.transfer_order_num + "&delivery_date=" + data.delivery_date + "&count=" + data.count,
+                            btn: ['关闭'],
+                            btnAlign: 'c',
+                            yes: function (index, layero) {
+                                top.layer.close(index);
+                            }
+                        });
+                        /*layer.msg('查看操作');*/
                     } else if(layEvent === 'del') {
-                        layer.confirm('真的删除行么', function (index) {
+                        layer.confirm('真的删除行么', {
+                            icon: 3,
+                            title: '提示',
+                        }, function (index) {
+                            var deldata = "logistics_id=" + data.logistics_id + "&cs_id=" + data.cs_id + "&goods_yard_name=" + data.goods_yard_name + "&transfer_order_num=" + data.transfer_order_num + "&delivery_date=" + data.delivery_date + "&count=" + data.count;
                             obj.del(); //删除对应行（tr）的DOM结构
                             layer.close(index);
+                            $.ajax({
+                                type: "GET",
+                                url: "{:url('admin/inputlogisticsorder/deletedata')}",
+                                data: deldata,
+                                success: function (msg) {
+                                	layer.msg('删除成功！',{icon:6});
+                                },
+                                error: function (data) {
+                                    alert(data);
+                                }
+                            });
                             //向服务端发送删除指令
                         });
                     } else if(layEvent === 'edit') {
-                        layer.msg('编辑操作');
+                        top.layer.open({
+                            type: 2,
+                            area: ['80%', '70%'],
+                            shade: 0.9,
+                            title: ['物流单详情', 'background-color:#636363; color:#fff;'],
+                            content: "{:url('admin/editlogistics/editlogistics')}?logistics_id=" + data.logistics_id + "&cs_id=" + data.cs_id + "&goods_yard_name=" + data.goods_yard_name + "&transfer_order_num=" + data.transfer_order_num + "&delivery_date=" + data.delivery_date + "&count=" + data.count + "&time_stamp=" + data.time_stamp,
+                            btn: ['保存', '取消'],
+                            btnAlign: 'c',
+                            yes: function (index, layero) {
+                                var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                                var editdatasave = iframeWin.getData();
+                                $.ajax({
+                                    type: "GET",
+                                    url: "{:url('admin/editlogistics/editsave')}",
+                                    data: editdatasave,
+                                    success: function (msg) {
+                                        if(msg == 0) {
+                                            top.layer.msg('保存成功！', { icon: 6 });
+                                            top.layer.close(index);
+                                        } else if(msg == 2) {
+                                            top.layer.msg('保存成功！', { icon: 6 });
+                                            top.layer.close(index);
+                                        } else {
+                                            top.layer.msg('保存失败！', { icon: 5 })
+                                        }
+                                        table.reload('logisticstablequeryresult', {});
+                                    }
+                                });
+                            },
+                            btn2: function (index, layero) {
+                                top.layer.close(index);
+                            }
+                        });
                     } else if(layEvent == 'sendmessage') {
                         layer.msg('发送短信');
                     }

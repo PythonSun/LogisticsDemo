@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/public.css"> </head>
+    <body>
+        <form class="layui-form layui-form-pane" action="">
+            <div class="toph2">
+                <h2>物流单号输入</h2>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label light_gray">流水号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="cs_id" id="cs_id" lay-verify="" {$disabled}="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label light_gray">收货人</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="consignee" id="consignee" {$disabled}="" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label light_gray">收货人电话</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="consigneephone" id="consigneephone" {$disabled}="" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label light_gray">收货地址</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="shippingaddress" id="shippingaddress" {$disabled}="" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label light_blue">货场名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="goods_yard_name" id="goods_yard_name" {$disabled}="" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_blue"> </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label light_blue">运单号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="transfer_order_num" id="transfer_order_num" {$disabled}="" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_blue"> </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label light_blue" style="color:red;">发货日期</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="delivery_date" id="delivery_date" autocomplete="on" {$disabled}="" class="layui-input light_blue" value="{$delivery_date}"> </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label light_blue">件数</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="count" id="count" {$disabled}="" autocomplete="on" class="layui-input light_blue"> </div>
+                </div>
+            </div>
+        </form>
+        <script type="text/javascript" src="/static/layui/layui.js"></script>
+        <script type="text/javascript">
+            layui.use(['form', 'laydate', 'jquery', 'layer'], function () {
+                var form = layui.form,
+                    laydate = layui.laydate,
+                    $ = layui.jquery,
+                    layer = layui.layer;
+                var goods_yard_name = ascii2native('{$goods_yard_name}');
+                $('#cs_id').val('{$cs_id}');
+                $('#goods_yard_name').val(goods_yard_name);
+                $('#transfer_order_num').val('{$transfer_order_num}');
+                $('#count').val('{$count}');
+                if(goods_yard_name!=' '){
+                	$('#cs_id').attr('class','layui-input light_gray layui-disabled');
+                	$('#goods_yard_name').attr('class','layui-input light_blue layui-disabled');
+                	$('#delivery_date').attr('class','layui-input light_blue layui-disabled');
+                    $('#transfer_order_num').attr('class','layui-input light_blue layui-disabled');
+                    $('#count').attr('class','layui-input light_blue layui-disabled');
+                }
+                /*日期*/
+                laydate.render({
+                    elem: '#delivery_date',
+                    position: 'fixed',
+                    theme: 'molv'
+                })
+            })
+
+            function ascii2native(n) {
+                var n = unescape(n.split("/").join("%"));
+                return n;
+            }
+        </script>
+    </body>
+</html>
