@@ -336,6 +336,8 @@
         document.getElementById('product_type_id').value = data['product_type_id'];
         document.getElementById('brand_id').value = data['brand_id'];
         jq('#serachModelinfo').attr('value',data['model']);
+        jq('#product_info_name').attr('value',data['product_info_name']);
+        product_info_id = data['product_info_id'];
         document.getElementById('place_id').value = data['place_id'];
         jq('#inputcount').attr('value',data['order_goods_manager_count']);
         jq('#inputunit').attr('value',data['unit']);
