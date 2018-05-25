@@ -337,12 +337,12 @@
                     ,theme: 'molv'
                 });
 
-                /*laydate.render({
+                laydate.render({
                     elem: '#order_date'
                     ,type: 'datetime'
                     ,position: 'fixed'
                     ,theme: 'molv'
-                });*/
+                });
 
                 laydate.render({
                     elem: '#delivery_date'
@@ -764,7 +764,7 @@
                     });
                 });
 
-                var isOpen = false;
+                /*var isOpen = false;
                 jq('#order_date').focus(function () {
                     if(isOpen){
                         return;
@@ -775,7 +775,8 @@
                     if(value != ""){
                         var date = new Date(value);
                         var year = date.getFullYear();    //年
-                        var month = date.getMonth() + 1;   //月
+                        var month = date.getMonth() + 1;
+                        month = month < 10 ? ('0'+ month) : month;   //月
                         var day = date.getDate();      //日
                         strDate = year + '-' + month + '-' + day;
                         var hour = date.getHours(); //小时
@@ -786,6 +787,7 @@
                         var now = new Date();
                         var year = now.getFullYear();    //年
                         var month = now.getMonth() + 1;   //月
+                        month = month < 10 ? ('0'+ month) : month;   //月
                         var day = now.getDate();      //日
                         strDate = year + '-' + month + '-' + day;
                         var hour = now.getHours(); //小时
@@ -827,14 +829,15 @@
                         ,type: 'time'
                         ,value:strTime
                         ,position: 'static'
+                        ,choose: function (datas) {
+                            console.log('+++++++++choose++++++++');
+                            console.log(datas);
+                        }
                         ,done: function(value, date, endDate){
+                            console.log(value);
                             console.log(date);
+                            console.log(endDate);
                             if(value != null && value != ""){
-                                var now = new Date();
-                                var year = now.getFullYear();    //年
-                                var month = now.getMonth() + 1;   //月
-                                var day = now.getDate();      //日
-                                var strDate = year + '-' + month + '-' + day;
                                 date1 = date1 == ''? strDate:date1;
                                 var val = date1 + " " + value;
                                 jq('#order_date').val(val);
@@ -845,7 +848,7 @@
                             }
                         }
                     });
-                })
+                })*/
             });
 
             //编辑或者新增Item 窗体，tableRowIndex：表序号 新增不填
