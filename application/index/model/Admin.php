@@ -2160,7 +2160,7 @@
             /*删除数组中空值*/
             $tableobj = array_filter($tableobj);
 
-            // /*单独查询发货日期*/
+            /*单独查询发货日期*/
             if(count($tableobj) > 0){
                 for($i=0; $i < count($tableobj); $i++){
                     $cs_id = $tableobj[$i]['cs_id'];
