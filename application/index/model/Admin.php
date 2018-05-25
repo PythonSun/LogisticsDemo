@@ -1949,7 +1949,13 @@
             if((property_exists($param,'startdate'))&&(property_exists($param,'enddate'))){
                $startdate = $param->startdate;
                $enddate = $param->enddate;
-               $sqlone.= " and order_date >='$startdate' and order_date <='$enddate' ";
+               $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
+            }else if(property_exists($param,'startdate')){
+                    $startdate = $param->startdate;
+                    $sqlone.= " and cs_belong_create_time >='$startdate'";
+            }else if(property_exists($param,'enddate')){
+                    $enddate = $param->enddate;
+                    $sqlone.= " and cs_belong_create_time <='$enddate'";
             }
 
             if(property_exists($param,'departname')){
@@ -2037,44 +2043,68 @@
                 }
 
                 $listobjone = Db::query($sqltwo);
-                $tableobj[$i]['unc_productlist'] = $listobjone;;
+                $tableobj[$i]['unc_productlist'] = $listobjone;
+                
+                /*查询非常规单*/
+                if(!property_exists($param,'customproduct')){
+                    //常规产品详细
+                    $cs_id = $tableobj[$i]['cs_id'];
+                    $sqlthree = "select dsp_logistic.product_info.*,dsp_logistic.product_brand.brand_name,dsp_logistic.product_type.product_type_name,dsp_logistic.product_place.place_name,dsp_logistic.order_goods_cs_undeliver_goods_info.* from dsp_logistic.order_goods_cs_undeliver_goods_info ";
+                    $sqlthree .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.order_goods_cs_undeliver_goods_info.product_info_id ";
+                    $sqlthree .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
+                    $sqlthree .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
+                    $sqlthree .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
+                    $sqlthree .= "where dsp_logistic.order_goods_cs_undeliver_goods_info.cs_id ='$cs_id' ";
+                    if(property_exists($param,'productclass')){
+                        $productclass = intval($param->productclass);
+                        $sqlthree .= "and dsp_logistic.product_type.product_type_id = '$productclass' ";
+                    }
 
-                //常规产品详细
-                $cs_id = $tableobj[$i]['cs_id'];
-                $sqlthree = "select dsp_logistic.product_info.*,dsp_logistic.product_brand.brand_name,dsp_logistic.product_type.product_type_name,dsp_logistic.product_place.place_name,dsp_logistic.order_goods_cs_undeliver_goods_info.* from dsp_logistic.order_goods_cs_undeliver_goods_info ";
-                $sqlthree .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.order_goods_cs_undeliver_goods_info.product_info_id ";
-                $sqlthree .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
-                $sqlthree .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
-                $sqlthree .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
-                $sqlthree .= "where dsp_logistic.order_goods_cs_undeliver_goods_info.cs_id ='$cs_id' ";
-                if(property_exists($param,'productclass')){
-                    $productclass = intval($param->productclass);
-                    $sqlthree .= "and dsp_logistic.product_type.product_type_id = '$productclass' ";
+                    /*品牌*/
+                    if(property_exists($param,'brand')){
+                        $brand = intval($param->brand);
+                        $sqlthree .= "and dsp_logistic.product_brand.brand_id = '$brand' ";
+                    }
+
+                    /*产品型号*/
+                    if(property_exists($param,'producttype')){
+                        $producttype = $param->producttype;
+                        $sqlthree .= "and dsp_logistic.product_info.model = '$producttype' ";
+                    }
+
+                    /*生产地*/
+                    if(property_exists($param,'productarea')){
+                        $productarea = intval($param->productarea);
+                        $sqlthree .= "and dsp_logistic.product_place.place_id = '$productarea' ";
+                    }
+
+                    $listobjtwo = Db::query($sqlthree);
+                    $tableobj[$i]['ofg_productlist'] = $listobjtwo;
+
+                    if((empty($listobjone))&&(empty($listobjtwo))){
+                        $tableobj[$i]  = null;
+                    }
+                }else{
+                    if(empty($listobjone)){
+                        $tableobj[$i]  = null;
+                    }else{
+                        $tableobj[$i]['ofg_productlist']= [];
+                     }
                 }
-
-                /*品牌*/
-                if(property_exists($param,'brand')){
-                    $brand = intval($param->brand);
-                    $sqlthree .= "and dsp_logistic.product_brand.brand_id = '$brand' ";
-                }
-
-                /*产品型号*/
-                if(property_exists($param,'producttype')){
-                    $producttype = $param->producttype;
-                    $sqlthree .= "and dsp_logistic.product_info.model = '$producttype' ";
-                }
-
-                /*生产地*/
-                if(property_exists($param,'productarea')){
-                    $productarea = intval($param->productarea);
-                    $sqlthree .= "and dsp_logistic.product_place.place_id = '$productarea' ";
-                }
-
-                $listobjtwo = Db::query($sqlthree);
-                $tableobj[$i]['ofg_productlist'] = $listobjtwo;
-
             }
 
+            /*删除数组中空值*/
+            $tableobj = array_filter($tableobj);
+
+            // /*单独查询发货日期*/
+            if(count($tableobj) > 0){
+                for($i=0; $i < count($tableobj); $i++){
+                    $cs_id = $tableobj[$i]['cs_id'];
+                    $sqlfour = "select dsp_logistic.logistics_info.delivery_date from dsp_logistic.logistics_info where cs_id='$cs_id'";
+                    $dateobj = Db::query($sqlfour);
+                    $tableobj[$i]['logistic_date'] = $dateobj;
+                }
+            }
             /*统计出缺货，产品分类，非常规数据*/
             for($i = 0 ; $i < count($tableobj);$i++){
                 /*公共广播，会议等产品数量*/
@@ -2110,7 +2140,7 @@
                     if($ofg_productlist[$j]['product_type_name'] == '录播')
                         $record_num++;
 
-                    if($ofg_productlist[$j]['ogcugi_product_state'] == 1){
+                    if($ofg_productlist[$j]['ogcugi_product_state'] == 5){
                         $model_param['place_name'] = $ofg_productlist[$j]['place_name'];
                         $model_param['brand_name'] = $ofg_productlist[$j]['brand_name'];
                         $model_param['model'] = $ofg_productlist[$j]['model'];
@@ -2126,9 +2156,8 @@
                 $tableobj[$i]['auxdi_num'] = $auxdi_num;
                 $tableobj[$i]['record_num'] = $record_num;
 
-                /*缺货产品列表*/
+                //缺货产品列表
                 $tableobj[$i]['lessproductlist'] = $lessproductlist;
-
                 $unc_productlist = $tableobj[$i]['unc_productlist'];
                 for($k = 0 ; $k < count($unc_productlist) ; $k++){
                     if($unc_productlist[$k]['unc_product_name'] == '研发'){
@@ -2166,6 +2195,15 @@
                 $tableobj[$i]['unc_register_num'] = $unc_register_num;
                 $tableobj[$i]['unc_networksoft_num'] = $unc_networksoft_num;
                 $tableobj[$i]['unc_interlligencesoft_num'] = $unc_interlligencesoft_num;
+
+
+                /*发货日期*/
+                $logistic_date = $tableobj[$i]['logistic_date'];
+                $delivery_logistic_date = "";
+                for($l = 0 ; $l < count($logistic_date) ; $l++){
+                    $delivery_logistic_date .= $logistic_date[$l]['delivery_date'].',';
+                }
+                $tableobj[$i]['delivery_logistic_date'] = $delivery_logistic_date;
             }
 
             return $tableobj;
@@ -2184,8 +2222,8 @@
 
             $liststart = 0 ;
             for($item=3; $item < count($ret)+3; $item++){
-                $objPHPExcel->getActiveSheet()->setCellValue('A'.($item+$liststart), $ret[$item-3]['order_date']);
-                //$objPHPExcel->getActiveSheet()->setCellValue('B3', $ret[$item]['发货日期']);
+                $objPHPExcel->getActiveSheet()->setCellValue('A'.($item+$liststart), $ret[$item-3]['cs_belong_create_time']);
+                $objPHPExcel->getActiveSheet()->setCellValue('B'.($item+$liststart), $ret[$item-3]['delivery_logistic_date']);
                 $objPHPExcel->getActiveSheet()->setCellValue('C'.($item+$liststart), $ret[$item-3]['build_department_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('D'.($item+$liststart), $ret[$item-3]['build_user_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('E'.($item+$liststart), $ret[$item-3]['receiver_name']);
