@@ -352,7 +352,15 @@
                 $startdate = $args[6]['startdate'];
                 $enddate = $args[6]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqlone.= " and write_date >='$startdate' and write_date <='$enddate'";
+                    $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate'";
+                }
+                else if($startdate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
                 }
                 if($args[6]['order_id'] != "")
                 {
@@ -455,7 +463,15 @@
                 $startdate = $args[6]['startdate'];
                 $enddate = $args[6]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqltwo.= " and write_date >='$startdate' and write_date <='$enddate'";
+                    $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate'";
+                }
+                else if($startdate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
                 }
                 if($args[6]['order_id'] != "")
                 {
@@ -602,6 +618,14 @@
                 if($startdate != "" && $enddate != "" ){
                     $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
                 }
+                else if($startdate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                }
                 if($args[3]['order_id'] != "")
                 {
                     $cs_id = $args[3]['order_id'];
@@ -694,6 +718,14 @@
                 $enddate = $args[3]['enddate'];
                 if($startdate != "" && $enddate != "" ){
                     $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
+                }
+                else if($startdate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
                 }
                 if($args[3]['order_id'] != "")
                 {
@@ -838,6 +870,14 @@
                 if($startdate != "" && $enddate != "" ){
                     $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
                 }
+                else if($startdate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                }
                 if($args[3]['order_id'] != "")
                 {
                     $cs_id = $args[3]['order_id'];
@@ -879,6 +919,14 @@
                 $enddate = $args[3]['enddate'];
                 if($startdate != "" && $enddate != "" ){
                     $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
+                }
+                else if($startdate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
                 }
                 if($args[3]['order_id'] != "")
                 {
@@ -964,6 +1012,14 @@
                 if($startdate != "" && $enddate != "" ){
                     $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
                 }
+                else if($startdate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                }
                 if($args[4]['order_id'] != "")
                 {
                     $cs_id = $args[4]['order_id'];
@@ -1010,6 +1066,14 @@
                 $enddate = $args[4]['enddate'];
                 if($startdate != "" && $enddate != "" ){
                     $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
+                }
+                else if($startdate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
                 }
                 if($args[4]['order_id'] != "")
                 {
