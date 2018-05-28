@@ -56,24 +56,33 @@
             </div>
         </form>
         <script type="text/javascript" src="/static/layui/layui.js"></script>
+        <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript">
             layui.use(['form', 'laydate', 'jquery', 'layer'], function () {
                 var form = layui.form,
                     laydate = layui.laydate,
-                    $ = layui.jquery,
                     layer = layui.layer;
+                $ = layui.jquery;
                 var goods_yard_name = ascii2native('{$goods_yard_name}');
                 $('#cs_id').val('{$cs_id}');
                 $('#goods_yard_name').val(goods_yard_name);
                 $('#transfer_order_num').val('{$transfer_order_num}');
                 $('#count').val('{$count}');
-                if(goods_yard_name!=' '){
-                	$('#cs_id').attr('class','layui-input light_gray layui-disabled');
-                	$('#goods_yard_name').attr('class','layui-input light_blue layui-disabled');
-                	$('#delivery_date').attr('class','layui-input light_blue layui-disabled');
-                    $('#transfer_order_num').attr('class','layui-input light_blue layui-disabled');
-                    $('#count').attr('class','layui-input light_blue layui-disabled');
+                if(goods_yard_name != ' ') {
+                    $('#cs_id').attr('class', 'layui-input light_gray layui-disabled');
+                    $('#consignee').attr('class', 'layui-input light_gray layui-disabled');
+                    $('#consigneephone').attr('class', 'layui-input light_gray layui-disabled');
+                    $('#shippingaddress').attr('class', 'layui-input light_gray layui-disabled');
+                    $('#goods_yard_name').attr('class', 'layui-input light_blue layui-disabled');
+                    $('#delivery_date').attr('class', 'layui-input light_blue layui-disabled');
+                    $('#transfer_order_num').attr('class', 'layui-input light_blue layui-disabled');
+                    $('#count').attr('class', 'layui-input light_blue layui-disabled');
                 }
+                $.post("{:url('admin/inputlogisticsorder/serialnumber')}", { 'cs_id':'{$cs_id}'}, function (res) {
+                    $('#consignee').val(res.receiver_name);
+                    $('#consigneephone').val(res.receiver_phone);
+                    $('#shippingaddress').val(res.receiver_address);
+                });
                 /*日期*/
                 laydate.render({
                     elem: '#delivery_date',

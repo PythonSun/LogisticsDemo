@@ -2981,12 +2981,12 @@
             return $sqlret;
         }
 
-        public  static  function getreceiverbycsid($cs_id)
-        {
+        public  static  function getreceiverbycsid($cs_id){
             //经理部分的确认单
-            $sqlone = "select dsp_logistic.delivery_info.*,dsp_logistic.return_info.*,dsp_logistic.cs_info.* form dsp_logistic.cs_info ";
+            $sqlone = "select dsp_logistic.delivery_info.*,dsp_logistic.return_info.*,dsp_logistic.cs_info.cs_info_type,dsp_logistic.logistics_info.*from dsp_logistic.cs_info ";
             $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
             $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
+            $sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.cs_info.cs_id = dsp_logistic.logistics_info.cs_id ";
             $sqlone.= "where dsp_logistic.cs_info.cs_id = '$cs_id'";
             $tableobj = Db::query($sqlone);
             if(!empty($tableobj))
@@ -2997,6 +2997,11 @@
                     $info['receiver_name'] = $tableobj[0]['delivery_info_receiver_name'];
                     $info['receiver_phone'] = $tableobj[0]['delivery_info_receiver_phone'];
                     $info['receiver_address'] = $tableobj[0]['delivery_info_receiver_address'];
+					$info['goods_yard_name'] = $tableobj[0]['goods_yard_name'];
+					$info['cs_id'] = $tableobj[0]['cs_id'];
+					$info['count'] = $tableobj[0]['count'];
+					$info['transfer_order_num'] = $tableobj[0]['transfer_order_num'];
+					$info['delivery_date'] = $tableobj[0]['delivery_date'];
                     return $info;
                 }
                 else
@@ -3005,12 +3010,18 @@
                     $info['receiver_name'] = $tableobj[0]['return_info_receiver_name'];
                     $info['receiver_phone'] = $tableobj[0]['return_info_receiver_phone'];
                     $info['receiver_address'] = $tableobj[0]['return_info_receiver_address'];
+					$info['goods_yard_name'] = $tableobj[0]['goods_yard_name'];
+					$info['cs_id'] = $tableobj[0]['cs_id'];
+					$info['count'] = $tableobj[0]['count'];
+					$info['transfer_order_num'] = $tableobj[0]['transfer_order_num'];
+					$info['delivery_date'] = $tableobj[0]['delivery_date'];
                     return $info;
                 }
             }
             //物流单
-            $sqlone = "select dsp_logistic.order_goods_info.*,dsp_logistic.order_goods_cs_info.* form dsp_logistic.order_goods_cs_info ";
-            $sqlone .= "left join dsp_logistic.order_goods_info on dsp_logistic.order_goods_info.ofg_info_id = dsp_logistic.order_goods_cs_info.ofg_info_id ";
+            $sqlone = "select dsp_logistic.ofg_info.*,dsp_logistic.logistics_info.* from dsp_logistic.order_goods_cs_info ";
+            $sqlone .= "left join dsp_logistic.ofg_info on dsp_logistic.ofg_info.ofg_info_id = dsp_logistic.order_goods_cs_info.ofg_info_id ";
+            $sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
             $sqlone.= "where dsp_logistic.order_goods_cs_info.cs_id = '$cs_id'";
             $tableobj = Db::query($sqlone);
             if(!empty($tableobj))
@@ -3019,11 +3030,19 @@
                 $info['receiver_name'] = $tableobj[0]['receiver_name'];
                 $info['receiver_phone'] = $tableobj[0]['receiver_phone'];
                 $info['receiver_address'] = $tableobj[0]['receiver_address'];
+				$info['goods_yard_name'] = $tableobj[0]['goods_yard_name'];
+				$info['cs_id'] = $tableobj[0]['cs_id'];
+				$info['count'] = $tableobj[0]['count'];
+				$info['transfer_order_num'] = $tableobj[0]['transfer_order_num'];
+				$info['delivery_date'] = $tableobj[0]['delivery_date'];
                 return $info;
             }
             return null;
         }
         
+		
+		
+		
         /*cs_product*/
         public static function getcsproduct(){
             $sql = "select * from dsp_logistic.cs_product";

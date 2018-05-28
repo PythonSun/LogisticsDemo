@@ -7,6 +7,13 @@ class Inputlogisticsorder extends Controller {
 		return $this -> fetch();
 	}
 
+	/*触发流水号事件*/
+	public function serialnumber() {
+		$cs_id = $_POST['cs_id'];
+		$result = \app\index\model\Admin::getreceiverbycsid($cs_id);
+		return $result;
+	}
+
 	/*保存信息*/
 	public function savemessage() {
 		if (array_key_exists('param', $_POST)) {
@@ -31,29 +38,35 @@ class Inputlogisticsorder extends Controller {
 		$tablelist = \app\index\model\Admin::querylogisticsinfo($type, $page, $limit);
 		return $tablelist;
 	}
-	
+
 	/*删除数据*/
 	public function deletedata() {
 		$logistics_id = $_GET['logistics_id'];
 		$dellogisticsrowdata = \app\index\model\Admin::deleterowtableid('logistics_info', 'logistics_id', $logistics_id);
 		return $dellogisticsrowdata;
 	}
-    /*发送短信*/
-    public function sendmessage(){
-    	$params = array();
-		$AppKey= "57019656a4ddd2eeae8209e92c133c3e";
+
+	/*发送短信*/
+	public function sendmessage() {
+		$params = array();
+		$AppKey = "57019656a4ddd2eeae8209e92c133c3e";
 		$AppSecret = "2dc9af4fb762";
 		$templateid = 3064651;
-
-		$params[] = '孙乐苏';    /*收件人*/
-		$params[] = '广东';      /*货场*/
-		$params[] = '201800001'; /*物流单号*/
-		$params[] = '1000';      /*件数*/
-		$telephone = '13527792506'; /*电话号码，支持群发*/
-    	$p = new \Serverapi($AppKey,$AppSecret,'curl');
-    	$sendstate = $p->sendSMSTemplate($templateid,array($telephone),json_encode($params));
-    	return $sendstate;           
-    }
-
+		$cs_id = $_POST['cs_id'];
+		$result = \app\index\model\Admin::getreceiverbycsid($cs_id);
+		$params[] = $result['receiver_name'];
+		/*收件人*/
+		$params[] = $result['goods_yard_name'];
+		/*货场*/
+		$params[] = $result['cs_id'];
+		/*物流单号*/
+		$params[] = $result['count'];
+		/*件数*/
+		$telephone = $result['receiver_phone'];
+		/*电话号码，支持群发*/
+		$p = new \Serverapi($AppKey, $AppSecret, 'curl');
+		$sendstate = $p -> sendSMSTemplate($templateid, array($telephone), json_encode($params));
+		return $sendstate;
+	}
 
 }

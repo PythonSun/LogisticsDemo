@@ -9,7 +9,6 @@ class inputlogistics extends Controller {
 		$transfer_order_num = $_GET['transfer_order_num'];
 		$delivery_date = $_GET['delivery_date'];
 		$count = $_GET['count'];
-
 		$this -> assign('disabled', 'disabled');
 		$this -> assign('layuidisabled', 'layui-disabled');
 		$this -> assign('cs_id', $cs_id);

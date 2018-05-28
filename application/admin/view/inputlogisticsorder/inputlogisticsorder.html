@@ -19,17 +19,17 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">收货人</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="consignee" id="consignee" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
+                        <input type="text" name="consignee" id="consignee" lay-verify="" disabled="" autocomplete="on" placeholder="" class="layui-input layui-disabled light_gray"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">收货人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="consigneephone" id="consigneephone" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
+                        <input type="text" name="consigneephone" id="consigneephone" disabled="" lay-verify="" autocomplete="on" placeholder="" class="layui-input layui-disabled light_gray"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">收货地址</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="shippingaddress" id="shippingaddress" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
+                        <input type="text" name="shippingaddress" id="shippingaddress" disabled="" lay-verify="" autocomplete="on" placeholder="" class="layui-input layui-disabled light_gray"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -76,6 +76,15 @@
                     $ = layui.jquery,
                     layer = layui.layer,
                     table = layui.table;
+                $("#cs_id").blur(function () {
+                    var cs_id = $('#cs_id').val();
+                    $.post("{:url('admin/inputlogisticsorder/serialnumber')}", { 'cs_id': cs_id }, function (res) {
+                        console.log(res)
+                        $('#consignee').val(res.receiver_name);
+                        $('#consigneephone').val(res.receiver_phone);
+                        $('#shippingaddress').val(res.receiver_address);
+                    });
+                });
                 /*日期*/
                 laydate.render({
                     elem: '#delivery_date',
@@ -102,14 +111,21 @@
                     page: true,
                     limit: 10,
                     cols: [
-                        [{ field: 'cs_id', title: '流水号', sort: true, fixed: 'left' }, { field: 'goods_yard_name', title: '货场名称' }, { field: 'transfer_order_num', title: '运单号' }, { field: 'delivery_date', title: '发货日期' }, { field: 'count', title: '件数' }, { fixed: 'right', width: 250, align: 'center', toolbar: '#barDemo' }]
+                        [
+                        { field: 'cs_id', title: '流水号', sort: true, fixed: 'left' },
+                        { field: 'goods_yard_name', title: '货场名称' }, 
+                        { field: 'transfer_order_num', title: '运单号' }, 
+                        { field: 'delivery_date', title: '发货日期' }, 
+                        { field: 'count', title: '件数' }, 
+                        { fixed: 'right', width: 250, align: 'center', toolbar: '#barDemo' }
+                        ]
                     ]
                 });
                 //监听工具条
                 table.on('tool(logisticstablequeryresult)', function (obj) {
                     var data = obj.data, //获得当前行数据
                         layEvent = obj.event; //获得 lay-event 对应的值
-                    console.log(data);
+                        console.log(data);
                     if(layEvent === 'detail') {
                         top.layer.open({
                             type: 2,
@@ -137,7 +153,7 @@
                                 url: "{:url('admin/inputlogisticsorder/deletedata')}",
                                 data: deldata,
                                 success: function (msg) {
-                                	layer.msg('删除成功！',{icon:6});
+                                    layer.msg('删除成功！', { icon: 6 });
                                 },
                                 error: function (data) {
                                     alert(data);
@@ -180,6 +196,19 @@
                             }
                         });
                     } else if(layEvent == 'sendmessage') {
+                        $.post("{:url('admin/inputlogisticsorder/sendmessage')}", { 'cs_id': data.cs_id }, function (res) {
+                        	console.log(res);
+                        	var params = new array();
+                        	params['receiver_name']=res.receiver_name;
+                        	params['receiver_phone']=res.receiver_phone;
+                        	params['goods_yard_name']=data.goods_yard_name;
+                        	params['cs_id']=data.cs_id;
+                        	params['count']=data.count;
+                        	
+                        	
+                        
+                        	
+                        });
                         layer.msg('发送短信');
                     }
                 });
