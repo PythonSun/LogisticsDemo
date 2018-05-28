@@ -6,31 +6,53 @@ class Approveborrowconfirmorder extends Controller
 {
 	/*审核订单渲染方法*/
     public function approveborrowconfirmorder(){
-//        $organizeid = session("user_session");
-//        $tablelist = \app\index\model\Admin::querydepartmentinfo($organizeid["organize_id"]);
-//        if(!empty($tablelist))
-//            $this->assign("departmentlist",$tablelist);
-//        else
-//        {
-//            $tablelist = \app\index\model\Admin::querydepartmentinfo($organizeid["organize_id"],$organizeid["organize_id"]);
-//            if(!empty($tablelist))
-//                $this->assign("departmentlist",$tablelist);
-//        }
+        $queryuserinfo = session("user_querypower");
+        $rolename = $queryuserinfo['role_name'];
+        if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员")
+        {
+            $this->assign('current_user_type',5);
+        }
+        elseif ($rolename == "财务部")
+        {
+            $this->assign('current_user_type',4);
+        }
+
+        elseif($rolename == "总经理")
+        {
+            $this->assign('current_user_type',3);
+        }
+        elseif($rolename == "总监")
+        {
+            $this->assign('current_user_type',2);
+        }
         return $this->fetch();
     }
 
     public function getexamineorder(){
-    	$page = $_GET['page'];
-    	$limit = $_GET['limit'];
+        $page = $_GET['page'];
+        $limit = $_GET['limit'];
         $user = session("user_session");
         $user_id = $user["user_id"];
         $orderType = 2;
-        if(isset($_GET['queryInfo'])){
-            $queryInfo = $_GET['queryInfo'];
-
-            $tablelist = \app\index\model\Admin::queryApproveConfirmOrder($user_id,$orderType,$page,$limit,$queryInfo);
-        }else{
-            $tablelist = \app\index\model\Admin::queryApproveConfirmOrder($user_id,$orderType,$page,$limit);
+        $queryuserinfo = session("user_querypower");
+        $rolename = $queryuserinfo['role_name'];
+        if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员")
+        {
+            if(isset($_GET['queryInfo'])){
+                $queryInfo = $_GET['queryInfo'];
+                $tablelist = \app\index\model\Admin::logisticQueryApproveConfirmOrder($orderType,$page,$limit,$queryInfo);
+            }else{
+                $tablelist = \app\index\model\Admin::logisticQueryApproveConfirmOrder($orderType,$page,$limit);
+            }
+        }
+        else
+        {
+            if(isset($_GET['queryInfo'])){
+                $queryInfo = $_GET['queryInfo'];
+                $tablelist = \app\index\model\Admin::queryApproveConfirmOrder($user_id,$orderType,$page,$limit,$queryInfo);
+            }else{
+                $tablelist = \app\index\model\Admin::queryApproveConfirmOrder($user_id,$orderType,$page,$limit);
+            }
         }
         
     	return $tablelist;
