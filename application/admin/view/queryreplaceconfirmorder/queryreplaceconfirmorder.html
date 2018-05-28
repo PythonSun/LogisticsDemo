@@ -220,7 +220,8 @@
                                 return false;
                             }
                         });
-				    }else if(obj.event === 'edit'){
+				    }
+				    else if(obj.event === 'edit'){
                         if(current_user_type == 5)
                         {
                             if(data['complete_date'] == '' || data['complete_date'] == '2000-01-01'||data['complete_date'] == '2000-01-01 00:00:00')
@@ -248,7 +249,8 @@
 
 						}
 
-				    }else if(obj.event === 'cancel'){
+				    }
+				    else if(obj.event === 'cancel'){
                         var cs_id = data.cs_id;
 
                         top.layer.confirm('确定取消？',{icon:2,title:'提示'},function(index){

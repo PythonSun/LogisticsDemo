@@ -425,7 +425,8 @@
             var isloading = true;
             var delrowid = new Array();
             var complete_date = "2000-01-01 00:00:00";
-             var cs_info_type = 1; //订单类型
+            var cs_info_type = 1; //订单类型
+            var user_info =null;//只有当经理登陆使用到
             //保存修改时根据Cs_id获取的数据
             var  editOrderData= [];
             //修改保存是谁在操作 1 经理 2 主管 3执行总监 4财务 5物流
@@ -456,12 +457,21 @@
                     var cs_id = "<?php echo $cs_id?>";
                     /*转换成整形*/
                     current_user_type = parseInt("<?php echo $current_user_type?>");
+                    user_info = {$userinfo};
                     setDatePopup();
                     if(cs_id == ""){
-                        addLogisticsItem(null);
                         userPower();
-                        form.render('select');
                         isloading = false;
+                        console.log(current_user_type);
+                        if(current_user_type == 1)
+                        {
+                            jq('#build_organize_id').val(user_info['organize_id']);
+                            LoadingDepartmentAndSelected(user_info['organize_id'],user_info['department_id']);
+                            LoadingManagerAndSelected(user_info['department_id'],user_info['user_id']);
+                            document.getElementById('build_user_phone').value = user_info['phone'];
+                        }
+                        form.render('select');
+
                         return ;
                     }
                     //
@@ -668,7 +678,7 @@
                 });
 
                 jq('#btn_add_order_item').click(function () {
-                    layer.open({
+                    top.layer.open({
                         type:2,
                         title:'新增清单',
                         area:['800px','70%'],
@@ -677,7 +687,7 @@
                         content:"{:url('admin/addconfirmorderitem/addconfirmorderitem')}?type= 0",
                         btn:['保存','退出'],
                         yes:function (index,layero) {
-                            var  iframeWin = window[layero.find('iframe')[0]['name']];
+                            var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                             var  orderItem = iframeWin.saveOrderItem();
                             if(isEmptyObject(orderItem)){
                                 return;
@@ -713,7 +723,6 @@
 
                         },
                         btn2: function () {
-                            layer.closeAll();
                         }
                     });
                     return false;
@@ -723,7 +732,7 @@
                         return ;
                     var text = jq(this).parent().parent();
                     var type = current_user_type == 5?1:0;
-                    layer.open({
+                    top.layer.open({
                         type:2,
                         title:'修改清单',
                         area:['800px','90%'],
@@ -732,7 +741,7 @@
                         content:"{:url('admin/addconfirmorderitem/addconfirmorderitem')}?type="+ type,
                         btn:['保存','退出'],
                         yes:function (index,layero) {
-                            var  iframeWin = window[layero.find('iframe')[0]['name']];
+                            var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                             var  orderItem = iframeWin.saveOrderItem();
                             if(orderItem.product_info_name == null){
                                 return null;
@@ -765,10 +774,9 @@
                             row.num = text.attr("num");
                             updateRow(row,false)
 
-                            layer.closeAll();
+                            top.layer.close(index);
                         },
                         btn2: function () {
-                            layer.closeAll();
                         },
                         success:function (layero, index) {
                             var orderItem = new Object();
@@ -792,7 +800,7 @@
                             orderItem.ogl_comment = text.attr("ogl_comment");
                             orderItem.product_info_id = text.attr("product_info_id");
                             orderItem.product_info_name = text.attr("product_info_name");
-                            var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                            var iframeWin = top.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
 
                             iframeWin.LoadingData(orderItem);
                             console.log(orderItem);
@@ -860,6 +868,12 @@
                     var dd = getUncofgInfoUI();
                     console.log('+++++++++弹窗前++++++++++++++');
                     console.log(dd);
+                    var url = '';
+                    if(current_user_type == 0){
+                        url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + 0 + "&cs_id=" + editOrderData['cs_id'];
+                    }else{
+                        url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + 1;
+                    }
                     top.layer.open({
                         type:2,
                         title:'查看非定型产品订货单',
@@ -867,11 +881,11 @@
                         shade: [0.7, '#393D49'],
                         skin: 'layui-layer-molv',
                         maxmin:true,
-                        content:"{:url('admin/uncofginfo/uncofginfo')}?type=0",
+                        content:url,
                         btn:['退出'],
                         yes:function (index,layero) {
                             top.layer.close(index);
-                        },
+                        }
                     });
                     return false;
                 })
@@ -1079,7 +1093,6 @@
                 }
             }
 
-            
             function updateRow(row ,isAdd) {
                 //console.log(row);
                 var jq = layui.jquery;
@@ -1093,23 +1106,43 @@
                 var new_tr = jq('#tableorder')[0].insertRow(rows);//指定位置插入行
 
                 jq(new_tr).attr('product_type_id',row.product_type_id);
+                if(row.product_type_name == undefined||row.product_type_name == null)
+                    row.product_type_name = "";
                 jq(new_tr).attr('product_type_name',row.product_type_name);
                 jq(new_tr).attr('brand_id',row.brand_id);
+                if(row.brand_name == undefined||row.brand_name == null)
+                    row.brand_name = "";
                 jq(new_tr).attr('brand_name',row.brand_name);
+                if(row.product_info_name == undefined||row.product_info_name == null)
+                    row.product_info_name = "";
                 jq(new_tr).attr('product_info_name',row.product_info_name);
                 jq(new_tr).attr('product_info_id',row.product_info_id);
                 jq(new_tr).attr('model',row.model);
+                if(row.unit == undefined||row.unit == null)
+                    row.unit = "";
                 jq(new_tr).attr('unit',row.unit);
                 jq(new_tr).attr('place_id',row.place_id);
+                if(row.place_name == undefined||row.place_name == null)
+                    row.place_name = "";
                 jq(new_tr).attr('place_name',row.place_name);
                 jq(new_tr).attr('order_goods_manager_count',row.order_goods_manager_count);
+                if(row.unc_product_name == undefined||row.unc_product_name == null)
+                    row.unc_product_name = "";
                 jq(new_tr).attr('unc_product_name',row.unc_product_name);
                 jq(new_tr).attr('unc_product_id',row.unc_product_id);
+                if(row.specification == undefined||row.specification == null)
+                    row.specification = "";
                 jq(new_tr).attr('specification',row.specification);
                 jq(new_tr).attr('back_date',row.back_date);
+                if(row.ogl_product_state == undefined||row.ogl_product_state == null)
+                    row.ogl_product_state = "";
                 jq(new_tr).attr('ogl_product_state',row.ogl_product_state);
                 jq(new_tr).attr('bar_code',row.bar_code);
+                if(row.replace_reason == undefined||row.replace_reason == null)
+                    row.replace_reason = "";
                 jq(new_tr).attr('replace_reason',row.replace_reason);
+                if(row.ogl_comment == undefined||row.ogl_comment == null)
+                    row.ogl_comment = "";
                 jq(new_tr).attr('ogl_comment',row.ogl_comment);
                 // console.log("length: "+ jq('#tableorder')[0].rows.length);
                 jq(new_tr).attr('order_goods_manager_id', row.order_goods_manager_id);
@@ -1268,6 +1301,7 @@
                     rowdata.order_goods_manager_id = row.attr('order_goods_manager_id');
                     rowdata.ogl_id = row.attr('ogl_id');
                     data[index] = rowdata;
+                    index++;
                 }
                 return data;
             }
@@ -1388,6 +1422,7 @@
                         order_goods_delete_row:delrowid,} ,
                     type: 'POST',
                     dataType: 'json',
+                    async:false,
                     success: function(e) {
                         if(e){
                             console.log('订单添加成功！');
@@ -1412,7 +1447,7 @@
                 }
                 var jq = layui.jquery;
 
-                var cs_info = getCsInfo(data,true,true,data['cs_info_state']);
+                var cs_info = getCsInfo(data,true,true,data['cs_info_state']== '');
                 console.log("以下确认单信息：");
                 console.log(cs_info);
                 var custom_info = getCustomInfo(data,true);
@@ -1458,6 +1493,7 @@
                     } ,
                     type: 'POST',
                     dataType: 'json',
+                    async:false,
                     success: function(e) {
                         if(e){
                             console.log('订单添加成功！');
@@ -1502,8 +1538,14 @@
                 departExamine['cs_id'] = editOrderData['depart_examine']['cs_id'];
                 departExamine['submit_user_id'] = editOrderData['depart_examine']['submit_user_id'];
                 cs_examine[0] = departExamine;
-                jq.post("{:url('admin/Addreplaceconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
-                    console.log(result);
+                jq.ajax({
+                    type : "post",
+                    url : "{:url('admin/Addreplaceconfirmorder/deliverorder')}",
+                    data : {param:cs_examine},
+                    async : false,
+                    success : function(result){
+                        console.log(result);
+                    }
                 });
                 console.log(cs_examine);
                 return true;
@@ -1542,8 +1584,14 @@
                 companyExamine['cs_id'] = editOrderData['company_examine']['cs_id'];
                 companyExamine['submit_user_id'] = editOrderData['company_examine']['submit_user_id'];
                 cs_examine[0] = companyExamine;
-                jq.post("{:url('admin/Addreplaceconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
-                    console.log(result);
+                jq.ajax({
+                    type : "post",
+                    url : "{:url('admin/Addreplaceconfirmorder/deliverorder')}",
+                    data : {param:cs_examine},
+                    async : false,
+                    success : function(result){
+                        console.log(result);
+                    }
                 });
                 console.log(cs_examine);
                 return true;
@@ -1581,8 +1629,14 @@
                 financeExamine['cs_id'] = editOrderData['finance_examine']['cs_id'];
                 financeExamine['submit_user_id'] = editOrderData['finance_examine']['submit_user_id'];
                 cs_examine[0] = financeExamine;
-                jq.post("{:url('admin/Addreplaceconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
-                    console.log(result);
+                jq.ajax({
+                    type : "post",
+                    url : "{:url('admin/Addreplaceconfirmorder/deliverorder')}",
+                    data : {param:cs_examine},
+                    async : false,
+                    success : function(result){
+                        console.log(result);
+                    }
                 });
                 return true;
             }
@@ -1819,11 +1873,11 @@
                         return false;
                     }
 
-                    if(data['build_user_id'] == ""){
-                        layer.msg('请选择经理！',{icon:2});
+                    if(data['build_organize_id'] != user_info['organize_id'] || data['build_department_id'] != user_info['department_id']||data['build_user_id'] != user_info['user_id'])
+                    {
+                        layer.msg('区域经理有误,只能录自己的单！',{icon:2});
                         return false;
                     }
-
                     if(data['build_user_phone'] == '')
                     {
                         layer.msg('区域经理电话不能为空！',{icon:2});
@@ -2031,7 +2085,7 @@
                 info.can_edit = isSave == true?1:0;                              //0 不可编辑
                 info.cs_info_state = csState;
                 info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate']; //cs_info       //新增 无完成日期
-                info.product_number = document.getElementById('tableorder').rows.length;
+                info.product_number = document.getElementById('tableorder').rows.length-1;
                 info.unc_ofg_info_id = isEdit == true?editOrderData['unc_ofg_info_id']:0;
                 info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
                 return info;
@@ -2191,11 +2245,11 @@
                 return info;
             }
 
-            document.onkeydown = function keyLogin(e) {
-                var event = (typeof event!= 'undefined') ? window.event : e;
-                if(event.keyCode==8) //屏蔽delete键
-                    return false;
-            }
+            // document.onkeydown = function keyLogin(e) {
+            //     var event = (typeof event!= 'undefined') ? window.event : e;
+            //     if(event.keyCode==8) //屏蔽delete键
+            //         return false;
+            // }
 
         </script>
     </body>

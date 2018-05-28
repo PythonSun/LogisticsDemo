@@ -90,9 +90,9 @@
                 if($startdate != "" && $enddate != "" ){
                     $sqloneCondition.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate'";
                 }else if($startdate != "" && $enddate == "" ){
-                    $sqloneCondition.= " and cs_belong_create_time >='$startdate'";
+                    $sqloneCondition.= " and cs_belong_create_time ='$startdate'";
                 }else if($startdate == "" && $enddate != "" ){
-                    $sqloneCondition.= " and cs_belong_create_time <='$enddate'";
+                    $sqloneCondition.= " and cs_belong_create_time ='$enddate'";
                 }
                 if($args[6]['order_id'] != "")
                 {
@@ -196,9 +196,9 @@
                 if($startdate != "" && $enddate != "" ){
                     $sqltwoCondition .= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate'";
                 }else if($startdate != "" && $enddate == "" ){
-                    $sqltwoCondition .= " and cs_belong_create_time >='$startdate'";
+                    $sqltwoCondition .= " and cs_belong_create_time ='$startdate'";
                 }else if($startdate == "" && $enddate != "" ){
-                    $sqltwoCondition .= " and cs_belong_create_time <='$enddate'";
+                    $sqltwoCondition .= " and cs_belong_create_time ='$enddate'";
                 }
                 if($args[6]['order_id'] != "")
                 {
@@ -354,7 +354,15 @@
                 $startdate = $args[6]['startdate'];
                 $enddate = $args[6]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqlone.= " and write_date >='$startdate' and write_date <='$enddate'";
+                    $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate'";
+                }
+                else if($startdate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
                 }
                 if($args[6]['order_id'] != "")
                 {
@@ -457,7 +465,15 @@
                 $startdate = $args[6]['startdate'];
                 $enddate = $args[6]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqltwo.= " and write_date >='$startdate' and write_date <='$enddate'";
+                    $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate'";
+                }
+                else if($startdate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
                 }
                 if($args[6]['order_id'] != "")
                 {
@@ -643,6 +659,14 @@
                 if($startdate != "" && $enddate != "" ){
                     $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
                 }
+                else if($startdate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                }
                 if($args[3]['order_id'] != "")
                 {
                     $cs_id = $args[3]['order_id'];
@@ -735,6 +759,14 @@
                 $enddate = $args[3]['enddate'];
                 if($startdate != "" && $enddate != "" ){
                     $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
+                }
+                else if($startdate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
                 }
                 if($args[3]['order_id'] != "")
                 {
@@ -879,6 +911,14 @@
                 if($startdate != "" && $enddate != "" ){
                     $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
                 }
+                else if($startdate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                }
                 if($args[3]['order_id'] != "")
                 {
                     $cs_id = $args[3]['order_id'];
@@ -920,6 +960,14 @@
                 $enddate = $args[3]['enddate'];
                 if($startdate != "" && $enddate != "" ){
                     $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
+                }
+                else if($startdate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
                 }
                 if($args[3]['order_id'] != "")
                 {
@@ -1005,6 +1053,14 @@
                 if($startdate != "" && $enddate != "" ){
                     $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
                 }
+                else if($startdate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                }
                 if($args[4]['order_id'] != "")
                 {
                     $cs_id = $args[4]['order_id'];
@@ -1051,6 +1107,14 @@
                 $enddate = $args[4]['enddate'];
                 if($startdate != "" && $enddate != "" ){
                     $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
+                }
+                else if($startdate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
+                }
+                else if($enddate != "")
+                {
+                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
                 }
                 if($args[4]['order_id'] != "")
                 {
@@ -1772,10 +1836,10 @@
                $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
             }else if(property_exists($param,'startdate')){
                 $startdate = $param->startdate;
-                $sqlone.= " and cs_belong_create_time >='$startdate'";
+                $sqlone.= " and cs_belong_create_time ='$startdate'";
             }else if(property_exists($param,'enddate')){
                 $enddate = $param->enddate;
-                $sqlone.= " and cs_belong_create_time <='$enddate'";
+                $sqlone.= " and cs_belong_create_time ='$enddate'";
             }
 
             if(property_exists($param,'departname')){
@@ -2067,10 +2131,10 @@
                $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
             }else if(property_exists($param,'startdate')){
                     $startdate = $param->startdate;
-                    $sqlone.= " and cs_belong_create_time >='$startdate'";
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
             }else if(property_exists($param,'enddate')){
                     $enddate = $param->enddate;
-                    $sqlone.= " and cs_belong_create_time <='$enddate'";
+                    $sqlone.= " and cs_belong_create_time ='$enddate'";
             }
 
             if(property_exists($param,'departname')){
@@ -2148,7 +2212,11 @@
                 }
 
                 $listobjone = Db::query($sqltwo);
-                $tableobj[$i]['unc_productlist'] = $listobjone;
+                if(empty($listobjone)){
+                    $tableobj[$i]['unc_productlist'] = [];
+                }else{
+                    $tableobj[$i]['unc_productlist'] = $listobjone;
+                }
                 
                 /*查询非常规单*/
                 if(!property_exists($param,'customproduct')){
@@ -2184,24 +2252,31 @@
                     }
 
                     $listobjtwo = Db::query($sqlthree);
-                    $tableobj[$i]['ofg_productlist'] = $listobjtwo;
-
-                    if((empty($listobjone))&&(empty($listobjtwo))){
-                        $tableobj[$i]  = null;
-                    }
-                }else{
-                    if(empty($listobjone)){
-                        $tableobj[$i]  = null;
+                    if(empty($listobjtwo)){
+                        $tableobj[$i]['ofg_productlist'] = [];
                     }else{
-                        $tableobj[$i]['ofg_productlist']= [];
-                     }
+                        $tableobj[$i]['ofg_productlist'] = $listobjtwo;
+                    }
+
+                    if((empty($listobjtwo))&&(empty($listobjone))){
+                        if((property_exists($param,'productclass'))||(property_exists($param,'brand'))||(property_exists($param,'producttype'))||(property_exists($param,'productarea'))){
+                            $tableobj[$i] = null;
+                        }
+                    }
+                    
+                }else{
+                    /*只查非常规的*/
+                    $tableobj[$i]['ofg_productlist'] = [];
+                    if(empty($listobjone)){
+                        $tableobj[$i] = null;
+                    }
                 }
             }
 
-            /*删除数组中空值*/
+            //删除数组中空值
             $tableobj = array_filter($tableobj);
 
-            // /*单独查询发货日期*/
+            /*单独查询发货日期*/
             if(count($tableobj) > 0){
                 for($i=0; $i < count($tableobj); $i++){
                     $cs_id = $tableobj[$i]['cs_id'];
@@ -2210,6 +2285,7 @@
                     $tableobj[$i]['logistic_date'] = $dateobj;
                 }
             }
+
             /*统计出缺货，产品分类，非常规数据*/
             for($i = 0 ; $i < count($tableobj);$i++){
                 /*公共广播，会议等产品数量*/
@@ -2301,8 +2377,7 @@
                 $tableobj[$i]['unc_networksoft_num'] = $unc_networksoft_num;
                 $tableobj[$i]['unc_interlligencesoft_num'] = $unc_interlligencesoft_num;
 
-
-                /*发货日期*/
+                // /*发货日期*/
                 $logistic_date = $tableobj[$i]['logistic_date'];
                 $delivery_logistic_date = "";
                 for($l = 0 ; $l < count($logistic_date) ; $l++){
@@ -2310,7 +2385,6 @@
                 }
                 $tableobj[$i]['delivery_logistic_date'] = $delivery_logistic_date;
             }
-
             return $tableobj;
         }
 
