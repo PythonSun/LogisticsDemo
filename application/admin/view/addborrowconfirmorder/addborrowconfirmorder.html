@@ -425,7 +425,7 @@
     var isloading = true;
     var delrowid = new Array();
     var complete_date = "2000-01-01 00:00:00";
-    var cs_info_type = 1; //订单类型
+    var cs_info_type = 2; //订单类型
     var user_info =null;//只有当经理登陆使用到
     //保存修改时根据Cs_id获取的数据
     var  editOrderData= [];
@@ -862,6 +862,12 @@
             var dd = getUncofgInfoUI();
             console.log('+++++++++弹窗前++++++++++++++');
             console.log(dd);
+            var url = '';
+            if(current_user_type == 0){
+                url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + 0 + "&cs_id=" + editOrderData['cs_id'];
+            }else {
+                url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + 1;
+            }
             top.layer.open({
                 type:2,
                 title:'查看非定型产品订货单',
@@ -869,7 +875,7 @@
                 shade: [0.7, '#393D49'],
                 skin: 'layui-layer-molv',
                 maxmin:true,
-                content:"{:url('admin/uncofginfo/uncofginfo')}?type=0",
+                content:url,
                 btn:['退出'],
                 yes:function (index,layero) {
                     top.layer.close(index);
