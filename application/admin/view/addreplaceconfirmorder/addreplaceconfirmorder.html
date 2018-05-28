@@ -1416,6 +1416,7 @@
                         order_goods_delete_row:delrowid,} ,
                     type: 'POST',
                     dataType: 'json',
+                    async:false,
                     success: function(e) {
                         if(e){
                             console.log('订单添加成功！');
@@ -1486,6 +1487,7 @@
                     } ,
                     type: 'POST',
                     dataType: 'json',
+                    async:false,
                     success: function(e) {
                         if(e){
                             console.log('订单添加成功！');
@@ -1530,8 +1532,14 @@
                 departExamine['cs_id'] = editOrderData['depart_examine']['cs_id'];
                 departExamine['submit_user_id'] = editOrderData['depart_examine']['submit_user_id'];
                 cs_examine[0] = departExamine;
-                jq.post("{:url('admin/Addreplaceconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
-                    console.log(result);
+                jq.ajax({
+                    type : "post",
+                    url : "{:url('admin/Addreplaceconfirmorder/deliverorder')}",
+                    data : {param:cs_examine},
+                    async : false,
+                    success : function(result){
+                        console.log(result);
+                    }
                 });
                 console.log(cs_examine);
                 return true;
@@ -1570,8 +1578,14 @@
                 companyExamine['cs_id'] = editOrderData['company_examine']['cs_id'];
                 companyExamine['submit_user_id'] = editOrderData['company_examine']['submit_user_id'];
                 cs_examine[0] = companyExamine;
-                jq.post("{:url('admin/Addreplaceconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
-                    console.log(result);
+                jq.ajax({
+                    type : "post",
+                    url : "{:url('admin/Addreplaceconfirmorder/deliverorder')}",
+                    data : {param:cs_examine},
+                    async : false,
+                    success : function(result){
+                        console.log(result);
+                    }
                 });
                 console.log(cs_examine);
                 return true;
@@ -1609,8 +1623,14 @@
                 financeExamine['cs_id'] = editOrderData['finance_examine']['cs_id'];
                 financeExamine['submit_user_id'] = editOrderData['finance_examine']['submit_user_id'];
                 cs_examine[0] = financeExamine;
-                jq.post("{:url('admin/Addreplaceconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
-                    console.log(result);
+                jq.ajax({
+                    type : "post",
+                    url : "{:url('admin/Addreplaceconfirmorder/deliverorder')}",
+                    data : {param:cs_examine},
+                    async : false,
+                    success : function(result){
+                        console.log(result);
+                    }
                 });
                 return true;
             }
