@@ -86,7 +86,7 @@ class Addreturnconfirmorder extends Controller
             $userinfo['organize_id'] = $ret[0]['parent_id'];
         $userinfo['phone'] =$organizeid['phone'];
         $this->assign("userinfo", json_encode($userinfo));
-        return $this->fetch('addreplaceconfirmorder');
+        return $this->fetch('addreturnconfirmorder');
     }
     /**新增订单（包含审批 清单）**/
     public function addreturnorder()
