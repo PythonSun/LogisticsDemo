@@ -1795,10 +1795,10 @@
                $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
             }else if(property_exists($param,'startdate')){
                 $startdate = $param->startdate;
-                $sqlone.= " and cs_belong_create_time >='$startdate'";
+                $sqlone.= " and cs_belong_create_time ='$startdate'";
             }else if(property_exists($param,'enddate')){
                 $enddate = $param->enddate;
-                $sqlone.= " and cs_belong_create_time <='$enddate'";
+                $sqlone.= " and cs_belong_create_time ='$enddate'";
             }
 
             if(property_exists($param,'departname')){
@@ -2090,10 +2090,10 @@
                $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
             }else if(property_exists($param,'startdate')){
                     $startdate = $param->startdate;
-                    $sqlone.= " and cs_belong_create_time >='$startdate'";
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
             }else if(property_exists($param,'enddate')){
                     $enddate = $param->enddate;
-                    $sqlone.= " and cs_belong_create_time <='$enddate'";
+                    $sqlone.= " and cs_belong_create_time ='$enddate'";
             }
 
             if(property_exists($param,'departname')){
