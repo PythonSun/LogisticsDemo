@@ -18,6 +18,7 @@
 		</div>
 		<script src="/static/layui/layui.js"></script>
 		<script type="text/javascript">
+            var current_user_type = 1;
 			layui.use(['layer','jquery','laydate','form','table'],function(){
 				var form = layui.form ,layer = layui.layer,jq = layui.jquery,laydate = layui.laydate,table = layui.table;
 
@@ -29,7 +30,9 @@
 				laydate.render({
 				    elem: '#enddate'
 				});
-
+                jq(document).ready(function () {
+                    current_user_type = "<?php echo $current_user_type?>";
+                });
 				/*监听查询按钮*/
 				form.on('submit(query)',function(data){
 					var queryInfo = data.field;
@@ -52,7 +55,7 @@
 				    ,url:"{:url('admin/approvealternativeconfirmorder/getexamineorder')}"     //动态获取数据
 				    ,cols: [[
 				        {field:'serial_number',title:'序号',width: 80, sort: true}
-                        ,{field: 'write_date', title: '下单日期', width: 150, sort: true}
+                        ,{field: 'cs_belong_create_time', title: '下单日期', width: 150, sort: true}
                         ,{field: 'cs_id', title: '流水号', minWidth: 150}
                         ,{field: 'receiver_name', title: '收件人', minWidth: 100}
                         ,{field: 'cs_info_state', title: '状态', minWidth: 100}
@@ -74,11 +77,130 @@
 				/*监听工具条*/
 				table.on('tool(alternativeorder)', function(obj){
 				    var data = obj.data;
-				    if(obj.event === 'detail'){
-				    	layer.msg('下单日期：'+ data.date + ' 的查看操作');
-				    }
+                    if(obj.event === 'detail'){
+                        if(current_user_type == 5)
+                        {
+                            console.log(data);
+                            if(data['complete_date'] == '' || data['complete_date'] == '2000-01-01'||data['complete_date'] == '2000-01-01 00:00:00')
+                            {
+                                logisticFirstEdit(data);
+                            }
+                            else
+                            {
+                                logisticEdit(data);
+                            }
+                        }
+                        else
+                        {
+                            top.layer.open({
+                                type: 2,
+                                title: [
+                                    '审批更换确认单',
+                                    'background-color:#636363; color:#fff;'
+                                ],
+                                area: ['90%', '90%'],
+                                shade: 0.9,
+                                maxmin: false,
+                                content: "{:url('admin/Addalternativeconfirmorder/editalternativeconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
+                                btn: ['退回', '提交','取消'],
+                                btnAlign: 'c',
+                                async:false,
+                                yes: function (index,layero) {
+                                    var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                                    var result = iframeWin.returnOrder();
+                                    if(result == false)
+                                        return false;
+                                    layui.table.reload('querytable', {
+                                        page: {
+                                            curr: 1
+                                        }
+                                    });
+                                    top.layer.closeAll();
+                                },
+                                btn2: function (index,layero) {
+                                    var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                                    var result = iframeWin.editDeliver();
+                                    if(result == false)
+                                        return false;
+                                    table.reload('querytable', {
+                                        page: {
+                                            curr: 1
+                                        }
+                                    });
+                                    top.layer.closeAll();
+                                },
+                                btn3:function () {
+                                    top.layer.closeAll();
+                                }
+                            });
+                        }
+                    }
 			  	});
 			});
+            //物流首次编辑
+            function logisticFirstEdit(data) {
+                top.layer.open({
+                    type: 2,
+                    title: [
+                        '审批更换确认单',
+                        'background-color:#636363; color:#fff;'
+                    ],
+                    area: ['90%', '90%'],
+                    shade: 0.9,
+                    maxmin: false,
+                    content: "{:url('admin/Addalternativeconfirmorder/editalternativeconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
+                    btn: [ '确认接收','取消'],
+                    btnAlign: 'c',
+                    async:false,
+                    yes: function (index,layero) {
+                        var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                        var result = iframeWin.logisticSave();
+                        if(result == false)
+                            return false;
+                        layui.table.reload('querytable', {
+                            page: {
+                                curr: 1
+                            }
+                        });
+                        top.layer.closeAll();
+                    },
+                    btn2:function () {
+                        top.layer.closeAll();
+                    }
+                });
+            }
+            //物流编辑
+            function logisticEdit(data) {
+                top.layer.open({
+                    type: 2,
+                    title: [
+                        '审批更换确认单',
+                        'background-color:#3B3B3B; color:#fff;'
+                    ],
+                    area: ['90%', '90%'],
+                    shade: 0.9,
+                    maxmin: false,
+                    content: "{:url('admin/Addalternativeconfirmorder/editalternativeconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
+                    btn: [ '保存','取消'],
+                    btnAlign: 'c',
+                    async:false,
+                    yes: function (index,layero) {
+                        var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                        var result = iframeWin.logisticSave();
+                        if(result == false)
+                            return false;
+                        layui.table.reload('querytable', {
+                            page: {
+                                curr: 1
+                            }
+                        });
+                        top.layer.closeAll();
+                    },
+                    btn2:function () {
+                        top.layer.closeAll();
+                    }
+                });
+            }
 		</script>
 	</body>
 </html>
