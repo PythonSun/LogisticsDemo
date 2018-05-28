@@ -95,7 +95,6 @@ class Addborrowconfirmorder extends Controller
         $cs_info = $_POST['cs_info'];
         $custom_info = $_POST['custom_info'];
         $delivery_info = $_POST['delivery_info'];
-        $return_info = $_POST['return_info'];
         $cs_belong = $_POST['cs_belong'];
         $cs_examine = $_POST['cs_examine'];
 
@@ -137,12 +136,6 @@ class Addborrowconfirmorder extends Controller
             return false;
         }
 
-        $return_info_id = \app\index\model\Admin::getmaxtableidretid('return_info', 'return_info_id');
-        $return_info['return_info_id'] = $return_info_id+1;
-        $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
-        if (empty($ret_return_info)) {
-            return false;
-        }
         if(array_key_exists('order_goods_manager',$_POST)){
             $order_goods_manager = $_POST['order_goods_manager'];
             $num = count($order_goods_manager);
@@ -206,7 +199,6 @@ class Addborrowconfirmorder extends Controller
         \app\index\model\Admin::updatepaymentinfo($payment_info);
 
 
-        $cs_info['return_info_id'] = $return_info_id +1;
         $cs_info['custom_info_id'] = $custom_info_id +1;
         $cs_info['delivery_info_id'] = $delivery_info_id +1;
         $cs_info['payment_info_id'] = $payment_info_id +1;
@@ -284,12 +276,6 @@ class Addborrowconfirmorder extends Controller
         //delivery_info
         $delivery_info = $_POST['delivery_info'];
         $ret_delivery_info = \app\index\model\Admin::updatedeliveryinfo($delivery_info);
-
-
-        //return_info
-        $return_info = $_POST['return_info'];
-        $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
-
 
         //order_goods_manager  order_goods_logistics
         if(array_key_exists('order_goods_manager',$_POST)){
@@ -382,11 +368,6 @@ class Addborrowconfirmorder extends Controller
         //delivery_info
         $delivery_info = $_POST['delivery_info'];
         $ret_delivery_info = \app\index\model\Admin::updatedeliveryinfo($delivery_info);
-
-
-        //return_info
-        $return_info = $_POST['return_info'];
-        $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
 
         //order_goods_manager  order_goods_logistics
         if(array_key_exists('order_goods_manager',$_POST)){

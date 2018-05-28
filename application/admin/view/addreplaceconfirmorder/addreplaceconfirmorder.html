@@ -1295,6 +1295,7 @@
                     rowdata.order_goods_manager_id = row.attr('order_goods_manager_id');
                     rowdata.ogl_id = row.attr('ogl_id');
                     data[index] = rowdata;
+                    index++;
                 }
                 return data;
             }
@@ -1439,7 +1440,7 @@
                 }
                 var jq = layui.jquery;
 
-                var cs_info = getCsInfo(data,true,true,data['cs_info_state']);
+                var cs_info = getCsInfo(data,true,true,data['cs_info_state']== '');
                 console.log("以下确认单信息：");
                 console.log(cs_info);
                 var custom_info = getCustomInfo(data,true);

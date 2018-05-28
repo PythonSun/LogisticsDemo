@@ -478,7 +478,7 @@
             jq('#save').addClass('hide');
             jq('#deliver').addClass('hide');
             jq('#cancel').addClass('hide');
-            jq.post("{:url('admin/addreplaceconfirmorder/getcsallinfo')}",{'param':cs_id},function (data) {
+            jq.post("{:url('admin/Addborrowconfirmorder/getcsallinfo')}",{'param':cs_id},function (data) {
                 console.log(data);
                 document.getElementById('cs_belong_create_time').value = data['cs_belong_create_time'];
                 document.getElementById('transfer_fee_mode').value = data['transfer_fee_mode'];
@@ -540,12 +540,6 @@
                 jq('#order_delivery_require').val( data['order_delivery_require']);
                 editOrderData['delivery_info_id'] = data['delivery_info_id'];
                 //return_info
-                jq('#return_info_receiver_name').val( data['return_info_receiver_name']);
-                jq('#return_info_receiver_phone').val( data['return_info_receiver_phone']);
-                jq('#return_info_goods_yard_name').val( data['return_info_goods_yard_name']);
-                jq('#return_info_goods_yard_phone').val( data['return_info_goods_yard_phone']);
-                jq('#return_order_num').val(data['return_order_num']);
-                jq('#return_info_receiver_address').val(data['return_info_receiver_address']);
                 editOrderData['return_info_id'] = data['return_info_id'];
                 //payment_info
                 jq("input[name='is_paid']").each(function(){
@@ -646,7 +640,7 @@
             if (data.value == ""){
                 return;
             }
-            jq.post("{:url('admin/addreplaceconfirmorder/getdepartmentinfo')}",{'param':data.value},function (data) {
+            jq.post("{:url('admin/Addborrowconfirmorder/getdepartmentinfo')}",{'param':data.value},function (data) {
                 //console.log(data);
                 for (var item in data){
                     jq('#build_department_id').append("<option value='" + data[item]['organize_id'] + "'>" + data[item]['organize_name'] + "</option>>");
@@ -659,7 +653,7 @@
             jq('#build_user_id').empty();
             jq('#build_user_id').append("<option value='' selected>请选择</option>");
             jq('#build_user_phone').val("");
-            jq.post("{:url('admin/addreplaceconfirmorder/getdspmanagerinfo')}",{'param':data.value},function (data) {
+            jq.post("{:url('admin/Addborrowconfirmorder/getdspmanagerinfo')}",{'param':data.value},function (data) {
                 for (var item in data){
                     jq('#build_user_id').append("<option value='" + data[item]['user_id'] + "' phone='" + data[item]['phone'] + "'>" + data[item]['fullname'] + "</option>>");
                 }
@@ -1212,10 +1206,6 @@
         console.log("以下发货信息：");
         console.log(delivery_info);
 
-        var return_info = getReturnInfo(data,false);
-        console.log("以下返货信息：");
-        console.log(return_info);
-
         var cs_belong = getCsBelong(data,false);
         console.log("以下订单所属信息：");
         console.log(cs_belong);
@@ -1238,12 +1228,11 @@
         console.log(order_goods_manager);
 
         jq.ajax({
-            url: "{:url('admin/addreplaceconfirmorder/addconfirmorder')}",//php文件路径
+            url: "{:url('admin/Addborrowconfirmorder/addborroworder')}",//php文件路径
             data: {
                 cs_info:cs_info,
                 custom_info:custom_info,
                 delivery_info:delivery_info,
-                return_info:return_info,
                 cs_belong:cs_belong,
                 order_goods_manager:order_goods_manager,
                 cs_examine:cs_examine,
@@ -1254,7 +1243,7 @@
                 if(e){
                     console.log('订单添加成功！');
                     console.log(e);
-                    location.href = "{:url('admin/addreplaceconfirmorder/addreplaceconfirmorder')}";
+                    location.href = "{:url('admin/Addborrowconfirmorder/Addborrowconfirmorder')}";
                 }else if(!e){
                     console.log('订单提交失败！');
                     console.log(e);
@@ -1384,9 +1373,6 @@
         console.log("以下发货信息：");
         console.log(delivery_info);
 
-        var return_info = getReturnInfo(data,true);
-        console.log("以下返货信息：");
-        console.log(return_info);
 
         var cs_belong = getCsBelong(data,true);
         console.log("以下订单所属信息：");
@@ -1404,11 +1390,10 @@
         console.log(order_goods_manager);
 
         jq.ajax({
-            url: "{:url('admin/addreplaceconfirmorder/managereditanddeliverorder')}",
+            url: "{:url('admin/Addborrowconfirmorder/managereditanddeliverorder')}",
             data: {cs_info:cs_info,
                 custom_info:custom_info,
                 delivery_info:delivery_info,
-                return_info:return_info,
                 cs_belong:cs_belong,
                 order_goods_manager:order_goods_manager,
                 cs_examine:cs_examine,
@@ -1449,10 +1434,6 @@
         console.log("以下发货信息：");
         console.log(delivery_info);
 
-        var return_info =getReturnInfo(data,true);
-        console.log("以下返货信息：");
-        console.log(return_info);
-
         var cs_belong = getCsBelong(data,true);
         console.log("以下订单所属信息：");
         console.log(cs_belong);
@@ -1473,11 +1454,10 @@
         console.log(order_goods_manager);
 
         jq.ajax({
-            url: "{:url('admin/addreplaceconfirmorder/managereditandsaveorder')}",
+            url: "{:url('admin/Addborrowconfirmorder/managereditandsaveorder')}",
             data: {cs_info:cs_info,
                 custom_info:custom_info,
                 delivery_info:delivery_info,
-                return_info:return_info,
                 cs_belong:cs_belong,
                 order_goods_manager:order_goods_manager,
                 cs_examine:cs_examine,
@@ -1529,7 +1509,7 @@
         departExamine['cs_id'] = editOrderData['depart_examine']['cs_id'];
         departExamine['submit_user_id'] = editOrderData['depart_examine']['submit_user_id'];
         cs_examine[0] = departExamine;
-        jq.post("{:url('admin/Addreplaceconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
+        jq.post("{:url('admin/Addborrowconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
             console.log(result);
         });
         console.log(cs_examine);
@@ -1569,7 +1549,7 @@
         companyExamine['cs_id'] = editOrderData['company_examine']['cs_id'];
         companyExamine['submit_user_id'] = editOrderData['company_examine']['submit_user_id'];
         cs_examine[0] = companyExamine;
-        jq.post("{:url('admin/Addreplaceconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
+        jq.post("{:url('admin/Addborrowconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
             console.log(result);
         });
         console.log(cs_examine);
@@ -1608,7 +1588,7 @@
         financeExamine['cs_id'] = editOrderData['finance_examine']['cs_id'];
         financeExamine['submit_user_id'] = editOrderData['finance_examine']['submit_user_id'];
         cs_examine[0] = financeExamine;
-        jq.post("{:url('admin/Addreplaceconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
+        jq.post("{:url('admin/Addborrowconfirmorder/deliverorder')}",{'param':cs_examine},function (result) {
             console.log(result);
         });
         return true;
@@ -1683,7 +1663,7 @@
         console.log(cs_examine);
 
         jq.ajax({
-            url: "{:url('admin/addreplaceconfirmorder/logisticeditandsaveorder')}",
+            url: "{:url('admin/Addborrowconfirmorder/logisticeditandsaveorder')}",
             data: {cs_info:cs_info,
                 order_goods_manager:order_goods_manager,
                 payment_info:payment_info,
@@ -2091,19 +2071,6 @@
         info.has_contract = data['has_contract'];
         info.transfer_fee_mode = data['transfer_fee_mode'];//freightway 运费方式
         info.order_delivery_require = data['order_delivery_require'];
-        return info;
-    }
-
-    function getReturnInfo(data,isEdit) {
-
-        var info = new Object();
-        info.return_info_id = editOrderData['return_info_id'];
-        info.return_info_receiver_name = data['return_info_receiver_name'];
-        info.return_info_receiver_phone = data['return_info_receiver_phone'];
-        info.return_info_goods_yard_name = data['return_info_goods_yard_name'];
-        info.return_info_goods_yard_phone = data['return_info_goods_yard_phone'];
-        info.return_order_num = data['return_order_num'];
-        info.return_info_receiver_address = data['return_info_receiver_address'];
         return info;
     }
 

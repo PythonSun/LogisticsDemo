@@ -16,7 +16,7 @@
 <body >
 <form class="layui-form layui-form-pane" action="">
     <div class="toph2">
-        <h2>待用确认单</h2>
+        <h2>代用确认单</h2>
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
@@ -1714,10 +1714,7 @@
             return false;
         }
 
-        var curdate = new Date();
-        var cs_id = [];
         var cs_examine = [];
-
         if(current_user_type == 2)
         {
             if(data['departmentdirectoradvice'] != "不同意")
@@ -1760,23 +1757,7 @@
         cs_examine.push(finance_examine);
 
         console.log(cs_examine);
-        var cs_info = new Object();
-        cs_info.custom_info_id = editOrderData['custom_info_id'];
-        cs_info.delivery_info_id = editOrderData['delivery_info_id'];
-        cs_info.return_info_id = editOrderData['return_info_id'];
-        cs_info.payment_info_id = editOrderData['payment_info_id'];
-        cs_info.cur_process_user_id = editOrderData['cur_process_user_id'];                      // 当前处理用户id
-        cs_info.pre_process_user_id = editOrderData['pre_process_user_id'];
-        cs_info.cs_id = editOrderData['cs_id'];
-        cs_info.complete_date = editOrderData['complete_date'];
-        cs_info.product_number = editOrderData['product_number'];
-        cs_info.cs_examine_ids = editOrderData['cs_examine_ids'];
-        cs_info.write_date = editOrderData['write_date'];
-        cs_info.cs_info_state = 5;
-        cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
-        cs_info.can_edit = 1;                              //0 不可编辑
-        cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
-        cs_info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
+        var cs_info = getCsInfo(data,true,true,5);
         jq.post("{:url('admin/Addalternativeconfirmorder/returnorder')}",{'cs_info':cs_info,'cs_examine':cs_examine},function (result) {
             console.log(result);
         });
@@ -2040,10 +2021,10 @@
             rowdata.order_goods_manager_id = row.attr('order_goods_manager_id');
             rowdata.ogl_id = row.attr('ogl_id');
             data[index] = rowdata;
+            index++;
         }
         return data;
     }
-
     function getCsInfo(data,isSave,isEdit,csState) {
         console.log(data);
         var info = new Object();
