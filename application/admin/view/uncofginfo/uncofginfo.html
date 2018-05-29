@@ -117,12 +117,18 @@
             </div>
         </form>
         <script type="text/javascript" src="/static/layui/layui.js"></script>
+        <script type="text/javascript" src="/static/js/commondetect.js"></script>
         <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript">
             var uoi_id = "";
             var delrowid = new Array();
             var type = 1;     //当前页面模式 说明：0:不可编辑 1：编辑
             var cs_id = "";   //当前非定型订单的流水号
+
+            //禁止backspace键
+            document.onkeypress = forbidBackSpace;
+            document.onkeydown = forbidBackSpace;
+
             $(document).ready(function() {
                 var layer = layui.layer;
                 type = {$type};

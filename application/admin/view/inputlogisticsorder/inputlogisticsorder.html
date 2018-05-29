@@ -69,7 +69,13 @@
             <a class="layui-btn layui-btn-xs" lay-event="sendmessage">发送短信</a>
         </script>
         <script type="text/javascript" src="/static/layui/layui.js"></script>
+        <script type="text/javascript" src="/static/js/commondetect.js"></script>
         <script type="text/javascript">
+
+            //禁止backspace键
+            document.onkeypress = forbidBackSpace;
+            document.onkeydown = forbidBackSpace;
+
             layui.use(['form', 'laydate', 'jquery', 'layer', 'table'], function () {
                 var form = layui.form,
                     laydate = layui.laydate,

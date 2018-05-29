@@ -56,7 +56,13 @@
             </div>
         </form>
         <script type="text/javascript" src="/static/layui/layui.js"></script>
+        <script type="text/javascript" src="/static/js/commondetect.js"></script>
         <script type="text/javascript">
+
+            //禁止backspace键
+            document.onkeypress = forbidBackSpace;
+            document.onkeydown = forbidBackSpace;
+
             layui.use(['form', 'laydate', 'jquery', 'layer'], function () {
                 var form = layui.form,
                     laydate = layui.laydate,

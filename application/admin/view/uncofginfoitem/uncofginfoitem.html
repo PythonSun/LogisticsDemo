@@ -114,6 +114,11 @@
 <script type="text/javascript" src="/static/UI-jquery/jquery-ui.js" ></script>
 <script type="text/javascript">
     var uod_id = "";
+
+    //禁止backspace键
+    document.onkeypress = forbidBackSpace;
+    document.onkeydown = forbidBackSpace;
+
     layui.use(['form', 'laydate', 'jquery','layer'], function () {
         var form = layui.form,
             laydate = layui.laydate,

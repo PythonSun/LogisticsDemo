@@ -136,6 +136,11 @@
     var type = 0;
     var isExistModel = true;//型号是否存在
     var product_info_id = -1;//型号id
+
+    //禁止backspace键
+    document.onkeypress = forbidBackSpace;
+    document.onkeydown = forbidBackSpace;
+
     layui.use(['form','laydate','jquery','laydate'],function(){
         var form = layui.form,
             laydate = layui.laydate;

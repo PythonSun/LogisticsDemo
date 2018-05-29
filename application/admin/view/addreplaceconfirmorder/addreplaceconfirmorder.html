@@ -436,6 +436,11 @@
             var uncofginfo = null;      //非常规订单数据 包含unc_ofg_info，清单明细：搜索unc_ofg_items，删除表del_unc_ofg_detail_id_arr
             var del_unc_ofg_detail_id_arr = new Array();//删除非定型订单明细id
             var unc_ofg_info_id = 0;
+
+            //禁止backspace键
+            document.onkeypress = forbidBackSpace;
+            document.onkeydown = forbidBackSpace;
+
             layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
                 var form = layui.form,
                     laydate = layui.laydate,

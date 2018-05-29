@@ -92,6 +92,11 @@
     <script type="text/javascript">
         var ogcugi_id = "";
         var cs_id = "";
+
+        //禁止backspace键
+        document.onkeypress = forbidBackSpace;
+        document.onkeydown = forbidBackSpace;
+
         layui.use(['form', 'laydate', 'jquery', 'laydate'], function () {
             var form = layui.form,
                 laydate = layui.laydate,
