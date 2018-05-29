@@ -364,15 +364,15 @@
     </table>
 
     <div class="layui-form-item">
-        <label class="layui-form-label Wheat ">其它说明</label>
-        <div class="layui-input-block">
-            <input type="text" name="order_goods_manager_explain" id="order_goods_manager_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled  " oninput="detectinputtext(this);"> </div>
+        <label class="layui-form-label Wheat " style="width: 150px">总计(不含税)</label>
+        <div class="layui-input-inline">
+            <input type="text" name="order_goods_manager_explain" id="order_goods_manager_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled  " oninput="detectinputfloat(this);"> </div>
     </div>
 
     <div class="layui-form-item">
-        <label class="layui-form-label dark_blue">情况说明</label>
-        <div class="layui-input-block">
-            <input type="text" name="ogl_explain" id="ogl_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input  dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
+        <label class="layui-form-label Wheat" style="width: 150px">总计(含税)</label>
+        <div class="layui-input-inline">
+            <input type="text" name="ogl_explain" id="ogl_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input  Wheat Wheat_disabled" oninput="detectinputfloat(this);"> </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-btn-container">
@@ -389,7 +389,7 @@
     var isloading = true;
     var delrowid = new Array();
     var complete_date = "2000-01-01 00:00:00";
-    var cs_info_type = 2; //订单类型
+    var cs_info_type = 5; //订单类型
     var user_info =null;//只有当经理登陆使用到
     //保存修改时根据Cs_id获取的数据
     var  editOrderData= [];
@@ -660,9 +660,11 @@
                     updateRow(orderItem,true);
                     iframeWin.clear();
                     layer.msg('保存成功！',{icon:1});
+                    calculateTotalPrice();
 
                 },
                 btn2: function () {
+
                 }
             });
             return false;
@@ -694,6 +696,7 @@
                     updateRow(orderItem,false)
 
                     top.layer.close(index);
+                    calculateTotalPrice();
                 },
                 btn2: function () {
                 },
@@ -741,6 +744,7 @@
             for(var i = 1; i <= table.rows.length;i++){
                 jq(table.children[0].children[i].children[0].children[0]).text(i);
             }
+            calculateTotalPrice();
         });
 
         //非定型订单弹窗
@@ -885,6 +889,20 @@
             }
         }
     });
+
+    //算总计
+    function calculateTotalPrice() {
+        var jq = layui.jquery;
+        var total = 0;
+        var mytable = document.getElementById('tableorder');
+        for(var i = 1,rows = mytable.rows.length; i < rows; i++) {
+            var row = jq(mytable.rows[i]);
+
+            total+=parseFloat(row.attr('fault_condition'));
+        }
+        jq('#order_goods_manager_explain').val(total);
+    }
+
     //用户权限设置 屏蔽一些内容
     function userPower() {
         setDisable(true);
@@ -1107,8 +1125,8 @@
         }
         var col_14 = new_tr.insertCell(14);
         col_14.innerHTML = "<td><a>"+ row.ogl_comment +"</a></td>";
-        var col_14 = new_tr.insertCell(15);
-        col_14.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn edit_disabled'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger Wheat_disabled  del_btn del_disabled'>删除</a>" +"</td>";
+        var col_15 = new_tr.insertCell(15);
+        col_15.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn edit_disabled'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger Wheat_disabled  del_btn del_disabled'>删除</a>" +"</td>";
         if(current_user_type == 5){
             jq('.del_disabled').addClass('hide');
         }
@@ -1211,6 +1229,8 @@
             rowdata.back_date = row.attr('back_date');
             rowdata.ogl_product_state = row.attr('ogl_product_state');
             rowdata.bar_code = row.attr('bar_code');
+            rowdata.unit_price = row.attr('unit_price');
+            rowdata.fault_condition = row.attr('fault_condition');
             rowdata.replace_reason = row.attr('replace_reason');
             rowdata.ogl_comment = row.attr('ogl_comment') == undefined?'':row.attr('ogl_comment');
             rowdata.order_goods_manager_id = row.attr('order_goods_manager_id');

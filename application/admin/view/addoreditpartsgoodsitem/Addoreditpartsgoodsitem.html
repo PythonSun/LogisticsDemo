@@ -309,7 +309,7 @@
                 orderItem.ogl_product_state = jq(this).attr('value');
             }
         });
-        orderItem.bar_code = jq('#bar_code').val();
+        orderItem.bar_code = '';
         orderItem.replace_reason = jq('#replace_reason').val();
         orderItem.ogl_comment = jq('#comment').val();
         if(orderItem.model == ''){
