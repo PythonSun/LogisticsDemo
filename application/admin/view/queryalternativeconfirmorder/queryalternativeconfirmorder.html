@@ -29,9 +29,15 @@
 			</script>
 		</div>
 		<script src="/static/layui/layui.js"></script>
+		<script type="text/javascript" src="/static/js/commondetect.js"></script>
 		<script type="text/javascript">
 			var  divHeight,clientHeight;
             var current_user_type = 1;
+
+            //禁止backspace键
+            document.onkeypress = forbidBackSpace;
+            document.onkeydown = forbidBackSpace;
+
 			layui.use(['layer','jquery','laydate','form','table'],function(){
 				var form = layui.form ,layer = layui.layer,jq = layui.jquery,laydate = layui.laydate,table = layui.table;
 
