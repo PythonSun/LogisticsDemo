@@ -10,7 +10,7 @@
 
 </head>
 <body>
-<form class="layui-form layui-form-pane" style="margin-top:40px;">
+<form class="layui-form layui-form-pane" style="margin-top:20px;">
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label Wheat">型号：</label>
@@ -57,8 +57,6 @@
                 </select>
             </div>
         </div>
-
-
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
@@ -73,8 +71,6 @@
                 <input type="text" id="inputunit" name="inputunit" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);">
             </div>
         </div>
-    </div>
-    <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label Wheat">规格：</label>
             <div class="layui-input-inline" >
@@ -87,8 +83,6 @@
                 <input type="text" name="date" id="back_date" autocomplete="on" class="layui-input Wheat Wheat_disabled">
             </div>
         </div>
-    </div>
-    <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label Wheat">条码：</label>
             <div class="layui-input-inline" >
@@ -96,20 +90,18 @@
             </div>
         </div>
     </div>
-    <div class="layui-form-item" style="display: inline-block;">
-        <div class="layui-inline ">
-            <label class="layui-form-label dark_blue">非常规产品：</label>
-            <div class="layui-input-inline dark_blue" >
-                <select id="unc_productid" name="unc_productname" lay-filter="unc_productname" class="dark_blue_disabled">
-                    <option value="" selected>请选择</option>
-                    {volist name="uncproductlist" id="vo1"}
-                    <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>
-                    {/volist}
-                </select>
-            </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label dark_blue" id='unconventionality_products' onmouseenter="tips(this.innerHTML,'#unconventionality_products')">非常规产品：</label>
+        <div class="layui-input-block dark_blue" >
+            <select id="unc_productid" name="unc_productname" lay-filter="unc_productname" class="dark_blue_disabled">
+                <option value="" selected>请选择</option>
+                {volist name="uncproductlist" id="vo1"}
+                <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>
+                {/volist}
+            </select>
         </div>
     </div>
-    <div class="layui-form-item dark_blue" style="display: inline-block;" pane="">
+    <div class="layui-form-item dark_blue" pane="">
         <label class="layui-form-label dark_blue">状态：</label>
         <div class="layui-input-block " >
             <input type="radio" name="inputstate" title="定制" value="定制" class="dark_blue_disabled">
@@ -118,11 +110,9 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label dark_blue">备注：</label>
-            <div class="layui-input-inline" style="max-width:120px">
-                <input type="text" name="comment" id="comment" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputtext(this);">
-            </div>
+        <label class="layui-form-label dark_blue">备注：</label>
+        <div class="layui-input-block">
+            <input type="text" name="comment" id="comment" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputtext(this);">
         </div>
     </div>
 </form>
