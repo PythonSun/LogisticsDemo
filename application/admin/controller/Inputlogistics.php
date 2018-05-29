@@ -16,8 +16,11 @@ class inputlogistics extends Controller {
 		$this -> assign('transfer_order_num', $transfer_order_num);
 		$this -> assign('delivery_date', $delivery_date);
 		$this -> assign('count', $count);
-		return $this -> fetch();
+		return $this -> fetch();		
 	}
-
+	
+	public function helloworld(){
+		return '123';
+	}
 }
 ?>
