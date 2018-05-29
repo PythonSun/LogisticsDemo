@@ -3112,9 +3112,7 @@
                 return $info;
             }
             return null;
-        }
-        
-		
+        }     
 		
 		
         /*cs_product*/
