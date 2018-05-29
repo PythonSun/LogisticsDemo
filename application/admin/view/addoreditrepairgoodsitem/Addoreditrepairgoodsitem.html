@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>新增订单清单</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
     <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
@@ -82,9 +83,9 @@
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label Wheat">归还日期：</label>
+            <label class="layui-form-label Wheat">处理日期：</label>
             <div class="layui-input-inline" >
-                <input type="text" name="date" id="back_date" autocomplete="on" class="layui-input Wheat Wheat_disabled">
+                <input type="text" name="deal_date" id="deal_date" autocomplete="on" class="layui-input Wheat Wheat_disabled">
             </div>
         </div>
     </div>
@@ -93,6 +94,12 @@
             <label class="layui-form-label Wheat">条码：</label>
             <div class="layui-input-inline" >
                 <input type="text" name="bar_code" id="bar_code" class="layui-input Wheat Wheat_disabled">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">故障情况：</label>
+            <div class="layui-input-inline" >
+                <input type="text" name="fault_condition" id="fault_condition" lay-filter="fault_condition" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);">
             </div>
         </div>
     </div>
@@ -112,9 +119,8 @@
     <div class="layui-form-item dark_blue" style="display: inline-block;" pane="">
         <label class="layui-form-label dark_blue">状态：</label>
         <div class="layui-input-block " >
-            <input type="radio" name="inputstate" title="定制" value="定制" class="dark_blue_disabled">
-            <input type="radio" name="inputstate" title="缺货" value="缺货" class="dark_blue_disabled">
-            <input type="radio" name="inputstate" title="已发货" value="已发货" class="dark_blue_disabled">
+            <input type="radio" name="inputstate" title="已更换" value="已更换" class="dark_blue_disabled">
+            <input type="radio" name="inputstate" title="未更换" value="未更换" class="dark_blue_disabled">
         </div>
     </div>
     <div class="layui-form-item">
@@ -142,7 +148,7 @@
         jq = layui.jquery;
 
         laydate.render({
-            elem: '#back_date'
+            elem: '#deal_date'
             ,position: 'fixed'
             ,theme: 'molv'
         });
@@ -159,13 +165,13 @@
             layui.form.render('select');
         })
         form.on('select(type_name)',function(typedata){
-            //jq.post("{:url('admin/addoreditreturngoodsitem/getbrand')}",{})
+            //jq.post("{:url('admin/addoreditrepairgoodsitem/getbrand')}",{})
         })
         //brand_id
         jq("#serachModelinfo").autocomplete({
             source:function(request,response){
                 jq.ajax({
-                    url:"{:url('admin/addoreditreturngoodsitem/serachmodelinfo')}",
+                    url:"{:url('admin/addoreditrepairgoodsitem/serachmodelinfo')}",
                     type:"POST",
                     dataType:"json",
                     data:{serrchText:jq("#serachModelinfo").val()},
@@ -190,7 +196,7 @@
             if(model == '')
                 return ;
             jq.ajax({
-                url: "{:url('admin/addoreditreturngoodsitem/coldserachmodelinfo')}",
+                url: "{:url('admin/addoreditrepairgoodsitem/coldserachmodelinfo')}",
                 type: "POST",
                 dataType: "json",
                 async: false,
@@ -261,10 +267,10 @@
         orderItem.unc_product_id = unc_productid;
 
         orderItem.specification = jq('#specification').val();
-        orderItem.back_date = jq('#back_date').val() ;
-
-        if(orderItem.back_date == ''){
-            layer.msg('请输入归还日期',{icon:2});
+        orderItem.back_date = '2000-01-01' ;
+        orderItem.deal_date = jq('#deal_date').val() ;
+        if(orderItem.deal_date == ''){
+            layer.msg('请输入处理日期',{icon:2});
             return;
         }
         orderItem.ogl_product_state = "";
@@ -275,14 +281,15 @@
             }
         });
         orderItem.bar_code = jq('#bar_code').val();
-        orderItem.replace_reason = "";
+        orderItem.replace_reason = '';
+        orderItem.fault_condition = jq('#fault_condition').val();
         orderItem.ogl_comment = jq('#comment').val();
         if(orderItem.model == ''){
             layer.msg('请输入数量',{icon:2});
             return;
         }
         orderItem.product_info_name = jq('#product_info_name').val();
-        //+判断 型号是否存在，不存在禁止录入
+        //+判断 型号是否存在，不存在增加
         if(isExistModel == false)
         {
             var model_info = {};
@@ -292,7 +299,7 @@
             model_info['brand_id'] = orderItem.brand_id;
             model_info['place_id'] = orderItem.place_id;
             jq.ajax({
-                url:"{:url('admin/addoreditborrowgoodsitem/addmodel')}",
+                url:"{:url('admin/addoreditrepairgoodsitem/addmodel')}",
                 type:"POST",
                 dataType:"json",
                 async:false,
@@ -338,9 +345,10 @@
         jq('#inputunit').attr('value',data['unit']);
         document.getElementById('unc_productid').value = data['unc_product_id'];
         jq('#specification').attr('value',data['specification']);
-        if(data['back_date'] != '')
-            jq('#back_date').attr('value',data['back_date']);
+        if(data['deal_date'] != '')
+            jq('#deal_date').attr('value',data['deal_date']);
         jq('#bar_code').attr('value',data['bar_code']);
+        jq('#fault_condition').attr('value',data['fault_condition']);
         jq('#comment').attr('value',data['ogl_comment']);
         jq("input[name='inputstate']").each(function(){
             if(jq(this).attr('value') == data['ogl_product_state']){
@@ -365,8 +373,9 @@
         jq('#inputunit').val("");
         jq('#unc_productid').val("");
         jq('#specification').val("");
-        jq('#back_date').val("");
+        jq('#deal_date').val("");
         jq('#bar_code').val("");
+        jq('#fault_condition').val("");
         jq('#comment').val("");
 
         jq("input[name='inputstate']").each(function(){

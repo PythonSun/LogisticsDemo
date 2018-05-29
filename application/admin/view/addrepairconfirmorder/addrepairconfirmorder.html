@@ -1,529 +1,2247 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title></title>
-        <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css"> 
-    	<link rel="stylesheet" type="text/css" href="/static/css/public.css">
-    </head>
-    <body>
-        <form class="layui-form layui-form-pane" action="">
-        	<div class="toph2">
-            	<h2>维修确认单</h2>
-           	</div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label light_gray">日期</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="date" id="date1" autocomplete="on" class="layui-input light_gray"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label light_gray">接收时间</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input light_gray"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label light_gray">流水号</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="swiftnumber" id="swiftnumber" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label dark_blue">状态</label>
-                    <div class="layui-input-inline dark_blue">
-                        <select name="status">
-                            <option value="" disabled="" selected="">选择</option>
-                            <option value="已完成">已完成</option>
-                            <option value="待处理">待处理</option>
-                            <option value="处理中">处理中</option>
-                            <option value="备货">备货</option>
-                            <option value="取消">取消</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label light_gray">部门编号</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="departmentnumber" id="departmentnumber" autocomplete="on" class="layui-input light_gray"> </div>
-                </div>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/public.css"> </head>
+<style>
+    .btnPicLightBg{
+        background: #8D8D8D;
+    }
+    .hide{
+        display: none;
+    }
+</style>
+<body >
+<form class="layui-form layui-form-pane" action="">
+    <div class="toph2">
+        <h2>维修确认单</h2>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label light_gray">日期</label>
+            <div class="layui-input-inline">
+                <input type="text" disabled name="cs_belong_create_time" id="cs_belong_create_time" autocomplete="on" class="layui-input light_gray" value="{$date}"> </div>
+        </div>
+        <div class="layui-inline ">
+            <label class="layui-form-label dark_blue">接收时间</label>
+            <div class="layui-input-inline ">
+                <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input light_gray dark_blue_disabled"> </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label light_gray">流水号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="cs_id" id="cs_id" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray" disabled> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label dark_blue">状态</label>
+            <div class="layui-input-inline dark_blue ">
+                <select name="cs_info_state" id = "cs_info_state" lay-filter="cs_info_state" class="dark_blue_disabled">
+                    <option value=""  >选择</option>
+                    <option value="1" selected="">处理中</option>
+                    <option value="2">已完成</option>
+                    <option value="3">取消</option>
+                    <option value="4">备货</option>
+                    <option value="5">退回</option>
+                </select>
             </div>
-            <h3>物流信息</h3>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">发货日期</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="deliverydate" id="date3" autocomplete="on" class="layui-input Wheat"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">货场</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="goodsyard" id="goodsyard" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">物流单号</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="trackingnumber" id="trackingnumber" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputdataletter(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">件数</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="packagesnumber" id="packagesnumber" id lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>
-                </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label light_gray">部门编号</label>
+            <div class="layui-input-inline">
+                <input type="text" disabled name="department_number" id="department_number" autocomplete="on" class="layui-input light_gray "  value="{$depid}"> </div>
+        </div>
+    </div>
+    <h3>物流信息</h3>
+    <div class="layui-form-item">
+        <table class="layui-table" id="tablelogistics">
+            <colgroup>
+            </colgroup>
+            <thead>
+            <tr class="light_gray">
+                <th>序号</th>
+                <th>发货日期</th>
+                <th>货场</th>
+                <th>物流单号</th>
+                <th>件数</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">总部门：</label>
+            <div class="layui-input-inline Wheat">
+                <select id="build_organize_id" name="build_organize_id" lay-filter="build_organize_id" class="Wheat_disabled">
+                    <option value="" selected>请选择</option>
+                    {volist name="companylist" id="vo"}
+                    <option value="{$vo.organize_id}">{$vo.organize_name}</option>
+                    {/volist}
+                </select>
             </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">部门</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="department" id="department" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">区域经理</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="areamanager" id="areamanager" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat label_change">区域经理电话</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="areamanagertel" id="areamanagertel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">子部门：</label>
+            <div class="layui-input-inline Wheat">
+                <select id="build_department_id" name="build_department_id" lay-filter="build_department_id" class="Wheat_disabled">
+                    <option value="" selected>请选择</option>
+                </select>
             </div>
-            <h3>客户信息</h3>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">公司名称</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="companyname" id="companyname" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat label_change">公司电话/传真</label>
-                    <div class="layui-input-inline">
-                        <input type="number" name="companytel" id="companytel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">区域经理</label>
+            <div class="layui-input-inline Wheat">
+                <select id="build_user_id" name="build_user_id" lay-filter="build_user_id" class="Wheat_disabled">
+                    <option value="" selected>请选择</option>
+                </select>
             </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label Wheat">公司地址</label>
-                <div class="layui-input-block">
-                    <input type="text" name="companyaddress" id="companyaddress" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat " style="width: 130px">区域经理电话</label>
+            <div class="layui-input-inline Wheat">
+                <input type="text"  name="build_user_phone" id="build_user_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);">
             </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">法人代表</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="legalrepresentative" id="legalrepresentative" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">法人电话</label>
-                    <div class="layui-input-inline">
-                        <input type="number" name="legalpersontel" id="legalpersontel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">公司联系人</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="companycontact" id="companycontact" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">联系人电话</label>
-                    <div class="layui-input-inline">
-                        <input type="number" name="contacttel" id="contacttel" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
+        </div>
+    </div>
+    <h3>客户信息</h3>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">公司名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="company_name" id="company_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat label_change">公司电话/传真</label>
+            <div class="layui-input-inline">
+                <input type="text" name="company_phone" id="company_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label Wheat">公司地址</label>
+        <div class="layui-input-block">
+            <input type="text" name="company_address" id="company_address" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">法人代表</label>
+            <div class="layui-input-inline">
+                <input type="text" name="legal_representative" id="legal_representative" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">法人电话</label>
+            <div class="layui-input-inline">
+                <input type="text" name="legal_phone" id="legal_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">公司联系人</label>
+            <div class="layui-input-inline">
+                <input type="text" name="company_contact" id="company_contact" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">联系人电话</label>
+            <div class="layui-input-inline">
+                <input type="text" name="company_contact_phone" id="company_contact_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled " oninput="detectinputphone(this);"> </div>
+        </div>
+    </div>
+    <h3>发货信息</h3>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">收货人姓名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="delivery_info_receiver_name" id="delivery_info_receiver_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">收货人电话</label>
+            <div class="layui-input-inline">
+                <input type="text" name="delivery_info_receiver_phone" id="delivery_info_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">货场名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="delivery_info_goods_yard_name" id="delivery_info_goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">货场电话</label>
+            <div class="layui-input-inline">
+                <input type="text" name="delivery_info_goods_yard_phone" id="delivery_info_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label Wheat">收货地址</label>
+        <div class="layui-input-block">
+            <input type="text" name="delivery_info_receiver_address" id="delivery_info_receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+    </div>
+    <div class="layui-form-item Wheat" pane="">
+        <label class="layui-form-label Wheat">是否买保险</label>
+        <div class="layui-input-block ">
+            <input type="radio" name="is_insure" value="1" title="买" class="Wheat_disabled">
+            <input type="radio" name="is_insure" value="0" title="不买" class="Wheat_disabled" checked=""> </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">保额</label>
+            <div class="layui-input-inline">
+                <input type="text" name="insure_amount" id="insure_amount" lay-verify="insure_amount" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputfloat(this);"> </div>
+        </div>
+    </div>
+    <div class="layui-form-item Wheat" pane="">
+        <label class="layui-form-label Wheat ">客户性质</label>
+        <div class="layui-input-block ">
+            <input type="radio" name="is_sign" value="1" title="签约" checked="" class="Wheat_disabled">
+            <input type="radio" name="is_sign" value="0" title="非签约" class="Wheat_disabled"> </div>
+    </div>
+    <div class="layui-form-item Wheat" pane="">
+        <label class="layui-form-label Wheat">销售合同</label>
+        <div class="layui-input-block ">
+            <input type="radio" name="has_contract" value="1" title="有" class="Wheat_disabled" checked="">
+            <input type="radio" name="has_contract" value="0" title="无" class="Wheat_disabled"> </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">运费方式</label>
+            <div class="layui-input-inline Wheat">
+                <select name="transfer_fee_mode" id="transfer_fee_mode" class="Wheat_disabled " >
+                    <option value="" selected="">选择</option>
+                    <option value="0" >到付</option>
+                    <option value="1">现金</option>
+                    <option value="2">代付</option>
+                    <option value="3">公司付</option>
+                </select>
             </div>
-            <h3>发货信息</h3>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">收货人姓名</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="consigneenamefirst" id="consigneenamefirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">收货人电话</label>
-                    <div class="layui-input-inline">
-                        <input type="number" name="consigneetelfirst" id="consigneetelfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">货场名称</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="goodsyardnamefirst" id="goodsyardnamefirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">货场电话</label>
-                    <div class="layui-input-inline">
-                        <input type="number" name="goodsyardtelfirst" id="goodsyardtelfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label Wheat">收货地址</label>
-                <div class="layui-input-block">
-                    <input type="text" name="shippingaddressfirst" id="shippingaddressfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
-            </div>
-            <div class="layui-form-item Wheat" pane="">
-                <label class="layui-form-label Wheat">是否买保险</label>
-                <div class="layui-input-block">
-                    <input type="radio" name="purchase" value="买" title="买" checked="">
-                    <input type="radio" name="purchase" value="不买" title="不买"> </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">保额</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="coverage" id="coverage" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputfloat(this);"> </div>
-                </div>
-            </div>
-            <div class="layui-form-item Wheat" pane="">
-                <label class="layui-form-label Wheat">客户性质</label>
-                <div class="layui-input-block">
-                    <input type="radio" name="signed" value="签约" title="签约" checked="">
-                    <input type="radio" name="signed" value="非签约" title="非签约"> </div>
-            </div>
-            <div class="layui-form-item Wheat" pane="">
-                <label class="layui-form-label Wheat">销售合同</label>
-                <div class="layui-input-block">
-                    <input type="radio" name="salescontract" value="有" title="有" checked="">
-                    <input type="radio" name="salescontract" value="无" title="无"> </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">运费方式</label>
-                    <div class="layui-input-inline Wheat">
-                        <select name="freightway">
-                            <option value="" disabled="" selected="">选择</option>
-                            <option value="到付">到付</option>
-                            <option value="现金">现金</option>
-                            <option value="代付">代付</option>
-                            <option value="公司付">公司付</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label Wheat label_change">订单发货要求</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="ordershipmentsrequest" id="ordershipmentsrequest" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat" oninput="detectinputtext(this);"> </div>
-            </div>
-            <h3>返货信息</h3>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">收货人姓名</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="consigneenamesecond" id="consigneenamesecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">收货人电话</label>
-                    <div class="layui-input-inline">
-                        <input type="number" name="consigneetelsecond" id="consigneetelsecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">货场名称</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="goodsyardnamesecond" id="goodsyardnamesecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">货场电话</label>
-                    <div class="layui-input-inline">
-                        <input type="number" name="goodsyardtelsecond" id="goodsyardtelsecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">返货单号</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="returninvoiceno" id="returninvoiceno" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputdataletter(this);"> </div>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label Wheat">收货地址</label>
-                <div class="layui-input-block">
-                    <input type="text" name="shippingaddressecond" id="shippingaddressecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
-            </div>
-            <h3>部门总监审批</h3>
-            <div class="layui-form-item">
-                <label class="layui-form-label Wheat">审批内容</label>
-                <div class="layui-input-block">
-                    <input type="text" name="examinationapprovalcontentfirst" id="examinationapprovalcontentfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
-            </div>
-            <div class="layui-form-item light_green" pane="">
-                <label class="layui-form-label light_green">审批意见</label>
-                <div class="layui-input-block">
-                    <input type="radio" name="departmentdirectoradvice" value="同意" title="同意" checked="">
-                    <input type="radio" name="departmentdirectoradvice" value="不同意" title="不同意"> </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label light_green">审批日期</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="examinationapprovaldatefirst" id="date4" autocomplete="on" class="layui-input light_green"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label light_green">备注</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="remarkfirst" id="remarkfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green" oninput="detectinputtext(this);"> </div>
-                </div>
-            </div>
-            <h3>执行总经理审批</h3>
-            <div class="layui-form-item">
-                <label class="layui-form-label Wheat">审批内容</label>
-                <div class="layui-input-block">
-                    <input type="text" name="examinationapprovalcontentsecond" id="examinationapprovalcontentsecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
-            </div>
-            <div class="layui-form-item light_green" pane="">
-                <label class="layui-form-label light_green">审批意见</label>
-                <div class="layui-input-block">
-                    <input type="radio" name="executivegeneralmanageradvice" value="同意" title="同意" checked="">
-                    <input type="radio" name="executivegeneralmanageradvice" value="不同意" title="不同意"> </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label light_green">审批日期</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="examinationapprovaldatesecond" id="date5" autocomplete="on" class="layui-input light_green"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label light_green">备注</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="remarksecond" id="remarksecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green" oninput="detectinputtext(this);"> </div>
-                </div>
-            </div>
-            <h3>财务审批</h3>
-            <div class="layui-form-item">
-                <label class="layui-form-label Wheat">审批内容</label>
-                <div class="layui-input-block">
-                    <input type="text" name="examinationapprovalcontentthird" id="examinationapprovalcontentthird" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);"> </div>
-            </div>
-            <div class="layui-form-item light_green" pane="">
-                <label class="layui-form-label light_green">审批意见</label>
-                <div class="layui-input-block">
-                    <input type="radio" name="financedirectoradvice" value="同意" title="同意" checked="">
-                    <input type="radio" name="financedirectoradvice" value="不同意" title="不同意"> </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label light_green">审批日期</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="examinationapprovaldatethird" id="date6" autocomplete="on" class="layui-input light_green"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label light_green">备注</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="remarkthird" id="remarkthird" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green" oninput="detectinputtext(this);"> </div>
-                </div>
-            </div>
-            <h3>款项情况</h3>
-            <div class="layui-form-item dark_blue" pane="">
-                <label class="layui-form-label dark_blue">是否到账</label>
-                <div class="layui-input-block">
-                    <input type="radio" name="accountstatus" value="是" title="是" checked="">
-                    <input type="radio" name="accountstatus" value="否" title="否"> </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label dark_blue">到账日期</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="date" id="date7" autocomplete="on" class="layui-input dark_blue"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label dark_blue">订制费用</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="custommoney" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue" oninput="detectinputfloat(this);"> </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label dark_blue">运费</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="transportationexpense" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue" oninput="detectinputfloat(this);"> </div>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label dark_blue">备注</label>
-                <div class="layui-input-block">
-                    <input type="text" name="remarkforth" id="remarkforth" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue" oninput="detectinputtext(this);"> </div>
-            </div>
-            <h3>订购清单</h3>
-            <table class="layui-table">
-                <colgroup>
-                    <!--<col width="150">
-                    <col width="200">
-                    <col> -->
-                </colgroup>
-                <thead>
-                    <tr class="Wheat">
-                        <th>序号</th>
-                        <th>产品分类</th>
-                        <th>品牌</th>
-                        <th>生产地</th>
-                        <th>产品名称</th>
-                        <th>规格</th>
-                        <th>型号</th>
-                        <th>单位</th>
-                        <th>数量</th>
-                        <th>条码</th>
-                        <th>归还日期</th>
-                        <th>更换代用原因</th>
-                        <th class="dark_blue">产品状态</th>
-                        <th class="dark_blue">非常规产品</th>
-                        <th class="dark_blue">备注</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>
-                            <!--<div class="layui-form-item">-->
-                            <!--<div class="layui-inline">-->
-                            <!-- <div class="layui-input-inline">-->
-                            <select name="productclassification">
-                                <option value="" disabled="" selected="">选择</option>
-                                <option value="公共广播">公共广播</option>
-                                <option value="会议系统">会议系统</option>
-                                <option value="地铁事业">地铁事业</option>
-                                <option value="澳斯迪">澳斯迪</option>
-                                <option value="录播">录播</option>
-                            </select>
-                            <!--</div>-->
-                            <!--</div>-->
-                            <!--</div>-->
-                        </td>
-                        <td>
-                            <select name="brand">
-                                <option value="" disabled="" selected="">选择</option>
-                                <option value="DSPPA">DSPPA</option>
-                                <option value="ZABKZ">ZABKZ</option>
-                                <option value="OTEWA">OTEWA</option>
-                                <option value="AUXDI">AUXDI</option>
-                                <option value="外购">外购</option>
-                            </select>
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td class="Wheat">其它说明</td>
-                        <td colspan="14"></td>
-                    </tr>
-                    <tr>
-                        <td class="dark_blue">情况说明</td>
-                        <td colspan="14"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="layui-form-item">
-                <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1">保存</button>
-                    <button class="layui-btn" lay-submit="" lay-filter="demo2">转交</button>
-                    <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="demo3">取消</button>
-                </div>
-            </div>
-        </form>
-        <script type="text/javascript" src="/static/layui/layui.js"></script>
-        <script type="text/javascript" src="/static/js/commondetect.js"></script>
-        <script type="text/javascript">
-            layui.use(['form', 'layedit', 'laydate'], function () {
-                var form = layui.form,
-                    layer = layui.layer,
-                    layedit = layui.layedit,
-                    laydate = layui.laydate;
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label Wheat label_change">订单发货要求</label>
+        <div class="layui-input-inline">
+            <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+    </div>
+    <h3>返货信息</h3>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">收货人姓名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="return_info_receiver_name" id="return_info_receiver_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">收货人电话</label>
+            <div class="layui-input-inline">
+                <input type="text" name="return_info_receiver_phone" id="return_info_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">货场名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="return_info_goods_yard_name" id="return_info_goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">货场电话</label>
+            <div class="layui-input-inline">
+                <input type="text" name="return_info_goods_yard_phone" id="return_info_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">返货单号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="return_order_num" id="return_order_num" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputdataletter(this);"> </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label Wheat">收货地址</label>
+        <div class="layui-input-block">
+            <input type="text" name="return_info_receiver_address" id="return_info_receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+    </div>
+    <h3>部门总监审批</h3>
+    <div class="layui-form-item">
+        <label class="layui-form-label Wheat">审批内容</label>
+        <div class="layui-input-block">
+            <input type="text" name="examinationapprovalcontentfirst" id="examinationapprovalcontentfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+    </div>
+    <div class="layui-form-item light_green" pane="">
+        <label class="layui-form-label light_green ">审批意见</label>
+        <div class="layui-input-block">
+            <input type="radio" name="departmentdirectoradvice" value="同意" title="同意" class="depart_blue_disabled">
+            <input type="radio" name="departmentdirectoradvice" value="不同意" title="不同意" class="depart_blue_disabled"> </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label light_green">审批日期</label>
+            <div class="layui-input-inline">
+                <input type="text" name="examinationapprovaldatefirst" id="date4" autocomplete="on" class="layui-input light_green depart_blue_disabled"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label light_green">备注</label>
+            <div class="layui-input-inline">
+                <input type="text" name="remarkfirst" id="remarkfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green depart_blue_disabled" oninput="detectinputtext(this);"> </div>
+        </div>
+    </div>
+    <h3>执行总经理审批</h3>
+    <div class="layui-form-item">
+        <label class="layui-form-label Wheat">审批内容</label>
+        <div class="layui-input-block">
+            <input type="text" name="examinationapprovalcontentsecond" id="examinationapprovalcontentsecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+    </div>
+    <div class="layui-form-item light_green" pane="">
+        <label class="layui-form-label light_green">审批意见</label>
+        <div class="layui-input-block ">
+            <input type="radio" name="executivegeneralmanageradvice"  value="同意" title="同意"  class="company_blue_disabled">
+            <input type="radio" name="executivegeneralmanageradvice" value="不同意" title="不同意"  class="company_blue_disabled"> </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label light_green">审批日期</label>
+            <div class="layui-input-inline">
+                <input type="text" name="examinationapprovaldatesecond" id="date5" autocomplete="on" class="layui-input light_green company_blue_disabled"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label light_green">备注</label>
+            <div class="layui-input-inline">
+                <input type="text" name="remarksecond" id="remarksecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green company_blue_disabled" oninput="detectinputtext(this);"> </div>
+        </div>
+    </div>
+    <h3>财务审批</h3>
+    <div class="layui-form-item">
+        <label class="layui-form-label Wheat">审批内容</label>
+        <div class="layui-input-block">
+            <input type="text" name="examinationapprovalcontentthird" id="examinationapprovalcontentthird" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+    </div>
+    <div class="layui-form-item light_green" pane="">
+        <label class="layui-form-label light_green">审批意见</label>
+        <div class="layui-input-block ">
+            <input type="radio" name="financedirectoradvice" value="同意" title="同意"  class="finance_blue_disabled">
+            <input type="radio" name="financedirectoradvice" value="不同意" title="不同意"  class="finance_blue_disabled"> </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label light_green">审批日期</label>
+            <div class="layui-input-inline">
+                <input type="text" name="examinationapprovaldatethird" id="date6" autocomplete="on" class="layui-input light_green finance_blue_disabled"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label light_green">备注</label>
+            <div class="layui-input-inline">
+                <input type="text" name="remarkthird" id="remarkthird" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green finance_blue_disabled" oninput="detectinputtext(this);"> </div>
+        </div>
+    </div>
+    <h3>款项情况</h3>
+    <div class="layui-form-item dark_blue " pane="">
+        <label class="layui-form-label dark_blue">是否到账</label>
+        <div class="layui-input-block">
+            <input type="radio" name="is_paid" value="是" title="是" checked=""   class="dark_blue_disabled">
+            <input type="radio" name="is_paid" value="否" title="否" class="dark_blue_disabled"> </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label dark_blue">到账日期</label>
+            <div class="layui-input-inline">
+                <input type="text" name="paid_date" id="paid_date" autocomplete="on" class="layui-input dark_blue dark_blue_disabled"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label dark_blue">订制费用</label>
+            <div class="layui-input-inline">
+                <input type="text" name="customization_fee" id = "customization_fee" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputfloat(this);"> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label dark_blue">运费</label>
+            <div class="layui-input-inline">
+                <input type="text" name="paid_bank" id = "paid_bank" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputfloat(this);"> </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label dark_blue">备注</label>
+        <div class="layui-input-block">
+            <input type="text" name="payment_info_comment" id="payment_info_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input   dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
+
+    </div>
+
+    <!--<div class="layui-form-item">-->
+        <!--<div class="layui-inline">-->
+            <!--<label class="layui-form-label dark_blue">货期回复</label>-->
+            <!--<div class="layui-input-inline">-->
+                <!--<input type="text" name="delivery_date_reply" id="delivery_date_reply" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled"> </div>-->
+        <!--</div>-->
+        <!--<div class="layui-inline">-->
+            <!--<input type="button" id="uncofginfo" class="layui-btn dark_blue" target="_blank" value="增加非定型产品订货确认单">-->
+            <!--<input type="button" id="lookuncofginfo" class="layui-btn dark_blue" target="_blank" value="查看非定型产品订货确认单">-->
+            <!--<input type="button" id="deluncofginfo" class="layui-btn dark_blue" target="_blank" style="color: red" value="删除非定型产品订货确认单">-->
+        <!--</div>-->
+    <!--</div>-->
+
+
+    <h3>订购清单</h3>
+    <div class="layui-form-item">
+        <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled Wheat" lay-submit="" lay-filter="add_order_item" style="color: black;">
+    </div>
+    <table class="layui-form-item layui-table" id="tableorder">
+        <thead>
+        <tr >
+            <th class="Wheat">序号</th>
+            <th class="Wheat">产品分类</th>
+            <th class="Wheat">品牌</th>
+            <th class="Wheat">产品名称</th>
+            <th class="Wheat">规格</th>
+            <th class="Wheat">型号</th>
+            <th class="Wheat">单位</th>
+            <th class="Wheat">数量</th>
+            <th class="Wheat">条码</th>
+            <th class="Wheat">处理日期</th>
+            <th class="Wheat">故障情况</th>
+            <th class="Wheat">生产地</th>
+            <th class="dark_blue">产品状态</th>
+            <th class="dark_blue">非常规产品</th>
+            <th class="dark_blue">备注</th>
+            <th class="dark_blue">操作</th>
+        </tr>
+        </thead>
+    </table>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label Wheat ">其它说明</label>
+        <div class="layui-input-block">
+            <input type="text" name="order_goods_manager_explain" id="order_goods_manager_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled  " oninput="detectinputtext(this);"> </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label dark_blue">情况说明</label>
+        <div class="layui-input-block">
+            <input type="text" name="ogl_explain" id="ogl_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input  dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-btn-container">
+            <button   class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save" id="save">保存</button>
+            <input type="button" value="转交" class="layui-btn" lay-submit="" lay-filter="deliver" id="deliver">
+            <button   class="layui-btn layui-btn-primary" lay-submit="" lay-filter="cancel" id="cancel">取消</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="/static/js/commondetect.js"></script>
+<script type="text/javascript">
+    var isloading = true;
+    var delrowid = new Array();
+    var complete_date = "2000-01-01 00:00:00";
+    var cs_info_type = 4; //订单类型
+    var user_info =null;//只有当经理登陆使用到
+    //保存修改时根据Cs_id获取的数据
+    var  editOrderData= [];
+    //修改保存是谁在操作 1 经理 2 主管 3执行总监 4财务 5物流
+    var current_user_type = 3;
+
+    var ishavePrintPower = 1; //是否有打印权限 ， 1 ：没有
+
+    var uncofginfo = null;      //非常规订单数据 包含unc_ofg_info，清单明细：搜索unc_ofg_items，删除表del_unc_ofg_detail_id_arr
+    var del_unc_ofg_detail_id_arr = new Array();//删除非定型订单明细id
+    var unc_ofg_info_id = 0;
+    layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
+        var form = layui.form,
+            laydate = layui.laydate,
+            jq = layui.jquery,
+            layer = layui.layer;
+
+        //监听保存
+        form.on('submit(save)', function (uidata) {
+            return saveOrDeliverToSql(uidata,0);
+        });
+
+        //监听转交
+        form.on('submit(deliver)',function (uidata) {
+            return saveOrDeliverToSql(uidata,1);
+        });
+
+        jq(document).ready(function(){
+            isloading = true;
+            var cs_id = "<?php echo $cs_id?>";
+            /*转换成整形*/
+            current_user_type = parseInt("<?php echo $current_user_type?>");
+            user_info = {$userinfo};
+            setDatePopup();
+            if(cs_id == ""){
+                userPower();
+                isloading = false;
+                console.log(current_user_type);
+                if(current_user_type == 1)
+                {
+                    jq('#build_organize_id').val(user_info['organize_id']);
+                    LoadingDepartmentAndSelected(user_info['organize_id'],user_info['department_id']);
+                    LoadingManagerAndSelected(user_info['department_id'],user_info['user_id']);
+                    document.getElementById('build_user_phone').value = user_info['phone'];
+                }
+                form.render('select');
+
+                return ;
+            }
+            ishavePrintPower = 0;
+            //
+            jq('#save').addClass('hide');
+            jq('#deliver').addClass('hide');
+            jq('#cancel').addClass('hide');
+            jq.post("{:url('admin/addrepairconfirmorder/getcsallinfo')}",{'param':cs_id},function (data) {
+                console.log(data);
+                document.getElementById('cs_belong_create_time').value = data['cs_belong_create_time'];
+                document.getElementById('transfer_fee_mode').value = data['transfer_fee_mode'];
+                jq('#build_organize_id').val(data['build_organize_id']);
+                LoadingDepartmentAndSelected(data['build_organize_id'],data['build_department_id']);
+                LoadingManagerAndSelected(data['build_department_id'],data['build_user_id']);
+                document.getElementById('build_user_phone').value = data['build_user_phone'];
+                document.getElementById('cs_id').value = data['cs_id'];
+                jq('#department_number').val(data['build_department_id']);
+                editOrderData['cs_belong_id'] = data['cs_belong_id'];
+                editOrderData['cs_belong_create_time'] = data['cs_belong_create_time'];
+                //cs_info
+                jq('#cs_info_state').val(data['cs_info_state']);
+                if(data['complete_date'] != '2000-01-01 00:00:00' && data['complete_date'] != '2000-01-01' )
+                    jq('#date2').val(data['complete_date']); //不确定下单时间是指那个
+                if(data['delivery_date_reply'] != '2000-01-01 00:00:00' && data['delivery_date_reply'] != '2000-01-01' )
+                    jq('#delivery_date_reply').val(data['delivery_date_reply']); //不确定下单时间是指那个
+                editOrderData['cs_id'] = data['cs_id'];
+                editOrderData['complete_date'] = data['complete_date'];
+                editOrderData['product_number'] = data['product_number'];
+                editOrderData['cs_examine_ids'] = data['cs_examine_ids'];
+                editOrderData['pre_process_user_id'] = data['pre_process_user_id'];
+                editOrderData['cur_process_user_id'] = data['cur_process_user_id'];
+                editOrderData['write_date'] = data['write_date'];
+                editOrderData['unc_ofg_info_id'] = data['unc_ofg_info_id'];
+                unc_ofg_info_id = data['unc_ofg_info_id'];                                                      //
+                //custom_info
+                document.getElementById('company_name').value = data['company_name'];
+                document.getElementById('company_phone').value = data['company_phone'];
+                document.getElementById('company_address').value = data['company_address'];
+                document.getElementById('legal_representative').value = data['legal_representative'];
+                document.getElementById('legal_phone').value = data['legal_phone'];
+                document.getElementById('company_contact').value = data['company_contact'];
+                document.getElementById('company_contact_phone').value = data['company_contact_phone'];
+                editOrderData['custom_info_id'] = data['custom_info_id'];
+                //delivery_info
+                jq('#delivery_info_receiver_name').val(data['delivery_info_receiver_name']) ;
+                jq('#delivery_info_receiver_phone').val( data['delivery_info_receiver_phone']);
+                jq('#delivery_info_goods_yard_name').val( data['delivery_info_goods_yard_name']);
+                jq('#delivery_info_goods_yard_phone').val( data['delivery_info_goods_yard_phone']);
+                jq('#delivery_info_receiver_address').val( data['delivery_info_receiver_address']);
+                jq("input[name='is_insure']").each(function(){
+                    if(jq(this).attr('value') == data['is_insure']){
+                        jq(this).prop('checked',true);
+                    }
+                });
+                jq('#insure_amount').val(data['insure_amount']);
+                jq("input[name='is_sign']").each(function(){
+                    if(jq(this).attr('value') == data['is_sign']){
+                        jq(this).prop('checked',true);
+                    }
+                });
+                jq("input[name='has_contract']").each(function(){
+                    if(jq(this).attr('value') == data['has_contract']){
+                        jq(this).prop('checked',true);
+                    }
+                });
+                jq('#transfer_fee_mode').val( data['transfer_fee_mode']);
+                jq('#order_delivery_require').val( data['order_delivery_require']);
+                editOrderData['delivery_info_id'] = data['delivery_info_id'];
+                //return_info
+                jq('#return_info_receiver_name').val( data['return_info_receiver_name']);
+                jq('#return_info_receiver_phone').val( data['return_info_receiver_phone']);
+                jq('#return_info_goods_yard_name').val( data['return_info_goods_yard_name']);
+                jq('#return_info_goods_yard_phone').val( data['return_info_goods_yard_phone']);
+                jq('#return_order_num').val(data['return_order_num']);
+                jq('#return_info_receiver_address').val(data['return_info_receiver_address']);
+                editOrderData['return_info_id'] = data['return_info_id'];
+                //payment_info
+                jq("input[name='is_paid']").each(function(){
+                    if(jq(this).attr('value') == data['is_paid']){
+                        jq(this).prop('checked',true);
+                    }
+                });
+                if(data['paid_date'] != '2000-01-01' )
+                    jq('#paid_date').val( data['paid_date']);
+                jq('#customization_fee').val( data['customization_fee']);
+                jq('#paid_bank').val( data['paid_bank']);
+                jq('#payment_info_comment').val( data['payment_info_comment']);
+                editOrderData['payment_info_id'] = data['payment_info_id'];
+                //order_goods_manager
+                if(data['order_goods'] != null && data['order_goods'].length>0)
+                {
+                    var order_goods = data['order_goods'];
+                    for( var i = 0 ; i<order_goods.length; i++)
+                    {
+                        updateRow(order_goods[i],true);
+                    }
+                    jq('#order_goods_manager_explain').val( order_goods[0]['order_goods_manager_explain']);
+                    jq('#ogl_explain').val( order_goods[0]['ogl_explain']);
+                }
+                ///logistic_info
+                if(data['logistic_info'] != null && data['logistic_info'].length>0)
+                {
+                    var logistic_info = data['logistic_info'];
+                    for( var i = 0 ; i<logistic_info.length; i++)
+                    {
+                        addLogisticsItem(logistic_info[i])
+                    }
+                }
+
+                //cs_examine_info
+                if(data['cs_examine_info'] != null && data['cs_examine_info'].length>=3)
+                {
+                    var cs_examine_info = data['cs_examine_info'];
+                    //部门审批
+                    jq('#examinationapprovalcontentfirst').val(cs_examine_info[0]['cs_examine_content']);
+                    jq('#remarkfirst').val(cs_examine_info[0]['cs_examine_comment']);
+                    if(cs_examine_info[0]['cs_examine_date'] != '2000-01-01' && cs_examine_info[0]['cs_examine_date'] != '')
+                        jq('#date4').val(cs_examine_info[0]['cs_examine_date']);
+                    jq("input[name='departmentdirectoradvice']").each(function(){
+                        if(jq(this).attr('value') == cs_examine_info[0]['cs_examine_result']){
+                            jq(this).prop('checked',true);
+                        }
+                    });
+
+                    editOrderData['depart_examine'] = cs_examine_info[0];
+                    //执行总监审批
+                    jq('#examinationapprovalcontentsecond').val(cs_examine_info[1]['cs_examine_content']);
+                    jq('#remarksecond').val(cs_examine_info[1]['cs_examine_comment']);
+                    if(cs_examine_info[1]['cs_examine_date'] != '2000-01-01' && cs_examine_info[1]['cs_examine_date'] != '')
+                        jq('#date5').val(cs_examine_info[1]['cs_examine_date']);
+                    jq("input[name='executivegeneralmanageradvice']").each(function(){
+                        if(jq(this).attr('value') == cs_examine_info[1]['cs_examine_result']){
+                            jq(this).prop('checked',true);
+                        }
+                    });
+                    editOrderData['company_examine'] = cs_examine_info[1]
+                    //财务审批
+                    jq('#examinationapprovalcontentthird').val(cs_examine_info[2]['cs_examine_content']);
+                    jq('#remarkthird').val(cs_examine_info[2]['cs_examine_comment']);
+                    if(cs_examine_info[2]['cs_examine_date'] != '2000-01-01' && cs_examine_info[2]['cs_examine_date'] != '')
+                        jq('#date6').val(cs_examine_info[2]['cs_examine_date']);
+                    jq("input[name='financedirectoradvice']").each(function(){
+                        if(jq(this).attr('value') == cs_examine_info[2]['cs_examine_result']){
+                            jq(this).prop('checked',true);
+                        }
+                    });
+                    editOrderData['finance_examine'] = cs_examine_info[2];
+                }
+
+                // var unc_ofg_detail = data.unc_ofg_detail;
+                // var unc_ofg_info = data.unc_ofg_info;
+                // if (unc_ofg_info != ""){
+                //     uncofginfo = new Object();
+                //     uncofginfo.unc_ofg_info = unc_ofg_info;
+                //     uncofginfo.unc_ofg_items = unc_ofg_detail;
+                //     uncofginfo.del_unc_ofg_detail_id_arr = null;
+                // }
+                userPower();
+                layui.form.render('select');
+                layui.form.render('radio');
+                isloading = false;
+            });
+        });
+
+        //监听选择公司
+        form.on('select(build_organize_id)',function (data) {
+            jq('#build_department_id').empty();
+            jq('#build_user_id').empty();
+            jq('#build_department_id').append("<option value='' selected>请选择</option>");
+            jq('#build_user_id').append("<option value='' selected>请选择</option>");
+            jq('#build_user_phone').val("");
+            form.render('select');
+            if (data.value == ""){
+                return;
+            }
+            jq.post("{:url('admin/addreplaceconfirmorder/getdepartmentinfo')}",{'param':data.value},function (data) {
+                //console.log(data);
+                for (var item in data){
+                    jq('#build_department_id').append("<option value='" + data[item]['organize_id'] + "'>" + data[item]['organize_name'] + "</option>>");
+                }
+                form.render('select');
+            })
+        });
+        //监听选择部门
+        form.on('select(build_department_id)',function (data) {
+            jq('#build_user_id').empty();
+            jq('#build_user_id').append("<option value='' selected>请选择</option>");
+            jq('#build_user_phone').val("");
+            jq.post("{:url('admin/addreplaceconfirmorder/getdspmanagerinfo')}",{'param':data.value},function (data) {
+                for (var item in data){
+                    jq('#build_user_id').append("<option value='" + data[item]['user_id'] + "' phone='" + data[item]['phone'] + "'>" + data[item]['fullname'] + "</option>>");
+                }
+                form.render('select');
+            })
+        });
+        //监听选中经理自动添加电话
+        form.on('select(build_user_id)',function (data) {
+            var options= jq("#build_user_id option:selected");
+            var  phone = jq(options[0]).attr('phone');
+            if(phone === undefined){
+                document.getElementById('build_user_phone').value = "";
+            }else {
+                document.getElementById('build_user_phone').value = phone;
+            }
+        });
+
+        jq('#btn_add_order_item').click(function () {
+            top.layer.open({
+                type:2,
+                title:'新增清单',
+                area:['800px','70%'],
+                shade:0.8,
+                maxmin:false,
+                content:"{:url('admin/addoreditrepairgoodsitem/addoreditrepairgoodsitem')}?type= 0",
+                btn:['保存','退出'],
+                yes:function (index,layero) {
+                    var  iframeWin = top.window[layero.find('iframe')[0]['name']];
+                    var  orderItem = iframeWin.saveOrderItem();
+                    if(isEmptyObject(orderItem)){
+                        return;
+                    }
+
+                    orderItem.ogl_id = "";
+                    orderItem.order_goods_manager_id = "";
+                    updateRow(orderItem,true);
+                    iframeWin.clear();
+                    layer.msg('保存成功！',{icon:1});
+
+                },
+                btn2: function () {
+                }
+            });
+            return false;
+        });
+        jq(document).on('click', '.edit_btn', function() {
+            if((current_user_type != 5) && (current_user_type != 1))
+                return ;
+            var text = jq(this).parent().parent();
+            var type = current_user_type == 5?1:0;
+            top.layer.open({
+                type:2,
+                title:'修改清单',
+                area:['800px','90%'],
+                shade:0.9,
+                maxmin:false,
+                content:"{:url('admin/addoreditrepairgoodsitem/addoreditrepairgoodsitem')}?type="+ type,
+                btn:['保存','退出'],
+                yes:function (index,layero) {
+                    var  iframeWin = top.window[layero.find('iframe')[0]['name']];
+                    var  orderItem = iframeWin.saveOrderItem();
+                    if(orderItem.product_info_name == null){
+                        return null;
+                    }
+                    // console.log(orderItem);
+                    // console.log("length: "+ jq('#tableorder')[0].rows.length);
+                    orderItem.order_goods_manager_id = text.attr("order_goods_manager_id");
+                    orderItem.ogl_id = text.attr("ogl_id");
+                    orderItem.num = text.attr("num");
+                    updateRow(orderItem,false)
+
+                    top.layer.close(index);
+                },
+                btn2: function () {
+                },
+                success:function (layero, index) {
+                    var orderItem = new Object();
+                    //var text = jq(this).parent().parent();
+                    orderItem.product_type_id = text.attr("product_type_id");
+                    orderItem.product_type_name = text.attr("product_type_name");
+                    orderItem.brand_id = text.attr("brand_id");
+                    orderItem.brand_name = text.attr("brand_name");
+                    orderItem.model = text.attr("model");
+                    orderItem.order_goods_manager_count = text.attr("order_goods_manager_count");
+                    orderItem.unit = text.attr("unit");
+                    orderItem.specification = text.attr("specification");
+                    orderItem.bar_code = text.attr("bar_code");
+                    orderItem.back_date = text.attr("back_date");
+                    orderItem.deal_date = text.attr("deal_date");
+                    orderItem.replace_reason = text.attr("replace_reason");
+                    orderItem.fault_condition = text.attr("fault_condition");
+                    orderItem.place_name = text.attr("place_name");
+                    orderItem.place_id = text.attr("place_id");
+                    orderItem.ogl_product_state = text.attr("ogl_product_state");
+                    orderItem.unc_product_name = text.attr("unc_product_name");
+                    orderItem.unc_product_id = text.attr("unc_product_id");
+                    orderItem.ogl_comment = text.attr("ogl_comment");
+                    orderItem.product_info_id = text.attr("product_info_id");
+                    orderItem.product_info_name = text.attr("product_info_name");
+                    var iframeWin = top.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+
+                    iframeWin.LoadingData(orderItem);
+                    console.log(orderItem);
+                }
+            });
+        });
+        jq(document).on('click', '.del_btn', function(){
+            if((current_user_type) != 5 && (current_user_type != 1))
+                return ;
+            var text = jq(this).parent().parent();
+            var id= jq(text[0].cells[0].innerHTML).attr("tag");
+            if(id != "")
+                delrowid.push(id);
+            var table = document.getElementById('tableorder');
+            table.deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
+            console.log(table);
+            for(var i = 1; i <= table.rows.length;i++){
+                jq(table.children[0].children[i].children[0].children[0]).text(i);
+            }
+        });
+
+        //非定型订单弹窗
+        jq('#uncofginfo').click(function () {
+            top.layer.open({
+                type:2,
+                title:'非定型产品订货单',
+                area:['800px','90%'],
+                shade: [0.7, '#393D49'],
+                skin: 'layui-layer-molv',
+                maxmin:true,
+                content:"{:url('admin/uncofginfo/uncofginfo')}?type=1",
+                btn:['确定','退出'],
+                yes:function (index,layero) {
+                    var  iframeWin = top.window[layero.find('iframe')[0]['name']];
+                    var  ret = iframeWin.getData();
+                    console.log(ret);
+                    if (ret == false){
+
+                    }else if (ret == null){
+                        uncofginfo = ret;
+                        top.layer.close(index);
+                    }else {
+                        uncofginfo = ret;
+                        top.layer.close(index);
+                    }
+                    setDelUncofginfoVis();
+                },
+                btn2: function (index) {
+                    layer.close(index);
+                }
+            });
+            return false;
+        })
+        //删除非定型订单
+        jq('#deluncofginfo').click(function () {
+            top.layer.confirm('确定删除此非定型产品订货确认单？', {
+                btn: ['确定','取消'] //按钮
+            }, function(index){
+                top.layer.close(index);
+                uncofginfo = null;
+                setDelUncofginfoVis();
+            });
+        });
+        jq('#lookuncofginfo').click(function () {
+            var dd = getUncofgInfoUI();
+            console.log('+++++++++弹窗前++++++++++++++');
+            console.log(dd);
+            var url = '';
+            if(current_user_type == 0){
+                url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + 0 + "&cs_id=" + editOrderData['cs_id'];
+            }else{
+                url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + 1;
+            }
+            top.layer.open({
+                type:2,
+                title:'查看非定型产品订货单',
+                area:['800px','90%'],
+                shade: [0.7, '#393D49'],
+                skin: 'layui-layer-molv',
+                maxmin:true,
+                content:url,
+                btn:['退出'],
+                yes:function (index,layero) {
+                    top.layer.close(index);
+                }
+            });
+            return false;
+        })
+
+        //开启日期弹框
+        function setDatePopup() {
+            if(current_user_type == 1)
+            {
                 /*日期*/
                 laydate.render({
-                    elem: '#date1'
-                    ,position: 'fixed'
-                    ,theme: 'molv'
+                    elem: '#cs_belong_create_time',
+                    position: 'fixed',
+                    theme: 'molv'
+                });
+
+                laydate.render({
+                    elem: '#date3',
+                    position: 'fixed',
+                    theme: 'molv'
+                });
+
+
+
+
+
+            }
+            else if(current_user_type == 2)
+            {
+                laydate.render({
+                    elem: '#date4',
+                    position: 'fixed',
+                    theme: 'molv'
+                });
+
+            }
+            else if(current_user_type == 3)
+            {
+                laydate.render({
+                    elem: '#date5',
+                    position: 'fixed',
+                    theme: 'molv'
+                });
+            }
+            else if(current_user_type == 4)
+            {
+                laydate.render({
+                    elem: '#date6',
+                    position: 'fixed',
+                    theme: 'molv'
+                });
+
+            }
+            else if(current_user_type == 5)
+            {
+                laydate.render({
+                    elem: '#date2',
+                    type:'datetime',
+                    position: 'fixed',
+                    theme: 'molv'
                 });
                 laydate.render({
-                    elem: '#date2'
-                    ,position: 'fixed'
-                    ,theme: 'molv'
+                    elem: '#paid_date',
+                    position: 'fixed',
+                    theme: 'molv'
                 });
                 laydate.render({
-                    elem: '#date3'
-                    ,position: 'fixed'
-                    ,theme: 'molv'
+                    elem: '#delivery_date_reply',
+                    position: 'fixed',
+                    theme: 'molv'
                 });
-                laydate.render({
-                    elem: '#date4'
-                    ,position: 'fixed'
-                    ,theme: 'molv'
-                });
-                laydate.render({
-                    elem: '#date5'
-                    ,position: 'fixed'
-                    ,theme: 'molv'
-                });
-                laydate.render({
-                    elem: '#date6'
-                    ,position: 'fixed'
-                    ,theme: 'molv'
-                });
-                laydate.render({
-                    elem: '#date7'
-                    ,position: 'fixed'
-                    ,theme: 'molv'
-                });
-           
-            //监听提交
-            form.on('submit(demo1)', function (data) {
-                layer.alert(JSON.stringify(data.field), {
-                    title: '最终的提交信息'
-                })
+
+            }
+            else  if(current_user_type == 0) //只查看
+            {
+
+            }
+        }
+    });
+    //用户权限设置 屏蔽一些内容
+    function userPower() {
+        setDisable(true);
+        setDelUncofginfoVis();
+    }
+    //屏蔽
+    function setDisable(value) {
+        //disabled 色值#CD3700
+        var jq = layui.jquery;
+        if(current_user_type == 1)
+        {
+            jq('.depart_blue_disabled').addClass('layui-disabled');
+            jq('.depart_blue_disabled').attr('disabled',value);
+
+            jq('.company_blue_disabled').addClass('layui-disabled');
+            jq('.company_blue_disabled').attr('disabled',value);
+
+            jq('.finance_blue_disabled').addClass('layui-disabled');
+            jq('.finance_blue_disabled').attr('disabled',value);
+
+            jq('.dark_blue_disabled').addClass('layui-disabled');
+            jq('.dark_blue_disabled').attr('disabled',value);
+
+        }
+        else if(current_user_type == 2)
+        {
+            jq('.Wheat_disabled').addClass('layui-disabled');
+            jq('.Wheat_disabled').attr('disabled',value);
+
+            jq('.company_blue_disabled').addClass('layui-disabled');
+            jq('.company_blue_disabled').attr('disabled',value);
+
+            jq('.finance_blue_disabled').addClass('layui-disabled');
+            jq('.finance_blue_disabled').attr('disabled',value);
+
+            jq('.dark_blue_disabled').addClass('layui-disabled');
+            jq('.dark_blue_disabled').attr('disabled',value);
+
+            //jq('.edit_disabled').addClass('layui-disabled');
+            //jq('.edit_disabled').attr('disabled',value);
+
+            jq('.edit_disabled').addClass('hide');
+            jq('.del_disabled').addClass('hide');
+
+        }
+        else if(current_user_type == 3)
+        {
+            jq('.Wheat_disabled').addClass('layui-disabled');
+            jq('.Wheat_disabled').attr('disabled',value);
+
+            jq('.depart_blue_disabled').addClass('layui-disabled');
+            jq('.depart_blue_disabled').attr('disabled',value);
+
+            jq('.finance_blue_disabled').addClass('layui-disabled');
+            jq('.finance_blue_disabled').attr('disabled',value);
+
+            jq('.dark_blue_disabled').addClass('layui-disabled');
+            jq('.dark_blue_disabled').attr('disabled',value);
+
+            //jq('.edit_disabled').addClass('layui-disabled');
+            //jq('.edit_disabled').attr('disabled',value);
+
+            jq('.edit_disabled').addClass('hide');
+            jq('.del_disabled').addClass('hide');
+        }
+        else if(current_user_type == 4)
+        {
+            jq('.Wheat_disabled').addClass('layui-disabled');
+            jq('.Wheat_disabled').attr('disabled',value);
+
+            jq('.depart_blue_disabled').addClass('layui-disabled');
+            jq('.depart_blue_disabled').attr('disabled',value);
+
+            jq('.company_blue_disabled').addClass('layui-disabled');
+            jq('.company_blue_disabled').attr('disabled',value);
+
+            jq('.dark_blue_disabled').addClass('layui-disabled');
+            jq('.dark_blue_disabled').attr('disabled',value);
+
+            //jq('.edit_disabled').addClass('layui-disabled');
+            //jq('.edit_disabled').attr('disabled',value);
+
+            jq('.edit_disabled').addClass('hide');
+            jq('.del_disabled').addClass('hide');
+
+
+        }
+        else if(current_user_type == 5)
+        {
+            jq('.Wheat_disabled').addClass('layui-disabled');
+            jq('.Wheat_disabled').attr('disabled',value);
+
+            jq('.depart_blue_disabled').addClass('layui-disabled');
+            jq('.depart_blue_disabled').attr('disabled',value);
+
+            jq('.company_blue_disabled').addClass('layui-disabled');
+            jq('.company_blue_disabled').attr('disabled',value);
+
+            jq('.finance_blue_disabled').addClass('layui-disabled');
+            jq('.finance_blue_disabled').attr('disabled',value);
+
+            jq('.del_disabled').addClass('hide');
+
+        }
+        else  if(current_user_type == 0) //只查看
+        {
+            jq('.Wheat_disabled').addClass('layui-disabled');
+            jq('.Wheat_disabled').attr('disabled',value);
+
+            jq('.depart_blue_disabled').addClass('layui-disabled');
+            jq('.depart_blue_disabled').attr('disabled',value);
+
+            jq('.company_blue_disabled').addClass('layui-disabled');
+            jq('.company_blue_disabled').attr('disabled',value);
+
+            jq('.finance_blue_disabled').addClass('layui-disabled');
+            jq('.finance_blue_disabled').attr('disabled',value);
+
+            jq('.dark_blue_disabled').addClass('layui-disabled');
+            jq('.dark_blue_disabled').attr('disabled',value);
+
+            //jq('.edit_disabled').addClass('layui-disabled');
+            //jq('.edit_disabled').attr('disabled',value);
+
+            jq('.edit_disabled').addClass('hide');
+            jq('.del_disabled').addClass('hide');
+        }
+    }
+
+    function updateRow(row ,isAdd) {
+        //console.log(row);
+        var jq = layui.jquery;
+        var rows = jq('#tableorder')[0].rows.length;
+        if(isAdd == false)
+        {
+            rows = row.num;
+            jq('#tableorder')[0].deleteRow(rows)
+        }
+        console.log(row);
+        var new_tr = jq('#tableorder')[0].insertRow(rows);//指定位置插入行
+
+        jq(new_tr).attr('product_type_id',row.product_type_id);
+        if(row.product_type_name == undefined||row.product_type_name == null)
+            row.product_type_name = "";
+        jq(new_tr).attr('product_type_name',row.product_type_name);
+        jq(new_tr).attr('brand_id',row.brand_id);
+        if(row.brand_name == undefined||row.brand_name == null)
+            row.brand_name = "";
+        jq(new_tr).attr('brand_name',row.brand_name);
+        if(row.product_info_name == undefined||row.product_info_name == null)
+            row.product_info_name = "";
+        jq(new_tr).attr('product_info_name',row.product_info_name);
+        jq(new_tr).attr('product_info_id',row.product_info_id);
+        jq(new_tr).attr('model',row.model);
+        if(row.unit == undefined||row.unit == null)
+            row.unit = "";
+        jq(new_tr).attr('unit',row.unit);
+        jq(new_tr).attr('place_id',row.place_id);
+        if(row.place_name == undefined||row.place_name == null)
+            row.place_name = "";
+        jq(new_tr).attr('place_name',row.place_name);
+        jq(new_tr).attr('order_goods_manager_count',row.order_goods_manager_count);
+        if(row.unc_product_name == undefined||row.unc_product_name == null)
+            row.unc_product_name = "";
+        jq(new_tr).attr('unc_product_name',row.unc_product_name);
+        jq(new_tr).attr('unc_product_id',row.unc_product_id);
+        if(row.specification == undefined||row.specification == null)
+            row.specification = "";
+        jq(new_tr).attr('specification',row.specification);
+        jq(new_tr).attr('back_date',row.back_date);
+        jq(new_tr).attr('deal_date',row.deal_date);
+        if(row.ogl_product_state == undefined||row.ogl_product_state == null)
+            row.ogl_product_state = "";
+        jq(new_tr).attr('ogl_product_state',row.ogl_product_state);
+        jq(new_tr).attr('bar_code',row.bar_code);
+        if(row.replace_reason == undefined||row.replace_reason == null)
+            row.replace_reason = "";
+        jq(new_tr).attr('replace_reason',row.replace_reason);
+        if(row.fault_condition == undefined||row.fault_condition == null)
+            row.fault_condition = "";
+        jq(new_tr).attr('fault_condition',row.fault_condition);
+        if(row.ogl_comment == undefined||row.ogl_comment == null)
+            row.ogl_comment = "";
+        jq(new_tr).attr('ogl_comment',row.ogl_comment);
+        // console.log("length: "+ jq('#tableorder')[0].rows.length);
+        jq(new_tr).attr('order_goods_manager_id', row.order_goods_manager_id);
+        jq(new_tr).attr('ogl_id',row.ogl_id);
+        jq(new_tr).attr('num',rows);
+
+
+        var col_0 = new_tr.insertCell(0);//添加列
+        col_0.innerHTML = "<td><a>"+ rows+"</a></td>"; //id是保存在数据库的id,新增时为空
+        var col_1 = new_tr.insertCell(1);//添加列
+        col_1.innerHTML = "<td><a >"+ row.product_type_name +"</a></td>";
+        var col_2 = new_tr.insertCell(2);//添加列
+        col_2.innerHTML = "<td><a >"+ row.brand_name +"</a></td>";
+        var col_3 = new_tr.insertCell(3);
+        col_3.innerHTML = "<td><a>"+ row.product_info_name +"</a></td>";//-------产品名称-------
+        var col_4 = new_tr.insertCell(4);
+        col_4.innerHTML = "<td><a>"+ row.specification +"</a></td>";
+        var col_5 = new_tr.insertCell(5);
+        col_5.innerHTML = "<td><a >"+ row.model +"</a></td>";
+        var col_6 = new_tr.insertCell(6);
+        col_6.innerHTML = "<td><a>"+ row.unit +"</a></td>";
+        var col_7 = new_tr.insertCell(7);
+        col_7.innerHTML = "<td><a>"+  row.order_goods_manager_count +"</a></td>";
+        var col_8 = new_tr.insertCell(8);
+        col_8.innerHTML = "<td><a>"+ row.bar_code +"</a></td>";
+        var col_9 = new_tr.insertCell(9);
+        var date = '';
+        if(row.deal_date != '' || row.deal_date != null || row.deal_date != '2000-01-01')
+            date = row.deal_date;
+        col_9.innerHTML = "<td><a>"+ date +"</a></td>";
+        var col_10 = new_tr.insertCell(10);
+        col_10.innerHTML = "<td><a>"+ row.fault_condition +"</a></td>";
+        var col_11 = new_tr.insertCell(11);
+        col_11.innerHTML = "<td><a >"+ row.place_name +"</a></td>";
+        var col_12 = new_tr.insertCell(12);
+        col_12.innerHTML = "<td><a>"+ row.ogl_product_state +"</a></td>";
+        var col_13 = new_tr.insertCell(13);
+        if(row.unc_product_name == null){
+            col_13.innerHTML = "<td><a >"+ row.unc_product_name +"</a></td>";
+        }else{
+            col_13.innerHTML = "<td><a >"+ row.unc_product_name +"</a></td>";
+        }
+        var col_14 = new_tr.insertCell(14);
+        col_14.innerHTML = "<td><a>"+ row.ogl_comment +"</a></td>";
+        var col_14 = new_tr.insertCell(15);
+        col_14.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn edit_disabled'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger Wheat_disabled  del_btn del_disabled'>删除</a>" +"</td>";
+        if(current_user_type == 5){
+            jq('.del_disabled').addClass('hide');
+        }
+    }
+
+    //新增时保存或者转交 新增单  state: 0,保存  1，转交给总监
+    function saveOrDeliverToSql(uidata,state) {
+        var jq = layui.jquery;
+        var  tabledata = getTableContent();
+        console.log(tabledata);
+
+        setDisable(false);
+        var data = getFormData();
+        //判断必填项
+        if(judgeMustInput(data,current_user_type) == false)
+        {
+            setDisable(true);
+            return false;
+        }
+        var cs_info = getCsInfo(data,state == 0?true:false,false,state);
+        console.log("以下确认单信息：");
+        console.log(cs_info);
+        var custom_info = getCustomInfo(data,false);
+        console.log("以下客户信息：");
+        console.log(custom_info);
+        var delivery_info = getDeliveryInfo(data,false);
+        console.log("以下发货信息：");
+        console.log(delivery_info);
+
+        var return_info = getReturnInfo(data,false);
+        console.log("以下返货信息：");
+        console.log(return_info);
+
+        var cs_belong = getCsBelong(data,false);
+        console.log("以下订单所属信息：");
+        console.log(cs_belong);
+
+        var cs_examine = [];
+        var directorExamine = getDirectorExamine(data,false,state);
+        cs_examine[0] = directorExamine;
+        var generalManagerExamine = getGeneralManagerExamine(data,false,state);
+        cs_examine[1] = generalManagerExamine;
+        var financeExamine = getFinanceExamine(data,false,state);
+        cs_examine[2] = financeExamine;
+        console.log("以下订单审批信息：");
+        console.log(cs_examine);
+        //付款信息
+        var  payment_info= getPaymentInfo(data,false);
+
+        //处理清单
+        var order_goods_manager= getOrderGoods(data,false);
+        console.log("以下清单信息：");
+        console.log(order_goods_manager);
+
+        jq.ajax({
+            url: "{:url('admin/addrepairconfirmorder/addrepairorder')}",//php文件路径
+            data: {
+                cs_info:cs_info,
+                custom_info:custom_info,
+                delivery_info:delivery_info,
+                return_info:return_info,
+                cs_belong:cs_belong,
+                order_goods_manager:order_goods_manager,
+                cs_examine:cs_examine,
+                payment_info:payment_info} ,
+            type: 'POST',
+            dataType: 'json',
+            success: function(e) {
+                if(e){
+                    console.log('订单添加成功！');
+                    console.log(e);
+                    location.href = "{:url('admin/addrepairconfirmorder/addrepairconfirmorder')}";
+                }else if(!e){
+                    console.log('订单提交失败！');
+                    console.log(e);
+                }
+            }
+        })
+        setDisable(true);
+        return false;
+    }
+    //获取订购清单明细
+    function getTableContent(){
+        var jq = layui.jquery;
+        var mytable = document.getElementById('tableorder');
+        var data = [];
+        var index = 0;
+        for(var i = 1,rows = mytable.rows.length; i < rows; i++){
+            var rowdata = {};
+            var row = jq(mytable.rows[i]);
+            rowdata.product_type_id = row.attr('product_type_id');
+            rowdata.product_type_name = row.attr('product_type_name');
+            rowdata.brand_id = row.attr('brand_id');
+            rowdata.brand_name = row.attr('brand_name');
+            rowdata.product_info_name = row.attr('product_info_name');
+            rowdata.product_info_id = row.attr('product_info_id');
+            rowdata.model = row.attr('model');
+            rowdata.unit = row.attr('unit');
+            rowdata.place_id = row.attr('place_id');
+            rowdata.place_name = row.attr('place_name');
+            rowdata.order_goods_manager_count = row.attr('order_goods_manager_count');
+            rowdata.unc_product_name = row.attr('unc_product_name');
+            rowdata.unc_product_id = row.attr('unc_product_id');
+            rowdata.specification = row.attr('specification');
+            rowdata.back_date = row.attr('back_date');
+            rowdata.deal_date = row.attr('deal_date');
+            rowdata.ogl_product_state = row.attr('ogl_product_state');
+            rowdata.bar_code = row.attr('bar_code');
+            rowdata.replace_reason = row.attr('replace_reason');
+            rowdata.fault_condition = row.attr('fault_condition');
+            rowdata.ogl_comment = row.attr('ogl_comment') == undefined?'':row.attr('ogl_comment');
+            rowdata.order_goods_manager_id = row.attr('order_goods_manager_id');
+            rowdata.ogl_id = row.attr('ogl_id');
+            data[index] = rowdata;
+            index++;
+        }
+        return data;
+    }
+    //获取子部门并选中
+    function LoadingDepartmentAndSelected(value,selectValue) {
+        var jq = layui.jquery;
+        jq.post("{:url('admin/addrepairconfirmorder/getdepartmentinfo')}",{'param':value},function(data){
+            for(var  item in data){
+                //console.log(data[item]['organize_name']);
+                if(data[item]['organize_id'] == selectValue)
+                {
+
+                    jq("#build_department_id").append("<option value='"+data[item]['organize_id']+"' selected>"+data[item]['organize_name']+"</option>");
+                }
+
+                else
+                    jq("#build_department_id").append("<option value='"+data[item]['organize_id']+"'>"+data[item]['organize_name']+"</option>");
+            }
+            layui.form.render('select');
+        });
+    }
+    //获取经理并选中
+    function LoadingManagerAndSelected(value,selectValue) {
+        var jq = layui.jquery;
+        jq.post("{:url('admin/addrepairconfirmorder/getdspmanagerinfo')}",{'param':value},function(data){
+            for(var  item in data){
+                //console.log(data[item]['organize_name']);
+                if(data[item]['user_id'] == selectValue)
+                {
+
+                    jq("#build_user_id").append("<option value='"+data[item]['user_id']+"' selected>"+data[item]['fullname']+"</option>");
+                }
+
+                else
+                    jq("#build_user_id").append("<option value='"+data[item]['user_id']+"'>"+data[item]['fullname']+"</option>");
+            }
+            layui.form.render('select');
+        });
+    }
+    //添加一条物流信息 data == null 表示新增一条空数据
+    function addLogisticsItem(data,tableindex) {
+        if (data == null){
+            return ;
+        }
+        var jq = layui.jquery;
+        if (!tableindex){
+            tableindex = jq('#tablelogistics')[0].rows.length;
+        }
+        var laydate = layui.laydate;
+        var form = layui.form;
+        var new_tr = jq('#tablelogistics')[0].insertRow(tableindex);//指定位置插入行
+
+        var col_0 = new_tr.insertCell(0);//添加列
+        col_0.innerHTML = "<td><input name ='text' type='text' autocomplete='on' class='layui-input  light_gray ' readonly value='"+ tableindex +"'</td>";
+        var col_1 = new_tr.insertCell(1);//添加列
+        col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input  time-item light_gray ' disabled value='"+ data.delivery_date +"'></td>";
+        jq.each(jq(".time-item"),function(){
+            laydate.render({ elem: this });
+        });
+        var col_2 = new_tr.insertCell(2);//添加列
+        col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input  light_gray ' readonly value='"+ data.goods_yard_name +"'></td>";
+        var col_3 = new_tr.insertCell(3);//添加列
+        col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input light_gray ' readonly value='"+ data.transfer_order_num +"'></td>";
+        var col_4 = new_tr.insertCell(4);//添加列
+        col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input light_gray ' readonly value='"+ data.count +"'></td>";
+    }
+    //修改时 经理的提交
+    function managerDeliver () {
+        var data = getFormData();
+        var jq = layui.jquery;
+
+        //判断必填项
+        if(judgeMustInput(data,current_user_type) == false)
+        {
+            setDisable(true);
+            return false;
+        }
+        var cs_info = getCsInfo(data,false,true,1);
+        console.log("以下确认单信息：");
+        console.log(cs_info);
+
+        var custom_info = getCustomInfo(data,true);
+        console.log("以下客户信息：");
+        console.log(custom_info);
+
+        var delivery_info = getDeliveryInfo(data,true);
+        console.log("以下发货信息：");
+        console.log(delivery_info);
+
+        var return_info = getReturnInfo(data,true);
+        console.log("以下返货信息：");
+        console.log(return_info);
+
+        var cs_belong = getCsBelong(data,true);
+        console.log("以下订单所属信息：");
+        console.log(cs_belong);
+
+        var cs_examine = [];
+        cs_examine[0] = getDirectorExamine(data,false,1);
+        cs_examine[1] = getGeneralManagerExamine(data,false,1);
+        cs_examine[2] = getFinanceExamine(data,false,1);
+        console.log("以下订单审批信息：");
+        console.log(cs_examine);
+
+        var order_goods_manager= getOrderGoods(data,true);
+        console.log("以下清单信息：");
+        console.log(order_goods_manager);
+
+        jq.ajax({
+            url: "{:url('admin/addrepairconfirmorder/managereditanddeliverorder')}",
+            data: {cs_info:cs_info,
+                custom_info:custom_info,
+                delivery_info:delivery_info,
+                return_info:return_info,
+                cs_belong:cs_belong,
+                order_goods_manager:order_goods_manager,
+                cs_examine:cs_examine,
+                order_goods_delete_row:delrowid,} ,
+            type: 'POST',
+            dataType: 'json',
+            async:false,
+            success: function(e) {
+                if(e){
+                    console.log('订单添加成功！');
+                }else if(!e){
+                    console.log('订单提交失败！');
+                    console.log(e);
+                }
+            }
+        });
+        return true;
+
+    }
+    //修改时 经理的保存
+    function managerSave() {
+        setDisable(false);
+        var data = getFormData();
+        //判断必填项
+        if(judgeMustInput(data,current_user_type) == false)
+        {
+            setDisable(true);
+            return false;
+        }
+        var jq = layui.jquery;
+
+        var cs_info = getCsInfo(data,true,true,data['cs_info_state']== '');
+        console.log("以下确认单信息：");
+        console.log(cs_info);
+        var custom_info = getCustomInfo(data,true);
+        console.log("以下客户信息：");
+        console.log(custom_info);
+        var delivery_info = getDeliveryInfo(data,true);
+        console.log("以下发货信息：");
+        console.log(delivery_info);
+
+        var return_info =getReturnInfo(data,true);
+        console.log("以下返货信息：");
+        console.log(return_info);
+
+        var cs_belong = getCsBelong(data,true);
+        console.log("以下订单所属信息：");
+        console.log(cs_belong);
+
+        var cs_examine = [];
+        var directorExamine = getDirectorExamine(data,true,2);
+        cs_examine[0] = directorExamine;
+        var generalManagerExamine = getGeneralManagerExamine(data,true,2);
+        cs_examine[1] = generalManagerExamine;
+        var financeExamine = getFinanceExamine(data,true,2);
+        cs_examine[2] = financeExamine;
+        console.log("以下订单审批信息：");
+        console.log(cs_examine);
+
+        //处理清单
+        var order_goods_manager= getOrderGoods(data,true);
+        console.log("以下清单信息：");
+        console.log(order_goods_manager);
+
+        jq.ajax({
+            url: "{:url('admin/addrepairconfirmorder/managereditandsaveorder')}",
+            data: {cs_info:cs_info,
+                custom_info:custom_info,
+                delivery_info:delivery_info,
+                return_info:return_info,
+                cs_belong:cs_belong,
+                order_goods_manager:order_goods_manager,
+                cs_examine:cs_examine,
+                order_goods_delete_row:delrowid,
+            } ,
+            type: 'POST',
+            dataType: 'json',
+            async:false,
+            success: function(e) {
+                if(e){
+                    console.log('订单添加成功！');
+                }else if(!e){
+                    console.log('订单提交失败！');
+                    console.log(e);
+                }
+            }
+        });
+        return true;
+    }
+    //修改时 主管提交
+    function departDeliver () {
+        var jq = layui.jquery;
+        var data = getFormData();
+
+        //判断必填项
+        if(judgeMustInput(data,current_user_type) == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
+        var cs_examine = [];
+        var curdate = new Date();
+        if(data['departmentdirectoradvice'] != "同意")
+        {
+            layer.msg("提交请选择同意",{icon:2});
+            setDisable(true);
+            return false;
+        }
+        var departExamine = {};
+        departExamine['cs_examine_date'] = data['examinationapprovaldatefirst']== ''?'2000-01-01':data['examinationapprovaldatefirst'];
+        departExamine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
+        departExamine['cs_examine_comment'] = data['remarkfirst'];
+        departExamine['cs_examine_content'] = data['examinationapprovalcontentfirst'];
+        departExamine['cs_examine_result'] = data['departmentdirectoradvice'];
+        departExamine['cs_examine_state'] = 2;
+        departExamine['cs_examine_name'] = editOrderData['depart_examine']['cs_examine_name'];
+        departExamine['examine_user_id'] = editOrderData['depart_examine']['examine_user_id'];
+        departExamine['cs_examine_id'] = editOrderData['depart_examine']['cs_examine_id'];
+        departExamine['cs_id'] = editOrderData['depart_examine']['cs_id'];
+        departExamine['submit_user_id'] = editOrderData['depart_examine']['submit_user_id'];
+        cs_examine[0] = departExamine;
+        jq.ajax({
+            type : "post",
+            url : "{:url('admin/addrepairconfirmorder/deliverorder')}",
+            data : {param:cs_examine},
+            async : false,
+            success : function(result){
+                console.log(result);
+            }
+        });
+        console.log(cs_examine);
+        return true;
+    }
+    //修改时 总经理提交
+    function companyDeliver () {
+        var jq = layui.jquery;
+        var data = getFormData();
+
+        //判断必填项
+        if(judgeMustInput(data,current_user_type) == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
+        var curdate = new Date();
+        if(data['executivegeneralmanageradvice'] != "同意")
+        {
+            layer.msg("提交请选择同意",{icon:2});
+            setDisable(true);
+            return false;
+        }
+        var cs_examine = [];
+        var companyExamine = {};
+
+        companyExamine['cs_examine_date'] = data['examinationapprovaldatesecond']== ''?'2000-01-01':data['examinationapprovaldatesecond'];
+        companyExamine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
+        companyExamine['cs_examine_comment'] = data['remarksecond'];
+        companyExamine['cs_examine_content'] = data['examinationapprovalcontentsecond'];
+        companyExamine['cs_examine_result'] = data['executivegeneralmanageradvice'];
+        companyExamine['cs_examine_state'] = 2;
+        companyExamine['cs_examine_name'] = editOrderData['company_examine']['cs_examine_name'];
+        companyExamine['examine_user_id'] = editOrderData['company_examine']['examine_user_id'];
+        companyExamine['cs_examine_id'] = editOrderData['company_examine']['cs_examine_id'];
+        companyExamine['cs_id'] = editOrderData['company_examine']['cs_id'];
+        companyExamine['submit_user_id'] = editOrderData['company_examine']['submit_user_id'];
+        cs_examine[0] = companyExamine;
+        jq.ajax({
+            type : "post",
+            url : "{:url('admin/addrepairconfirmorder/deliverorder')}",
+            data : {param:cs_examine},
+            async : false,
+            success : function(result){
+                console.log(result);
+            }
+        });
+        console.log(cs_examine);
+        return true;
+    }
+    //修改时 财务提交
+    function financeDeliver () {
+        var jq = layui.jquery;
+        var data = getFormData();
+
+        //判断必填项
+        if(judgeMustInput(data,current_user_type) == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
+        var curdate = new Date();
+        if(data['financedirectoradvice'] != "同意")
+        {
+            layer.msg("提交请选择同意",{icon:2});
+            setDisable(true);
+            return false;
+        }
+        var cs_examine = [];
+        var financeExamine = {};
+        financeExamine['cs_examine_date'] = data['examinationapprovaldatethird'] == ''?'2000-01-01':data['examinationapprovaldatethird'];
+        financeExamine['cs_examine_time_stamp'] = curdate.toLocaleDateString();
+        financeExamine['cs_examine_comment'] = data['remarkthird'];
+        financeExamine['cs_examine_content'] = data['examinationapprovalcontentthird'];
+        financeExamine['cs_examine_result'] = data['financedirectoradvice'];
+        financeExamine['cs_examine_state'] = 2;
+        financeExamine['cs_examine_name'] = editOrderData['finance_examine']['cs_examine_name'];
+        financeExamine['examine_user_id'] = editOrderData['finance_examine']['examine_user_id'];
+        financeExamine['cs_examine_id'] = editOrderData['finance_examine']['cs_examine_id'];
+        financeExamine['cs_id'] = editOrderData['finance_examine']['cs_id'];
+        financeExamine['submit_user_id'] = editOrderData['finance_examine']['submit_user_id'];
+        cs_examine[0] = financeExamine;
+        jq.ajax({
+            type : "post",
+            url : "{:url('admin/addrepairconfirmorder/deliverorder')}",
+            data : {param:cs_examine},
+            async : false,
+            success : function(result){
+                console.log(result);
+            }
+        });
+        return true;
+    }
+    //修改时 物流提交
+    function logisticSave()  {
+        if (isloading){
+            return;
+        }
+        setDisable(false);
+        var data = getFormData();
+        //判断必填项
+        if(judgeMustInput(data,current_user_type) == false)
+        {
+            setDisable(true);
+            return false;
+        }
+        var jq = layui.jquery;
+
+        var cs_info = getCsInfo(data,false,true,data['cs_info_state']);
+        console.log("以下确认单信息：");
+        console.log(cs_info);
+
+        //付款信息
+        var  payment_info= getPaymentInfo(data,true);
+        console.log("以下付款信息：");
+        console.log(payment_info);
+
+        //处理清单
+        var order_goods_manager= getOrderGoods(data,true);
+        console.log("以下清单信息：");
+        console.log(order_goods_manager);
+
+        var unc_ofg_info = null;
+        var unc_ofg_detail = null;
+        if (uncofginfo != null){
+            del_unc_ofg_detail_id_arr = uncofginfo.del_unc_ofg_detail_id_arr;
+            unc_ofg_info = uncofginfo.unc_ofg_info;
+            var unc_ofg_items = uncofginfo.unc_ofg_items;
+            var length = unc_ofg_items.length;
+            for (var i = 0; i < length; i++){
+                if (unc_ofg_detail == null){
+                    unc_ofg_detail = [];
+                }
+                var itemInfo = {};
+                itemInfo.uod_id = unc_ofg_items[i].uod_id;
+                itemInfo.unc_ofg_info_id = unc_ofg_info.uoi_id;
+                itemInfo.product_info_id = unc_ofg_items[i].product_info_id;
+                itemInfo.uod_count = unc_ofg_items[i].uod_count;
+                itemInfo.uod_unit = unc_ofg_items[i].uod_unit;
+                itemInfo.uod_requirement = unc_ofg_items[i].uod_requirement;
+                itemInfo.uod_delivery_date = unc_ofg_items[i].uod_delivery_date;
+                itemInfo.uod_comment = unc_ofg_items[i].uod_comment;
+                itemInfo.unc_product_id = unc_ofg_items[i].unc_product_id;
+                unc_ofg_detail[i] = itemInfo;
+            }
+        }
+        console.log('下列非常规订单信息：');
+        console.log(unc_ofg_info);
+        console.log('下列非常规清单信息：');
+        console.log(unc_ofg_detail);
+        console.log(del_unc_ofg_detail_id_arr);
+
+        var cs_examine = [];
+        if(editOrderData['complete_date'] == ''||editOrderData['complete_date'] == '2000-01-01'||editOrderData['complete_date'] == '2000-01-01 00:00:00')
+        {
+            cs_examine[0] = getDirectorExamine(data,true,2);
+            cs_examine[1] = getGeneralManagerExamine(data,true,2);
+            cs_examine[2] = getFinanceExamine(data,true,2);
+        }
+        console.log("以下订单审批信息：");
+        console.log(cs_examine);
+
+        jq.ajax({
+            url: "{:url('admin/addrepairconfirmorder/logisticeditandsaveorder')}",
+            data: {cs_info:cs_info,
+                order_goods_manager:order_goods_manager,
+                payment_info:payment_info,
+                unc_ofg_info:unc_ofg_info,
+                unc_ofg_detail:unc_ofg_detail,
+                del_unc_ofg_detail_id_arr:del_unc_ofg_detail_id_arr,
+                cs_examine:cs_examine,
+            } ,
+            type: 'POST',
+            dataType: 'json',
+            async:false,
+            success: function(e) {
+                console.log(e);
+                if(e){
+                    console.log('订单添加成功！');
+                }else if(!e){
+                    console.log('订单提交失败！');
+                    console.log(e);
+                }
+            }
+        });
+        return true;
+    }
+
+    function editDeliver() {
+        if (isloading){
+            return;
+        }
+        setDisable(false);
+        if(current_user_type == 1)
+        {
+            return managerDeliver();
+        }
+        else if(current_user_type == 2)
+        {
+            return departDeliver();
+        }
+        else if(current_user_type == 3)
+        {
+            return companyDeliver();
+        }
+        else if(current_user_type == 4)
+        {
+            return financeDeliver();
+        }
+    }
+    //修改时 退回
+    function returnOrder() {
+        if (isloading){
+            return;
+        }
+        setDisable(false);
+
+        var jq = layui.jquery;
+        var data = getFormData();
+
+        //判断必填项
+        if(judgeMustInput(data,current_user_type) == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
+        var curdate = new Date();
+        var cs_id = [];
+        var cs_examine = [];
+
+        if(current_user_type == 2)
+        {
+            if(data['departmentdirectoradvice'] != "不同意")
+            {
+                layer.msg("退回请选择不同意",{icon:2});
+                setDisable(true);
                 return false;
-            });
-          });
-        </script>
-    </body>
+            }
+
+
+        }
+        else if(current_user_type == 3)
+        {
+            if(data['executivegeneralmanageradvice'] != "不同意")
+            {
+                layer.msg("退回请选择不同意",{icon:2});
+                setDisable(true);
+                return false;
+            }
+
+            console.log(cs_examine);
+        }
+        else if(current_user_type == 4)
+        {
+            if(data['financedirectoradvice'] != "不同意")
+            {
+                layer.msg("退回请选择不同意",{icon:2});
+                setDisable(true);
+                return false;
+            }
+
+        }
+        var depart_examine = getDirectorExamine(data,true,2);
+        cs_examine.push(depart_examine);
+
+        var company_examine = getGeneralManagerExamine(data,true,2);
+        cs_examine.push(company_examine);
+
+        var finance_examine = getFinanceExamine(data,true,2);
+        cs_examine.push(finance_examine);
+
+        console.log(cs_examine);
+        var cs_info = new Object();
+        cs_info.custom_info_id = editOrderData['custom_info_id'];
+        cs_info.delivery_info_id = editOrderData['delivery_info_id'];
+        cs_info.return_info_id = editOrderData['return_info_id'];
+        cs_info.payment_info_id = editOrderData['payment_info_id'];
+        cs_info.cur_process_user_id = editOrderData['cur_process_user_id'];                      // 当前处理用户id
+        cs_info.pre_process_user_id = editOrderData['pre_process_user_id'];
+        cs_info.cs_id = editOrderData['cs_id'];
+        cs_info.complete_date = editOrderData['complete_date'];
+        cs_info.product_number = editOrderData['product_number'];
+        cs_info.cs_examine_ids = editOrderData['cs_examine_ids'];
+        cs_info.write_date = editOrderData['write_date'];
+        cs_info.cs_info_state = 5;
+        cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
+        cs_info.can_edit = 1;                              //0 不可编辑
+        cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
+        cs_info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
+        jq.ajax({
+            type : "post",
+            url : "{:url('admin/addrepairconfirmorder/returnorder')}",
+            data : {cs_info:cs_info,cs_examine:cs_examine},
+            async : false,
+            success : function(result){
+                console.log(result);
+            }
+        });
+        return true;
+    }
+
+    function getFormData() {
+        var jq = layui.jquery;
+        var dataArray = jq('form').serializeArray();
+        var data= [];
+        for(var i= 0;i< dataArray.length;i++)
+        {
+            data[dataArray[i]['name']] = dataArray[i]['value'];
+        }
+        return data;
+    }
+
+    function isEmptyObject(obj){
+        for (var key in obj) {
+            return false;
+        }
+        return true;
+    }
+    //检查必填项
+    function judgeMustInput(data,cur_user_type) {
+        if(cur_user_type == 1)
+        {
+            if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
+                layer.msg('请选择部门！',{icon:2});
+                return false;
+            }
+            if(data['build_user_id'] == ""){
+                layer.msg('请选择经理！',{icon:2});
+                return false;
+            }
+
+            if(data['build_organize_id'] != user_info['organize_id'] || data['build_department_id'] != user_info['department_id']||data['build_user_id'] != user_info['user_id'])
+            {
+                layer.msg('区域经理有误,只能录自己的单！',{icon:2});
+                return false;
+            }
+            if(data['build_user_phone'] == '')
+            {
+                layer.msg('区域经理电话不能为空！',{icon:2});
+                return false;
+            }
+            //custom_info
+            if(data['company_name'] == '')
+            {
+                layer.msg('客户信息-公司名称不能为空！',{icon:2});
+                return false;
+            }
+            if(data['company_phone'] == '')
+            {
+                layer.msg('客户信息-公司电话/传真不能为空！',{icon:2});
+                return false;
+            }
+            if(data['company_address'] == '')
+            {
+                layer.msg('客户信息-公司地址不能为空！',{icon:2});
+                return false;
+            }
+            if(data['company_address'] == '')
+            {
+                layer.msg('客户信息-公司地址不能为空！',{icon:2});
+                return false;
+            }
+            if(data['company_contact'] == '')
+            {
+                layer.msg('客户信息-公司联系人不能为空！',{icon:2});
+                return false;
+            }
+            if(data['company_contact_phone'] == '')
+            {
+                layer.msg('客户信息-联系人电话不能为空！',{icon:2});
+                return false;
+            }
+            //delivery_info
+            if(data['delivery_info_receiver_name'] == '')
+            {
+                layer.msg('发货信息-收货人姓名不能为空！',{icon:2});
+                return false;
+            }
+            if(data['delivery_info_receiver_phone'] == '')
+            {
+                layer.msg('发货信息-收货人电话不能为空！',{icon:2});
+                return false;
+            }
+            if(data['delivery_info_goods_yard_name'] == '')
+            {
+                layer.msg('发货信息-货场名称不能为空！',{icon:2});
+                return false;
+            }
+            if(data['delivery_info_goods_yard_phone'] == '')
+            {
+                layer.msg('发货信息-货场电话不能为空！',{icon:2});
+                return false;
+            }
+            if(data['delivery_info_receiver_address'] == '')
+            {
+                layer.msg('发货信息-收货地址不能为空！',{icon:2});
+                return false;
+            }
+            if(data['is_insure'] == 1){
+                if(data['insure_amount'] == ""){
+                    layer.msg('发货信息-保额不能为空！',{icon:2});
+                    return false;
+                }
+            }
+            if(data['transfer_fee_mode'] == ""){
+                layer.msg('发货信息-请选择运费方式！',{icon:2});
+                return false;
+            }
+            //return_info
+            if(data['return_info_receiver_name'] == '')
+            {
+                layer.msg('返货信息-收货人姓名不能为空！',{icon:2});
+                return false;
+            }
+            if(data['return_info_receiver_phone'] == '')
+            {
+                layer.msg('返货信息-收货人电话不能为空！',{icon:2});
+                return false;
+            }
+            if(data['return_info_goods_yard_name'] == '')
+            {
+                layer.msg('返货信息-货场名称不能为空！',{icon:2});
+                return false;
+            }
+            if(data['return_info_goods_yard_phone'] == '')
+            {
+                layer.msg('返货信息-货场电话不能为空！',{icon:2});
+                return false;
+            }
+            if(data['return_order_num'] == '')
+            {
+                layer.msg('返货信息-返货单号不能为空！',{icon:2});
+                return false;
+            }
+            if(data['return_info_receiver_address'] == '')
+            {
+                layer.msg('返货信息-收货地址不能为空！',{icon:2});
+                return false;
+            }
+
+        }
+        else if(cur_user_type == 2)
+        {
+            if(data['examinationapprovaldatefirst'] == '')
+            {
+                layer.msg('部门总监审批-审批日期不能为空！',{icon:2});
+                return false;
+            }
+
+        }
+        else if(cur_user_type == 3)
+        {
+            if(data['examinationapprovaldatesecond'] == '')
+            {
+                layer.msg('执行总经理审批-审批日期不能为空！',{icon:2});
+                return false;
+            }
+        }
+        else if(cur_user_type == 4)
+        {
+            if(data['examinationapprovaldatethird'] == '')
+            {
+                layer.msg('财务审批-审批日期不能为空！',{icon:2});
+                return false;
+            }
+        }
+        else if(cur_user_type == 5)
+        {
+            //付款信息
+            if(data['paid_date'] == '')
+            {
+                layer.msg('款项情况-到账日期不能为空！',{icon:2});
+                return false;
+            }
+            if(data['customization_fee'] == '')
+            {
+                layer.msg('款项情况-订制费用不能为空！',{icon:2});
+                return false;
+            }
+            if(data['paid_bank'] == '')
+            {
+                layer.msg('款项情况-运费不能为空！',{icon:2});
+                return false;
+            }
+            if(data['orderdate'] == '')
+            {
+                layer.msg('接收时间不能为空！',{icon:2});
+                return false;
+            }
+        }
+
+    }
+
+    function setDelUncofginfoVis() {
+        if (current_user_type != 5){
+            if(uncofginfo == "" || uncofginfo == null || uncofginfo === undefined){
+                $('#deluncofginfo').addClass('hide');
+                $('#lookuncofginfo').attr("disabled","disabled");
+                $('#lookuncofginfo').addClass('btnPicLightBg');
+            }else {
+                $('#deluncofginfo').addClass('hide');
+
+                $('#lookuncofginfo').removeAttr("disabled");
+                $('#lookuncofginfo').removeClass('btnPicLightBg');
+            }
+        }else {
+            if(uncofginfo == "" || uncofginfo == null || uncofginfo === undefined){
+                $('#deluncofginfo').addClass('hide');
+                $('#lookuncofginfo').attr("disabled","disabled");
+                $('#lookuncofginfo').addClass('btnPicLightBg');
+                console.log(2472);
+                console.log(uncofginfo);
+            }else {
+                $('#deluncofginfo').removeClass('hide');
+
+                $('#lookuncofginfo').removeAttr("disabled");
+                $('#lookuncofginfo').removeClass('btnPicLightBg');
+                console.log(2480);
+                console.log(uncofginfo);
+            }
+        }
+    }
+    //页面间数据传递
+    function getUncofgInfoUI() {
+        return uncofginfo;
+    }
+
+    function getCsInfo(data,isSave,isEdit,csState) {
+        console.log(data);
+        var info = new Object();
+        info.custom_info_id = isEdit == true?editOrderData['custom_info_id']:-1;
+        info.delivery_info_id = isEdit == true?editOrderData['delivery_info_id']:-1;
+        info.return_info_id = isEdit == true?editOrderData['return_info_id']:-1;
+        info.payment_info_id = isEdit == true?editOrderData['payment_info_id']:-1;
+        info.cur_process_user_id = isEdit == true?editOrderData['cur_process_user_id']:data['build_user_id'];                      // 当前处理用户id
+        info.pre_process_user_id = isEdit == true?editOrderData['pre_process_user_id']:data['build_user_id'];
+        info.cs_id = isEdit == true?editOrderData['cs_id']:'';
+        info.cs_examine_ids = isEdit == true?editOrderData['cs_examine_ids']:'';
+        info.write_date = isEdit == true?editOrderData['write_date']:'';
+        info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
+        info.can_edit = isSave == true?1:0;                              //0 不可编辑
+        info.cs_info_state = csState;
+        info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate']; //cs_info       //新增 无完成日期
+        info.product_number = document.getElementById('tableorder').rows.length-1;
+        info.unc_ofg_info_id = isEdit == true?editOrderData['unc_ofg_info_id']:0;
+        info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
+        return info;
+    }
+
+    function getCustomInfo(data,isEdit) {
+        var info = new Object();
+        info.custom_info_id = isEdit == true?editOrderData['custom_info_id']:'';
+        info.company_name = data['company_name'];
+        info.company_phone = data['company_phone'];
+        info.company_address = data['company_address'];
+        info.legal_representative = data['legal_representative'];
+        info.legal_phone = data['legal_phone'];
+        info.company_contact = data['company_contact'];
+        info.company_contact_phone = data['company_contact_phone'];
+        return info;
+    }
+
+    function getDeliveryInfo(data,isEdit) {
+        var info = new Object();
+        info.delivery_info_id = isEdit == true?editOrderData['delivery_info_id']:'';
+        info.delivery_info_receiver_name = data['delivery_info_receiver_name'];
+        info.delivery_info_receiver_phone = data['delivery_info_receiver_phone'];
+        info.delivery_info_goods_yard_name = data['delivery_info_goods_yard_name'];
+        info.delivery_info_goods_yard_phone = data['delivery_info_goods_yard_phone'];
+        info.delivery_info_receiver_address = data['delivery_info_receiver_address'];
+        info.is_insure = data['is_insure'];
+        info.insure_amount = data['insure_amount'] == ''?0:data['insure_amount'];
+        info.is_sign = data['is_sign'];
+        info.has_contract = data['has_contract'];
+        info.transfer_fee_mode = data['transfer_fee_mode'];//freightway 运费方式
+        info.order_delivery_require = data['order_delivery_require'];
+        return info;
+    }
+
+    function getReturnInfo(data,isEdit) {
+
+        var info = new Object();
+        info.return_info_id = editOrderData['return_info_id'];
+        info.return_info_receiver_name = data['return_info_receiver_name'];
+        info.return_info_receiver_phone = data['return_info_receiver_phone'];
+        info.return_info_goods_yard_name = data['return_info_goods_yard_name'];
+        info.return_info_goods_yard_phone = data['return_info_goods_yard_phone'];
+        info.return_order_num = data['return_order_num'];
+        info.return_info_receiver_address = data['return_info_receiver_address'];
+        return info;
+    }
+
+    function getCsBelong(data,isEdit) {
+        var jq = layui.jquery;
+        var info = new Object();
+        info.cs_belong_id = isEdit == true?editOrderData['cs_belong_id']:'';
+        info.cs_id = isEdit == true?editOrderData['cs_id']:'';
+        info.build_organize_id = data['build_organize_id'];
+        info.build_department_id = data['build_department_id'];
+        info.build_user_id = data['build_user_id'];
+        info.build_department_name = jq("#build_department_id").find("option:selected").text();                //缺
+        info.cs_belong_create_time = isEdit == true?editOrderData['cs_belong_create_time']:new Date().toLocaleDateString();
+        info.build_user_name = jq("#build_user_id").find("option:selected").text();
+        info.build_organize_name = jq("#build_organize_id").find("option:selected").text();
+        info.build_user_phone = data['build_user_phone'];
+        return info;
+    }
+
+    function getOrderGoods(data,isEdit) {
+        var  tabledata = getTableContent();
+        var rows = tabledata.length;
+        var info= [];
+        for(var i = 0; i < rows; i++){
+            var order_goods_manager_item = {};
+            order_goods_manager_item['order_goods_manager_id']= tabledata[i]['order_goods_manager_id'];
+            order_goods_manager_item['cs_id']= isEdit==true?editOrderData['cs_id']:'';
+            order_goods_manager_item['product_info_id']= tabledata[i]['product_info_id'];
+            order_goods_manager_item['unit'] = tabledata[i]['unit'];
+            order_goods_manager_item['order_goods_manager_count'] = tabledata[i]['order_goods_manager_count'];
+            order_goods_manager_item['specification'] = tabledata[i]['specification'];
+            order_goods_manager_item['type'] = cs_info_type;                                             //1：更换 详细看数据库
+            order_goods_manager_item['unit_price'] = -1;
+            order_goods_manager_item['order_goods_manager_explain'] = data['order_goods_manager_explain'];
+
+            order_goods_manager_item['comment'] = tabledata[i]['comment'] == undefined?'':tabledata[i]['comment'];
+            order_goods_manager_item['bar_code'] = tabledata[i]['bar_code'];
+            order_goods_manager_item['back_date'] = tabledata[i]['back_date'] == '' ? '2000-01-01' : tabledata[i]['back_date'];
+            order_goods_manager_item['replace_reason'] = tabledata[i]['replace_reason'];
+            order_goods_manager_item['purchase_date'] = '2000-01-01';
+            order_goods_manager_item['deal_date'] = tabledata[i]['deal_date'];
+            order_goods_manager_item['fault_condition'] =  tabledata[i]['fault_condition'];
+
+
+            order_goods_manager_item['ogl_id'] = tabledata[i]['ogl_id'];
+            order_goods_manager_item['ogl_product_state'] = tabledata[i]['ogl_product_state'];
+            order_goods_manager_item['unc_product_id'] =tabledata[i]['unc_product_id'] == ''?-1:tabledata[i]['unc_product_id'];
+            order_goods_manager_item['ogl_comment'] = tabledata[i]['ogl_comment'];
+            order_goods_manager_item['ogl_explain'] = data['ogl_explain'];
+            info[i] = order_goods_manager_item;
+        }
+        return info;
+    }
+
+    function getDirectorExamine(data,isEdit,state) {
+        var info = {};
+        if(isEdit == false)
+            info['cs_examine_date'] = '2000-01-01';
+        else
+            info['cs_examine_date'] = data['examinationapprovaldatefirst']== ''?'2000-01-01':data['examinationapprovaldatefirst'];
+        info['cs_examine_comment'] = isEdit == false?'':data['remarkfirst'];
+        info['cs_examine_content'] =  data['examinationapprovalcontentfirst'];
+        if(isEdit == false)
+            info['cs_examine_result'] = "";
+        else
+            info['cs_examine_result'] = data['departmentdirectoradvice'] === undefined ?"":data['departmentdirectoradvice'];
+        info['cs_examine_state'] = state;
+        info['cs_examine_name'] = isEdit == true?editOrderData['depart_examine']['cs_examine_name']:'';
+        info['examine_user_id'] = isEdit == true?editOrderData['depart_examine']['examine_user_id']:'';
+        info['cs_examine_id'] = isEdit == true?editOrderData['depart_examine']['cs_examine_id']:'';
+        info['cs_id'] = isEdit == true?editOrderData['depart_examine']['cs_id']:'';
+        info['submit_user_id'] = isEdit == true?editOrderData['depart_examine']['submit_user_id']:data['build_user_id'];
+        info['cs_examine_time_stamp'] = state == 2?new Date().toLocaleDateString():'2000-01-01';
+        return info;
+    }
+
+    function getGeneralManagerExamine(data,isEdit,state) {
+        var info = {};
+        if(isEdit == false)
+            info['cs_examine_date'] = '2000-01-01';
+        else
+            info['cs_examine_date'] =data['examinationapprovaldatesecond']== ''?'2000-01-01':data['examinationapprovaldatesecond'];
+        info['cs_examine_comment'] = isEdit == false?'':data['remarksecond'];
+        info['cs_examine_content'] = data['examinationapprovalcontentsecond'];
+        if(isEdit == false)
+            info['cs_examine_result'] = "";
+        else
+            info['cs_examine_result'] = data['executivegeneralmanageradvice']=== undefined ?"":data['executivegeneralmanageradvice'];
+        info['cs_examine_state'] = state;
+        info['cs_examine_name'] = isEdit == true?editOrderData['company_examine']['cs_examine_name']:'';
+        info['examine_user_id'] = isEdit == true?editOrderData['company_examine']['examine_user_id']:'';
+        info['cs_examine_id'] = isEdit == true?editOrderData['company_examine']['cs_examine_id']:'';
+        info['cs_id'] = isEdit == true?editOrderData['company_examine']['cs_id']:'';
+        info['submit_user_id'] = isEdit == true?editOrderData['company_examine']['submit_user_id']:data['build_user_id'];
+        info['cs_examine_time_stamp'] = state == 2?new Date().toLocaleDateString():'2000-01-01';
+        return info;
+    }
+
+    function getFinanceExamine(data,isEdit,state) {
+        var info = {};
+        if(isEdit == false)
+            info['cs_examine_date'] = '2000-01-01';
+        else
+            info['cs_examine_date'] = data['examinationapprovaldatethird'] == ''?'2000-01-01':data['examinationapprovaldatethird'];
+        info['cs_examine_comment'] = isEdit == false?'':data['remarkthird'];
+        info['cs_examine_content'] = data['examinationapprovalcontentthird'];
+        if(isEdit == false)
+            info['cs_examine_result'] = "";
+        else
+            info['cs_examine_result'] = data['financedirectoradvice']=== undefined ?"":data['financedirectoradvice'];
+        info['cs_examine_state'] = state;
+        info['cs_examine_name'] = isEdit == true?editOrderData['finance_examine']['cs_examine_name']:'';
+        info['examine_user_id'] = isEdit == true?editOrderData['finance_examine']['examine_user_id']:'';
+        info['cs_examine_id'] = isEdit == true?editOrderData['finance_examine']['cs_examine_id']:'';
+        info['cs_id'] = isEdit == true?editOrderData['finance_examine']['cs_id']:'';
+        info['submit_user_id'] = isEdit == true?editOrderData['finance_examine']['submit_user_id']:data['build_user_id'];
+        info['cs_examine_time_stamp'] = state == 2?new Date().toLocaleDateString():'2000-01-01';
+
+        return info;
+    }
+
+    function getPaymentInfo(data,isEdit) {
+        var  info= {};
+        info['payment_info_id'] = isEdit == true?editOrderData['payment_info_id']:'';
+        info['is_paid'] = data['is_paid'];
+        info['paid_date'] = data['paid_date'] == '' ? "2000-01-01":data['paid_date'];
+        info['customization_fee'] =  data['customization_fee'];
+        info['paid_bank'] = data['paid_bank'];
+        info['payment_info_comment'] = data['payment_info_comment'];
+        return info;
+    }
+
+    // document.onkeydown = function keyLogin(e) {
+    //     var event = (typeof event!= 'undefined') ? window.event : e;
+    //     if(event.keyCode==8) //屏蔽delete键
+    //         return false;
+    // }
+
+</script>
+</body>
 </html>
