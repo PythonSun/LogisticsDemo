@@ -330,8 +330,8 @@
                 <input type="text" name="delivery_date_reply" id="delivery_date_reply" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled"> </div>
         </div>
         <div class="layui-inline">
-            <input type="button" id="uncofginfo" class="layui-btn dark_blue" target="_blank" value="增加非定型产品订货确认单">
-            <input type="button" id="lookuncofginfo" class="layui-btn dark_blue" target="_blank" value="查看非定型产品订货确认单">
+            <input type="button" id="uncofginfo" class="layui-btn dark_blue dark_blue_disabled" target="_blank" value="增加非定型产品订货确认单">
+            <input type="button" id="lookuncofginfo" class="layui-btn " target="_blank" value="查看非定型产品订货确认单">
             <input type="button" id="deluncofginfo" class="layui-btn dark_blue" target="_blank" style="color: red" value="删除非定型产品订货确认单">
         </div>
     </div>
@@ -595,6 +595,7 @@
                     uncofginfo.del_unc_ofg_detail_id_arr = null;
                 }
                 userPower();
+                setDelUncofginfoVis();
                 layui.form.render('select');
                 layui.form.render('radio');
                 isloading = false;

@@ -364,9 +364,9 @@
                         <input type="text" name="delivery_date_reply" id="delivery_date_reply" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled"> </div>
                 </div>
                 <div class="layui-inline">
-                    <input type="button" id="uncofginfo" class="layui-btn dark_blue" target="_blank" value="增加非定型产品订货确认单">
-                    <input type="button" id="lookuncofginfo" class="layui-btn dark_blue" target="_blank" value="查看非定型产品订货确认单">
-                    <input type="button" id="deluncofginfo" class="layui-btn dark_blue" target="_blank" style="color: red" value="删除非定型产品订货确认单">
+                    <input type="button" id="uncofginfo" class="layui-btn dark_blue dark_blue_disabled" target="_blank" value="增加非定型产品订货确认单">
+                    <input type="button" id="lookuncofginfo" class="layui-btn" target="_blank" value="查看非定型产品订货确认单">
+                    <input type="button" id="deluncofginfo" class="layui-btn dark_blue " target="_blank" style="color: red" value="删除非定型产品订货确认单">
                 </div>
             </div>
 
@@ -419,6 +419,7 @@
         </form>
 
         <script type="text/javascript" src="/static/layui/layui.js"></script>
+        <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="/static/js/commondetect.js"></script>
         <script type="text/javascript">
             var isloading = true;
@@ -635,6 +636,8 @@
                             uncofginfo.del_unc_ofg_detail_id_arr = null;
                         }
                         userPower();
+                        console.log(current_user_type);
+                        setDelUncofginfoVis();
                         layui.form.render('select');
                         layui.form.render('radio');
                         isloading = false;
@@ -2012,7 +2015,6 @@
                         $('#lookuncofginfo').addClass('btnPicLightBg');
                     }else {
                         $('#deluncofginfo').addClass('hide');
-
                         $('#lookuncofginfo').removeAttr("disabled");
                         $('#lookuncofginfo').removeClass('btnPicLightBg');
                     }
