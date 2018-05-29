@@ -26,8 +26,8 @@
         </div>
         <div class="layui-inline ">
             <label class="layui-form-label dark_blue">接收时间</label>
-            <div class="layui-input-inline ">
-                <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input light_gray dark_blue_disabled"> </div>
+            <div class="layui-input-inline">
+                <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input dark_blue dark_blue_disabled"> </div>
         </div>
 
         <div class="layui-inline">
@@ -102,7 +102,7 @@
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label Wheat " style="width: 130px">区域经理电话</label>
+            <label class="layui-form-label Wheat" id="areamanagertel" onmouseenter="tips(this.innerHTML,'#areamanagertel')">区域经理电话</label>
             <div class="layui-input-inline Wheat">
                 <input type="text"  name="build_user_phone" id="build_user_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);">
             </div>
@@ -216,9 +216,9 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label Wheat label_change">订单发货要求</label>
+        <label class="layui-form-label Wheat" id="order_delivery_require_label" onmouseenter="tips(this.innerHTML,'#order_delivery_require_label')">订单发货要求</label>
         <div class="layui-input-inline">
-            <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+            <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
     </div>
     <h3>部门总监审批</h3>
     <div class="layui-form-item">

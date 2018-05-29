@@ -24,21 +24,20 @@
                     <div class="layui-input-inline">
                         <input type="text" disabled name="cs_belong_create_time" id="cs_belong_create_time" autocomplete="on" class="layui-input light_gray" value="{$date}"> </div>
                 </div>
-                <div class="layui-inline ">
+                <div class="layui-inline">
                     <label class="layui-form-label dark_blue">接收时间</label>
-                    <div class="layui-input-inline ">
-                        <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input light_gray dark_blue_disabled"> </div>
+                    <div class="layui-input-inline dark_blue">
+                        <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input dark_blue dark_blue_disabled"> </div>
                 </div>
-
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">流水号</label>
                     <div class="layui-input-inline">
                         <input type="text" name="cs_id" id="cs_id" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray" disabled> </div>
                 </div>
-                <div class="layui-inline">
+                <div class="layui-inline"> 
                     <label class="layui-form-label dark_blue">状态</label>
-                    <div class="layui-input-inline dark_blue ">
-                        <select name="cs_info_state" id = "cs_info_state" lay-filter="cs_info_state" class="dark_blue_disabled">
+                    <div class="layui-input-inline dark_blue">
+                        <select name="cs_info_state" id = "cs_info_state" disabled="" lay-filter="cs_info_state">
                             <option value=""  >选择</option>
                             <option value="1" selected="">处理中</option>
                             <option value="2">已完成</option>
@@ -102,7 +101,7 @@
                     </div>
                 </div>
                 <div class="layui-inline">
-                    <label class="layui-form-label Wheat " style="width: 130px">区域经理电话</label>
+                    <label class="layui-form-label Wheat" id = "areamanagertel" onmouseenter="tips(this.innerHTML,'#areamanagertel')">区域经理电话</label>
                     <div class="layui-input-inline Wheat">
                         <input type="text"  name="build_user_phone" id="build_user_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);">
                     </div>
@@ -216,9 +215,9 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label Wheat label_change">订单发货要求</label>
+                <label class="layui-form-label Wheat" id='order_delivery_require' onmouseenter="tips('订单发货要求','#order_delivery_require')">订单发货要求</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+                    <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
             </div>
             <h3>返货信息</h3>
             <div class="layui-form-item">
@@ -331,7 +330,7 @@
             <div class="layui-form-item dark_blue " pane="">
                 <label class="layui-form-label dark_blue">是否到账</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="is_paid" value="是" title="是" checked=""   class="dark_blue_disabled">
+                    <input type="radio" name="is_paid" value="是" title="是" checked="" class="dark_blue_disabled">
                     <input type="radio" name="is_paid" value="否" title="否" class="dark_blue_disabled"> </div>
             </div>
             <div class="layui-form-item">
@@ -440,7 +439,7 @@
             layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
                 var form = layui.form,
                     laydate = layui.laydate,
-                    jq = layui.jquery,
+                    jq = layui.jquery;
                     layer = layui.layer;
 
                 //监听保存
@@ -2227,7 +2226,6 @@
                 info['payment_info_comment'] = data['payment_info_comment'];
                 return info;
             }
-
             // document.onkeydown = function keyLogin(e) {
             //     var event = (typeof event!= 'undefined') ? window.event : e;
             //     if(event.keyCode==8) //屏蔽delete键

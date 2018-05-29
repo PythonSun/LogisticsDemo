@@ -103,10 +103,10 @@
                 </div>
             </div>
         </div>
-        <div class="layui-form-item" style="display: inline-block;">
-            <div class="layui-inline ">
-                <label class="layui-form-label dark_blue">非常规产品：</label>
-                <div class="layui-input-inline dark_blue" >
+        <div class="layui-form-item">
+            
+                <label class="layui-form-label dark_blue" id="unconventionality" onmouseenter="tips(this.innerHTML,'#unconventionality')">非常规产品：</label>
+                <div class="layui-input-block dark_blue" >
                     <select id="unc_productid" name="unc_productname" lay-filter="unc_productname" class="dark_blue_disabled">
                         <option value="" selected>请选择</option>
                         {volist name="uncproductlist" id="vo1"}
@@ -114,21 +114,19 @@
                         {/volist}
                     </select>
                 </div>
-            </div>
+           
         </div>
-        <div class="layui-form-item dark_blue" style="display: inline-block;" pane="">
+        <div class="layui-form-item dark_blue" pane="">
             <label class="layui-form-label dark_blue">状态：</label>
-            <div class="layui-input-block " >
+            <div class="layui-input-block">
                 <input type="radio" name="inputstate" title="已更换" value="已更换" class="dark_blue_disabled">
                 <input type="radio" name="inputstate" title="未更换" value="未更换" class="dark_blue_disabled">
             </div>
         </div>
         <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label dark_blue">备注：</label>
-                <div class="layui-input-inline" style="max-width:120px">
-                    <input type="text" name="comment" id="comment" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputtext(this);">
-                </div>
+            <label class="layui-form-label dark_blue">备注：</label>
+            <div class="layui-input-block">
+                <input type="text" name="comment" id="comment" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputtext(this);">
             </div>
         </div>
     </form>
