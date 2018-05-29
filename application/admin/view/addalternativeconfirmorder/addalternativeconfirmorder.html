@@ -1367,9 +1367,9 @@
         console.log(cs_belong);
 
         var cs_examine = [];
-        cs_examine[0] = getDirectorExamine(data,true,1);
-        cs_examine[1] = getGeneralManagerExamine(data,true,1);
-        cs_examine[2] = getFinanceExamine(data,true,1);
+        cs_examine[0] = getDirectorExamine(data,false,1);
+        cs_examine[1] = getGeneralManagerExamine(data,false,1);
+        cs_examine[2] = getFinanceExamine(data,false,1);
         console.log("以下订单审批信息：");
         console.log(cs_examine);
 
@@ -2170,10 +2170,16 @@
 
     function getDirectorExamine(data,isEdit,state) {
         var info = {};
-        info['cs_examine_date'] = data['examinationapprovaldatefirst']== ''?'2000-01-01':data['examinationapprovaldatefirst'];
-        info['cs_examine_comment'] = data['remarkfirst'];
+        if(isEdit == false)
+            info['cs_examine_date'] = '2000-01-01';
+        else
+            info['cs_examine_date'] = data['examinationapprovaldatefirst']== ''?'2000-01-01':data['examinationapprovaldatefirst'];
+        info['cs_examine_comment'] = isEdit == false?'':data['remarkfirst'];
         info['cs_examine_content'] = data['examinationapprovalcontentfirst'];
-        info['cs_examine_result'] = data['departmentdirectoradvice'] === undefined ?"":data['departmentdirectoradvice'];
+        if(isEdit == false)
+            info['cs_examine_result'] = "";
+        else
+            info['cs_examine_result'] = data['departmentdirectoradvice'] === undefined ?"":data['departmentdirectoradvice'];
         info['cs_examine_state'] = state;
         info['cs_examine_name'] = isEdit == true?editOrderData['depart_examine']['cs_examine_name']:'';
         info['examine_user_id'] = isEdit == true?editOrderData['depart_examine']['examine_user_id']:'';
@@ -2186,10 +2192,16 @@
 
     function getGeneralManagerExamine(data,isEdit,state) {
         var info = {};
-        info['cs_examine_date'] =data['examinationapprovaldatesecond']== ''?'2000-01-01':data['examinationapprovaldatesecond'];
-        info['cs_examine_comment'] = data['remarksecond'];
-        info['cs_examine_content'] = data['examinationapprovalcontentsecond'];
-        info['cs_examine_result'] = data['executivegeneralmanageradvice']=== undefined ?"":data['executivegeneralmanageradvice'];
+        if(isEdit == false)
+            info['cs_examine_date'] = '2000-01-01';
+        else
+            info['cs_examine_date'] =data['examinationapprovaldatesecond']== ''?'2000-01-01':data['examinationapprovaldatesecond'];
+        info['cs_examine_comment'] = isEdit == false?'':data['remarksecond'];
+        info['cs_examine_content'] =  data['examinationapprovalcontentsecond'];
+        if(isEdit == false)
+            info['cs_examine_result'] = "";
+        else
+            info['cs_examine_result'] = data['executivegeneralmanageradvice']=== undefined ?"":data['executivegeneralmanageradvice'];
         info['cs_examine_state'] = state;
         info['cs_examine_name'] = isEdit == true?editOrderData['company_examine']['cs_examine_name']:'';
         info['examine_user_id'] = isEdit == true?editOrderData['company_examine']['examine_user_id']:'';
@@ -2202,10 +2214,16 @@
 
     function getFinanceExamine(data,isEdit,state) {
         var info = {};
-        info['cs_examine_date'] = data['examinationapprovaldatethird'] == ''?'2000-01-01':data['examinationapprovaldatethird'];
-        info['cs_examine_comment'] = data['remarkthird'];
-        info['cs_examine_content'] = data['examinationapprovalcontentthird'];
-        info['cs_examine_result'] = data['financedirectoradvice']=== undefined ?"":data['financedirectoradvice'];
+        if(isEdit == false)
+            info['cs_examine_date'] = '2000-01-01';
+        else
+            info['cs_examine_date'] = data['examinationapprovaldatethird'] == ''?'2000-01-01':data['examinationapprovaldatethird'];
+        info['cs_examine_comment'] = isEdit == false?'':data['remarkthird'];
+        info['cs_examine_content'] =  data['examinationapprovalcontentthird'];
+        if(isEdit == false)
+            info['cs_examine_result'] = "";
+        else
+            info['cs_examine_result'] = data['financedirectoradvice']=== undefined ?"":data['financedirectoradvice'];
         info['cs_examine_state'] = state;
         info['cs_examine_name'] = isEdit == true?editOrderData['finance_examine']['cs_examine_name']:'';
         info['examine_user_id'] = isEdit == true?editOrderData['finance_examine']['examine_user_id']:'';

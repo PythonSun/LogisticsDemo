@@ -319,6 +319,9 @@ class Addreplaceconfirmorder extends Controller
             }
 
         }
+
+        $cs_info = $_POST['cs_info'];
+
         //cs_examine
         $cs_examine = $_POST['cs_examine'];
         $length = count($cs_examine);
@@ -348,16 +351,17 @@ class Addreplaceconfirmorder extends Controller
                 $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
                 $cs_examine[$i]['cs_examine_name'] = $dbleader[0]['fullname'];
             }
+            $cs_examine[$i]['cs_id'] = $cs_info['cs_id'];
             $cs_examine_id = \app\index\model\Admin::getmaxtableidretid('cs_examine', 'cs_examine_id')+1;
             $cs_examine[$i]['cs_examine_id'] = $cs_examine_id;
             $cs_examine_ids.= "$cs_examine_id,";
             $rettest = \app\index\model\Admin::updatecsexamine($cs_examine[$i]);
         }
-
         //cs_info
-        $cs_info = $_POST['cs_info'];
+
         $cs_info['cs_examine_ids'] = $cs_examine_ids;
         $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
+
 
         if(array_key_exists('order_goods_delete_row',$_POST))
         {

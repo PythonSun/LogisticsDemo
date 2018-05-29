@@ -220,41 +220,6 @@
         <div class="layui-input-inline">
             <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
     </div>
-    <h3>返货信息</h3>
-    <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label Wheat">收货人姓名</label>
-            <div class="layui-input-inline">
-                <input type="text" name="return_info_receiver_name" id="return_info_receiver_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label Wheat">收货人电话</label>
-            <div class="layui-input-inline">
-                <input type="text" name="return_info_receiver_phone" id="return_info_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label Wheat">货场名称</label>
-            <div class="layui-input-inline">
-                <input type="text" name="return_info_goods_yard_name" id="return_info_goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label Wheat">货场电话</label>
-            <div class="layui-input-inline">
-                <input type="text" name="return_info_goods_yard_phone" id="return_info_goods_yard_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label Wheat">返货单号</label>
-            <div class="layui-input-inline">
-                <input type="text" name="return_order_num" id="return_order_num" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputdataletter(this);"> </div>
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label Wheat">收货地址</label>
-        <div class="layui-input-block">
-            <input type="text" name="return_info_receiver_address" id="return_info_receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
-    </div>
     <h3>部门总监审批</h3>
     <div class="layui-form-item">
         <label class="layui-form-label Wheat">审批内容</label>
@@ -389,7 +354,6 @@
             <th class="Wheat">数量</th>
             <th class="Wheat">条码</th>
             <th class="Wheat">归还日期</th>
-            <th class="Wheat">归跟换代用原因</th>
             <th class="Wheat">生产地</th>
             <th class="dark_blue">产品状态</th>
             <th class="dark_blue">非常规产品</th>
@@ -678,7 +642,7 @@
                 area:['800px','70%'],
                 shade:0.8,
                 maxmin:false,
-                content:"{:url('admin/addconfirmorderitem/addconfirmorderitem')}?type= 0",
+                content:"{:url('admin/addoreditborrowgoodsitem/addoreditborrowgoodsitem')}?type= 0",
                 btn:['保存','退出'],
                 yes:function (index,layero) {
                     var  iframeWin = top.window[layero.find('iframe')[0]['name']];
@@ -732,7 +696,7 @@
                 area:['800px','90%'],
                 shade:0.9,
                 maxmin:false,
-                content:"{:url('admin/addconfirmorderitem/addconfirmorderitem')}?type="+ type,
+                content:"{:url('admin/addoreditborrowgoodsitem/addoreditborrowgoodsitem')}?type="+ type,
                 btn:['保存','退出'],
                 yes:function (index,layero) {
                     var  iframeWin = top.window[layero.find('iframe')[0]['name']];
@@ -1167,21 +1131,19 @@
         if(row.back_date != '' || row.back_date != null || row.back_date != '2000-1-1')
             date = row.back_date;
         col_9.innerHTML = "<td><a>"+ date +"</a></td>";
-        var col_10 = new_tr.insertCell(10);
-        col_10.innerHTML = "<td><a>"+ row.replace_reason +"</a></td>";
-        var col_11 = new_tr.insertCell(11);
+        var col_11 = new_tr.insertCell(10);
         col_11.innerHTML = "<td><a >"+ row.place_name +"</a></td>";
-        var col_12 = new_tr.insertCell(12);
+        var col_12 = new_tr.insertCell(11);
         col_12.innerHTML = "<td><a>"+ row.ogl_product_state +"</a></td>";
-        var col_13 = new_tr.insertCell(13);
+        var col_13 = new_tr.insertCell(12);
         if(row.unc_product_name == null){
             col_13.innerHTML = "<td><a >"+ row.unc_product_name +"</a></td>";
         }else{
             col_13.innerHTML = "<td><a >"+ row.unc_product_name +"</a></td>";
         }
-        var col_14 = new_tr.insertCell(14);
+        var col_14 = new_tr.insertCell(13);
         col_14.innerHTML = "<td><a>"+ row.ogl_comment +"</a></td>";
-        var col_14 = new_tr.insertCell(15);
+        var col_14 = new_tr.insertCell(14);
         col_14.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn edit_disabled'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger Wheat_disabled  del_btn del_disabled'>删除</a>" +"</td>";
         if(current_user_type == 5){
             jq('.del_disabled').addClass('hide');
@@ -1290,6 +1252,7 @@
             rowdata.order_goods_manager_id = row.attr('order_goods_manager_id');
             rowdata.ogl_id = row.attr('ogl_id');
             data[index] = rowdata;
+            index++;
         }
         return data;
     }
@@ -1385,9 +1348,9 @@
         console.log(cs_belong);
 
         var cs_examine = [];
-        cs_examine[0] = getDirectorExamine(data,true,1);
-        cs_examine[1] = getGeneralManagerExamine(data,true,1);
-        cs_examine[2] = getFinanceExamine(data,true,1);
+        cs_examine[0] = getDirectorExamine(data,false,1);
+        cs_examine[1] = getGeneralManagerExamine(data,false,1);
+        cs_examine[2] = getFinanceExamine(data,false,1);
         console.log("以下订单审批信息：");
         console.log(cs_examine);
 
@@ -1406,6 +1369,7 @@
                 order_goods_delete_row:delrowid,} ,
             type: 'POST',
             dataType: 'json',
+            async:false,
             success: function(e) {
                 if(e){
                     console.log('订单添加成功！');
@@ -1471,6 +1435,7 @@
             } ,
             type: 'POST',
             dataType: 'json',
+            async:false,
             success: function(e) {
                 if(e){
                     console.log('订单添加成功！');
@@ -1797,25 +1762,16 @@
         cs_examine.push(finance_examine);
 
         console.log(cs_examine);
-        var cs_info = new Object();
-        cs_info.custom_info_id = editOrderData['custom_info_id'];
-        cs_info.delivery_info_id = editOrderData['delivery_info_id'];
-        cs_info.return_info_id = editOrderData['return_info_id'];
-        cs_info.payment_info_id = editOrderData['payment_info_id'];
-        cs_info.cur_process_user_id = editOrderData['cur_process_user_id'];                      // 当前处理用户id
-        cs_info.pre_process_user_id = editOrderData['pre_process_user_id'];
-        cs_info.cs_id = editOrderData['cs_id'];
-        cs_info.complete_date = editOrderData['complete_date'];
-        cs_info.product_number = editOrderData['product_number'];
-        cs_info.cs_examine_ids = editOrderData['cs_examine_ids'];
-        cs_info.write_date = editOrderData['write_date'];
-        cs_info.cs_info_state = 5;
-        cs_info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
-        cs_info.can_edit = 1;                              //0 不可编辑
-        cs_info.unc_ofg_info_id = editOrderData['unc_ofg_info_id'];
-        cs_info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
-        jq.post("{:url('admin/Addreplaceconfirmorder/returnorder')}",{'cs_info':cs_info,'cs_examine':cs_examine},function (result) {
-            console.log(result);
+        var cs_info = getCsInfo(data,true,true,5);
+
+        jq.ajax({
+            type : "post",
+            url : "{:url('admin/Addborrowconfirmorder/returnorder')}",
+            data : {cs_info:cs_info,cs_examine:cs_examine},
+            async : false,
+            success : function(result){
+                console.log(result);
+            }
         });
         return true;
     }
@@ -2051,7 +2007,7 @@
         var info = new Object();
         info.custom_info_id = isEdit == true?editOrderData['custom_info_id']:-1;
         info.delivery_info_id = isEdit == true?editOrderData['delivery_info_id']:-1;
-        info.return_info_id = isEdit == true?editOrderData['return_info_id']:-1;
+        info.return_info_id =  -1;
         info.payment_info_id = isEdit == true?editOrderData['payment_info_id']:-1;
         info.cur_process_user_id = isEdit == true?editOrderData['cur_process_user_id']:data['build_user_id'];                      // 当前处理用户id
         info.pre_process_user_id = isEdit == true?editOrderData['pre_process_user_id']:data['build_user_id'];
@@ -2151,10 +2107,16 @@
 
     function getDirectorExamine(data,isEdit,state) {
         var info = {};
-        info['cs_examine_date'] = data['examinationapprovaldatefirst']== ''?'2000-01-01':data['examinationapprovaldatefirst'];
-        info['cs_examine_comment'] = data['remarkfirst'];
+        if(isEdit == false)
+            info['cs_examine_date'] = '2000-01-01';
+        else
+            info['cs_examine_date'] = data['examinationapprovaldatefirst']== ''?'2000-01-01':data['examinationapprovaldatefirst'];
+        info['cs_examine_comment'] = isEdit == false?'':data['remarkfirst'];
         info['cs_examine_content'] = data['examinationapprovalcontentfirst'];
-        info['cs_examine_result'] = data['departmentdirectoradvice'] === undefined ?"":data['departmentdirectoradvice'];
+        if(isEdit == false)
+            info['cs_examine_result'] = "";
+        else
+            info['cs_examine_result'] = data['departmentdirectoradvice'] === undefined ?"":data['departmentdirectoradvice'];
         info['cs_examine_state'] = state;
         info['cs_examine_name'] = isEdit == true?editOrderData['depart_examine']['cs_examine_name']:'';
         info['examine_user_id'] = isEdit == true?editOrderData['depart_examine']['examine_user_id']:'';
@@ -2167,10 +2129,16 @@
 
     function getGeneralManagerExamine(data,isEdit,state) {
         var info = {};
-        info['cs_examine_date'] =data['examinationapprovaldatesecond']== ''?'2000-01-01':data['examinationapprovaldatesecond'];
-        info['cs_examine_comment'] = data['remarksecond'];
-        info['cs_examine_content'] = data['examinationapprovalcontentsecond'];
-        info['cs_examine_result'] = data['executivegeneralmanageradvice']=== undefined ?"":data['executivegeneralmanageradvice'];
+        if(isEdit == false)
+            info['cs_examine_date'] = '2000-01-01';
+        else
+            info['cs_examine_date'] =data['examinationapprovaldatesecond']== ''?'2000-01-01':data['examinationapprovaldatesecond'];
+        info['cs_examine_comment'] = isEdit == false?'':data['remarksecond'];
+        info['cs_examine_content'] =  data['examinationapprovalcontentsecond'];
+        if(isEdit == false)
+            info['cs_examine_result'] = "";
+        else
+            info['cs_examine_result'] = data['executivegeneralmanageradvice']=== undefined ?"":data['executivegeneralmanageradvice'];
         info['cs_examine_state'] = state;
         info['cs_examine_name'] = isEdit == true?editOrderData['company_examine']['cs_examine_name']:'';
         info['examine_user_id'] = isEdit == true?editOrderData['company_examine']['examine_user_id']:'';
@@ -2183,10 +2151,16 @@
 
     function getFinanceExamine(data,isEdit,state) {
         var info = {};
-        info['cs_examine_date'] = data['examinationapprovaldatethird'] == ''?'2000-01-01':data['examinationapprovaldatethird'];
-        info['cs_examine_comment'] = data['remarkthird'];
-        info['cs_examine_content'] = data['examinationapprovalcontentthird'];
-        info['cs_examine_result'] = data['financedirectoradvice']=== undefined ?"":data['financedirectoradvice'];
+        if(isEdit == false)
+            info['cs_examine_date'] = '2000-01-01';
+        else
+            info['cs_examine_date'] = data['examinationapprovaldatethird'] == ''?'2000-01-01':data['examinationapprovaldatethird'];
+        info['cs_examine_comment'] = isEdit == false?'':data['remarkthird'];
+        info['cs_examine_content'] =  data['examinationapprovalcontentthird'];
+        if(isEdit == false)
+            info['cs_examine_result'] = "";
+        else
+            info['cs_examine_result'] = data['financedirectoradvice']=== undefined ?"":data['financedirectoradvice'];
         info['cs_examine_state'] = state;
         info['cs_examine_name'] = isEdit == true?editOrderData['finance_examine']['cs_examine_name']:'';
         info['examine_user_id'] = isEdit == true?editOrderData['finance_examine']['examine_user_id']:'';
