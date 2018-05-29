@@ -198,16 +198,12 @@
                     } else if(layEvent == 'sendmessage') {
                         $.post("{:url('admin/inputlogisticsorder/sendmessage')}", { 'cs_id': data.cs_id }, function (res) {
                         	console.log(res);
-                        	var params = new array();
+                        	var params = new Array();
                         	params['receiver_name']=res.receiver_name;
                         	params['receiver_phone']=res.receiver_phone;
                         	params['goods_yard_name']=data.goods_yard_name;
                         	params['cs_id']=data.cs_id;
                         	params['count']=data.count;
-                        	
-                        	
-                        
-                        	
                         });
                         layer.msg('发送短信');
                     }
