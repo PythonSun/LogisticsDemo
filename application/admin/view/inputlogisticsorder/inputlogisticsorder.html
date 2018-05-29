@@ -3,85 +3,212 @@
     <head>
         <meta charset="UTF-8">
         <title></title>
-        <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css"> 
-    	<link rel="stylesheet" type="text/css" href="/static/css/public.css">
-    </head>
-   
+        <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/public.css"> </head>
     <body>
         <form class="layui-form layui-form-pane" action="">
-        	<div class="toph2">
-            	<h2>物流单号输入</h2>
-           </div>
+            <div class="toph2">
+                <h2>物流单号输入</h2>
+            </div>
             <div class="layui-form-item">
-            	<div class="layui-inline">
+                <div class="layui-inline">
                     <label class="layui-form-label light_gray">流水号</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="serialnumber" id="serialnumber" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
+                        <input type="text" name="cs_id" id="cs_id" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
                 </div>
-            	<div class="layui-inline">
+                <div class="layui-inline">
                     <label class="layui-form-label light_gray">收货人</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="consignee" id="consignee" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
+                        <input type="text" name="consignee" id="consignee" lay-verify="" disabled="" autocomplete="on" placeholder="" class="layui-input layui-disabled light_gray"> </div>
                 </div>
-            	<div class="layui-inline">
+                <div class="layui-inline">
                     <label class="layui-form-label light_gray">收货人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="consigneephone" id="consigneephone" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
+                        <input type="text" name="consigneephone" id="consigneephone" disabled="" lay-verify="" autocomplete="on" placeholder="" class="layui-input layui-disabled light_gray"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">收货地址</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="shippingaddress" id="shippingaddress" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
-                </div>
-                
-            </div>
-            <div class="layui-form-item">
-            	<div class="layui-inline">
-                    <label class="layui-form-label light_blue">货场名称</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="goodsyardname" id="goodsyardname" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_blue"> </div>
-                </div>
-            	<div class="layui-inline">
-                    <label class="layui-form-label light_blue">运单号</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="waybillnumber" id="waybillnumber"  lay-verify="" autocomplete="on" placeholder="" class="layui-input light_blue"> </div>
-                </div>
-            	<div class="layui-inline">
-                    <label class="layui-form-label light_blue" style="color:red;">发货日期</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="deliverydate" id="deliverydate" autocomplete="on" class="layui-input light_blue"> </div>
+                        <input type="text" name="shippingaddress" id="shippingaddress" disabled="" lay-verify="" autocomplete="on" placeholder="" class="layui-input layui-disabled light_gray"> </div>
                 </div>
             </div>
-
             <div class="layui-form-item">
                 <div class="layui-inline">
-                    <button class="layui-btn" lay-submit="" lay-filter="sendmessage">发送短信</button>
+                    <label class="layui-form-label light_blue">货场名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="goods_yard_name" id="goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_blue"> </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label light_blue">运单号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="transfer_order_num" id="transfer_order_num" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_blue"> </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label light_blue" style="color:red;">发货日期</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="delivery_date" id="delivery_date" autocomplete="on" class="layui-input light_blue"> </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label light_blue">件数</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="count" id="count" autocomplete="on" class="layui-input light_blue"> </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <button class="layui-btn" lay-submit="" lay-filter="saveinfo">保存</button>
                 </div>
             </div>
         </form>
+        <h2>物流单查询结果</h2>
+        <table class="layui-hide" id="logisticstablequeryresult" lay-filter="logisticstablequeryresult"></table>
+        <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+            <a class="layui-btn layui-btn-xs" lay-event="sendmessage">发送短信</a>
+        </script>
         <script type="text/javascript" src="/static/layui/layui.js"></script>
         <script type="text/javascript">
-            layui.use(['form', 'laydate', 'jquery','layer'], function () {
+            layui.use(['form', 'laydate', 'jquery', 'layer', 'table'], function () {
                 var form = layui.form,
                     laydate = layui.laydate,
                     $ = layui.jquery,
-                    layer = layui.layer;
-                    
+                    layer = layui.layer,
+                    table = layui.table;
+                $("#cs_id").blur(function () {
+                    var cs_id = $('#cs_id').val();
+                    $.post("{:url('admin/inputlogisticsorder/serialnumber')}", { 'cs_id': cs_id }, function (res) {
+                        console.log(res)
+                        $('#consignee').val(res.receiver_name);
+                        $('#consigneephone').val(res.receiver_phone);
+                        $('#shippingaddress').val(res.receiver_address);
+                    });
+                });
                 /*日期*/
                 laydate.render({
-                    elem: '#deliverydate'
-                    ,position: 'fixed'
-                    ,theme: 'molv'
+                    elem: '#delivery_date',
+                    position: 'fixed',
+                    theme: 'molv'
                 });
-
-                form.on('submit(sendmessage)',function(data){
+                form.on('submit(saveinfo)', function (data) {
                     var param = data.field;
-                    $.post("{:url('admin/inputlogisticsorder/sendmessage')}",{'param':param},function(res){
-                        console.log(res);
+                    $.post("{:url('admin/inputlogisticsorder/savemessage')}", { 'param': param }, function (res) {
+                        if(res == '1') {
+                            layer.msg('保存成功！', { icon: 6 });
+                            table.reload('logisticstablequeryresult', {});
+                        } else {
+                            layer.msg('保存失败！', { icon: 5 });
+                        }
                     });
                     return false;
                 });
-          });
+                //第一个实例
+                table.render({
+                    elem: '#logisticstablequeryresult',
+                    height: 300,
+                    url: "{:url('admin/inputlogisticsorder/loadingdata')}",
+                    page: true,
+                    limit: 10,
+                    cols: [
+                        [
+                        { field: 'cs_id', title: '流水号', sort: true, fixed: 'left' },
+                        { field: 'goods_yard_name', title: '货场名称' }, 
+                        { field: 'transfer_order_num', title: '运单号' }, 
+                        { field: 'delivery_date', title: '发货日期' }, 
+                        { field: 'count', title: '件数' }, 
+                        { fixed: 'right', width: 250, align: 'center', toolbar: '#barDemo' }
+                        ]
+                    ]
+                });
+                //监听工具条
+                table.on('tool(logisticstablequeryresult)', function (obj) {
+                    var data = obj.data, //获得当前行数据
+                        layEvent = obj.event; //获得 lay-event 对应的值
+                        console.log(data);
+                    if(layEvent === 'detail') {
+                        top.layer.open({
+                            type: 2,
+                            area: ['80%', '70%'],
+                            shade: 0.9,
+                            title: ['物流单详情', 'background-color:#636363; color:#fff;'],
+                            content: "{:url('admin/inputlogistics/inputlogistics')}?cs_id=" + data.cs_id + "&goods_yard_name=" + data.goods_yard_name + "&transfer_order_num=" + data.transfer_order_num + "&delivery_date=" + data.delivery_date + "&count=" + data.count,
+                            btn: ['关闭'],
+                            btnAlign: 'c',
+                            yes: function (index, layero) {
+                                top.layer.close(index);
+                            }
+                        });
+                        /*layer.msg('查看操作');*/
+                    } else if(layEvent === 'del') {
+                        layer.confirm('真的删除行么', {
+                            icon: 3,
+                            title: '提示',
+                        }, function (index) {
+                            var deldata = "logistics_id=" + data.logistics_id + "&cs_id=" + data.cs_id + "&goods_yard_name=" + data.goods_yard_name + "&transfer_order_num=" + data.transfer_order_num + "&delivery_date=" + data.delivery_date + "&count=" + data.count;
+                            obj.del(); //删除对应行（tr）的DOM结构
+                            layer.close(index);
+                            $.ajax({
+                                type: "GET",
+                                url: "{:url('admin/inputlogisticsorder/deletedata')}",
+                                data: deldata,
+                                success: function (msg) {
+                                    layer.msg('删除成功！', { icon: 6 });
+                                },
+                                error: function (data) {
+                                    alert(data);
+                                }
+                            });
+                            //向服务端发送删除指令
+                        });
+                    } else if(layEvent === 'edit') {
+                        top.layer.open({
+                            type: 2,
+                            area: ['80%', '70%'],
+                            shade: 0.9,
+                            title: ['物流单详情', 'background-color:#636363; color:#fff;'],
+                            content: "{:url('admin/editlogistics/editlogistics')}?logistics_id=" + data.logistics_id + "&cs_id=" + data.cs_id + "&goods_yard_name=" + data.goods_yard_name + "&transfer_order_num=" + data.transfer_order_num + "&delivery_date=" + data.delivery_date + "&count=" + data.count + "&time_stamp=" + data.time_stamp,
+                            btn: ['保存', '取消'],
+                            btnAlign: 'c',
+                            yes: function (index, layero) {
+                                var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                                var editdatasave = iframeWin.getData();
+                                $.ajax({
+                                    type: "GET",
+                                    url: "{:url('admin/editlogistics/editsave')}",
+                                    data: editdatasave,
+                                    success: function (msg) {
+                                        if(msg == 0) {
+                                            top.layer.msg('保存成功！', { icon: 6 });
+                                            top.layer.close(index);
+                                        } else if(msg == 2) {
+                                            top.layer.msg('保存成功！', { icon: 6 });
+                                            top.layer.close(index);
+                                        } else {
+                                            top.layer.msg('保存失败！', { icon: 5 })
+                                        }
+                                        table.reload('logisticstablequeryresult', {});
+                                    }
+                                });
+                            },
+                            btn2: function (index, layero) {
+                                top.layer.close(index);
+                            }
+                        });
+                    } else if(layEvent == 'sendmessage') {
+                        $.post("{:url('admin/inputlogisticsorder/sendmessage')}", { 'cs_id': data.cs_id }, function (res) {
+                        	console.log(res);
+                        	var params = new Array();
+                        	params['receiver_name']=res.receiver_name;
+                        	params['receiver_phone']=res.receiver_phone;
+                        	params['goods_yard_name']=data.goods_yard_name;
+                        	params['cs_id']=data.cs_id;
+                        	params['count']=data.count;
+                        });
+                        layer.msg('发送短信');
+                    }
+                });
+            });
         </script>
     </body>
 </html>

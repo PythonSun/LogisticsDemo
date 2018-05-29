@@ -304,6 +304,8 @@
 			//return (array('code'=>0,'msg'=>'','count'=>0,'data'=>[]));
 		}
 
+
+
 		/*查询维修，代用等订单 销售部查询时调用 */
 		/*参数:organizename(总部门) departmentname(子部门) areamanager(经理名) type  page  limit queryinfo*/
 		public static function querycsinfobysales(...$args){
@@ -584,7 +586,46 @@
 				return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
 			}
 		}
-
+		/*chenshanqiang向物流表单插入数据*/
+		public static function insertlogisticinfo($info){
+            $logistics_id = $info['logistics_id'];
+            $cs_id = $info['cs_id'];
+            $goods_yard_name = $info['goods_yard_name'];
+            $transfer_order_num = $info['transfer_order_num'];
+            $delivery_date = $info['delivery_date'];
+            $count = $info['count'];
+			$time_stamp=date("Y-m-d");
+            $sql_value ="'$logistics_id','$cs_id','$goods_yard_name','$transfer_order_num','$delivery_date','$count','$time_stamp'";
+            $sql = "INSERT INTO dsp_logistic.logistics_info (logistics_id,cs_id,goods_yard_name,transfer_order_num,delivery_date,count,time_stamp) VALUES ({$sql_value})";
+            $sqlret = Db::execute($sql);
+            return $sqlret;
+        }
+        /*chenshanqiang查询物流表数据*/
+		public static function querylogisticsinfo(...$args){
+			$type = $args[0];
+            $pagenum = intval($args[1]?$args[1]:1);
+            $length = intval($args[2]);
+			$sqlone = "select count(*) from dsp_logistic.logistics_info";
+			$countobj = Db::query($sqlone);
+			$count = $countobj[0]['count(*)'];
+			if($count == 0){
+                return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>[]));
+            }
+            $pagetot = ceil($count/$length);
+            if($pagenum >= $pagetot){
+                $pagenum = $pagetot;
+            }
+			$offset = ($pagenum - 1)*$length;
+			/*$tableobj = Db::query($sqlone);*/
+			$sqlone = "select * from dsp_logistic.logistics_info order By dsp_logistic.logistics_info.delivery_date DESC limit {$offset},{$length}";
+			$tableobj = Db::query($sqlone);
+			return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
+		}
+		 /*chenshanqiang更改物流表数据*/
+		 public static function updatelogisticsinfofirst($args){
+			$sql = "up count(*) from dsp_logistic.cs_info ";
+			return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
+		}
         /*查询维修，代用等订单,物流部和财务的人查询时调用*/
         /*参数: type  page  limit queryinfo*/
         public static function querycsInfomation(...$args){
@@ -1633,7 +1674,7 @@
             $sqlret = Db::execute($sql);
             return $sqlret;
         }
-
+		
         /*查询订单未审核的条数,未完待续*/
         public static function queryexamineordernums($cs_info_type,$cs_info_state){
             $sql = "select count(*) from dsp_logistic.cs_info where cs_info_type='$cs_info_type' and cs_info_state='$cs_info_state'";
@@ -3014,12 +3055,12 @@
             return $sqlret;
         }
 
-        public  static  function getreceiverbycsid($cs_id)
-        {
+        public  static  function getreceiverbycsid($cs_id){
             //经理部分的确认单
-            $sqlone = "select dsp_logistic.delivery_info.*,dsp_logistic.return_info.*,dsp_logistic.cs_info.* form dsp_logistic.cs_info ";
+            $sqlone = "select dsp_logistic.delivery_info.*,dsp_logistic.return_info.*,dsp_logistic.cs_info.cs_info_type,dsp_logistic.logistics_info.*from dsp_logistic.cs_info ";
             $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
             $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
+            $sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.cs_info.cs_id = dsp_logistic.logistics_info.cs_id ";
             $sqlone.= "where dsp_logistic.cs_info.cs_id = '$cs_id'";
             $tableobj = Db::query($sqlone);
             if(!empty($tableobj))
@@ -3030,6 +3071,11 @@
                     $info['receiver_name'] = $tableobj[0]['delivery_info_receiver_name'];
                     $info['receiver_phone'] = $tableobj[0]['delivery_info_receiver_phone'];
                     $info['receiver_address'] = $tableobj[0]['delivery_info_receiver_address'];
+					$info['goods_yard_name'] = $tableobj[0]['goods_yard_name'];
+					$info['cs_id'] = $tableobj[0]['cs_id'];
+					$info['count'] = $tableobj[0]['count'];
+					$info['transfer_order_num'] = $tableobj[0]['transfer_order_num'];
+					$info['delivery_date'] = $tableobj[0]['delivery_date'];
                     return $info;
                 }
                 else
@@ -3038,12 +3084,18 @@
                     $info['receiver_name'] = $tableobj[0]['return_info_receiver_name'];
                     $info['receiver_phone'] = $tableobj[0]['return_info_receiver_phone'];
                     $info['receiver_address'] = $tableobj[0]['return_info_receiver_address'];
+					$info['goods_yard_name'] = $tableobj[0]['goods_yard_name'];
+					$info['cs_id'] = $tableobj[0]['cs_id'];
+					$info['count'] = $tableobj[0]['count'];
+					$info['transfer_order_num'] = $tableobj[0]['transfer_order_num'];
+					$info['delivery_date'] = $tableobj[0]['delivery_date'];
                     return $info;
                 }
             }
             //物流单
-            $sqlone = "select dsp_logistic.order_goods_info.*,dsp_logistic.order_goods_cs_info.* form dsp_logistic.order_goods_cs_info ";
-            $sqlone .= "left join dsp_logistic.order_goods_info on dsp_logistic.order_goods_info.ofg_info_id = dsp_logistic.order_goods_cs_info.ofg_info_id ";
+            $sqlone = "select dsp_logistic.ofg_info.*,dsp_logistic.logistics_info.* from dsp_logistic.order_goods_cs_info ";
+            $sqlone .= "left join dsp_logistic.ofg_info on dsp_logistic.ofg_info.ofg_info_id = dsp_logistic.order_goods_cs_info.ofg_info_id ";
+            $sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
             $sqlone.= "where dsp_logistic.order_goods_cs_info.cs_id = '$cs_id'";
             $tableobj = Db::query($sqlone);
             if(!empty($tableobj))
@@ -3052,11 +3104,17 @@
                 $info['receiver_name'] = $tableobj[0]['receiver_name'];
                 $info['receiver_phone'] = $tableobj[0]['receiver_phone'];
                 $info['receiver_address'] = $tableobj[0]['receiver_address'];
+				$info['goods_yard_name'] = $tableobj[0]['goods_yard_name'];
+				$info['cs_id'] = $tableobj[0]['cs_id'];
+				$info['count'] = $tableobj[0]['count'];
+				$info['transfer_order_num'] = $tableobj[0]['transfer_order_num'];
+				$info['delivery_date'] = $tableobj[0]['delivery_date'];
                 return $info;
             }
             return null;
-        }
-        
+        }     
+		
+		
         /*cs_product*/
         public static function getcsproduct(){
             $sql = "select * from dsp_logistic.cs_product";
