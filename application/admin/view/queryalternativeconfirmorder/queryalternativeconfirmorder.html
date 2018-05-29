@@ -155,8 +155,8 @@
 				    ,url:"{:url('admin/queryalternativeconfirmorder/getexamineorder')}"     //动态获取数据
 				    ,cols: [[
 				       {type:'checkbox'}
-				      ,{field: 'write_date', title: '下单日期', width: 150, sort: true}
-				      ,{field:'complete_date',title:'接收日期',width:150,sort:true}
+				      ,{field: 'cs_belong_create_time', title: '下单日期', width: 150, sort: true}
+				      ,{field:'delivery_date',title:'发货日期',width:150,sort:true}
 				      ,{field: 'cs_id',title: '流水号', minWidth: 150,sort:true}
   				      ,{field: 'build_department_name', title: '部门', minWidth: 150}
 				      ,{field: 'build_user_name', title: '区域经理', minWidth: 100}
@@ -191,12 +191,9 @@
                             shade: 0.9,
                             maxmin: false,
                             content: "{:url('admin/Addalternativeconfirmorder/editalternativeconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type= 0",
-                            btn: [ '退出','打印'],
+                            btn: [ '打印','退出'],
                             btnAlign: 'c',
                             yes: function (index,layero) {
-                                top.layer.closeAll();
-                            },
-                            btn2:function(){
                                 var cs_id = data.cs_id;
                                 top.layer.open({
                                     type: 2,
@@ -215,6 +212,10 @@
                                     }
                                 });
                                 return false;
+
+                            },
+                            btn2:function(){
+                                top.layer.closeAll();
                             }
                         });
                     }

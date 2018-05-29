@@ -431,7 +431,7 @@
     var  editOrderData= [];
     //修改保存是谁在操作 1 经理 2 主管 3执行总监 4财务 5物流
     var current_user_type = 1;
-
+    var ishavePrintPower = 1; //是否有打印权限 ， 1 ：没有
     var uncofginfo = null;      //非常规订单数据 包含unc_ofg_info，清单明细：搜索unc_ofg_items，删除表del_unc_ofg_detail_id_arr
     var del_unc_ofg_detail_id_arr = new Array();//删除非定型订单明细id
     var unc_ofg_info_id = 0;
@@ -473,6 +473,7 @@
 
                 return ;
             }
+            ishavePrintPower = 0;
             //
             jq('#save').addClass('hide');
             jq('#deliver').addClass('hide');
@@ -869,10 +870,10 @@
             console.log('+++++++++弹窗前++++++++++++++');
             console.log(dd);
             var url = '';
-            if(current_user_type == 0){
-                url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + 0 + "&cs_id=" + editOrderData['cs_id'];
+            if(ishavePrintPower == 0){
+                url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + ishavePrintPower + "&cs_id=" + editOrderData['cs_id'];
             }else{
-                url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + 1;
+                url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + ishavePrintPower;
             }
 
             top.layer.open({

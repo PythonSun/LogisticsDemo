@@ -14,11 +14,16 @@
 			<table class="layui-hide" id="queryborroworder" lay-filter="queryborroworder"></table>
 			<script type="text/html" id="operatebar">
 			  <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="detail">查看</a>
+			  {{#  if(d.cs_info_state != '取消'){ }}
 			  {if condition="$editborrowpower eq 2"}
 			  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			  {/if}
+			  {{#  } }}
+
 			  {if condition="$deleteborrowpower eq 4"}
+			  {{#  if(d.cs_info_state != '取消'){ }}
 			  <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="cancel">取消</a>
+			  {{#  } }}
 			  {/if}
 			</script>
 		</div>
@@ -150,8 +155,8 @@
 				    ,url:"{:url('admin/queryborrowconfirmorder/getexamineorder')}"     //动态获取数据
 				    ,cols: [[
                         {type:'checkbox'}
-                        ,{field: 'write_date', title: '下单日期', width: 150, sort: true}
-                        ,{field:'complete_date',title:'接收日期',width:150,sort:true}
+                        ,{field: 'cs_belong_create_time', title: '下单日期', width: 150, sort: true}
+                        ,{field:'delivery_date',title:'发货日期',width:150,sort:true}
                         ,{field: 'cs_id',title: '流水号', minWidth: 150,sort:true}
                         ,{field: 'build_department_name', title: '部门', minWidth: 150}
                         ,{field: 'build_user_name', title: '区域经理', minWidth: 100}
@@ -189,9 +194,6 @@
                             btn: [ '退出','打印'],
                             btnAlign: 'c',
                             yes: function (index,layero) {
-                                top.layer.closeAll();
-                            },
-                            btn2:function(){
                                 var cs_id = data.cs_id;
                                 top.layer.open({
                                     type: 2,
@@ -210,6 +212,10 @@
                                     }
                                 });
                                 return false;
+
+                            },
+                            btn2:function(){
+                                top.layer.closeAll();
                             }
                         });
                     }

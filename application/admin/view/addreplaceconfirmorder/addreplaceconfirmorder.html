@@ -431,7 +431,8 @@
             var  editOrderData= [];
             //修改保存是谁在操作 1 经理 2 主管 3执行总监 4财务 5物流
             var current_user_type = 3;
-            var del_logistics_id_arr = new Array();
+
+            var ishavePrintPower = 1; //是否有打印权限 ， 1 ：没有
 
             var uncofginfo = null;      //非常规订单数据 包含unc_ofg_info，清单明细：搜索unc_ofg_items，删除表del_unc_ofg_detail_id_arr
             var del_unc_ofg_detail_id_arr = new Array();//删除非定型订单明细id
@@ -474,6 +475,7 @@
 
                         return ;
                     }
+                    ishavePrintPower = 0;
                     //
                     jq('#save').addClass('hide');
                     jq('#deliver').addClass('hide');
@@ -692,32 +694,10 @@
                             if(isEmptyObject(orderItem)){
                                 return;
                             }
-                            //+判断
-                            //console.log(orderItem);
-                            var row = new Object();
-                            row.product_type_id = orderItem.product_type_id;
-                            row.product_type_name = orderItem.product_type_name;
-                            row.brand_id = orderItem.brand_id;
-                            row.brand_name = orderItem.brand_name;
-                            row.product_info_name = orderItem.product_info_name;
-                            row.product_info_id = orderItem.product_info_id;
-                            row.model = orderItem.model;
-                            row.unit = orderItem.unit;
-                            row.place_id = orderItem.place_id;
-                            row.place_name = orderItem.place_name;
-                            row.order_goods_manager_count =orderItem.order_goods_manager_count;
-                            row.unc_product_name = orderItem.unc_product_name;
-                            row.unc_product_id = orderItem.unc_product_id;
-                            row.specification = orderItem.specification;
-                            row.back_date = orderItem.back_date;
-                            row.ogl_product_state = orderItem.ogl_product_state;
-                            row.bar_code = orderItem.bar_code;
-                            row.replace_reason = orderItem.replace_reason;
-                            row.ogl_comment = orderItem.ogl_comment;
-                           // console.log("length: "+ jq('#tableorder')[0].rows.length);
-                            row.ogl_id = "";
-                            row.order_goods_manager_id = "";
-                            updateRow(row,true);
+
+                            orderItem.ogl_id = "";
+                            orderItem.order_goods_manager_id = "";
+                            updateRow(orderItem,true);
                             iframeWin.clear();
                             layer.msg('保存成功！',{icon:1});
 
@@ -747,32 +727,11 @@
                                 return null;
                             }
                            // console.log(orderItem);
-                            //+判断
-                            var row = new Object();
-                            row.product_type_id = orderItem.product_type_id;
-                            row.product_type_name = orderItem.product_type_name;
-                            row.brand_id = orderItem.brand_id;
-                            row.brand_name = orderItem.brand_name;
-                            row.product_info_name = orderItem.product_info_name;
-                            row.product_info_id = orderItem.product_info_id;
-                            row.model = orderItem.model;
-                            row.unit = orderItem.unit;
-                            row.place_id = orderItem.place_id;
-                            row.place_name = orderItem.place_name;
-                            row.order_goods_manager_count =orderItem.order_goods_manager_count;
-                            row.unc_product_name = orderItem.unc_product_name;
-                            row.unc_product_id = orderItem.unc_product_id;
-                            row.specification = orderItem.specification;
-                            row.back_date = orderItem.back_date;
-                            row.ogl_product_state = orderItem.ogl_product_state;
-                            row.bar_code = orderItem.bar_code;
-                            row.replace_reason = orderItem.replace_reason;
-                            row.ogl_comment = orderItem.ogl_comment;
                             // console.log("length: "+ jq('#tableorder')[0].rows.length);
-                            row.order_goods_manager_id = text.attr("order_goods_manager_id");
-                            row.ogl_id = text.attr("ogl_id");
-                            row.num = text.attr("num");
-                            updateRow(row,false)
+                            orderItem.order_goods_manager_id = text.attr("order_goods_manager_id");
+                            orderItem.ogl_id = text.attr("ogl_id");
+                            orderItem.num = text.attr("num");
+                            updateRow(orderItem,false)
 
                             top.layer.close(index);
                         },
