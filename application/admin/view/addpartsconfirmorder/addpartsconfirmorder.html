@@ -710,6 +710,8 @@
                     orderItem.specification = text.attr("specification");
                     orderItem.bar_code = text.attr("bar_code");
                     orderItem.back_date = text.attr("back_date");
+                    orderItem.unit_price = text.attr("unit_price");
+                    orderItem.fault_condition = text.attr("fault_condition");
                     orderItem.replace_reason = text.attr("replace_reason");
                     orderItem.place_name = text.attr("place_name");
                     orderItem.place_id = text.attr("place_id");
@@ -1053,6 +1055,8 @@
             row.specification = "";
         jq(new_tr).attr('specification',row.specification);
         jq(new_tr).attr('back_date',row.back_date);
+        jq(new_tr).attr('unit_price',row.unit_price);
+        jq(new_tr).attr('fault_condition',row.fault_condition);
         if(row.ogl_product_state == undefined||row.ogl_product_state == null)
             row.ogl_product_state = "";
         jq(new_tr).attr('ogl_product_state',row.ogl_product_state);
@@ -1086,25 +1090,24 @@
         var col_7 = new_tr.insertCell(7);
         col_7.innerHTML = "<td><a>"+  row.order_goods_manager_count +"</a></td>";
         var col_8 = new_tr.insertCell(8);
-        col_8.innerHTML = "<td><a>"+ row.bar_code +"</a></td>";
+        col_8.innerHTML = "<td><a>"+ row.unit_price +"</a></td>";
         var col_9 = new_tr.insertCell(9);
-        var date = '';
-        if(row.back_date != '' || row.back_date != null || row.back_date != '2000-1-1')
-            date = row.back_date;
-        col_9.innerHTML = "<td><a>"+ date +"</a></td>";
-        var col_11 = new_tr.insertCell(10);
+        col_9.innerHTML = "<td><a>"+ row.fault_condition +"</a></td>";
+        var col_10 = new_tr.insertCell(10);
+        col_10.innerHTML = "<td><a>"+ row.replace_reason +"</a></td>";
+        var col_11 = new_tr.insertCell(11);
         col_11.innerHTML = "<td><a >"+ row.place_name +"</a></td>";
-        var col_12 = new_tr.insertCell(11);
+        var col_12 = new_tr.insertCell(12);
         col_12.innerHTML = "<td><a>"+ row.ogl_product_state +"</a></td>";
-        var col_13 = new_tr.insertCell(12);
+        var col_13 = new_tr.insertCell(13);
         if(row.unc_product_name == null){
             col_13.innerHTML = "<td><a >"+ row.unc_product_name +"</a></td>";
         }else{
             col_13.innerHTML = "<td><a >"+ row.unc_product_name +"</a></td>";
         }
-        var col_14 = new_tr.insertCell(13);
-        col_14.innerHTML = "<td><a>"+ row.ogl_comment +"</a></td>";
         var col_14 = new_tr.insertCell(14);
+        col_14.innerHTML = "<td><a>"+ row.ogl_comment +"</a></td>";
+        var col_14 = new_tr.insertCell(15);
         col_14.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn edit_disabled'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger Wheat_disabled  del_btn del_disabled'>删除</a>" +"</td>";
         if(current_user_type == 5){
             jq('.del_disabled').addClass('hide');
@@ -2044,7 +2047,7 @@
             order_goods_manager_item['order_goods_manager_count'] = tabledata[i]['order_goods_manager_count'];
             order_goods_manager_item['specification'] = tabledata[i]['specification'];
             order_goods_manager_item['type'] = cs_info_type;                                             //1：更换 详细看数据库
-            order_goods_manager_item['unit_price'] = -1;
+            order_goods_manager_item['unit_price'] = tabledata[i]['unit_price'];
             order_goods_manager_item['order_goods_manager_explain'] = data['order_goods_manager_explain'];
 
             order_goods_manager_item['comment'] = tabledata[i]['comment'] == undefined?'':tabledata[i]['comment'];
@@ -2053,7 +2056,7 @@
             order_goods_manager_item['replace_reason'] = tabledata[i]['replace_reason'];
             order_goods_manager_item['purchase_date'] = '2000-01-01';
             order_goods_manager_item['deal_date'] = '2000-01-01';
-            order_goods_manager_item['fault_condition'] = "";
+            order_goods_manager_item['fault_condition'] = tabledata[i]['fault_condition'];
 
 
             order_goods_manager_item['ogl_id'] = tabledata[i]['ogl_id'];

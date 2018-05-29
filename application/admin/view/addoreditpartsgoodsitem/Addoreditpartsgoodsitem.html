@@ -117,8 +117,9 @@
     <div class="layui-form-item dark_blue" style="display: inline-block;" pane="">
         <label class="layui-form-label dark_blue">状态：</label>
         <div class="layui-input-block " >
-            <input type="radio" name="inputstate" title="已更换" value="已更换" class="dark_blue_disabled">
-            <input type="radio" name="inputstate" title="未更换" value="未更换" class="dark_blue_disabled">
+            <input type="radio" name="inputstate" title="定制" value="定制" class="dark_blue_disabled">
+            <input type="radio" name="inputstate" title="缺货" value="缺货" class="dark_blue_disabled">
+            <input type="radio" name="inputstate" title="已发货" value="已发货" class="dark_blue_disabled">
         </div>
     </div>
     <div class="layui-form-item">
@@ -372,9 +373,9 @@
         jq('#inputunit').attr('value',data['unit']);
         document.getElementById('unc_productid').value = data['unc_product_id'];
         jq('#specification').attr('value',data['specification']);
-        if(data['back_date'] != '')
-            jq('#back_date').attr('value',data['back_date']);
-        jq('#bar_code').attr('value',data['bar_code']);
+
+        jq('#unit_price').attr('value',data['unit_price']);
+        jq('#fault_condition').attr('value',data['fault_condition']);
         jq('#replace_reason').attr('value',data['replace_reason']);
         jq('#comment').attr('value',data['ogl_comment']);
         jq("input[name='inputstate']").each(function(){
@@ -400,8 +401,8 @@
         jq('#inputunit').val("");
         jq('#unc_productid').val("");
         jq('#specification').val("");
-        jq('#back_date').val("");
-        jq('#bar_code').val("");
+        jq('#fault_condition').val("");
+        jq('#unit_price').val("");
         jq('#replace_reason').val("");
         jq('#comment').val("");
 
