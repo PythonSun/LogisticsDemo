@@ -358,18 +358,18 @@
 
     </div>
 
-    <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label dark_blue">货期回复</label>
-            <div class="layui-input-inline">
-                <input type="text" name="delivery_date_reply" id="delivery_date_reply" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled"> </div>
-        </div>
-        <div class="layui-inline">
-            <input type="button" id="uncofginfo" class="layui-btn dark_blue" target="_blank" value="增加非定型产品订货确认单">
-            <input type="button" id="lookuncofginfo" class="layui-btn dark_blue" target="_blank" value="查看非定型产品订货确认单">
-            <input type="button" id="deluncofginfo" class="layui-btn dark_blue" target="_blank" style="color: red" value="删除非定型产品订货确认单">
-        </div>
-    </div>
+    <!--<div class="layui-form-item">-->
+        <!--<div class="layui-inline">-->
+            <!--<label class="layui-form-label dark_blue">货期回复</label>-->
+            <!--<div class="layui-input-inline">-->
+                <!--<input type="text" name="delivery_date_reply" id="delivery_date_reply" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled"> </div>-->
+        <!--</div>-->
+        <!--<div class="layui-inline">-->
+            <!--<input type="button" id="uncofginfo" class="layui-btn dark_blue" target="_blank" value="增加非定型产品订货确认单">-->
+            <!--<input type="button" id="lookuncofginfo" class="layui-btn dark_blue" target="_blank" value="查看非定型产品订货确认单">-->
+            <!--<input type="button" id="deluncofginfo" class="layui-btn dark_blue" target="_blank" style="color: red" value="删除非定型产品订货确认单">-->
+        <!--</div>-->
+    <!--</div>-->
 
 
     <h3>订购清单</h3>
@@ -622,14 +622,14 @@
                     editOrderData['finance_examine'] = cs_examine_info[2];
                 }
 
-                var unc_ofg_detail = data.unc_ofg_detail;
-                var unc_ofg_info = data.unc_ofg_info;
-                if (unc_ofg_info != ""){
-                    uncofginfo = new Object();
-                    uncofginfo.unc_ofg_info = unc_ofg_info;
-                    uncofginfo.unc_ofg_items = unc_ofg_detail;
-                    uncofginfo.del_unc_ofg_detail_id_arr = null;
-                }
+                // var unc_ofg_detail = data.unc_ofg_detail;
+                // var unc_ofg_info = data.unc_ofg_info;
+                // if (unc_ofg_info != ""){
+                //     uncofginfo = new Object();
+                //     uncofginfo.unc_ofg_info = unc_ofg_info;
+                //     uncofginfo.unc_ofg_items = unc_ofg_detail;
+                //     uncofginfo.del_unc_ofg_detail_id_arr = null;
+                // }
                 userPower();
                 layui.form.render('select');
                 layui.form.render('radio');

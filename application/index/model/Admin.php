@@ -337,6 +337,10 @@
             {
                 $sqlone .= "and build_user_name='$areamanager' ";
             }
+            else{
+			    //不是经理查时，不能查看未提交的单
+                $sqlone .= "and dsp_logistic.cs_info.cs_info_state != 0 ";
+            }
 
             if($totalargs == 7){
                 if($args[6]['areamanager'] != "" && $areamanager == ""){
@@ -449,6 +453,11 @@
             {
                 $sqltwo .= "and build_user_name='$areamanager' ";
             }
+            else{
+                //不是经理查时，不能查看未提交的单
+                $sqltwo .= "and dsp_logistic.cs_info.cs_info_state != 0 ";
+            }
+
 			if($totalargs == 7){
 				if($args[6]['areamanager'] != "" && $areamanager == ""){
 					$areamanger1 = $args[6]['areamanager'];
@@ -645,6 +654,9 @@
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqlone .= "where dsp_logistic.cs_info.cs_info_type='$type' ";
 
+            //不能查看未提交的单
+            $sqlone .= "and dsp_logistic.cs_info.cs_info_state != 0 ";
+
             if($totalargs == 4){
                 if($args[3]['areamanager'] != "" ){
                     $areamanger1 = $args[3]['areamanager'];
@@ -745,6 +757,8 @@
             $sqltwo .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqltwo .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqltwo .= "where dsp_logistic.cs_info.cs_info_type='$type' ";
+            //不能查看未提交的单
+            $sqltwo .= "and dsp_logistic.cs_info.cs_info_state != 0 ";
             if($totalargs == 4){
                 if($args[3]['areamanager'] != ""){
                     $areamanger1 = $args[3]['areamanager'];

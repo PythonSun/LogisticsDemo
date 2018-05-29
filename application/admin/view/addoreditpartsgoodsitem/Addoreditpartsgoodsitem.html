@@ -57,6 +57,12 @@
                 </select>
             </div>
         </div>
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">规格：</label>
+            <div class="layui-input-inline" >
+                <input type="text" id="specification" name="specification" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);">
+            </div>
+        </div>
 
 
     </div>
@@ -75,28 +81,21 @@
         </div>
     </div>
     <div class="layui-form-item">
+
         <div class="layui-inline">
-            <label class="layui-form-label Wheat">规格：</label>
+            <label class="layui-form-label Wheat">单价：</label>
             <div class="layui-input-inline" >
-                <input type="text" id="specification" name="specification" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);">
+                <input type="text" name="unit_price" id="unit_price" autocomplete="on" class="layui-input Wheat Wheat_disabled" oninput="detectinputfloat">
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label Wheat">归还日期：</label>
+            <label class="layui-form-label Wheat">总价：</label>
             <div class="layui-input-inline" >
-                <input type="text" name="date" id="back_date" autocomplete="on" class="layui-input Wheat Wheat_disabled">
-            </div>
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label Wheat">条码：</label>
-            <div class="layui-input-inline" >
-                <input type="text" name="bar_code" id="bar_code" class="layui-input Wheat Wheat_disabled">
+                <input type="text" name="fault_condition" id="fault_condition" class="layui-input Wheat Wheat_disabled">
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label Wheat">原因：</label>
+            <label class="layui-form-label Wheat">备注：</label>
             <div class="layui-input-inline" >
                 <input type="text" name="replace_reason" id="replace_reason" lay-filter="replace_reason" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);">
             </div>
@@ -227,6 +226,28 @@
 
 
         })
+
+        //监听单价数量的输入
+        jq("#unit_price").blur(function () {
+            var unit_price = jq('#unit_price').val();
+            var count = jq('#inputcount').val();
+            if(unit_price == ''||unit_price == undefined)
+                return ;
+            if(count == ''||count == undefined)
+                return ;
+            var totalprice =parseFloat(unit_price)*parseFloat(count);
+            jq('#fault_condition').val(totalprice);
+        })
+        jq("#inputcount").blur(function () {
+            var unit_price = jq('#unit_price').val();
+            var count = jq('#inputcount').val();
+            if(unit_price == ''||unit_price == undefined)
+                return ;
+            if(count == ''||count == undefined)
+                return ;
+            var totalprice =parseFloat(unit_price)*parseFloat(count);
+            jq('#fault_condition').val(totalprice);
+        })
     });
 
     function saveOrderItem() {
@@ -266,11 +287,19 @@
         orderItem.unc_product_id = unc_productid;
 
         orderItem.specification = jq('#specification').val();
-        orderItem.back_date = jq('#back_date').val() ;
-
-        if(orderItem.back_date == ''){
-            layer.msg('请输入归还日期',{icon:2});
-            return;
+        orderItem.back_date = '2000-01-01';
+        orderItem.unit_price = jq('#unit_price').val();
+        if(orderItem.unit_price == undefined || orderItem.unit_price == '')
+        {
+            layer.msg('请输入单价',{icon:2});
+            return '';
+        }
+        //数据库没有总价字段，总价保存在fault_condition字段里
+        orderItem.fault_condition = jq('#fault_condition').val();
+        if(orderItem.fault_condition == undefined || orderItem.fault_condition == '')
+        {
+            layer.msg('请输入总价',{icon:2});
+            return '';
         }
         orderItem.ogl_product_state = "";
 
@@ -283,8 +312,8 @@
         orderItem.replace_reason = jq('#replace_reason').val();
         orderItem.ogl_comment = jq('#comment').val();
         if(orderItem.model == ''){
-            layer.msg('请输入数量',{icon:2});
-            return;
+            layer.msg('请输入型号',{icon:2});
+            return '';
         }
         orderItem.product_info_name = jq('#product_info_name').val();
         //+判断 型号是否存在，不存在禁止录入

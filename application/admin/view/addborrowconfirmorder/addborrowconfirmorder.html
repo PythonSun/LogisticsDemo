@@ -1220,7 +1220,7 @@
     //获取子部门并选中
     function LoadingDepartmentAndSelected(value,selectValue) {
         var jq = layui.jquery;
-        jq.post("{:url('admin/addreplaceconfirmorder/getdepartmentinfo')}",{'param':value},function(data){
+        jq.post("{:url('admin/addborrowconfirmorder/getdepartmentinfo')}",{'param':value},function(data){
             for(var  item in data){
                 //console.log(data[item]['organize_name']);
                 if(data[item]['organize_id'] == selectValue)
@@ -1238,7 +1238,7 @@
     //获取经理并选中
     function LoadingManagerAndSelected(value,selectValue) {
         var jq = layui.jquery;
-        jq.post("{:url('admin/addreplaceconfirmorder/getdspmanagerinfo')}",{'param':value},function(data){
+        jq.post("{:url('admin/addborrowconfirmorder/getdspmanagerinfo')}",{'param':value},function(data){
             for(var  item in data){
                 //console.log(data[item]['organize_name']);
                 if(data[item]['user_id'] == selectValue)
