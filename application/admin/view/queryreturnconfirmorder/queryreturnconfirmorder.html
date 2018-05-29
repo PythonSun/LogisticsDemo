@@ -42,7 +42,10 @@
 				laydate.render({
 				    elem: '#enddate'
 				});
+                jq(document).ready(function () {
+                    current_user_type = {$current_user_type};
 
+                });
 				/*监听查询按钮*/
 				form.on('submit(query)',function(data){
 					var queryInfo = data.field;

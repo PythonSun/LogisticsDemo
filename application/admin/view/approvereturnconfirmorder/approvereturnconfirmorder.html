@@ -9,7 +9,6 @@
 	</head>
 	<body>
 		{include file="publictemplate/approveserachcondtion"/}
-		var current_user_type = 1;
 		<div style="margin:20px 10px;">
 			<div><h2>退货待审批订单</h2></div>
 			<table class="layui-hide" id="returnorder" lay-filter="returnorder"></table>
@@ -19,6 +18,7 @@
 		</div>
 		<script src="/static/layui/layui.js"></script>
 		<script type="text/javascript">
+            var current_user_type = 1;
 			layui.use(['layer','jquery','laydate','form','table'],function(){
 				var form = layui.form ,layer = layui.layer,jq = layui.jquery,laydate = layui.laydate,table = layui.table;
 

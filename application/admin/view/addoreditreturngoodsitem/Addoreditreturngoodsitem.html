@@ -251,8 +251,9 @@
 
         var unc_productid = jq("#unc_productid").find("option:selected").val();
         var unc_product_text = "";
-        if(unc_productid == ""){
+        if(unc_productid == ""|| unc_productid == undefined || unc_productid == null){
             unc_product_text = "";
+            unc_productid = -1;
         }else {
             unc_product_text = jq("#unc_productid").find("option:selected").text();
         }
