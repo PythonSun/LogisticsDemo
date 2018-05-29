@@ -193,6 +193,7 @@
 		</div>
 
 		<script src="/static/layui/layui.js"></script>
+		<script src="/static/js/commondetect.js"></script>
 		<script type="text/javascript">
 			/*定时获取系统时间*/
 			window.onload = function(){
@@ -211,6 +212,9 @@
 				var layer = layui.layer
 				,element = layui.element
 				,jq = layui.jquery;
+
+			  	document.onkeypress = forbidBackSpace;
+ 	 			document.onkeydown = forbidBackSpace;
 
 				/*监听侧边导航栏*/
 			 	element.on('nav(orderList)', function(elem){
