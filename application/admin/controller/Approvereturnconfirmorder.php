@@ -33,7 +33,7 @@ class Approvereturnconfirmorder extends Controller
         $limit = $_GET['limit'];
         $user = session("user_session");
         $user_id = $user["user_id"];
-        $orderType = 4;
+        $orderType = 3;
         $queryuserinfo = session("user_querypower");
         $rolename = $queryuserinfo['role_name'];
         if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员")
