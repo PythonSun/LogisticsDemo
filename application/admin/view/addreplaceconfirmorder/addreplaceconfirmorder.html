@@ -468,7 +468,6 @@
                     if(cs_id == ""){
                         userPower();
                         isloading = false;
-                        console.log(current_user_type);
                         if(current_user_type == 1)
                         {
                             jq('#build_organize_id').val(user_info['organize_id']);
@@ -1226,9 +1225,13 @@
                         if(e){
                             console.log('订单添加成功！');
                             console.log(e);
+                            var str = state == 0?'订单保存成功':'订单提交成功';
+                            top.layer.msg(str,{icon:1});
                             location.href = "{:url('admin/addreplaceconfirmorder/addreplaceconfirmorder')}";
                         }else if(!e){
                             console.log('订单提交失败！');
+                            var str = state == 0?'订单保存失败':'订单提交失败';
+                            top.layer.msg(str,{icon:2});
                             console.log(e);
                         }
                     }
