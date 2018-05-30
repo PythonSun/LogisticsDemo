@@ -97,7 +97,6 @@ class Addborrowconfirmorder extends Controller
         $cs_info = $_POST['cs_info'];
         $custom_info = $_POST['custom_info'];
         $delivery_info = $_POST['delivery_info'];
-        $return_info = $_POST['return_info'];
         $cs_belong = $_POST['cs_belong'];
         $cs_examine = $_POST['cs_examine'];
 
