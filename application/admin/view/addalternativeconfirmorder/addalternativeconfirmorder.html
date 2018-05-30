@@ -9,7 +9,7 @@
     .btnPicLightBg{
         background: #8D8D8D;
     }
-    .btnnomalBg{
+    .btnNormalBg{
         background: #6495ED	;
     }
     .hide{
@@ -368,7 +368,7 @@
         </div>
         <div class="layui-inline">
             <input type="button" id="uncofginfo" class="layui-btn  dark_blue dark_blue_disabled" target="_blank" style="color: black;" value="增加非定型产品订货确认单">
-            <input type="button" id="lookuncofginfo" class="layui-btn  dark_blue_disabled" target="_blank" style="color: black;" value="查看非定型产品订货确认单">
+            <input type="button" id="lookuncofginfo" class="layui-btn  " target="_blank" style="color: black;" value="查看非定型产品订货确认单">
             <input type="button" id="deluncofginfo" class="layui-btn  dark_blue dark_blue_disabled" target="_blank" style="color: black;" value="删除非定型产品订货确认单">
         </div>
     </div>
@@ -1957,20 +1957,20 @@
                 $('#deluncofginfo').addClass('hide');
                 $('#lookuncofginfo').attr("disabled","disabled");
                 $('#lookuncofginfo').addClass('btnPicLightBg');
-                $('#lookuncofginfo').removeClass('btnnomalBg');
+                $('#lookuncofginfo').removeClass('btnNormalBg');
             }else {
                 $('#deluncofginfo').addClass('hide');
 
                 $('#lookuncofginfo').removeAttr("disabled");
                 $('#lookuncofginfo').removeClass('btnPicLightBg');
-                $('#lookuncofginfo').addClass('btnnomalBg');
+                $('#lookuncofginfo').addClass('btnNormalBg');
             }
         }else {
             if(uncofginfo == "" || uncofginfo == null || uncofginfo === undefined){
                 $('#deluncofginfo').addClass('hide');
                 $('#lookuncofginfo').attr("disabled","disabled");
                 $('#lookuncofginfo').addClass('btnPicLightBg');
-                $('#lookuncofginfo').removeClass('btnnomalBg');
+                $('#lookuncofginfo').removeClass('btnNormalBg');
                 console.log(2472);
                 console.log(uncofginfo);
             }else {
@@ -1978,7 +1978,7 @@
 
                 $('#lookuncofginfo').removeAttr("disabled");
                 $('#lookuncofginfo').removeClass('btnPicLightBg');
-                $('#lookuncofginfo').addClass('btnnomalBg');
+                $('#lookuncofginfo').addClass('btnNormalBg');
                 console.log(2480);
                 console.log(uncofginfo);
             }
