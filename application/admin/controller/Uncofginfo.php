@@ -65,8 +65,8 @@ class Uncofginfo extends Controller
         $template_name = "非定型产品确认单.xls";
         $file_name = $_GET['file_name'];
         $file_extend = $_GET['file_extend'];
-        $cs_id = $_GET['cs_id'];
-        $ret = \app\index\model\Admin::queryprintuncofginfoorder($cs_id);
+        $uoi_id = $_GET['uoi_id'];
+        $ret = \app\index\model\Admin::queryprintuncofginfoorder($uoi_id);
         \app\index\model\Admin::printuncordergoods($file_name,$file_extend,$template_name,$ret);
     }
 }

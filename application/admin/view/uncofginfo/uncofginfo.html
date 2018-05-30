@@ -251,7 +251,7 @@
                                 var iframeWin = top.window[layero.find('iframe')[0]['name']];
                                 var exportparam = iframeWin.getexportparam();
                                 top.layer.close(index);
-                                window.open("{:url('admin/uncofginfo/printuncofginfo')}?cs_id="+ cs_id + "&file_name=" + exportparam.file_name+ "&file_extend=" + exportparam.file_extend,"_self");
+                                window.open("{:url('admin/uncofginfo/printuncofginfo')}?uoi_id="+ uoi_id + "&file_name=" + exportparam.file_name+ "&file_extend=" + exportparam.file_extend,"_self");
                             }
                         });
                     return false;

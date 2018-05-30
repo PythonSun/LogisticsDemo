@@ -2544,29 +2544,28 @@
         }
 
         /*根据流水号查询需打印的非定型产品订货单*/
-        public static function queryprintuncofginfoorder($cs_id){
-            $sqlone ="select dsp_logistic.order_goods_cs_info.*,dsp_logistic.unc_ofg_info.* from dsp_logistic.order_goods_cs_info ";
-            $sqlone .= "left join dsp_logistic.unc_ofg_info on dsp_logistic.unc_ofg_info.uoi_id = dsp_logistic.order_goods_cs_info.unc_ofg_info_id ";
-            $sqlone .= "where dsp_logistic.order_goods_cs_info.cs_id='$cs_id' ";
+        public static function queryprintuncofginfoorder($uoi_id){
+            $sqlone = "select dsp_logistic.unc_ofg_info.* from dsp_logistic.unc_ofg_info where dsp_logistic.unc_ofg_info.uoi_id='$uoi_id'";
             $tableobj = Db::query($sqlone);
 
-            $sqltwo = "select dsp_logistic.order_goods_cs_info.unc_ofg_info_id,dsp_logistic.unc_ofg_info.uoi_id,dsp_logistic.unc_ofg_detail.*,dsp_logistic.product_info.* ";
-            $sqltwo .= "from dsp_logistic.order_goods_cs_info ";
-            $sqltwo .= "left join dsp_logistic.unc_ofg_info on dsp_logistic.unc_ofg_info.uoi_id = dsp_logistic.order_goods_cs_info.unc_ofg_info_id ";
+            $sqltwo = "select dsp_logistic.unc_ofg_info.*,dsp_logistic.unc_ofg_detail.*,dsp_logistic.product_info.* ";
+            $sqltwo .= "from dsp_logistic.unc_ofg_info ";
             $sqltwo .= "left join dsp_logistic.unc_ofg_detail on dsp_logistic.unc_ofg_detail.unc_ofg_info_id = dsp_logistic.unc_ofg_info.uoi_id ";
             $sqltwo .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.unc_ofg_detail.product_info_id ";
-            $sqltwo .= "where dsp_logistic.order_goods_cs_info.cs_id='$cs_id' ";
+            $sqltwo .= "where dsp_logistic.unc_ofg_info.uoi_id='$uoi_id' ";
             $listobj = Db::query($sqltwo);
 
-            for($item=0; $item<count($tableobj);$item++){
-                $productlist = array();
-                for($listitem=0;$listitem<count($listobj);$listitem++){
-                    if($tableobj[$item]['unc_ofg_info_id'] == $listobj[$listitem]['unc_ofg_info_id']){
-                        $productlist[] = $listobj[$listitem];
-                    }
-                }
-                $tableobj[$item]['productlist'] = $productlist;
-            }
+            $tableobj[0]['productlist'] = $listobj;
+
+            // for($item=0; $item<count($tableobj);$item++){
+            //     $productlist = array();
+            //     for($listitem=0;$listitem<count($listobj);$listitem++){
+            //         if($tableobj[$item]['unc_ofg_info_id'] == $listobj[$listitem]['unc_ofg_info_id']){
+            //             $productlist[] = $listobj[$listitem];
+            //         }
+            //     }
+            //     $tableobj[$item]['productlist'] = $productlist;
+            // }
 
             return $tableobj;
         }

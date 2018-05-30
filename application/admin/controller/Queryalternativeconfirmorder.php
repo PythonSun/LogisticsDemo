@@ -116,4 +116,16 @@ class Queryalternativeconfirmorder extends Controller
         $ret = \app\index\model\Admin::queryexportcsinfoconfirmorder($param,$type);
         \app\index\model\Admin::exportcsinfoconfirmorder($file_name,$file_extend,$template_name,$ret);
     }
+
+    /*打印更换确认单*/
+    public function printalternativeconfirmorder(){
+        $template_name = "更换代用确认单.xlsx";
+        $type=0x06;
+        $cs_id = $_GET['cs_id'];
+        $file_name = $_GET['file_name'];
+        $file_extend = 'xlsx';
+
+        $ret = \app\index\model\Admin::queryprintcsinfoorder($cs_id,$type);
+        \app\index\model\Admin::printreplaceconfirmorder($file_name,$file_extend,$template_name,$ret,$type);
+    }
 }
