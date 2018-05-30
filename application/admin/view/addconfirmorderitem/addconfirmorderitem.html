@@ -157,7 +157,7 @@
             type = "<?php echo $type?>";
             if(type == 1)
             {
-                jq('.Wheat_disabled').attr('disabled','');
+                jq('.Wheat_disabled').attr('disabled',true);
             }
             else
             {
@@ -241,22 +241,38 @@
       //  jq('.dark_blue_disabled').attr("disabled","disabled");
         var orderItem = new Object();
         orderItem.product_type_id = jq('#product_type_id').val();
-        var obj = document.getElementById("product_type_id");
-        orderItem.product_type_name = obj.options[obj.selectedIndex].text;
         if(orderItem.product_type_id == "" || orderItem.product_type_id == undefined || orderItem.product_type_id == null){
             layer.msg('请输入产品分类',{icon:2});
-            return;
+            return '';
         }
+        var obj = document.getElementById("product_type_id");
+        orderItem.product_type_name = obj.options[obj.selectedIndex].text;
+
         orderItem.brand_id = jq('#brand_id').val();
+        if(orderItem.brand_id == "" || orderItem.brand_id == undefined || orderItem.brand_id == null){
+            layer.msg('请输入品牌',{icon:2});
+            return '';
+        }
         var obj1 = document.getElementById("brand_id");
         orderItem.brand_name = obj1.options[obj1.selectedIndex].text;
         orderItem.model = jq('#serachModelinfo').val();
-        var obj2 = document.getElementById("place_id");
-        orderItem.place_name = obj2.options[obj2.selectedIndex].text;
+
         orderItem.place_id = jq('#place_id').val();//
+        if(orderItem.place_id == "" || orderItem.place_id == undefined || orderItem.place_id == null){
+            orderItem.place_id = -1;
+            orderItem.place_name = '';
+        }
+        else
+        {
+            var obj2 = document.getElementById("place_id");
+            orderItem.place_name = obj2.options[obj2.selectedIndex].text;
+        }
         orderItem.order_goods_manager_count = jq('#inputcount').val();
-        if(orderItem.order_goods_manager_count == '')
+        if(orderItem.order_goods_manager_count == ''){
+            layer.msg('请输入数量',{icon:2});
             return '';
+
+        }
         orderItem.unit = jq('#inputunit').val();
 
 
