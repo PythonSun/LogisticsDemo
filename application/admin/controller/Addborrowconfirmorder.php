@@ -259,7 +259,7 @@ class Addborrowconfirmorder extends Controller
             return false;
         }
 
-        $cs_info['return_info_id'] = $return_info_id ;
+        $cs_info['return_info_id'] = -1 ;
         $cs_info['custom_info_id'] = $custom_info_id ;
         $cs_info['delivery_info_id'] = $delivery_info_id ;
         $cs_info['payment_info_id'] = $payment_info_id ;
@@ -279,58 +279,6 @@ class Addborrowconfirmorder extends Controller
         }
     }
 
-
-
-        $length = count($cs_examine);
-        $cs_examine_ids ="";
-        for ($i = 0; $i < $length; $i++) {
-            $cs_examine[$i]['cs_id'] = $cs_info['cs_id'];
-            $user_id = $cs_examine[$i]['submit_user_id'];
-            if ($i == 0) {
-                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '总监');
-                if (empty($dbleader)) {
-                    return false;
-                }
-                $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
-                $cs_examine[$i]['cs_examine_name'] = $dbleader[0]['fullname'];
-
-            } else if ($i == 1) {
-                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '总经理');
-                if (empty($dbleader)) {
-                    return false;
-                    //return false;
-                }
-                $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
-                $cs_examine[$i]['cs_examine_name'] = $dbleader[0]['fullname'];
-            } else if ($i == 2) {
-                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '财务部');
-                if (empty($dbleader)) {
-                    return false;
-                }
-                $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
-                $cs_examine[$i]['cs_examine_name'] = $dbleader[0]['fullname'];
-            }
-            $cs_examine_id = \app\index\model\Admin::getmaxtableidretid('cs_examine', 'cs_examine_id')+1;
-            $cs_examine[$i]['cs_examine_id'] = $cs_examine_id;
-            $cs_examine_ids.= "$cs_examine_id,";
-            $rettest = \app\index\model\Admin::updatecsexamine($cs_examine[$i]);
-        }
-
-        //payment_info
-        $payment_info = $_POST['payment_info'];
-        $payment_info_id = \app\index\model\Admin::getmaxtableidretid('payment_info', 'payment_info_id');
-        $payment_info['payment_info_id'] = $payment_info_id+1;
-        \app\index\model\Admin::updatepaymentinfo($payment_info);
-
-
-        $cs_info['custom_info_id'] = $custom_info_id +1;
-        $cs_info['delivery_info_id'] = $delivery_info_id +1;
-        $cs_info['payment_info_id'] = $payment_info_id +1;
-        $cs_info['cs_examine_ids'] = $cs_examine_ids;
-        \app\index\model\Admin::updateconfirmorder($cs_info);
-
-        return $cs_info_id;
-    }
 
 
     public function getdepartmentinfo()

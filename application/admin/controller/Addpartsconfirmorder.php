@@ -258,7 +258,7 @@ class Addpartsconfirmorder extends Controller
             return false;
         }
 
-        $cs_info['return_info_id'] = $return_info_id ;
+        $cs_info['return_info_id'] = -1 ;
         $cs_info['custom_info_id'] = $custom_info_id ;
         $cs_info['delivery_info_id'] = $delivery_info_id ;
         $cs_info['payment_info_id'] = $payment_info_id ;
