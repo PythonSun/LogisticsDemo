@@ -178,12 +178,12 @@ class Addreplaceconfirmorder extends Controller
             $num = count($order_goods_manager);
             for ($i = 0; $i < $num; $i++) {
                 //order_goods_manager
-                $order_goods_manager_id = \app\index\model\Admin::getmaxtableidretid('order_goods_manager', 'order_goods_manager_id');
-                $order_goods_manager[$i]['order_goods_manager_id'] = $order_goods_manager_id+1;
+                $order_goods_manager_id = \app\index\model\Admin::getmaxtableidretid('order_goods_manager', 'order_goods_manager_id')+1;
+                $order_goods_manager[$i]['order_goods_manager_id'] = $order_goods_manager_id;
                 $order_goods_manager[$i]['cs_id'] = $cs_info['cs_id'];
-                $data[$index][0] = 'return_info';
-                $data[$index][1] = 'return_info_id';
-                $data[$index][2] = $delivery_info_id;
+                $data[$index][0] = 'order_goods_manager';
+                $data[$index][1] = 'order_goods_manager_id';
+                $data[$index][2] = $order_goods_manager_id;
                 $index++;
                 $retmanager = \app\index\model\Admin::updateordergoodsmanager($order_goods_manager[$i]);
                 if(empty($retmanager)||$retmanager == false)
@@ -192,14 +192,14 @@ class Addreplaceconfirmorder extends Controller
                     return false;
                 }
                 //order_goods_logistics
-                $ogl_id = \app\index\model\Admin::getmaxtableidretid('order_goods_logistics', 'order_goods_manager_id');
-                $order_goods_manager[$i]['ogl_id'] = $ogl_id+1;
+                $ogl_id = \app\index\model\Admin::getmaxtableidretid('order_goods_logistics', 'order_goods_manager_id')+1;
+                $order_goods_manager[$i]['ogl_id'] = $ogl_id;
                 $order_goods_manager[$i]['ogl_time_stamp'] = $date_now;
                 $order_goods_manager[$i]['user_id'] = $cs_belong['build_user_id']; //暂时不知道是报那个的id,先写经理的
                 $retmanager = \app\index\model\Admin::updateordergoodslogistics($order_goods_manager[$i]);
-                $data[$index][0] = 'return_info';
-                $data[$index][1] = 'return_info_id';
-                $data[$index][2] = $delivery_info_id;
+                $data[$index][0] = 'order_goods_logistics';
+                $data[$index][1] = 'order_goods_manager_id';
+                $data[$index][2] = $ogl_id;
                 $index++;
                 if(empty($retmanager)||$retmanager == false)
                 {
@@ -261,8 +261,8 @@ class Addreplaceconfirmorder extends Controller
 
         //payment_info
         $payment_info = $_POST['payment_info'];
-        $payment_info_id = \app\index\model\Admin::getmaxtableidretid('payment_info', 'payment_info_id');
-        $payment_info['payment_info_id'] = $payment_info_id+1;
+        $payment_info_id = \app\index\model\Admin::getmaxtableidretid('payment_info', 'payment_info_id')+1;
+        $payment_info['payment_info_id'] = $payment_info_id;
         $data[$index][0] = 'return_info';
         $data[$index][1] = 'return_info_id';
         $data[$index][2] = $delivery_info_id;
@@ -274,10 +274,10 @@ class Addreplaceconfirmorder extends Controller
             return false;
         }
 
-        $cs_info['return_info_id'] = $return_info_id +1;
-        $cs_info['custom_info_id'] = $custom_info_id +1;
-        $cs_info['delivery_info_id'] = $delivery_info_id +1;
-        $cs_info['payment_info_id'] = $payment_info_id +1;
+        $cs_info['return_info_id'] = $return_info_id ;
+        $cs_info['custom_info_id'] = $custom_info_id ;
+        $cs_info['delivery_info_id'] = $delivery_info_id ;
+        $cs_info['payment_info_id'] = $payment_info_id ;
         $cs_info['cs_examine_ids'] = $cs_examine_ids;
         \app\index\model\Admin::updateconfirmorder($cs_info);
 

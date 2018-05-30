@@ -92,6 +92,8 @@ class Addalternativeconfirmorder extends Controller
     /**新增订单（包含审批 清单）**/
     public function addalternativeorder()
     {
+        $data = array();
+        $index = 0;
         $date_now = date("Y-m-d H:i:s");
         $cs_info = $_POST['cs_info'];
         $custom_info = $_POST['custom_info'];
@@ -109,39 +111,63 @@ class Addalternativeconfirmorder extends Controller
         $cs_info['payment_info_id'] = '-1';
         $cs_info['cs_examine_ids'] = "";
         $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
-        if (empty($ret_confirm_order)) {
+        $data[$index][0] = 'cs_info';
+        $data[$index][1] = 'cs_id';
+        $data[$index][2] = $cs_info_id;
+        $index++;
+        if (empty($ret_confirm_order)||$ret_confirm_order == false) {
+            $this->deldata($data);
             return false;
         }
 
         $cs_belong['cs_id'] = $cs_info['cs_id'];
         $cs_belong['cs_belong_create_time'] = $date_now;
 
-        $cs_belong_id = \app\index\model\Admin::getmaxtableidretid('cs_belong', 'cs_belong_id');
-        $cs_belong['cs_belong_id'] = $cs_belong_id+1;
+        $cs_belong_id = \app\index\model\Admin::getmaxtableidretid('cs_belong', 'cs_belong_id')+1;
+        $cs_belong['cs_belong_id'] = $cs_belong_id;
         $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
-        if (empty($ret_cs_belog)) {
+        $data[$index][0] = 'cs_belong';
+        $data[$index][1] = 'cs_belong_id';
+        $data[$index][2] = $cs_belong_id;
+        $index++;
+        if (empty($ret_cs_belog)||$ret_cs_belog == false) {
+            $this->deldata($data);
             return false;
         }
 
-        $custom_info_id = \app\index\model\Admin::getmaxtableidretid('custom_info', 'custom_info_id');
-        $custom_info['custom_info_id'] = $custom_info_id+1;
+        $custom_info_id = \app\index\model\Admin::getmaxtableidretid('custom_info', 'custom_info_id')+1;
+        $custom_info['custom_info_id'] = $custom_info_id;
         $ret_custom_info = \app\index\model\Admin::updatecustominfo($custom_info);
-
-        if (empty($ret_custom_info)) {
+        $data[$index][0] = 'custom_info';
+        $data[$index][1] = 'custom_info_id';
+        $data[$index][2] = $custom_info_id;
+        $index++;
+        if (empty($ret_custom_info)||$ret_custom_info == false) {
+            $this->deldata($data);
             return false;//添加失败删除
         }
 
-        $delivery_info_id = \app\index\model\Admin::getmaxtableidretid('delivery_info', 'delivery_info_id');
-        $delivery_info['delivery_info_id'] = $delivery_info_id+1;
+        $delivery_info_id = \app\index\model\Admin::getmaxtableidretid('delivery_info', 'delivery_info_id')+1;
+        $delivery_info['delivery_info_id'] = $delivery_info_id;
         $ret_delivery_info = \app\index\model\Admin::updatedeliveryinfo($delivery_info);
-        if (empty($ret_delivery_info)) {
+        $data[$index][0] = 'delivery_info';
+        $data[$index][1] = 'delivery_info_id';
+        $data[$index][2] = $delivery_info_id;
+        $index++;
+        if (empty($ret_delivery_info)||$ret_delivery_info == false) {
+            $this->deldata($data);
             return false;
         }
 
-        $return_info_id = \app\index\model\Admin::getmaxtableidretid('return_info', 'return_info_id');
-        $return_info['return_info_id'] = $return_info_id+1;
+        $return_info_id = \app\index\model\Admin::getmaxtableidretid('return_info', 'return_info_id')+1;
+        $return_info['return_info_id'] = $return_info_id;
         $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
-        if (empty($ret_return_info)) {
+        $data[$index][0] = 'return_info';
+        $data[$index][1] = 'return_info_id';
+        $data[$index][2] = $delivery_info_id;
+        $index++;
+        if (empty($ret_return_info)||$ret_return_info == false) {
+            $this->deldata($data);
             return false;
         }
         if(array_key_exists('order_goods_manager',$_POST)){
@@ -149,16 +175,34 @@ class Addalternativeconfirmorder extends Controller
             $num = count($order_goods_manager);
             for ($i = 0; $i < $num; $i++) {
                 //order_goods_manager
-                $order_goods_manager_id = \app\index\model\Admin::getmaxtableidretid('order_goods_manager', 'order_goods_manager_id');
-                $order_goods_manager[$i]['order_goods_manager_id'] = $order_goods_manager_id+1;
+                $order_goods_manager_id = \app\index\model\Admin::getmaxtableidretid('order_goods_manager', 'order_goods_manager_id')+1;
+                $order_goods_manager[$i]['order_goods_manager_id'] = $order_goods_manager_id;
                 $order_goods_manager[$i]['cs_id'] = $cs_info['cs_id'];
+                $data[$index][0] = 'order_goods_manager';
+                $data[$index][1] = 'order_goods_manager_id';
+                $data[$index][2] = $order_goods_manager_id;
+                $index++;
                 $retmanager = \app\index\model\Admin::updateordergoodsmanager($order_goods_manager[$i]);
+                if(empty($retmanager)||$retmanager == false)
+                {
+                    $this->deldata($data);
+                    return false;
+                }
                 //order_goods_logistics
-                $ogl_id = \app\index\model\Admin::getmaxtableidretid('order_goods_logistics', 'order_goods_manager_id');
-                $order_goods_manager[$i]['ogl_id'] = $ogl_id+1;
+                $ogl_id = \app\index\model\Admin::getmaxtableidretid('order_goods_logistics', 'order_goods_manager_id')+1;
+                $order_goods_manager[$i]['ogl_id'] = $ogl_id;
                 $order_goods_manager[$i]['ogl_time_stamp'] = $date_now;
                 $order_goods_manager[$i]['user_id'] = $cs_belong['build_user_id']; //暂时不知道是报那个的id,先写经理的
                 $retmanager = \app\index\model\Admin::updateordergoodslogistics($order_goods_manager[$i]);
+                $data[$index][0] = 'order_goods_logistics';
+                $data[$index][1] = 'order_goods_manager_id';
+                $data[$index][2] = $ogl_id;
+                $index++;
+                if(empty($retmanager)||$retmanager == false)
+                {
+                    $this->deldata($data);
+                    return false;
+                }
             }
 
         }
@@ -173,6 +217,7 @@ class Addalternativeconfirmorder extends Controller
             if ($i == 0) {
                 $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '总监');
                 if (empty($dbleader)) {
+                    $this->deldata($data);
                     return false;
                 }
                 $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
@@ -181,6 +226,7 @@ class Addalternativeconfirmorder extends Controller
             } else if ($i == 1) {
                 $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '总经理');
                 if (empty($dbleader)) {
+                    $this->deldata($data);
                     return false;
                     //return false;
                 }
@@ -188,7 +234,8 @@ class Addalternativeconfirmorder extends Controller
                 $cs_examine[$i]['cs_examine_name'] = $dbleader[0]['fullname'];
             } else if ($i == 2) {
                 $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '财务部');
-                if (empty($dbleader)) {
+                if (empty($dbleader) ) {
+                    $this->deldata($data);
                     return false;
                 }
                 $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
@@ -197,26 +244,52 @@ class Addalternativeconfirmorder extends Controller
             $cs_examine_id = \app\index\model\Admin::getmaxtableidretid('cs_examine', 'cs_examine_id')+1;
             $cs_examine[$i]['cs_examine_id'] = $cs_examine_id;
             $cs_examine_ids.= "$cs_examine_id,";
+            $data[$index][0] = 'cs_examine';
+            $data[$index][1] = 'cs_examine_id';
+            $data[$index][2] = $cs_examine_id;
+            $index++;
             $rettest = \app\index\model\Admin::updatecsexamine($cs_examine[$i]);
+            if(empty($rettest) || $rettest == false)
+            {
+                $this->deldata($data);
+                return false;
+            }
         }
 
         //payment_info
         $payment_info = $_POST['payment_info'];
-        $payment_info_id = \app\index\model\Admin::getmaxtableidretid('payment_info', 'payment_info_id');
-        $payment_info['payment_info_id'] = $payment_info_id+1;
-        \app\index\model\Admin::updatepaymentinfo($payment_info);
+        $payment_info_id = \app\index\model\Admin::getmaxtableidretid('payment_info', 'payment_info_id')+1;
+        $payment_info['payment_info_id'] = $payment_info_id;
+        $data[$index][0] = 'return_info';
+        $data[$index][1] = 'return_info_id';
+        $data[$index][2] = $delivery_info_id;
+        $index++;
+        $rettest = \app\index\model\Admin::updatepaymentinfo($payment_info);
+        if(empty($rettest) || $rettest == false)
+        {
+            $this->deldata($data);
+            return false;
+        }
 
-
-        $cs_info['return_info_id'] = $return_info_id +1;
-        $cs_info['custom_info_id'] = $custom_info_id +1;
-        $cs_info['delivery_info_id'] = $delivery_info_id +1;
-        $cs_info['payment_info_id'] = $payment_info_id +1;
+        $cs_info['return_info_id'] = $return_info_id ;
+        $cs_info['custom_info_id'] = $custom_info_id ;
+        $cs_info['delivery_info_id'] = $delivery_info_id ;
+        $cs_info['payment_info_id'] = $payment_info_id ;
         $cs_info['cs_examine_ids'] = $cs_examine_ids;
         \app\index\model\Admin::updateconfirmorder($cs_info);
 
-        return $cs_info_id;
+        return true;
     }
 
+    public function deldata($data)
+    {
+        if(empty($data))
+            return ;
+        foreach ($data as $item)
+        {
+            \app\index\model\Admin::deleterowtableid($item[0],$item[1],$item[2]);
+        }
+    }
 
     public function getdepartmentinfo()
     {
