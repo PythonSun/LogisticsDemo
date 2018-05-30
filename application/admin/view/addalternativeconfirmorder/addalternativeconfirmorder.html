@@ -9,6 +9,9 @@
     .btnPicLightBg{
         background: #8D8D8D;
     }
+    .btnnomalBg{
+        background: darkblue;
+    }
     .hide{
         display: none;
     }
@@ -364,9 +367,9 @@
                 <input type="text" name="delivery_date_reply" id="delivery_date_reply" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled"> </div>
         </div>
         <div class="layui-inline">
-            <input type="button" id="uncofginfo" class="layui-btn dark_blue dark_blue_disabled" target="_blank" value="增加非定型产品订货确认单">
-            <input type="button" id="lookuncofginfo" class="layui-btn " target="_blank" value="查看非定型产品订货确认单">
-            <input type="button" id="deluncofginfo" class="layui-btn dark_blue dark_blue_disabled" target="_blank" style="color: red" value="删除非定型产品订货确认单">
+            <input type="button" id="uncofginfo" class="layui-btn  dark_blue dark_blue_disabled" target="_blank" style="color: black;" value="增加非定型产品订货确认单">
+            <input type="button" id="lookuncofginfo" class="layui-btn  dark_blue_disabled" target="_blank" style="color: black;" value="查看非定型产品订货确认单">
+            <input type="button" id="deluncofginfo" class="layui-btn  dark_blue dark_blue_disabled" target="_blank" style="color: black;" value="删除非定型产品订货确认单">
         </div>
     </div>
 
@@ -791,7 +794,7 @@
             top.layer.open({
                 type:2,
                 title:'非定型产品订货单',
-                area:['65%','90%'],
+                area:['1150px','90%'],
                 shade: [0.7, '#393D49'],
                 skin: 'layui-layer-molv',
                 maxmin:true,
@@ -842,7 +845,7 @@
             top.layer.open({
                 type:2,
                 title:'查看非定型产品订货单',
-                area:['65%','90%'],
+                area:['1150px','90%'],
                 shade: [0.7, '#393D49'],
                 skin: 'layui-layer-molv',
                 maxmin:false,
@@ -1954,17 +1957,20 @@
                 $('#deluncofginfo').addClass('hide');
                 $('#lookuncofginfo').attr("disabled","disabled");
                 $('#lookuncofginfo').addClass('btnPicLightBg');
+                $('#lookuncofginfo').removeClass('btnnomalBg');
             }else {
                 $('#deluncofginfo').addClass('hide');
 
                 $('#lookuncofginfo').removeAttr("disabled");
                 $('#lookuncofginfo').removeClass('btnPicLightBg');
+                $('#lookuncofginfo').addClass('btnnomalBg');
             }
         }else {
             if(uncofginfo == "" || uncofginfo == null || uncofginfo === undefined){
                 $('#deluncofginfo').addClass('hide');
                 $('#lookuncofginfo').attr("disabled","disabled");
                 $('#lookuncofginfo').addClass('btnPicLightBg');
+                $('#lookuncofginfo').removeClass('btnnomalBg');
                 console.log(2472);
                 console.log(uncofginfo);
             }else {
@@ -1972,6 +1978,7 @@
 
                 $('#lookuncofginfo').removeAttr("disabled");
                 $('#lookuncofginfo').removeClass('btnPicLightBg');
+                $('#lookuncofginfo').addClass('btnnomalBg');
                 console.log(2480);
                 console.log(uncofginfo);
             }
