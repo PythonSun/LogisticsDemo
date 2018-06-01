@@ -129,6 +129,7 @@
                 <input type="text" name="comment" id="comment" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputtext(this);">
             </div>
         </div>
+        <!--<button id="print1">打印全部</button>-->
     </form>
 </body>
 <script type="text/javascript" src="/static/js/commondetect.js"></script>
@@ -137,6 +138,10 @@
 <script type="text/javascript" src="/static/layui/layui.js"></script>
 
 <script type="text/javascript">
+
+
+
+
     var type = 0;
     var isExistModel = true;//型号是否存在
     var product_info_id = -1;//型号id
@@ -145,8 +150,8 @@
     document.onkeydown = forbidBackSpace;
     layui.use(['form','laydate','jquery','laydate'],function(){
        var form = layui.form,
-           laydate = layui.laydate;
-        jq = layui.jquery;
+           laydate = layui.laydate,
+           jq = layui.jquery;
 
         laydate.render({
             elem: '#back_date'
@@ -229,6 +234,11 @@
 
 
         })
+        // jq('#print1').click(function(){
+        //     window.print();
+        //     return false;
+        // });
+
     });
 
     function saveOrderItem() {

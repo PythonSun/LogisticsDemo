@@ -45,14 +45,50 @@ function detectinputphone(object){
 function forbidBackSpace(e){
     var ev = e || window.event; //获取event对象 
     var obj = ev.target || ev.srcElement; //获取事件源 
-    var t = obj.type || obj.getAttribute('type'); //获取事件源类型 
-    var vReadOnly = obj.readOnly;
-    var vDisabled = obj.disabled;
-    vReadOnly = (vReadOnly == undefined) ? false : vReadOnly;
-    vDisabled = (vDisabled == undefined) ? true : vDisabled;
-    var flag1 = ev.keyCode == 8 && (t == "password" || t == "text" || t == "textarea") && (vReadOnly == true || vDisabled == true);
-    var flag2 = ev.keyCode == 8 && t != "password" && t != "text" && t != "textarea";
-    if (flag2 || flag1) return false;
+    var t = obj.type || obj.getAttribute('type'); //获取事件源类型
+    if(ev.keyCode == 8)
+    {
+        var vReadOnly = obj.readOnly;
+        var vDisabled = obj.disabled;
+        vReadOnly = (vReadOnly == undefined) ? false : vReadOnly;
+        vDisabled = (vDisabled == undefined) ? true : vDisabled;
+        var flag1 = ev.keyCode == 8 && (t == "password" || t == "text" || t == "textarea") && (vReadOnly == true || vDisabled == true);
+        var flag2 = ev.keyCode == 8 && t != "password" && t != "text" && t != "textarea";
+        if (flag2 || flag1) return false;
+    }
+    else if(ev.keyCode == 13 &&t == "text")
+    {
+        var jq = layer.jquery;
+        var is  = false;
+        jq(".input-text").each(function(){
+            if(is)
+            {
+                jq(this).focus();
+                is =false;
+            }
+
+            if(jq(this) == obj)
+                is = true;
+        });
+        return false;
+
+
+    }
 }
+
+function focusNextInput(thisInput)
+{
+    var inputs = document.getElementsByTagName("input");
+    for(var i = 0;i<inputs.length;i++){
+        // 如果是最后一个，则焦点回到第一个
+        if(i==(inputs.length-1)){
+            inputs[0].focus(); break;
+        }else if(thisInput == inputs[i]){
+            inputs[i+1].focus(); break;
+        }
+    }
+}
+
+
 
 

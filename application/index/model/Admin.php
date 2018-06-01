@@ -271,7 +271,7 @@
                     $state = $tableobj[$i]["cs_info_state"];
                     $mode =  $tableobj[$i]["transfer_mode"];
                     if($state == 0)
-                        $tableobj[$i]["cs_info_state"] = "空";
+                        $tableobj[$i]["cs_info_state"] = "";
                     elseif ($state == 1)
                     {
                         $tableobj[$i]["cs_info_state"] = "处理中";
@@ -287,6 +287,10 @@
                     elseif ($state == 4)
                     {
                         $tableobj[$i]["cs_info_state"] = "备货";
+                    }
+                    elseif ($state == 6)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "缺货";
                     }
 
                     if ($mode == 0)
@@ -575,6 +579,10 @@
                     elseif ($state == 5)
                     {
                         $tableobj[$i]["cs_info_state"] = "退回";
+                    }
+                    elseif ($state == 6)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "缺货";
                     }
 
                     if ($mode == 0)
@@ -876,6 +884,10 @@
                     {
                         $tableobj[$i]["cs_info_state"] = "退回";
                     }
+                    elseif ($state == 6)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "缺货";
+                    }
 
                     if ($mode == 0)
                         $tableobj[$i]["transfer_fee_mode"] = "到付";
@@ -1029,6 +1041,10 @@
                     elseif ($state == 5)
                     {
                         $tableobj[$i]["cs_info_state"] = "退回";
+                    }
+                    elseif ($state == 6)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "缺货";
                     }
 
                     if ($mode == 1)
@@ -1187,6 +1203,10 @@
                     elseif ($state == 5)
                     {
                         $tableobj[$i]["cs_info_state"] = "退回";
+                    }
+                    elseif ($state == 6)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "缺货";
                     }
 
                     $tableobj[$i]["serial_number"] = $i+1;
@@ -3136,6 +3156,71 @@
             if(!empty($tableobj)){
                 return $tableobj;
             }
+        }
+
+        /*模糊搜索用户  */
+        public  static function serachuser($param)
+        {
+            if(empty($param))
+                return null;
+            $count = count($param);
+            if($count == 0)
+                return null;
+
+            $sql = "SELECT dsp_logistic.user.*  ,dsp_logistic.organize.organize_name,dsp_logistic.role.role_name FROM dsp_logistic.user ";
+            $sql .= "left join dsp_logistic.role on dsp_logistic.role.role_id = dsp_logistic.user.role_id ";
+            $sql .= "left join dsp_logistic.organize on dsp_logistic.organize.organize_id = dsp_logistic.user.organize_id ";
+            if(array_key_exists('serachText',$param))
+            {
+                $serachText = $param['serachText'];
+                $sql .= "WHERE dsp_logistic.user.fullname LIKE '%{$serachText}%' ";
+            }
+
+            if(array_key_exists('organize_id',$param))
+            {
+                $departId = $param['organize_id'];
+                $sql.= "and dsp_logistic.organize.organize_id = '$departId' ";
+            }
+            if(array_key_exists('role_name',$param))
+            {
+                $role_name = $param['role_name'];
+                $sql.= "and dsp_logistic.role.role_name = '$role_name' ";
+            }
+            if(array_key_exists('organize_name',$param))
+            {
+                $organize_name = $param['organize_name'];
+                $sql.= "and dsp_logistic.organize.organize_name = '$organize_name' ";
+            }
+            $sql.= ' limit 0 , 5;';
+            $retsql = Db::query($sql);
+            return $retsql;
+        }
+        /*模糊搜索部门  */
+        public  static function serachdepartment($param)
+        {
+            if(empty($param))
+                return null;
+            $count = count($param);
+            if($count == 0)
+                return null;
+            $sql = "SELECT * FROM dsp_logistic.organize ";
+            if(array_key_exists('name',$param))
+            {
+                $name = $param['name'];
+                $sql .= "WHERE organize_name LIKE '%{$name}%' ";
+            }
+            $sql.= ' limit 0 , 5;';
+            $retsql = Db::query($sql);
+            return $retsql;
+        }
+        /*判断经理存不存在*/
+        public static function judgemanagerexist($name,$depart_id)
+        {
+            $sql = "SELECT *  FROM dsp_logistic.user  where fullname = '$name' and organize_id = '$depart_id'";
+            $retsql = Db::query($sql);
+            if(!empty($retsql))
+                return $retsql;
+            return '';
         }
 	}
 ?>

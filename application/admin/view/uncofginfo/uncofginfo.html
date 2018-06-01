@@ -55,8 +55,8 @@
                     <label class="layui-form-label">下达工厂</label>
                     <div class="layui-input-inline">
                         <select id="uoi_to_place" name="uoi_to_place">
-                            <option value="" disabled="" selected="">选择</option>
-                            <option value="迪士普">迪士普</option>
+                            <option value="" disabled="" >选择</option>
+                            <option value="迪士普" selected="">迪士普</option>
                             <option value="盛葆">盛葆</option>
                         </select>
                     </div>
@@ -70,7 +70,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">下单日期</label>
                     <div class="layui-input-inline">
-                        <input type="text" disabled name="uoi_date" id="uoi_date" autocomplete="on" value="{$date}" class="layui-input"> </div>
+                        <input type="text"  name="uoi_date" id="uoi_date" autocomplete="on" value="{$date}" class="layui-input"> </div>
                 </div>
             </div>
 
@@ -267,7 +267,7 @@
                     area:['675px','80%'],
                     shade: [0.7, '#393D49'],
                     skin: 'layui-layer-molv',
-                    maxmin:false,
+                    maxmin:true,
                     content:"{:url('admin/uncofginfoitem/uncofginfoitem')}",
                     btn:['确定','退出'],
                     yes:function (index,layero) {

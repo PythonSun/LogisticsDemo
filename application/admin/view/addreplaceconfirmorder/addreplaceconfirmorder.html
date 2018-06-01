@@ -25,12 +25,12 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">日期</label>
                     <div class="layui-input-inline">
-                        <input type="text" disabled name="cs_belong_create_time" id="cs_belong_create_time" autocomplete="on" class="layui-input light_gray" value="{$date}"> </div>
+                        <input type="text" disabled name="cs_belong_create_time" id="cs_belong_create_time" autocomplete="on" class="layui-input light_gray" value="{$date}" onkeypress="if(event.keyCode==13) focusNextInput(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label dark_blue">接收时间</label>
                     <div class="layui-input-inline dark_blue">
-                        <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input dark_blue dark_blue_disabled"> </div>
+                        <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input dark_blue dark_blue_disabled" onkeypress="if(event.keyCode==13) focusNextInput(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">流水号</label>
@@ -41,12 +41,13 @@
                     <label class="layui-form-label dark_blue">状态</label>
                     <div class="layui-input-inline dark_blue">
                         <select name="cs_info_state" id = "cs_info_state" lay-filter="cs_info_state" class="dark_blue_disabled">
-                            <option value=""  >选择</option>
+                            <option value=""  disabled>选择</option>
                             <option value="1" selected="">处理中</option>
                             <option value="2">已完成</option>
                             <option value="3">取消</option>
                             <option value="4">备货</option>
                             <option value="5">退回</option>
+                            <option value="6">缺货</option>
                         </select>
                     </div>
                 </div>
@@ -227,19 +228,19 @@
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人姓名</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="return_info_receiver_name" id="return_info_receiver_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+                        <input type="text" name="return_info_receiver_name" id="return_info_receiver_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);" onkeypress="if(event.keyCode==13) focusNextInput(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">收货人电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="return_info_receiver_phone" id="return_info_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
+                        <input type="text" name="return_info_receiver_phone" id="return_info_receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);" onkeypress="if(event.keyCode==13) focusNextInput(this);"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场名称</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="return_info_goods_yard_name" id="return_info_goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+                        <input type="text" name="return_info_goods_yard_name" id="return_info_goods_yard_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);" onkeypress="if(event.keyCode==13) focusNextInput(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label Wheat">货场电话</label>
@@ -694,7 +695,7 @@
                         title:'新增清单',
                         area:['800px','70%'],
                         shade:0.8,
-                        maxmin:false,
+                        maxmin:true,
                         content:"{:url('admin/addconfirmorderitem/addconfirmorderitem')}?type= 0",
                         btn:['保存','退出'],
                         yes:function (index,layero) {
@@ -726,7 +727,7 @@
                         title:'修改清单',
                         area:['800px','90%'],
                         shade:0.9,
-                        maxmin:false,
+                        maxmin:true,
                         content:"{:url('admin/addconfirmorderitem/addconfirmorderitem')}?type="+ type,
                         btn:['保存','退出'],
                         yes:function (index,layero) {
@@ -931,6 +932,7 @@
 
                     }
                 }
+
             });
             //用户权限设置 屏蔽一些内容
             function userPower() {
@@ -1176,7 +1178,7 @@
                     setDisable(true);
                     return false;
                 }
-                var cs_info = getCsInfo(data,state == 0?true:false,false,state);
+                var cs_info = getCsInfo(data,true,false,state);
                 console.log("以下确认单信息：");
                 console.log(cs_info);
                 var custom_info = getCustomInfo(data,false);
@@ -1351,7 +1353,7 @@
                     setDisable(true);
                     return false;
                 }
-                var cs_info = getCsInfo(data,false,true,1);
+                var cs_info = getCsInfo(data,true,true,1);
                 console.log("以下确认单信息：");
                 console.log(cs_info);
 
@@ -2051,7 +2053,7 @@
                 return uncofginfo;
             }
 
-            function getCsInfo(data,isSave,isEdit,csState) {
+            function getCsInfo(data,isCanWrite,isEdit,csState) {
                 console.log(data);
                 var info = new Object();
                 info.custom_info_id = isEdit == true?editOrderData['custom_info_id']:-1;
@@ -2064,7 +2066,7 @@
                 info.cs_examine_ids = isEdit == true?editOrderData['cs_examine_ids']:'';
                 info.write_date = isEdit == true?editOrderData['write_date']:'';
                 info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
-                info.can_edit = isSave == true?1:0;                              //0 不可编辑
+                info.can_edit = isCanWrite == true?1:0;                              //0 不可编辑
                 info.cs_info_state = csState;
                 info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate']; //cs_info       //新增 无完成日期
                 info.product_number = document.getElementById('tableorder').rows.length-1;
@@ -2244,6 +2246,9 @@
                 info['payment_info_comment'] = data['payment_info_comment'];
                 return info;
             }
+
+
+
             // document.onkeydown = function keyLogin(e) {
             //     var event = (typeof event!= 'undefined') ? window.event : e;
             //     if(event.keyCode==8) //屏蔽delete键

@@ -42,12 +42,13 @@
             <label class="layui-form-label dark_blue">状态</label>
             <div class="layui-input-inline dark_blue ">
                 <select name="cs_info_state" id = "cs_info_state" lay-filter="cs_info_state" class="dark_blue_disabled">
-                    <option value=""  >选择</option>
+                    <option value=""  disabled>选择</option>
                     <option value="1" selected="">处理中</option>
                     <option value="2">已完成</option>
                     <option value="3">取消</option>
                     <option value="4">备货</option>
                     <option value="5">退回</option>
+                    <option value="6">缺货</option>
                 </select>
             </div>
         </div>
@@ -653,7 +654,7 @@
                 title:'新增清单',
                 area:['800px','70%'],
                 shade:0.8,
-                maxmin:false,
+                maxmin:true,
                 content:"{:url('admin/addoreditpartsgoodsitem/addoreditpartsgoodsitem')}?type= 0",
                 btn:['保存','退出'],
                 yes:function (index,layero) {
@@ -688,7 +689,7 @@
                 title:'修改清单',
                 area:['800px','90%'],
                 shade:0.9,
-                maxmin:false,
+                maxmin:true,
                 content:"{:url('admin/addoreditpartsgoodsitem/addoreditpartsgoodsitem')}?type="+ type,
                 btn:['保存','退出'],
                 yes:function (index,layero) {
@@ -1155,7 +1156,7 @@
             setDisable(true);
             return false;
         }
-        var cs_info = getCsInfo(data,state == 0?true:false,false,state);
+        var cs_info = getCsInfo(data,true,false,state);
         console.log("以下确认单信息：");
         console.log(cs_info);
         var custom_info = getCustomInfo(data,false);
@@ -1323,7 +1324,7 @@
             setDisable(true);
             return false;
         }
-        var cs_info = getCsInfo(data,false,true,1);
+        var cs_info = getCsInfo(data,true,true,1);
         console.log("以下确认单信息：");
         console.log(cs_info);
 
@@ -1999,7 +2000,7 @@
         return uncofginfo;
     }
 
-    function getCsInfo(data,isSave,isEdit,csState) {
+    function getCsInfo(data,isCanWrite,isEdit,csState) {
         console.log(data);
         var info = new Object();
         info.custom_info_id = isEdit == true?editOrderData['custom_info_id']:-1;
@@ -2012,7 +2013,7 @@
         info.cs_examine_ids = isEdit == true?editOrderData['cs_examine_ids']:'';
         info.write_date = isEdit == true?editOrderData['write_date']:'';
         info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
-        info.can_edit = isSave == true?1:0;                              //0 不可编辑
+        info.can_edit = isCanWrite == true?1:0;                              //0 不可编辑
         info.cs_info_state = csState;
         info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate']; //cs_info       //新增 无完成日期
         info.product_number = document.getElementById('tableorder').rows.length-1;

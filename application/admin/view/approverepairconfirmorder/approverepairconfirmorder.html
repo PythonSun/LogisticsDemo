@@ -5,6 +5,7 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+		<link rel="stylesheet" type="text/css" href="/static/UI-jquery/jquery-ui.min.css">
 		<link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
 	</head>
 	<body>
@@ -16,8 +17,10 @@
   			  <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="detail">查看详情</a>
 			</script>
 		</div>
-		<script src="/static/layui/layui.js"></script>
 		<script type="text/javascript" src="/static/js/commondetect.js"></script>
+		<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="/static/UI-jquery/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="/static/layui/layui.js"></script>
 		<script type="text/javascript">
             var current_user_type = 1;
 
@@ -104,7 +107,7 @@
                                 ],
                                 area: ['90%', '90%'],
                                 shade: 0.9,
-                                maxmin: false,
+                                maxmin: true,
                                 content: "{:url('admin/Addrepairconfirmorder/editrepairconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                                 btn: ['退回', '提交','取消'],
                                 btnAlign: 'c',
@@ -141,6 +144,86 @@
                     }
 			  	});
 
+                //经理模糊查询
+                jq("#areamanager").autocomplete({
+                    max: 12,    //列表里的条目数
+                    minChars: 1,    //自动完成激活之前填入的最小字符
+                    width: 400,
+                    scrollHeight: 300,
+
+                    source:function(request,response){
+                        if(jq('#departname').val() == '')
+                        {
+                            jq.ajax({
+                                url:"{:url('index/common/getserachmanarger')}",
+                                type:"POST",
+                                dataType:"json",
+                                data:{serachText:jq('#areamanager').val()},
+                                success:function(data){
+                                    if(data == null || data == undefined)
+                                        return ;
+                                    response(jq.map(data,function(item){
+                                        return{
+                                            label:item.fullname,
+                                            value:item.fullname,
+                                        }
+                                    }));
+                                },
+                            });
+                        }
+                        else
+                        {
+                            jq.ajax({
+                                url:"{:url('index/common/getserachmanarger')}",
+                                type:"POST",
+                                dataType:"json",
+                                data:{serachText:jq('#areamanager').val(),organize_name:jq('#departname').val()},
+                                success:function(data){
+                                    if(data == null || data == undefined)
+                                        return ;
+                                    response(jq.map(data,function(item){
+                                        return{
+                                            label:item.fullname,
+                                            value:item.fullname,
+                                        }
+                                    }));
+                                },
+                            });
+                        }
+
+                    },
+                    select: function (event, ui) {
+                        jq('#areamanager').val(ui.item.fullname);
+                        jq("#areamanager").blur();
+                    },
+                });
+
+                //部门模糊查询
+                jq("#departname").autocomplete({
+                    source:function(request,response){
+                        jq.ajax({
+                            url:"{:url('index/common/getserachdepartment')}",
+                            type:"POST",
+                            dataType:"json",
+                            data:{organize_name:jq('#departname').val()},
+                            success:function(data){
+                                if(data == null || data == undefined)
+                                    return ;
+                                response(jq.map(data,function(item){
+                                    return{
+                                        label:item.organize_name,
+                                        value:item.organize_name,
+                                    }
+                                }));
+                            },
+                        });
+                    },
+                    select: function (event, ui) {
+                        jq('#departname').val(ui.item.organize_name);
+                        jq("#departname").blur();
+                    },
+                });
+
 			});
             //物流首次编辑
             function logisticFirstEdit(data) {
@@ -152,7 +235,7 @@
                     ],
                     area: ['90%', '90%'],
                     shade: 0.9,
-                    maxmin: false,
+                    maxmin: true,
                     content: "{:url('admin/Addrepairconfirmorder/editrepairconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                     btn: [ '确认接收','取消'],
                     btnAlign: 'c',
@@ -184,7 +267,7 @@
                     ],
                     area: ['90%', '90%'],
                     shade: 0.9,
-                    maxmin: false,
+                    maxmin: true,
                     content: "{:url('admin/Addrepairconfirmorder/editrepairconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type="+current_user_type,
                     btn: [ '保存','取消'],
                     btnAlign: 'c',
