@@ -2729,7 +2729,7 @@
                     }
                 }
             }
-
+            //$objPHPExcel->getActiveSheet()->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1, 10);
             header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachment;filename="'.$file_name.'.'.$file_extend.'"');
             header('Cache-Control: max-age=0');
