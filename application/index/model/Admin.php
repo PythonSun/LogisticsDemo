@@ -1007,8 +1007,6 @@
             if(!empty($tableobj)){
                 for ($i = 0;$i < count($tableobj);$i++)
                 {
-
-
                     if($type == 2||$type == 5) //借样和配件没有返货信息
                     {
                         $tableobj[$i]["receiver_name"] = $tableobj[$i]["delivery_info_receiver_name"];
@@ -1168,8 +1166,8 @@
             $sqltwo .= " order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length} ;";
             $tableobj = Db::query($sqltwo);
             if(!empty($tableobj)){
-                $count = count($tableobj);
-                for ($i = 0;$i < $count;$i++)
+                $countTable = count($tableobj);
+                for ($i = 0;$i < $countTable;$i++)
                 {
                     if($type == 2||$type == 5) //借样和配件没有返货信息
                     {
