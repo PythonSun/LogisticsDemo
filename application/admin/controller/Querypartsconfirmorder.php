@@ -48,7 +48,7 @@ class Querypartsconfirmorder extends Controller
 
         $queryuserinfo = session("user_querypower");
         $rolename = $queryuserinfo['role_name'];
-        if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员")
+        if( $rolename == "财务人员" || $rolename == "部长/主管"||$rolename == "物流部人员")
         {
             $this->assign('current_user_type',5);
         }

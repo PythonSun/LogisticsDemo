@@ -12,7 +12,7 @@ class Approvealternativeconfirmorder extends Controller
         {
             $this->assign('current_user_type',5);
         }
-        elseif ($rolename == "财务部")
+        elseif ($rolename == "财务人员")
         {
             $this->assign('current_user_type',4);
         }
@@ -25,7 +25,7 @@ class Approvealternativeconfirmorder extends Controller
         {
             $this->assign('current_user_type',2);
         }
-    	return $this->fetch();
+        return $this->fetch();
     }
 
     public function getexamineorder(){

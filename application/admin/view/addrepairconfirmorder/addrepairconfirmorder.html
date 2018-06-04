@@ -347,12 +347,12 @@
         <div class="layui-inline">
             <label class="layui-form-label dark_blue">订制费用</label>
             <div class="layui-input-inline">
-                <input type="text" name="customization_fee" id = "customization_fee" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputfloat(this);"> </div>
+                <input type="text" name="customization_fee" id = "customization_fee" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label dark_blue">运费</label>
             <div class="layui-input-inline">
-                <input type="text" name="paid_bank" id = "paid_bank" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputfloat(this);"> </div>
+                <input type="text" name="paid_bank" id = "paid_bank" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
         </div>
     </div>
     <div class="layui-form-item">
@@ -417,7 +417,7 @@
     <div class="layui-form-item">
         <div class="layui-btn-container">
             <button   class="layui-btn layui-btn-normal" lay-submit="" lay-filter="save" id="save">保存</button>
-            <input type="button" value="转交" class="layui-btn" lay-submit="" lay-filter="deliver" id="deliver">
+            <input type="button" value="提交" class="layui-btn" lay-submit="" lay-filter="deliver" id="deliver">
             <button   class="layui-btn layui-btn-primary" lay-submit="" lay-filter="cancel" id="cancel">取消</button>
         </div>
     </div>
@@ -802,13 +802,17 @@
                 skin: 'layui-layer-molv',
                 maxmin:true,
                 content:"{:url('admin/uncofginfo/uncofginfo')}?type=1",
-                btn:['确定','退出'],
+                btn:['打印','确定','退出'],
+                btnAlign: 'c',
                 yes:function (index,layero) {
+                    top.layer.msg(new Date().toLocaleDateString(),{icon:1});
+                },
+                btn2: function (index,layero) {
                     var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                     var  ret = iframeWin.getData();
-                    console.log(ret);
-                    if (ret == false){
 
+                    if (ret == false){
+                        return false;
                     }else if (ret == null){
                         uncofginfo = ret;
                         top.layer.close(index);
@@ -818,7 +822,8 @@
                     }
                     setDelUncofginfoVis();
                 },
-                btn2: function (index) {
+                btn3: function (index) {
+                    console.log(index);
                     layer.close(index);
                 }
             });
@@ -839,26 +844,29 @@
             console.log('+++++++++弹窗前++++++++++++++');
             console.log(dd);
             var url = '';
-            if(current_user_type == 0){
-                url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + 0 + "&cs_id=" + editOrderData['cs_id'];
+            if(ishavePrintPower == 0){
+                url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + ishavePrintPower + "&cs_id=" + editOrderData['cs_id'];
             }else{
-                url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + 1;
+                url = "{:url('admin/uncofginfo/uncofginfo')}?type=0&parenttype=" + ishavePrintPower;
             }
+
             top.layer.open({
                 type:2,
                 title:'查看非定型产品订货单',
                 area:['1150px','90%'],
                 shade: [0.7, '#393D49'],
                 skin: 'layui-layer-molv',
-                maxmin:true,
+                maxmin:false,
+                resize:true,
                 content:url,
                 btn:['退出'],
+                btnAlign: 'c',
                 yes:function (index,layero) {
                     top.layer.close(index);
-                }
+                },
             });
             return false;
-        })
+        });
 
         //开启日期弹框
         function setDatePopup() {
@@ -1996,19 +2004,20 @@
             //付款信息
             if(data['paid_date'] == '')
             {
-                layer.msg('款项情况-到账日期不能为空！',{icon:2});
-                return false;
+                // layer.msg('款项情况-到账日期不能为空！',{icon:2});
+                // return false;
+                data['paid_date'] = '2000-01-01';
             }
-            if(data['customization_fee'] == '')
-            {
-                layer.msg('款项情况-订制费用不能为空！',{icon:2});
-                return false;
-            }
-            if(data['paid_bank'] == '')
-            {
-                layer.msg('款项情况-运费不能为空！',{icon:2});
-                return false;
-            }
+            // if(data['customization_fee'] == '')
+            // {
+            //     layer.msg('款项情况-订制费用不能为空！',{icon:2});
+            //     return false;
+            // }
+            // if(data['paid_bank'] == '')
+            // {
+            //     layer.msg('款项情况-运费不能为空！',{icon:2});
+            //     return false;
+            // }
             if(data['orderdate'] == '')
             {
                 layer.msg('接收时间不能为空！',{icon:2});
@@ -2069,7 +2078,7 @@
         info.cs_examine_ids = isEdit == true?editOrderData['cs_examine_ids']:'';
         info.write_date = isCanWrite == true?editOrderData['write_date']:'';
         info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
-        info.can_edit = isSave == true?1:0;                              //0 不可编辑
+        info.can_edit = isCanWrite == true?1:0;                              //0 不可编辑
         info.cs_info_state = csState;
         info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate']; //cs_info       //新增 无完成日期
         info.product_number = document.getElementById('tableorder').rows.length-1;

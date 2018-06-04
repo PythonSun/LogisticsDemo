@@ -1741,7 +1741,7 @@
                 $org_pid = $retorg[0]['parent_id'];
                 $sqlleader = "SELECT * FROM dsp_logistic.user WHERE role_id = '{$role_id}' AND organize_id = '{$org_pid}' LIMIT 1";
                 return Db::query($sqlleader);
-            }else if($role_name != '财务部'){
+            }else if($role_name != '财务人员'){
                 $sqlleader = "SELECT * FROM dsp_logistic.user WHERE role_id = '{$role_id}' AND organize_id = '{$org_id}' LIMIT 1";
                 //return $sqlleader;
                 return Db::query($sqlleader);
@@ -1788,7 +1788,7 @@
             $userquerypower = array();
             $userquerypower["isSales"] = false;
             $userquerypower["role_name"] = $rolename;
-            if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员"||$rolename == "财务部")
+            if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员"||$rolename == "财务人员")
             {
                 $userquerypower["isSales"] = true;
             }

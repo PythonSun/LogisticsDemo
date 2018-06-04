@@ -12,14 +12,14 @@ class Approvereplaceconfirmorder extends Controller
         {
             $this->assign('current_user_type',5);
         }
-        elseif ($rolename == "财务部")
+        elseif ($rolename == "财务人员")
         {
             $this->assign('current_user_type',4);
         }
 
         elseif($rolename == "总经理")
         {
-                $this->assign('current_user_type',3);
+            $this->assign('current_user_type',3);
         }
         elseif($rolename == "总监")
         {
