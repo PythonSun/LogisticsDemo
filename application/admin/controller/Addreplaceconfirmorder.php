@@ -120,6 +120,7 @@ class Addreplaceconfirmorder extends Controller
         $index++;
         if (empty($ret_confirm_order)||$ret_confirm_order == false) {
             $this->deldata($data);
+          // dump(111);
             return false;
         }
 
@@ -135,6 +136,7 @@ class Addreplaceconfirmorder extends Controller
         $index++;
         if (empty($ret_cs_belog)||$ret_cs_belog == false) {
             $this->deldata($data);
+          //  dump(222);
             return false;
         }
 
@@ -147,6 +149,7 @@ class Addreplaceconfirmorder extends Controller
         $index++;
         if (empty($ret_custom_info)||$ret_custom_info == false) {
             $this->deldata($data);
+          //  dump(333);
             return false;//添加失败删除
         }
 
@@ -159,6 +162,7 @@ class Addreplaceconfirmorder extends Controller
         $index++;
         if (empty($ret_delivery_info)||$ret_delivery_info == false) {
             $this->deldata($data);
+          //  dump(444);
             return false;
         }
 
@@ -171,11 +175,13 @@ class Addreplaceconfirmorder extends Controller
         $index++;
         if (empty($ret_return_info)||$ret_return_info == false) {
             $this->deldata($data);
+        //    dump(555);
             return false;
         }
         if(array_key_exists('order_goods_manager',$_POST)){
             $order_goods_manager = $_POST['order_goods_manager'];
             $num = count($order_goods_manager);
+            dump("清单："+$num);
             for ($i = 0; $i < $num; $i++) {
                 //order_goods_manager
                 $order_goods_manager_id = \app\index\model\Admin::getmaxtableidretid('order_goods_manager', 'order_goods_manager_id')+1;
@@ -189,6 +195,7 @@ class Addreplaceconfirmorder extends Controller
                 if(empty($retmanager)||$retmanager == false)
                 {
                     $this->deldata($data);
+                   // dump(666);
                     return false;
                 }
                 //order_goods_logistics
@@ -204,6 +211,7 @@ class Addreplaceconfirmorder extends Controller
                 if(empty($retmanager)||$retmanager == false)
                 {
                     $this->deldata($data);
+                  //  dump(777);
                     return false;
                 }
             }
@@ -221,6 +229,7 @@ class Addreplaceconfirmorder extends Controller
                 $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '总监');
                 if (empty($dbleader)) {
                     $this->deldata($data);
+                 //   dump(888);
                     return false;
                 }
                 $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
@@ -231,14 +240,16 @@ class Addreplaceconfirmorder extends Controller
                 if (empty($dbleader)) {
                     $this->deldata($data);
                     return false;
+                   // dump(999);
                     //return false;
                 }
                 $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
                 $cs_examine[$i]['cs_examine_name'] = $dbleader[0]['fullname'];
             } else if ($i == 2) {
-                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '财务部');
+                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '财务人员');
                 if (empty($dbleader) ) {
                     $this->deldata($data);
+                    dump(1000);
                     return false;
                 }
                 $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
@@ -255,6 +266,7 @@ class Addreplaceconfirmorder extends Controller
             if(empty($rettest) || $rettest == false)
             {
                 $this->deldata($data);
+               // dump(1111);
                 return false;
             }
         }
@@ -271,6 +283,7 @@ class Addreplaceconfirmorder extends Controller
         if(empty($rettest) || $rettest == false)
         {
             $this->deldata($data);
+           // dump(2222);
             return false;
         }
 

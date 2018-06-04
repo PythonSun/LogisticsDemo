@@ -2078,7 +2078,7 @@
         info.cs_examine_ids = isEdit == true?editOrderData['cs_examine_ids']:'';
         info.write_date = isCanWrite == true?editOrderData['write_date']:'';
         info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
-        info.can_edit = isSave == true?1:0;                              //0 不可编辑
+        info.can_edit = isCanWrite == true?1:0;                              //0 不可编辑
         info.cs_info_state = csState;
         info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate']; //cs_info       //新增 无完成日期
         info.product_number = document.getElementById('tableorder').rows.length-1;

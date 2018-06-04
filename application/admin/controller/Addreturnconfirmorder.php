@@ -232,7 +232,7 @@ class Addreturnconfirmorder extends Controller
                 $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
                 $cs_examine[$i]['cs_examine_name'] = $dbleader[0]['fullname'];
             } else if ($i == 2) {
-                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '财务部');
+                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '财务人员');
                 if (empty($dbleader) ) {
                     $this->deldata($data);
                     return false;
