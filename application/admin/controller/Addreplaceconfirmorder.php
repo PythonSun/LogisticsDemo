@@ -181,7 +181,6 @@ class Addreplaceconfirmorder extends Controller
         if(array_key_exists('order_goods_manager',$_POST)){
             $order_goods_manager = $_POST['order_goods_manager'];
             $num = count($order_goods_manager);
-            dump("清单："+$num);
             for ($i = 0; $i < $num; $i++) {
                 //order_goods_manager
                 $order_goods_manager_id = \app\index\model\Admin::getmaxtableidretid('order_goods_manager', 'order_goods_manager_id')+1;
@@ -195,7 +194,7 @@ class Addreplaceconfirmorder extends Controller
                 if(empty($retmanager)||$retmanager == false)
                 {
                     $this->deldata($data);
-                   // dump(666);
+                   dump(666);
                     return false;
                 }
                 //order_goods_logistics
@@ -211,7 +210,7 @@ class Addreplaceconfirmorder extends Controller
                 if(empty($retmanager)||$retmanager == false)
                 {
                     $this->deldata($data);
-                  //  dump(777);
+                    dump(777);
                     return false;
                 }
             }
