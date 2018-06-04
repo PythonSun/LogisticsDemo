@@ -14,13 +14,13 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">用户名：</label>
                     <div class="layui-input-inline">
-                        <input type="text" id = "fullname" name="fullname" lay-filter="fullname" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                        <input type="text" id = "fullname" name="fullname" lay-filter="fullname" placeholder="请输入用户名" autocomplete="off" class="layui-input" oninput="detectinputtext(this);">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label">密码：</label>
                     <div class="layui-input-inline">
-                        <input type="text" id = "password" name="password" lay-filter="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                        <input type="text" id = "password" name="password" lay-filter="password" placeholder="请输入密码" autocomplete="off" class="layui-input" oninput="detectinputtext(this);">
                     </div>
                 </div>
             </div>
@@ -73,13 +73,20 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">联系电话：</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="phone" name="phone" lay-filter="phone" placeholder="请输入电话号码" autocomplete="off" class="layui-input">
+                        <input type="text" id="phone" name="phone" lay-filter="phone" placeholder="请输入电话号码" autocomplete="off" class="layui-input" oninput="detectinputphone(this);">
                     </div>
                 </div>
             </div>
         </form>
+        <a style="color: red">注意：</a></br>
+        <a style="color: red ;margin: 0px 20px">物流部角色：物流部人员、部长/主管、管理人员</a></br>
+        <a style="color: red;margin: 0px 20px">财务部角色：财务人员：</a></br>
+        <a style="color: red;margin: 0px 20px">只选总部门角色：总经理</a></br>
+        <a style="color: red;margin: 0px 20px">销售子部门角色：总监、经理</a></br>
+        <a style="color: red;margin: 0px 20px">物流部仓库角色：仓管</a></br>
     </div>
     <script src="/static/layui/layui.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript">
         layui.use(['layer','jquery','form','table'],function(){
             var form = layui.form ,layer = layui.layer,jq = layui.jquery,table = layui.table;
@@ -129,17 +136,126 @@
 
         function SaveUser() {
             var jq = layui.jquery;
+            var str = '';
+            if(jq("#department_id").val() != '' &&jq("#department_id").val()!= undefined )
+            {
+                str = jq("#department_id").val();
+            }
+            else if(jq("#company_id").val() != '' &&jq("#company_id").val()!= undefined )
+            {
+                str = jq("#company_id").val();
+            }
+            else
+            {
+                layer.msg('请选择总部门',{icon:2});
+                return '';
+            }
+
             var user = new Object();
             user.fullname= jq("#fullname").val();
+            if( user.fullname == '')
+            {
+                layer.msg('名字不能为空',{icon:2});
+                return '';
+            }
+
+
+
             user.password= jq("#password").val();
+            if( user.fullname == '')
+            {
+                layer.msg('密码不能为空',{icon:2});
+                return '';
+            }
             user.company_id= jq("#company_id").val();
             user.department_id= jq("#department_id").val();
+            var isExist = false;
+            if(oldUser.fullname != user.fullname||oldUser.companyid!= user.company_id||oldUser.organize_id !=user.department_id)
+            {
+                jq.ajax({
+                    url: "{:url('admin/addgoodsconfirmorder/judgemanagerexist')}",
+                    type: "POST",
+                    dataType: "json",
+                    async: false,
+                    data: {fullname: jq("#fullname").val(), department_id: str},
+                    success: function (data) {
+                        if (data != "" && data != null && data !== undefined && data.length>0) {
+                            isExist = true;
+
+                        }
+                    },
+                });
+            }
+
+            if(isExist)
+            {
+                layer.msg("该部门已存在:"+ jq("#fullname").val(),{icon:2});
+                return '';
+            }
             user.job_id= jq("#job_id").val();
+            if(user.job_id == '' ||user.job_id == undefined )
+            {
+                layer.msg('请选择职位',{icon:2});
+                return '';
+            }
             user.role_id= jq("#role_id").val();
+            if( user.role_id == '' ||user.role_id == undefined )
+            {
+                layer.msg('请选择角色',{icon:2});
+                return '';
+            }
             user.phone= jq("#phone").val();
+            if(!judgeRole(user))
+                return '';
             return user;
         }
+
+        function judgeRole(user) {
+            var jq = layui.jquery;
+            if(user.department_id == '')
+            {
+                var companyName = jq('#company_id option:selected').text();
+                var roleName = jq('#role_id option:selected').text();
+                if(companyName == '物流部' &&(roleName == '物流部人员'||roleName == '部长/主管'||roleName == '管理人员'))
+                {
+                    return true;
+                }
+                if(companyName == '财务部' &&roleName != '财务人员')
+                {
+                    layer.msg(companyName+'角色不能为'+roleName,{icon:2});
+                    return false;
+                }
+
+                if(roleName != '总经理'&&companyName != '财务部'&&companyName != '物流部')
+                {
+                    layer.msg(companyName+'角色不能为'+roleName,{icon:2});
+                    return false;
+                }
+            }
+            else
+            {
+                var companyName = jq('#company_id option:selected').text();
+                var departName = jq('#department_id option:selected').text();
+                var roleName = jq('#role_id option:selected').text();
+                if(departName != '仓库'&&(roleName != '总监'&&roleName != '经理'))
+                {
+                    layer.msg(departName+'角色不能为'+roleName,{icon:2});
+                    return false;
+                }
+                if(companyName=='物流部'&&departName == '仓库'&&roleName == '仓管')
+                {
+                    return true;
+                }
+                else {
+                    layer.msg(departName+'角色不能为'+roleName,{icon:2});
+                    return false;
+                }
+            }
+            return true;
+        }
+        var oldUser = null;
         function LoadingUser(user) {
+            oldUser = user;
             var jq = layui.jquery;
             //var form = layui.form;
             document.getElementById('job_id').value = user['job_id'];

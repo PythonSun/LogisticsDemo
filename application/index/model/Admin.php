@@ -1788,7 +1788,7 @@
             $userquerypower = array();
             $userquerypower["isSales"] = false;
             $userquerypower["role_name"] = $rolename;
-            if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员"||$rolename == "财务部")
+            if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员"||$rolename == "财务人员")
             {
                 $userquerypower["isSales"] = true;
             }

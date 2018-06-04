@@ -53,7 +53,7 @@ class Queryreturnconfirmorder extends Controller
         {
             $this->assign('current_user_type',5);
         }
-        elseif ($rolename == "财务部")
+        elseif ($rolename == "财务人员")
         {
             $this->assign('current_user_type',4);
         }

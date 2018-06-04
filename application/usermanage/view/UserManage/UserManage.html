@@ -111,9 +111,15 @@
                     , maxmin: false
                     , content: "{:url('usermanage/adduser/adduser')}"
                     , btn: ['保存', '取消'] //只是为了演示
+                    , async:false
                     , yes: function (index,layero) {
                         var iframeWin = window[layero.find('iframe')[0]['name']];
                         var user = iframeWin.SaveUser();
+
+                        if(user == '')
+                        {
+                            return false;
+                        }
                         user.user_id = "";
                         jq.post("{:url('usermanage/usermanage/updateuser')}",{'param':user} ,function(data){
                             table.reload('querytable', {
@@ -123,7 +129,7 @@
                             });
                             console.log(data);
                         });
-                        layer.closeAll();
+                        layer.close(index);
                     }
                     , btn2: function () {
                         layer.closeAll();
@@ -216,7 +222,10 @@
 
                             var iframeWin = window[layero.find('iframe')[0]['name']];
                             var user = iframeWin.SaveUser();
-
+                            if(user == '')
+                            {
+                                return false;
+                            }
                             user["user_id"] = data["user_id"];
                             console.log(user);
                             jq.post("{:url('usermanage/usermanage/updateuser')}",{'param':user} ,function(result){
@@ -227,7 +236,7 @@
                                 });
                                 console.log(result);
                             });
-                            layer.closeAll();
+                            layer.close(index);
                         }
                         , btn2: function () {
                             layer.closeAll();

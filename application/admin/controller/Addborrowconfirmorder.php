@@ -39,7 +39,7 @@ class Addborrowconfirmorder extends Controller
         {
             return 5;
         }
-        elseif ($rolename == "财务部")
+        elseif ($rolename == "财务人员")
         {
             return 4;
         }
