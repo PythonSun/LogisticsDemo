@@ -58,21 +58,7 @@ function forbidBackSpace(e){
     }
     else if(ev.keyCode == 13 &&t == "text")
     {
-        var jq = layer.jquery;
-        var is  = false;
-        jq(".input-text").each(function(){
-            if(is)
-            {
-                jq(this).focus();
-                is =false;
-            }
-
-            if(jq(this) == obj)
-                is = true;
-        });
         return false;
-
-
     }
 }
 

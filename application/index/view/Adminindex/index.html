@@ -218,7 +218,8 @@
 
 				/*监听侧边导航栏*/
 			 	element.on('nav(orderList)', function(elem){
-				    layer.msg(elem.text());
+				    //layer.msg(elem.text());
+				    jq(this.childNodes[1]).remove();
 			  	});
 
   	            /*退出*/

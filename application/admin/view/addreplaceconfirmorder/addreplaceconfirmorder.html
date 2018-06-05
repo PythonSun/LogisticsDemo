@@ -15,6 +15,9 @@
             .hide{
                 display: none;
             }
+            .layui-table-style td{padding: 4px 1px;  border: 1px solid #8A8A8A}
+            .layui-table-style th{ border: 1px solid #8A8A8A;  color:black}
+
         </style>
     <body >
         <form class="layui-form layui-form-pane" action="">
@@ -219,7 +222,7 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label Wheat" id='order_delivery_require' onmouseenter="tips('订单发货要求','#order_delivery_require')">订单发货要求</label>
+                <label class="layui-form-label Wheat" id='order_delivery_require1' onmouseenter="tips('订单发货要求','#order_delivery_require')">订单发货要求</label>
                 <div class="layui-input-inline">
                     <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
             </div>
@@ -379,14 +382,14 @@
             <div class="layui-form-item">
                 <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled Wheat" lay-submit="" lay-filter="add_order_item" style="color: black;">
             </div>
-            <table class="layui-form-item layui-table" id="tableorder">
+            <table class=" layui-table layui-table-style"  id="tableorder">
                 <thead>
                     <tr >
-                        <th class="Wheat">序号</th>
-                        <th class="Wheat">产品分类</th>
-                        <th class="Wheat">品牌</th>
-                        <th class="Wheat">产品名称</th>
-                        <th class="Wheat">规格</th>
+                        <th class="Wheat" >序号</th>
+                        <th class="Wheat" >产品分类</th>
+                        <th class="Wheat" >品牌</th>
+                        <th class="Wheat" >产品名称</th>
+                        <th class="Wheat" >规格</th>
                         <th class="Wheat">型号</th>
                         <th class="Wheat">单位</th>
                         <th class="Wheat">数量</th>
@@ -399,10 +402,6 @@
                         <th class="dark_blue">备注</th>
                         <th class="dark_blue">操作</th>
                     </tr>
-                    <!--<tr>-->
-                        <!--<td><a ></td>-->
-                        <!--<td><input type="button" value="23312" class="layui-btn Wheat" style="color: #0C0C0C"/></td>-->
-                    <!--</tr>-->
                 </thead>
 
             </table>
@@ -457,6 +456,14 @@
                     jq = layui.jquery;
                     layer = layui.layer;
 
+                laydate.render({
+                    elem: '#back_date'
+                    ,position: 'fixed'
+                    ,theme: 'molv'
+                });
+
+
+
                 //监听保存
                 form.on('submit(save)', function (uidata) {
                     return saveOrDeliverToSql(uidata,0);
@@ -484,6 +491,8 @@
                             LoadingManagerAndSelected(user_info['department_id'],user_info['user_id']);
                             document.getElementById('build_user_phone').value = user_info['phone'];
                         }
+                        addGoodsTableRow();
+                        addGoodsTableRow();
                         form.render('select');
 
                         return ;
@@ -945,6 +954,8 @@
 
                     }
                 }
+
+
 
             });
             //用户权限设置 屏蔽一些内容
@@ -2261,14 +2272,122 @@
                 return info;
             }
 
+            // function autocomplete(){
+            //     source:function(request,response){
+            //         jq.ajax({
+            //             url:"{:url('index/Common/serachmodelinfo')}",
+            //             type:"POST",
+            //             dataType:"json",
+            //             data:{serrchText:jq("#serachModelinfo").val()},
+            //             success:function(data){
+            //                 response(jq.map(data,function(item){
+            //                     return{
+            //                         label:item.model,
+            //                         value:item.model,
+            //                     }
+            //                 }));
+            //             },
+            //         });
+            //     },
+            //     select: function (event, ui) {
+            //         jq('#serachModelinfo').val(ui.item.value);
+            //         jq("#serachModelinfo").blur();
+            //     },
+            // };
+            //增加清单一行
+            function addGoodsTableRow() {
+                var jq = layui.jquery;
+                var rowNum = jq('#tableorder')[0].rows.length;
+                var newRow = jq('#tableorder')[0].insertRow(rowNum);//指定位置插入行
+                var col = newRow.insertCell(0);//添加列
+                col.innerHTML = "<td ><a style='margin: 0px 10px' >"+rowNum+"</a></td>";
+                col = newRow.insertCell(1);
+                col.innerHTML = "<td><input type='text' id ='model' class='layui-input autocomplete-input' style='color: #0C0C0C ;border:0px'/></td>";
+
+                //型号text失去焦点
+                jq("#model").blur(function () {
+                    var model = jq('#model').val();
+                    if(model == '')
+                        return ;
+                    jq.ajax({
+                        url: "{:url('index/Common/coldserachmodelinfo')}",
+                        type: "POST",
+                        dataType: "json",
+                        async: false,
+                        data: { serrchText: model},
+                        success: function (data) {
+                            if(data == "" || data == null || data === undefined) {
+                                console.log(173);
+                                top.layer.confirm('型号: <span style="color: red">'+model+'</span> 在数据库不存在，是否录入', {
+                                    btn: ['是','否'] //按钮
+                                }, function(index){
+                                    isExistModel = false;
+                                    top.layer.close(index);
+                                } ,function () {
+                                    jq('#serachModelinfo').val('');
+                                });
+                            } else {
+
+                                jq('#product_info_name').val(data[0]['product_info_name']);
+                                jq('#product_type_id').val(data[0]['product_type_id']);
+                                jq('#brand_id').val(data[0]['brand_id']);
+                                jq('#place_id').val(data[0]['place_id']);
+                                ///还要处理
+                                layui.form.render('select');
+                                product_info_id = data[0]['product_info_id'];
+                                isExistModel = true;
+                            }
+                        },
+                    });
 
 
-            // document.onkeydown = function keyLogin(e) {
-            //     var event = (typeof event!= 'undefined') ? window.event : e;
-            //     if(event.keyCode==8) //屏蔽delete键
-            //         return false;
-            // }
+                })
+                col = newRow.insertCell(2);
+                col.innerHTML ="<td ><input type='text' id='product_info_name' class='layui-input' style='color: #0C0C0C ;border:0px'/></td>";
+                col = newRow.insertCell(3);
+                col.innerHTML ="<td ><select id='product_type_id' style='border: none;' name='product_type_id'  class='Wheat_disabled select-style-border-none' > <option value='' selected>请选择</option>{volist name='producttypelist' id='vo'} <option value={$vo.product_type_id}>{$vo.product_type_name}</option>{/volist} </select></td>";
+                col = newRow.insertCell(4);
+                col.innerHTML ="<td><select id='brand_id' style='color: #0C0C0C ;border:0px' name='brand_name' lay-filter='brand_name' class='Wheat_disabled select-style-border-none'> <option value='' selected>请选择</option>{volist name='brandlist' id='vo'};col_1.innerHTML =<option value={$vo.brand_id}>{$vo.brand_name}</option>{/volist} </select></td>";
+                col = newRow.insertCell(5);
+                col.innerHTML ="<td><select id='place_id' style='color: #0C0C0C ;border:0px' name='place_name' lay-filter='place_name' class='Wheat_disabled select-style-border-none' > <option value='' selected>请选择</option>{volist name='placelist' id='vo'} <option value={$vo.place_id}>{$vo.place_name}</option>{/volist} </select></td>";
+                col = newRow.insertCell(6);
+                col.innerHTML ="<td><input type='text' id='inputcount' name='inputcount' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputnumber(this);'></td>";
+                col = newRow.insertCell(7);
+                col.innerHTML ="<td><input type='text' id='inputunit' name='inputunit' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+                col = newRow.insertCell(8);
+                col.innerHTML ="<td><input type='text' id='specification' name='specification' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+                col = newRow.insertCell(9);
+                col.innerHTML ="<td><input type='text' name='date' id='back_date' autocomplete='on' class='layui-input  Wheat_disabled' style='border: 0px'></td>";
+                col = newRow.insertCell(10);
+                col.innerHTML ="<td><input type='text' name='bar_code' id='bar_code' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px'></td>";
+                col = newRow.insertCell(11);
+                col.innerHTML ="<td><input type='text' name='replace_reason' id='replace_reason' lay-filter='replace_reason' style='color: #0C0C0C ;border:0px' class='layui-input Wheat_disabled ' oninput='detectinputtext(this);'></td>";
+                col = newRow.insertCell(12);
+                col.innerHTML ="<td><select id='unc_productid' name='unc_productname' lay-filter='unc_productname'  class='select-style-border-none'> <option value='' selected >请选择</option>{volist name='uncproductlist' id='vo1'} <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>{/volist} </select></td>";
+                col = newRow.insertCell(13);
+                col.innerHTML ="<td><select id='inputstate' name='inputstate' lay-filter='unc_productname' class='select-style-border-none'> <option value='' selected>请选择</option> <option value='已更换' >已更换</option> <option value='未更换' >未更换</option> </select></td>";
+                col = newRow.insertCell(14);
+                col.innerHTML ="<td><input type='text' name='comment' id='comment' class='layui-input' oninput='detectinputtext(this);' style='color: #0C0C0C ;border:0px'></td>";
+                col = newRow.insertCell(15);
+                col.innerHTML ="<td>"+"fdaaddsdsffd"+"</td>";
+                var authors = [
+                    'name',
+                    'name',
+                    'name',
+                    'name',
+                    'name',
+                    'name',
+                ];
+                var inputElem = document.createElement("input");
+                document.body.appendChild(inputElem);
+                jq(inputElem).autocomplete({
+                    source: authors
+                });
+            }
 
+            // $(document).on('bind','.autocomplete-input',function(){
+            //     console.log(this);
+            // })
         </script>
     </body>
 </html>

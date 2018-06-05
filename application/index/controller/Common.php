@@ -46,4 +46,34 @@ class Common extends Controller
         $dbproductinfo = \app\index\model\Admin::serachdepartment($condition);
         return $dbproductinfo;
     }
+
+    public function serachproductinfo(){
+        $productinfo = self::coldserachmodelinfo();
+        if (!empty($productinfo)){
+            $place_id = $productinfo[0]['place_id'];
+            $placeinfo = \app\index\model\Admin::getproductplace($place_id);
+            if(!empty($placeinfo)){
+                $retinfo = new \stdClass();
+                $retinfo->product_info = $productinfo[0];
+                $retinfo->place_info = $placeinfo[0];
+                return $retinfo;
+            }
+        }
+        return '';
+    }
+
+    public function addmodel(){
+        if(!array_key_exists('model_info',$_POST))
+        {
+            return $_POST;
+        }
+
+        $model = $_POST['model_info'];
+        $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+        $model['product_info_id'] = $product_info_id;
+        $retsql = \app\index\model\Admin::addproductinfo($model);
+        if($retsql == null)
+            return  '';
+        return $model;
+    }
 }
