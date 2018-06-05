@@ -2378,10 +2378,10 @@
                     'name',
                     'name',
                 ];
-                var inputElem = document.createElement("input");
+                var inputElem = document.createElement("model");
                 document.body.appendChild(inputElem);
-                jq(inputElem).autocomplete({
-                    source: authors
+                jq("#model").focusin(function () {
+                    console.log("1111111");
                 });
             }
 
