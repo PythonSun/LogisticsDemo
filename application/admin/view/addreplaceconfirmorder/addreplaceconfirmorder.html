@@ -426,9 +426,11 @@
             </div>
         </form>
 
-        <script type="text/javascript" src="/static/layui/layui.js"></script>
         <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="/static/UI-jquery/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="/static/layui/layui.js"></script>
         <script type="text/javascript" src="/static/js/commondetect.js"></script>
+        <script type="text/javascript" src="/static/UI-jquery/jquery-ui.js" ></script>
         <script type="text/javascript">
             var isloading = true;
             var delrowid = new Array();
@@ -2301,9 +2303,8 @@
                 var newRow = jq('#tableorder')[0].insertRow(rowNum);//指定位置插入行
                 var col = newRow.insertCell(0);//添加列
                 col.innerHTML = "<td ><a style='margin: 0px 10px' >"+rowNum+"</a></td>";
-                col = newRow.insertCell(1);
-                col.innerHTML = "<td><input type='text' id ='model' class='layui-input autocomplete-input' style='color: #0C0C0C ;border:0px'/></td>";
-
+                var col_1 = newRow.insertCell(1);
+                col_1.innerHTML = "<td><input type='text' id ='model' class='layui-input autocomplete-input' style='color: #0C0C0C ;border:0px'/></td>";
                 //型号text失去焦点
                 jq("#model").blur(function () {
                     var model = jq('#model').val();
@@ -2370,6 +2371,7 @@
                 col.innerHTML ="<td><input type='text' name='comment' id='comment' class='layui-input' oninput='detectinputtext(this);' style='color: #0C0C0C ;border:0px'></td>";
                 col = newRow.insertCell(15);
                 col.innerHTML ="<td>"+"fdaaddsdsffd"+"</td>";
+<<<<<<< HEAD
                 var authors = [
                     'name',
                     'name',
@@ -2383,6 +2385,33 @@
                 jq("#model").focusin(function () {
                     console.log("1111111");
                 });
+=======
+                $(col_1.childNodes[0]).autocomplete({
+                    source: function (request, response) {
+                        console.log("++++++++++++++");
+                        var serachText = $(col_1.childNodes[0]).val().trim();
+                        jq.ajax({
+                            url: "{:url('index/common/serachproductinfo')}",
+                            type: "POST",
+                            dataType: "json",
+                            data: { serrchText:serachText},
+                            success: function (data) {
+                                response(jq.map(data, function (item) {
+                                    return {
+                                        label: item.model,
+                                        value: item.model,
+                                    }
+                                }));
+                            },
+                        });}
+                });
+
+                /*var inputElem = document.createElement("input");
+                document.body.appendChild(inputElem);
+                jq(inputElem).autocomplete({
+                    source: authors
+                });*/
+>>>>>>> b7f43ff2cd0facfb81187aac5ff9cdd3efb25b39
             }
 
             // $(document).on('bind','.autocomplete-input',function(){
