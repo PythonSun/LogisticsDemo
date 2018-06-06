@@ -91,8 +91,101 @@ layui.define("layer",
                                                 }),
                                             m.on("keyup",
                                                 function(e) {
-                                                    var t = e.keyCode;
-                                                    9 === t && x()
+                                                    var key = e.keyCode;
+                                                    var selectEle = null;
+                                                    if(key == 40){
+                                                        for(var item = 0; item <= g.length; item++){
+                                                            if(g[item] === undefined){
+                                                                continue;
+                                                            }
+                                                            var cla = g[item].className;
+                                                            if (cla == s){
+                                                                if(selectEle == null){
+                                                                    selectEle = g[item];
+                                                                }
+                                                            }else {
+                                                                if(selectEle != null){
+                                                                    t(selectEle).removeClass(s);
+                                                                    t(g[item]).addClass(s);
+                                                                    selectEle = g[item];
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                        if(selectEle == null){
+                                                            for(var item = 0; item <= g.length; item++){
+                                                                if(g[item] === undefined){
+                                                                    continue;
+                                                                }
+                                                                var cla = g[item].className;
+                                                                if (cla != 'layui-select-tips'){
+                                                                    t(g[item]).addClass(s);
+                                                                    selectEle = g[item];
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }else if(key== 38){
+                                                        for(var item = 0; item <= g.length; item++){
+                                                            if(g[item] === undefined){
+                                                                continue;
+                                                            }
+                                                            var cla = g[item].className;
+                                                            if (cla == s){
+                                                                if(item > 0){
+                                                                    var previous = item - 1;
+                                                                    console.log(g[previous].className);
+                                                                    if(g[previous].className){
+                                                                        cla = g[previous].className;
+                                                                        if(cla == 'layui-select-tips'){
+                                                                            t(g[item]).removeClass(s);
+                                                                            selectEle = g[previous];
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                    else {
+                                                                        t(g[item]).removeClass(s);
+                                                                        t(g[previous]).addClass(s);
+                                                                        selectEle = g[previous];
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    selectEle = null;
+                                                                }
+                                                            }
+                                                            else {
+                                                                selectEle = null;
+                                                            }
+                                                        }
+                                                    }
+
+                                                    if(key == 13){
+                                                        for(var item = 0; item <= g.length; item++){
+                                                            if(g[item] === undefined){
+                                                                continue;
+                                                            }
+                                                            var cla = g[item].className;
+                                                            if (cla == s){
+                                                                selectEle = g[item];
+                                                            }
+                                                        }
+                                                        if(selectEle != null){
+                                                            var e = t(selectEle),
+                                                                a = e.attr("lay-value"),
+                                                                n = h.attr("lay-filter");
+                                                            ! e.hasClass(u) && (e.hasClass("layui-select-tips") ? m.val("") : (m.val(e.text()), e.addClass(s)), e.siblings().removeClass(s), h.val(a).removeClass("layui-form-danger"), layui.event.call(this, l, "select(" + n + ")", {
+                                                                elem: h[0],
+                                                                value: a,
+                                                                othis: i
+                                                            }))
+                                                        }else {
+                                                            console.log(173);
+                                                            m.val("");
+                                                        }
+                                                        b();
+                                                    }
+                                                    9 === key && x()
                                                 }).on("keydown",
                                                 function(e) {
                                                     var t = e.keyCode;
