@@ -47,6 +47,20 @@ class Common extends Controller
         return $dbproductinfo;
     }
 
+    public function serachmodelinfo()
+    {
+        $sereachText = $_POST['serrchText'];
+        $dbproductinfo = \app\index\model\Admin::serachmodelinfo($sereachText);
+        return $dbproductinfo;
+    }
+
+    public function coldserachmodelinfo()
+    {
+        $sereachText = $_POST['serrchText'];
+        $dbproductinfo = \app\index\model\Admin::coldserachmodel($sereachText);
+        return $dbproductinfo;
+    }
+
     public function serachproductinfo(){
         $productinfo = self::coldserachmodelinfo();
         if (!empty($productinfo)){

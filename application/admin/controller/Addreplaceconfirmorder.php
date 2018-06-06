@@ -108,6 +108,24 @@ class Addreplaceconfirmorder extends Controller
             $userinfo['organize_id'] = $ret[0]['parent_id'];
         $userinfo['phone'] =$organizeid['phone'];
         $this->assign("userinfo", json_encode($userinfo));
+
+        $producttype = \app\index\model\Admin::getclassinfo('product_type','product_type_id');
+        $brand = \app\index\model\Admin::getclassinfo('product_brand','brand_id');
+        $place = \app\index\model\Admin::getclassinfo('product_place','place_id');
+        $uncproduct = \app\index\model\Admin::getuncproduct();
+        if (!empty($brand)){
+            $this->assign('producttypelist',$producttype);
+        }
+        if (!empty($brand)){
+            $this->assign('brandlist',$brand);
+        }
+        if (!empty($place)){
+            $this->assign('placelist',$place);
+        }
+        if (!empty($uncproduct)){
+            $this->assign('uncproductlist',$uncproduct);
+        }
+
         return $this->fetch('addreplaceconfirmorder');
     }
     /**新增订单（包含审批 清单）**/
@@ -200,6 +218,23 @@ class Addreplaceconfirmorder extends Controller
             $order_goods_manager = $_POST['order_goods_manager'];
             $num = count($order_goods_manager);
             for ($i = 0; $i < $num; $i++) {
+                //新增产品型号
+                if($order_goods_manager[$i]['isExistModel'] == 'false')
+                {
+                    $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                    $order_goods_manager[$i]['product_info_id'] = $product_info_id;
+                    $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                    $data[$index][0] = 'product_info';
+                    $data[$index][1] = 'product_info_id';
+                    $data[$index][2] = $product_info_id;
+                    $index++;
+                    if(empty($retsql)||$retsql == false)
+                    {
+                        $this->deldata($data);
+                        dump(666);
+                        return false;
+                    }
+                }
                 //order_goods_manager
                 $order_goods_manager_id = \app\index\model\Admin::getmaxtableidretid('order_goods_manager', 'order_goods_manager_id')+1;
                 $order_goods_manager[$i]['order_goods_manager_id'] = $order_goods_manager_id;
@@ -231,11 +266,10 @@ class Addreplaceconfirmorder extends Controller
                     dump(777);
                     return false;
                 }
+
             }
 
         }
-
-
 
         $length = count($cs_examine);
         $cs_examine_ids ="";
@@ -404,6 +438,13 @@ class Addreplaceconfirmorder extends Controller
             $order_goods_manager = $_POST['order_goods_manager'];
             $num = count($order_goods_manager);
             for ($i = 0; $i < $num; $i++) {
+                //新增产品型号
+                if($order_goods_manager[$i]['isExistModel'] == 'false')
+                {
+                    $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                    $order_goods_manager[$i]['product_info_id'] = $product_info_id;
+                    $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                }
                 //order_goods_manager
                 if($order_goods_manager[$i]['order_goods_manager_id'] == '')
                 {
@@ -505,6 +546,13 @@ class Addreplaceconfirmorder extends Controller
             $order_goods_manager = $_POST['order_goods_manager'];
             $num = count($order_goods_manager);
             for ($i = 0; $i < $num; $i++) {
+                //新增产品型号
+                if($order_goods_manager[$i]['isExistModel'] == 'false')
+                {
+                    $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                    $order_goods_manager[$i]['product_info_id'] = $product_info_id;
+                    $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                }
                 //order_goods_manager
                 if($order_goods_manager[$i]['order_goods_manager_id'] == '')
                 {
@@ -564,6 +612,13 @@ class Addreplaceconfirmorder extends Controller
             $order_goods_manager = $_POST['order_goods_manager'];
             $num = count($order_goods_manager);
             for ($i = 0; $i < $num; $i++) {
+                //新增产品型号
+                if($order_goods_manager[$i]['isExistModel'] == 'false')
+                {
+                    $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                    $order_goods_manager[$i]['product_info_id'] = $product_info_id;
+                    $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                }
                 //order_goods_manager
                 if($order_goods_manager[$i]['order_goods_manager_id'] == '')
                 {
