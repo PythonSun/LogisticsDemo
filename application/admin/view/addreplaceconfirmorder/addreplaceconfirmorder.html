@@ -2370,6 +2370,21 @@
                 col.innerHTML ="<td><input type='text' name='comment' id='comment' class='layui-input' oninput='detectinputtext(this);' style='color: #0C0C0C ;border:0px'></td>";
                 col = newRow.insertCell(15);
                 col.innerHTML ="<td>"+"fdaaddsdsffd"+"</td>";
+<<<<<<< HEAD
+                var authors = [
+                    'name',
+                    'name',
+                    'name',
+                    'name',
+                    'name',
+                    'name',
+                ];
+                var inputElem = document.createElement("model");
+                document.body.appendChild(inputElem);
+                jq("#model").focusin(function () {
+                    console.log("1111111");
+                });
+=======
                 $(col_1.childNodes[0]).autocomplete({
                     source: function (request, response) {
                         console.log("++++++++++++++");
@@ -2395,6 +2410,7 @@
                 jq(inputElem).autocomplete({
                     source: authors
                 });*/
+>>>>>>> b7f43ff2cd0facfb81187aac5ff9cdd3efb25b39
             }
 
             // $(document).on('bind','.autocomplete-input',function(){
