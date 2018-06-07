@@ -104,6 +104,7 @@ class Querypartsconfirmorder extends Controller
         return $tablelist;
     }
 
+    /*导出配件确认单*/
     public function exportpartsconfirmorder(){
         $template_name = "订单登记系统导出.xlsx";
         $type=0x05;
@@ -113,5 +114,17 @@ class Querypartsconfirmorder extends Controller
 
         $ret = \app\index\model\Admin::queryexportcsinfoconfirmorder($param,$type);
         \app\index\model\Admin::exportcsinfoconfirmorder($file_name,$file_extend,$template_name,$ret);
+    }
+
+    /*打印配件确认单*/
+    public function printpartsconfirmorder(){
+        $template_name = "配件确认单.xlsx";
+        $type=0x05;
+        $cs_id = $_GET['cs_id'];
+        $file_name = '配件确认单';
+        $file_extend = 'xlsx';
+
+        $ret = \app\index\model\Admin::queryprintcsinfoorder($cs_id,$type);
+        \app\index\model\Admin::printreplaceconfirmorder($file_name,$file_extend,$template_name,$ret,$type);
     }
 }

@@ -2595,6 +2595,7 @@
             else{
                 $objPHPExcel->getActiveSheet()->setCellValue('J1', "部门编号：".$ret[0]['build_department_id']);
             }
+
             $objPHPExcel->getActiveSheet()->setCellValue('C2', $ret[0]['build_department_name']);
             $objPHPExcel->getActiveSheet()->setCellValue('G2', $ret[0]['build_user_name']);
             $objPHPExcel->getActiveSheet()->setCellValue('K2', $ret[0]['build_user_phone']);
@@ -2661,8 +2662,14 @@
                 $objPHPExcel->getActiveSheet()->setCellValue('D'.$item, $productlist[$item-$startitem]['product_info_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('E'.$item, $productlist[$item-$startitem]['model']);
                 $objPHPExcel->getActiveSheet()->setCellValue('F'.$item, $productlist[$item-$startitem]['specification']);
-                $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['unit']);
-                $objPHPExcel->getActiveSheet()->setCellValue('I'.$item, $productlist[$item-$startitem]['product_number']);
+
+                if($type == 0x05){
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$item, $productlist[$item-$startitem]['unit']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['product_number']);
+                }else{
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['unit']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$item, $productlist[$item-$startitem]['product_number']);
+                }
 
                 if(($type == 0x01)||($type == 0x06)){
                     $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['bar_code']);
@@ -2672,7 +2679,8 @@
 
                 if($type == 0x02){
                     $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['back_date']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['unit_price']);
+                    //$objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['unit_price']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, "");
                 }
 
                 if($type == 0x03){
@@ -2685,6 +2693,12 @@
                     $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['deal_date']);
                     $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['bar_code']);
                     $objPHPExcel->getActiveSheet()->setCellValue('L'.$item, $productlist[$item-$startitem]['fault_condition']);
+                }
+
+                if($type == 0x05){
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$item, $productlist[$item-$startitem]['unit_price']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['fault_condition']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['comment']);
                 }
             }
 
@@ -2726,10 +2740,15 @@
                         $objPHPExcel->getActiveSheet()->mergeCells('F'.(31+$i).':'.'G'.(31+$i));
                         $objPHPExcel->getActiveSheet()->mergeCells('L'.(31+$i).':'.'M'.(31+$i));
                     }
+                }else if($type == 0x05){
+                    $objPHPExcel->getActiveSheet()->insertNewRowBefore(31,$newrows);
+                    for($i=0; $i<$newrows;$i++){
+                        $objPHPExcel->getActiveSheet()->mergeCells('K'.(31+$i).':'.'L'.(31+$i));
+                    }
                 }
                
                 for($item=$startitem+10;$item<(count($productlist)+$startitem);$item++){
-                    if(($type == 0x01)||($type == 0x06)||($type == 0x04)){
+                    if(($type == 0x01)||($type == 0x06)||($type == 0x04)||($type == 0x05)){
                         $objPHPExcel->getActiveSheet()->setCellValue('A'.$item, $item-20);
                     }else if(($type == 0x02)||($type == 0x03)){
                         $objPHPExcel->getActiveSheet()->setCellValue('A'.$item, $item-14);
@@ -2740,8 +2759,14 @@
                     $objPHPExcel->getActiveSheet()->setCellValue('D'.$item, $productlist[$item-$startitem]['product_info_name']);
                     $objPHPExcel->getActiveSheet()->setCellValue('E'.$item, $productlist[$item-$startitem]['model']);
                     $objPHPExcel->getActiveSheet()->setCellValue('F'.$item, $productlist[$item-$startitem]['specification']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['unit']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$item, $productlist[$item-$startitem]['product_number']);
+                    
+                    if($type == 0x05){
+                        $objPHPExcel->getActiveSheet()->setCellValue('G'.$item, $productlist[$item-$startitem]['unit']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['product_number']);
+                    }else{
+                        $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['unit']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('I'.$item, $productlist[$item-$startitem]['product_number']);
+                    }
 
                     if(($type == 0x01)||($type == 0x06)){
                         $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['bar_code']);
@@ -2751,7 +2776,8 @@
 
                     if($type == 0x02){
                         $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['back_date']);
-                        $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['unit_price']);
+                        //$objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['unit_price']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, "");
                     }
 
                     if($type == 0x03){
@@ -2764,6 +2790,12 @@
                         $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['deal_date']);
                         $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['bar_code']);
                         $objPHPExcel->getActiveSheet()->setCellValue('L'.$item, $productlist[$item-$startitem]['fault_condition']);
+                    }
+
+                    if($type == 0x05){
+                        $objPHPExcel->getActiveSheet()->setCellValue('I'.$item, $productlist[$item-$startitem]['unit_price']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['fault_condition']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['comment']);
                     }
                 }
             }

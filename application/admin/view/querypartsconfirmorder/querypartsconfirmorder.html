@@ -196,24 +196,22 @@
                             shade: 0.9,
                             maxmin: true,
                             content: "{:url('admin/addpartsconfirmorder/editpartsconfirmorder')}?cs_id=" + data.cs_id+"&current_user_type= 0",
-                            btn: [ '打印','退出'],
+                            btn: [ '打印预览','退出'],
                             btnAlign: 'c',
                             yes: function (index,layero) {
                                 var cs_id = data.cs_id;
                                 top.layer.open({
                                     type: 2,
-                                    area: ['600px', '250px'],
+                                    area: ['650px', '80%'],
                                     shade: 0.6,
                                     shadeClose:true,
-                                    title: '设置打印参数',
+                                    title: ['打印预览界面','text-align:center'],
                                     resize:false,
-                                    btn: ['保存','取消'],
-                                    content: "{:url('admin/setexportfileparam/setexportfileparam')}",
-                                    yes:function(index2,layero){
+                                    btn: ['打印','取消'],
+                                    content: "{:url('admin/querypartsconfirmorder/printpartsconfirmorder')}?cs_id="+ cs_id,
+                                    yes:function(index,layero){
                                         var iframeWin = top.window[layero.find('iframe')[0]['name']];
-                                        var exportparam = iframeWin.getexportparam();
-                                        top.layer.closeAll();
-                                        window.open("{:url('admin/querypartsconfirmorder/printreplaceconfirmorder')}?cs_id="+ cs_id + "&file_name=" + exportparam.file_name+ "&file_extend=" + exportparam.file_extend,"_self");
+                                        iframeWin.print();
                                     }
                                 });
                                 return false;
