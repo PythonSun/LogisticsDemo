@@ -379,9 +379,9 @@
 
 
     <h3>订购清单</h3>
-    <div class="layui-form-item">
-        <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled Wheat" lay-submit="" lay-filter="add_order_item" style="color: black;">
-    </div>
+    <!--<div class="layui-form-item">-->
+        <!--<input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled Wheat" lay-submit="" lay-filter="add_order_item" style="color: black;">-->
+    <!--</div>-->
     <table class=" layui-table layui-table-style" id="tableorder">
         <thead>
         <tr >
@@ -2202,7 +2202,7 @@
             order_goods_manager_item['order_goods_manager_count'] = tabledata[i]['order_goods_manager_count'];
             order_goods_manager_item['specification'] = tabledata[i]['specification'];
             order_goods_manager_item['type'] = cs_info_type;                                             //1：更换 详细看数据库
-            order_goods_manager_item['unit_price'] = -1;
+            order_goods_manager_item['unit_price'] = 0;
             order_goods_manager_item['order_goods_manager_explain'] = data['order_goods_manager_explain'];
 
             order_goods_manager_item['comment'] = tabledata[i]['comment'] == undefined?'':tabledata[i]['comment'];
@@ -2339,7 +2339,7 @@
         col = newRow.insertCell(7);
         col.innerHTML ="<td><input type='text' id='order_goods_manager_count"+rowIndex+"' name='inputcount' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputnumber(this);'></td>";
         col = newRow.insertCell(8);
-        col.innerHTML ="<td><input type='text' name='back_date' id='back_date"+rowIndex+"' autocomplete='on' class='layui-input time-item Wheat_disabled' style='border: 0px'></td>";
+        col.innerHTML ="<td><input type='text' name='purchase_date' id='purchase_date"+rowIndex+"' autocomplete='on' class='layui-input time-item Wheat_disabled' style='border: 0px'></td>";
         jq.each(jq(".time-item"),function(){
             layui.laydate.render({ elem: this });
         });
@@ -2348,14 +2348,12 @@
         col = newRow.insertCell(10);
         col.innerHTML ="<td><input type='text' name='bar_code' id='bar_code"+rowIndex+"' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px'></td>";
         col = newRow.insertCell(11);
-        col.innerHTML ="<td><input type='text' name='replace_reason' id='replace_reason"+rowIndex+"' lay-filter='replace_reason' style='color: #0C0C0C ;border:0px' class='layui-input Wheat_disabled ' oninput='detectinputtext(this);'></td>";
-        col = newRow.insertCell(12);
         col.innerHTML ="<td><select id='ogl_product_state"+rowIndex+"' name='ogl_product_state' lay-filter='unc_productname' class='select-style-border-none dark_blue_disabled'> <option value='' selected>请选择</option> <option value='定制' >定制</option> <option value='缺货' >缺货</option> <option value='已发货' >已发货</option></select></td>";
-        col = newRow.insertCell(13);
+        col = newRow.insertCell(12);
         col.innerHTML ="<td><select id='unc_product_id"+rowIndex+"' name='unc_product_id' lay-filter='unc_productname'  class='select-style-border-none dark_blue_disabled'> <option value='' selected >请选择</option>{volist name='uncproductlist' id='vo1'} <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>{/volist} </select></td>";
-        col = newRow.insertCell(14);
+        col = newRow.insertCell(13);
         col.innerHTML ="<td><input type='text' name='ogl_comment' id='ogl_comment"+rowIndex+"' class='layui-input dark_blue_disabled' oninput='detectinputtext(this);' style='color: #0C0C0C ;border:0px'></td>";
-        col = newRow.insertCell(15);
+        col = newRow.insertCell(14);
         col.innerHTML ="<td><a class='layui-btn layui-btn-xs layui-btn-danger Wheat_disabled  del_btn del_disabled' style = 'margin: 0px 10px '>删除</a></td>";
 
         var model ="#"+ "model"+rowIndex;
@@ -2464,10 +2462,9 @@
         $('#order_goods_manager_count'+rowIndex).val(data['order_goods_manager_count']);
         $('#unit'+rowIndex).val(data['unit']);
         $('#specification'+rowIndex).val(data['specification']);
-        if(data['back_date'] != '2000-01-01' )
-            $('#back_date'+rowIndex).val(data['back_date']);
+        if(data['purchase_date'] != '2000-01-01' )
+            $('#purchase_date'+rowIndex).val(data['purchase_date']);
         $('#bar_code'+rowIndex).val(data['bar_code']);
-        $('#replace_reason'+rowIndex).val(data['replace_reason']);
         $('#unc_product_id'+rowIndex).val(data['unc_product_id']);
         $('#ogl_product_state'+rowIndex).val(data['ogl_product_state']);
         $('#ogl_comment'+rowIndex).val(data['ogl_comment']);
@@ -2515,12 +2512,13 @@
                 return false;
             }
             rowdata.specification = $('#specification'+rowIndex).val();
-            rowdata.back_date = $('#back_date'+rowIndex).val();
-            if(rowdata.back_date == "" || rowdata.back_date == undefined || rowdata.back_date == null){
-                rowdata.back_date = '2000-01-01';
+            rowdata.back_date = "2000-01-01";
+            rowdata.purchase_date = $('#purchase_date'+rowIndex).val();
+            if(rowdata.purchase_date == "" || rowdata.purchase_date == undefined || rowdata.purchase_date == null){
+                rowdata.purchase_date = '2000-01-01';
             }
             rowdata.bar_code = $('#bar_code'+rowIndex).val();
-            rowdata.replace_reason = $('#replace_reason'+rowIndex).val();
+            rowdata.replace_reason = "";
             rowdata.ogl_comment = $('#ogl_comment'+rowIndex).val();
             rowdata.ogl_product_state = $('#ogl_product_state'+rowIndex).val();
             rowdata.unc_product_id = $('#unc_product_id'+rowIndex).val();
