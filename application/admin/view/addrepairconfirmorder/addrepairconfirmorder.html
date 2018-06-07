@@ -426,8 +426,11 @@
     </div>
 </form>
 
+<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/static/UI-jquery/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/static/layui/layui.js"></script>
 <script type="text/javascript" src="/static/js/commondetect.js"></script>
+<script type="text/javascript" src="/static/UI-jquery/jquery-ui.js" ></script>
 <script type="text/javascript">
     var isloading = true;
     var delrowid = new Array();
@@ -1397,6 +1400,12 @@
             setDisable(true);
             return false;
         }
+        if(tabledata == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
         var cs_info = getCsInfo(data,true,true,1);
         console.log("以下确认单信息：");
         console.log(cs_info);
@@ -1463,6 +1472,12 @@
             setDisable(true);
             return false;
         }
+        if(tabledata == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
         var jq = layui.jquery;
 
         var cs_info = getCsInfo(data,true,true,data['cs_info_state']== '');
@@ -1671,6 +1686,12 @@
             setDisable(true);
             return false;
         }
+        if(tabledata == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
         var jq = layui.jquery;
 
         var cs_info = getCsInfo(data,false,true,data['cs_info_state']);
@@ -2115,7 +2136,8 @@
         info.can_edit = isCanWrite == true?1:0;                              //0 不可编辑
         info.cs_info_state = csState;
         info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate']; //cs_info       //新增 无完成日期
-        info.product_number = document.getElementById('tableorder').rows.length-1;
+        var dataTable = getGoodsTable();
+        info.product_number =dataTable==null?0 :dataTable.length-1;
         info.unc_ofg_info_id = isEdit == true?editOrderData['unc_ofg_info_id']:0;
         info.delivery_date_reply = '2000-01-01';
         return info;
@@ -2181,7 +2203,7 @@
     }
 
     function getOrderGoods(data,isEdit) {
-        var  tabledata = getTableContent();
+        var  tabledata = getGoodsTable();
         var rows = tabledata.length;
         var info= [];
         for(var i = 0; i < rows; i++){
@@ -2210,6 +2232,14 @@
             order_goods_manager_item['unc_product_id'] =tabledata[i]['unc_product_id'] == ''?-1:tabledata[i]['unc_product_id'];
             order_goods_manager_item['ogl_comment'] = tabledata[i]['ogl_comment'];
             order_goods_manager_item['ogl_explain'] = data['ogl_explain'];
+
+            order_goods_manager_item['isExistModel'] = tabledata[i]['isExistModel'];
+            order_goods_manager_item['model'] = tabledata[i]['model'];
+            order_goods_manager_item['product_info_name'] = tabledata[i]['product_info_name'];
+            order_goods_manager_item['product_type_id'] = tabledata[i]['product_type_id'];
+            order_goods_manager_item['brand_id'] = tabledata[i]['brand_id'];
+            order_goods_manager_item['place_id'] = tabledata[i]['place_id'];
+
             info[i] = order_goods_manager_item;
         }
         return info;
@@ -2322,18 +2352,18 @@
         col = newRow.insertCell(7);
         col.innerHTML ="<td><input type='text' id='order_goods_manager_count"+rowIndex+"' name='inputcount' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputnumber(this);'></td>";
         col = newRow.insertCell(8);
-        col.innerHTML ="<td><input type='text' name='back_date' id='back_date"+rowIndex+"' autocomplete='on' class='layui-input time-item Wheat_disabled' style='border: 0px'></td>";
+        col.innerHTML ="<td><input type='text' name='deal_date' id='deal_date"+rowIndex+"' autocomplete='on' class='layui-input time-item Wheat_disabled' style='border: 0px'></td>";
         jq.each(jq(".time-item"),function(){
             layui.laydate.render({ elem: this });
         });
         col = newRow.insertCell(9);
-        col.innerHTML ="<td><input type='text' id='specification"+rowIndex+"' name='specification' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+        col.innerHTML ="<td><input type='text' name='fault_condition' id='fault_condition"+rowIndex+"' lay-filter='replace_reason' style='color: #0C0C0C ;border:0px' class='layui-input Wheat_disabled ' oninput='detectinputtext(this);'></td>";
         col = newRow.insertCell(10);
-        col.innerHTML ="<td><input type='text' name='bar_code' id='bar_code"+rowIndex+"' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px'></td>";
+        col.innerHTML ="<td><input type='text' id='specification"+rowIndex+"' name='specification' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
         col = newRow.insertCell(11);
-        col.innerHTML ="<td><input type='text' name='replace_reason' id='replace_reason"+rowIndex+"' lay-filter='replace_reason' style='color: #0C0C0C ;border:0px' class='layui-input Wheat_disabled ' oninput='detectinputtext(this);'></td>";
+        col.innerHTML ="<td><input type='text' name='bar_code' id='bar_code"+rowIndex+"' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px'></td>";
         col = newRow.insertCell(12);
-        col.innerHTML ="<td><select id='ogl_product_state"+rowIndex+"' name='ogl_product_state' lay-filter='unc_productname' class='select-style-border-none dark_blue_disabled'> <option value='' selected>请选择</option> <option value='已更换' >已更换</option> <option value='未更换' >未更换</option> </select></td>";
+        col.innerHTML ="<td><select id='ogl_product_state"+rowIndex+"' name='ogl_product_state' lay-filter='unc_productname' class='select-style-border-none dark_blue_disabled'> <option value='' selected>请选择</option> <option value='定制' >定制</option> <option value='缺货' >缺货</option> <option value='已发货' >已发货</option></select></td>";
         col = newRow.insertCell(13);
         col.innerHTML ="<td><select id='unc_product_id"+rowIndex+"' name='unc_product_id' lay-filter='unc_productname'  class='select-style-border-none dark_blue_disabled'> <option value='' selected >请选择</option>{volist name='uncproductlist' id='vo1'} <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>{/volist} </select></td>";
         col = newRow.insertCell(14);
@@ -2438,10 +2468,10 @@
         $('#order_goods_manager_count'+rowIndex).val(data['order_goods_manager_count']);
         $('#unit'+rowIndex).val(data['unit']);
         $('#specification'+rowIndex).val(data['specification']);
-        if(data['back_date'] != '2000-01-01' )
-            $('#back_date'+rowIndex).val(data['back_date']);
+        if(data['deal_date'] != '2000-01-01' )
+            $('#deal_date'+rowIndex).val(data['deal_date']);
         $('#bar_code'+rowIndex).val(data['bar_code']);
-        $('#replace_reason'+rowIndex).val(data['replace_reason']);
+        $('#fault_condition'+rowIndex).val(data['fault_condition']);
         $('#unc_product_id'+rowIndex).val(data['unc_product_id']);
         $('#ogl_product_state'+rowIndex).val(data['ogl_product_state']);
         $('#ogl_comment'+rowIndex).val(data['ogl_comment']);
@@ -2456,7 +2486,6 @@
         for(var i =1 ;i< table.rows.length;i++)
         {
             var row = table.rows[i];
-            console.log(i);
             var rowIndex = $(row).attr('rowIndex');
             if($("#model"+rowIndex).val() == ''&& i != table.rows.length-1)
             {
@@ -2491,12 +2520,14 @@
                 return false;
             }
             rowdata.specification = $('#specification'+rowIndex).val();
-            rowdata.back_date = $('#back_date'+rowIndex).val();
-            if(rowdata.back_date == "" || rowdata.back_date == undefined || rowdata.back_date == null){
-                rowdata.back_date = '2000-01-01';
+            rowdata.deal_date = $('#deal_date'+rowIndex).val();
+            if(rowdata.deal_date == "" || rowdata.deal_date == undefined || rowdata.deal_date == null){
+                rowdata.deal_date = '2000-01-01';
             }
+            rowdata.back_date = '2000-01-01';
             rowdata.bar_code = $('#bar_code'+rowIndex).val();
-            rowdata.replace_reason = $('#replace_reason'+rowIndex).val();
+            rowdata.replace_reason = '';
+            rowdata.fault_condition = $('#fault_condition'+rowIndex).val();
             rowdata.ogl_comment = $('#ogl_comment'+rowIndex).val();
             rowdata.ogl_product_state = $('#ogl_product_state'+rowIndex).val();
             rowdata.unc_product_id = $('#unc_product_id'+rowIndex).val();

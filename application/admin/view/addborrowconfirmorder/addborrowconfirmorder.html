@@ -2055,7 +2055,8 @@
         info.can_edit = isCanWrite == true?1:0;                              //0 不可编辑
         info.cs_info_state = csState;
         info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate']; //cs_info       //新增 无完成日期
-        info.product_number = document.getElementById('tableorder').rows.length-1;
+        var dataTable = getGoodsTable();
+        info.product_number =dataTable==null?0 :dataTable.length-1;
         info.unc_ofg_info_id = isEdit == true?editOrderData['unc_ofg_info_id']:0;
         info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
         return info;
