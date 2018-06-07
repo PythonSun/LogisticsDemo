@@ -126,7 +126,7 @@ class Queryreplaceconfirmorder extends Controller
         $template_name = "更换代用确认单.xlsx";
         $type=0x01;
         $cs_id = $_GET['cs_id'];
-        $file_name = $_GET['file_name'];
+        $file_name = '更换确认单';
         $file_extend = 'xlsx';
 
         $ret = \app\index\model\Admin::queryprintcsinfoorder($cs_id,$type);

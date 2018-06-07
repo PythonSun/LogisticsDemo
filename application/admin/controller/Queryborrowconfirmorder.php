@@ -105,6 +105,7 @@ class Queryborrowconfirmorder extends Controller
         return $tablelist;
     }
 
+    /*导出借样确认单数据*/
     public function exportborrowconfirmorder(){
         $template_name = "订单登记系统导出.xlsx";
         $type=0x02;
@@ -114,5 +115,17 @@ class Queryborrowconfirmorder extends Controller
 
         $ret = \app\index\model\Admin::queryexportcsinfoconfirmorder($param,$type);
         \app\index\model\Admin::exportcsinfoconfirmorder($file_name,$file_extend,$template_name,$ret);
+    }
+
+    /*打印借样确认单*/
+    public function printborrowconfirmorder(){
+        $template_name = "借样确认单.xlsx";
+        $type=0x02;
+        $cs_id = $_GET['cs_id'];
+        $file_name = '借样确认单';
+        $file_extend = 'xlsx';
+
+        $ret = \app\index\model\Admin::queryprintcsinfoorder($cs_id,$type);
+        \app\index\model\Admin::printreplaceconfirmorder($file_name,$file_extend,$template_name,$ret,$type);
     }
 }
