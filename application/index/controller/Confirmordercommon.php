@@ -120,7 +120,6 @@ class Confirmordercommon extends Controller
                     if(empty($retsql)||$retsql == false)
                     {
                         $this->deldata($data);
-                        dump(666);
                         return false;
                     }
                 }
@@ -136,7 +135,6 @@ class Confirmordercommon extends Controller
                 if(empty($retmanager)||$retmanager == false)
                 {
                     $this->deldata($data);
-                    dump(666);
                     return false;
                 }
                 //order_goods_logistics
@@ -152,7 +150,6 @@ class Confirmordercommon extends Controller
                 if(empty($retmanager)||$retmanager == false)
                 {
                     $this->deldata($data);
-                    dump(777);
                     return false;
                 }
 
@@ -548,6 +545,12 @@ class Confirmordercommon extends Controller
         if (!empty($unc_ofg_info) && !empty($unc_ofg_detail)) {
             $unc_ofg_detail_length = count($unc_ofg_detail);
             for ($i = 0; $i < $unc_ofg_detail_length; $i++) {
+                if($unc_ofg_detail[$i]['isExistModel'] == 'false')
+                {
+                    $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                    $order_goods_manager[$i]['product_info_id'] = $product_info_id;
+                    $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                }
                 $uod_id = $unc_ofg_detail[$i]['uod_id'];
                 if ($uod_id == "") {
                     $uod_id = \app\index\model\Admin::getmaxtableidretid('unc_ofg_detail', 'uod_id') + 1;

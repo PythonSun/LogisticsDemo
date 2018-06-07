@@ -2394,11 +2394,9 @@
         if(table.rows.length <=1)
             return null;
         var data = Array();
-        console.log(table.rows.length);
         for(var i =1 ;i< table.rows.length;i++)
         {
             var row = table.rows[i];
-            console.log(i);
             var rowIndex = $(row).attr('rowIndex');
             if($("#model"+rowIndex).val() == ''&& i != table.rows.length-1)
             {
