@@ -2056,7 +2056,7 @@
         info.cs_info_state = csState;
         info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate']; //cs_info       //新增 无完成日期
         var dataTable = getGoodsTable();
-        info.product_number =dataTable==null?0 :dataTable.length-1;
+        info.product_number =dataTable==null?0 :dataTable.length;
         info.unc_ofg_info_id = isEdit == true?editOrderData['unc_ofg_info_id']:0;
         info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
         return info;
@@ -2352,6 +2352,15 @@
 
         });
         rowIndex++;
+        if(current_user_type == 1)
+        {
+            jq('.dark_blue_disabled').addClass('layui-disabled');
+            jq('.dark_blue_disabled').attr('disabled',true);
+
+            jq.each(jq(".time-item"),function(){
+                layui.laydate.render({ elem: this });
+            });
+        }
         layui.form.render('select');
     }
     //给清单赋值

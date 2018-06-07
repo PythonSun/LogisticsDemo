@@ -583,10 +583,16 @@
                     var order_goods = data['order_goods'];
                     for( var i = 0 ; i<order_goods.length; i++)
                     {
-                        updateRow(order_goods[i],true);
+                        //updateRow(order_goods[i],true);
+                        addGoodsTableRow();
+                        setGoodsRowValue(order_goods[i],i+1);
                     }
                     jq('#order_goods_manager_explain').val( order_goods[0]['order_goods_manager_explain']);
                     jq('#ogl_explain').val( order_goods[0]['ogl_explain']);
+                }
+                if(current_user_type == 1)
+                {
+                    addGoodsTableRow();
                 }
                 ///logistic_info
                 if(data['logistic_info'] != null && data['logistic_info'].length>0)
@@ -2137,7 +2143,7 @@
         info.cs_info_state = csState;
         info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate']; //cs_info       //新增 无完成日期
         var dataTable = getGoodsTable();
-        info.product_number =dataTable==null?0 :dataTable.length-1;
+        info.product_number =dataTable==null?0 :dataTable.length;
         info.unc_ofg_info_id = isEdit == true?editOrderData['unc_ofg_info_id']:0;
         info.delivery_date_reply = '2000-01-01';
         return info;
@@ -2448,6 +2454,15 @@
 
         });
         rowIndex++;
+        if(current_user_type == 1)
+        {
+            jq('.dark_blue_disabled').addClass('layui-disabled');
+            jq('.dark_blue_disabled').attr('disabled',true);
+
+            jq.each(jq(".time-item"),function(){
+                layui.laydate.render({ elem: this });
+            });
+        }
         layui.form.render('select');
     }
     //给清单赋值
