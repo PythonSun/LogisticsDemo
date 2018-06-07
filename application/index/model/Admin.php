@@ -2514,9 +2514,9 @@
             if($type != 0x03){
                 $sqlone .= "dsp_logistic.delivery_info.*,";
             }
-            $sqlone .= "dsp_logistic.custom_info.*,";
+            $sqlone .= "dsp_logistic.custom_info.*";
             if($type != 0x02){
-                $sqlone .= "dsp_logistic.return_info.* ";
+                $sqlone .= ",dsp_logistic.return_info.* ";
             }
             $sqlone .= "from dsp_logistic.cs_info ";
             $sqlone .= "left join dsp_logistic.custom_info on dsp_logistic.custom_info.custom_info_id = dsp_logistic.cs_info.custom_info_id ";
@@ -2575,16 +2575,6 @@
 
             $tableobj[0]['productlist'] = $listobj;
 
-            // for($item=0; $item<count($tableobj);$item++){
-            //     $productlist = array();
-            //     for($listitem=0;$listitem<count($listobj);$listitem++){
-            //         if($tableobj[$item]['unc_ofg_info_id'] == $listobj[$listitem]['unc_ofg_info_id']){
-            //             $productlist[] = $listobj[$listitem];
-            //         }
-            //     }
-            //     $tableobj[$item]['productlist'] = $productlist;
-            // }
-
             return $tableobj;
         }
 
@@ -2599,7 +2589,12 @@
             $objPHPExcel->setActiveSheetIndex(0);
             $objPHPExcel->getActiveSheet()->setTitle('sheet0');
             $objPHPExcel->getActiveSheet()->setCellValue('A1', "日期：".$ret[0]['cs_belong_create_time']);
-            $objPHPExcel->getActiveSheet()->setCellValue('L1', "部门编号：".$ret[0]['build_department_id']);
+            if($type != 0x02){
+                $objPHPExcel->getActiveSheet()->setCellValue('L1', "部门编号：".$ret[0]['build_department_id']);
+            }
+            else{
+                $objPHPExcel->getActiveSheet()->setCellValue('J1', "部门编号：".$ret[0]['build_department_id']);
+            }
             $objPHPExcel->getActiveSheet()->setCellValue('C2', $ret[0]['build_department_name']);
             $objPHPExcel->getActiveSheet()->setCellValue('G2', $ret[0]['build_user_name']);
             $objPHPExcel->getActiveSheet()->setCellValue('K2', $ret[0]['build_user_phone']);
@@ -2613,24 +2608,38 @@
 
             if($type != 0x03){
                 $objPHPExcel->getActiveSheet()->setCellValue('C8', $ret[0]['delivery_info_receiver_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('I8', $ret[0]['is_insure']);
+                if($ret[0]['is_insure'] == 1){
+                    $objPHPExcel->getActiveSheet()->setCellValue('I8','买');
+                }else{
+                    $objPHPExcel->getActiveSheet()->setCellValue('I8','不买');
+                }
                 $objPHPExcel->getActiveSheet()->setCellValue('C9', $ret[0]['delivery_info_receiver_phone']);
                 $objPHPExcel->getActiveSheet()->setCellValue('I9', $ret[0]['insure_amount']);
                 $objPHPExcel->getActiveSheet()->setCellValue('C10', $ret[0]['delivery_info_goods_yard_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('I10', $ret[0]['is_sign']);
+                if($ret[0]['is_sign'] == 1){
+                    $objPHPExcel->getActiveSheet()->setCellValue('I10', '签约');
+                }else{
+                    $objPHPExcel->getActiveSheet()->setCellValue('I10', '非签约');
+                }
+
                 $objPHPExcel->getActiveSheet()->setCellValue('C11', $ret[0]['delivery_info_goods_yard_phone']);
-                $objPHPExcel->getActiveSheet()->setCellValue('I11', $ret[0]['has_contract']);
+                if($ret[0]['has_contract'] == 1){
+                    $objPHPExcel->getActiveSheet()->setCellValue('I11', '有');
+                }else{
+                    $objPHPExcel->getActiveSheet()->setCellValue('I11', '无');
+                }
+
                 $objPHPExcel->getActiveSheet()->setCellValue('C12', $ret[0]['delivery_info_receiver_address']);
                 $objPHPExcel->getActiveSheet()->setCellValue('C13', $ret[0]['order_delivery_require']);
             }else{
-                $objPHPExcel->getActiveSheet()->setCellValue('C11', $ret[0]['return_info_goods_yard_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C12', $ret[0]['return_info_goods_yard_phone']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C13', $ret[0]['return_info_receiver_address']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C14', $ret[0]['return_order_num']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C10', $ret[0]['return_info_goods_yard_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C11', $ret[0]['return_info_goods_yard_phone']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C12', $ret[0]['return_info_receiver_address']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C13', $ret[0]['return_order_num']);
             }
 
 
-            if(($type != 0x02)||($type != 0x03)||($type != 0x05)){
+            if(($type != 0x02)&&($type != 0x03)&&($type != 0x05)){
                 $objPHPExcel->getActiveSheet()->setCellValue('C16', $ret[0]['return_info_goods_yard_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('C17', $ret[0]['return_info_goods_yard_phone']);
                 $objPHPExcel->getActiveSheet()->setCellValue('C18', $ret[0]['return_info_receiver_address']);
@@ -2642,7 +2651,7 @@
             }
 
             if(($type == 0x02)||($type == 0x03)){
-                $startitem = 16;
+                $startitem = 15;
             }
 
             $productlist = $ret[0]['productlist'];
@@ -2680,21 +2689,52 @@
             }
 
             /*其他说明和情况说明暂时都没写*/
-            $objPHPExcel->getActiveSheet()->setCellValue('B31', $ret[0]['order_goods_manager_explain']);
-            $objPHPExcel->getActiveSheet()->setCellValue('A32', "情况说明（物流部）: ".$ret[0]['ogl_explain']);
-
-            /*插入一行*/
-            //$objPHPExcel->getActiveSheet()->insertNewRowBefore(32,1);
-            $newrows = count($productlist) - 10;
-            $objPHPExcel->getActiveSheet()->insertNewRowBefore(31,$newrows);
-            for($i=0; $i<$newrows;$i++){
-                $objPHPExcel->getActiveSheet()->mergeCells('F'.(31+$i).':'.'G'.(31+$i));
+            if(($type == 0x01)||($type == 0x06)){
+                $objPHPExcel->getActiveSheet()->setCellValue('B31', $ret[0]['order_goods_manager_explain']);
+                $objPHPExcel->getActiveSheet()->setCellValue('A32', "情况说明（物流部）: ".$ret[0]['ogl_explain']);
+            }else if($type == 0x02){
+                $objPHPExcel->getActiveSheet()->setCellValue('B25', $ret[0]['order_goods_manager_explain']);
+                $objPHPExcel->getActiveSheet()->setCellValue('A26', "情况说明（物流部）: ".$ret[0]['ogl_explain']);
+            }else if($type == 0x03){
+                $objPHPExcel->getActiveSheet()->setCellValue('B23', $ret[0]['order_goods_manager_explain']);
+                $objPHPExcel->getActiveSheet()->setCellValue('A24', "情况说明（物流部）: ".$ret[0]['ogl_explain']);
+            }else if($type == 0x04){
+                $objPHPExcel->getActiveSheet()->setCellValue('A31', "情况说明（物流部）: ".$ret[0]['ogl_explain']);
             }
 
             /*超过默认行数*/
             if(count($productlist) > 10){
+                $newrows = count($productlist) - 10;
+                if(($type == 0x01)||($type == 0x06)){
+                    $objPHPExcel->getActiveSheet()->insertNewRowBefore(31,$newrows);
+                    for($i=0; $i<$newrows;$i++){
+                        $objPHPExcel->getActiveSheet()->mergeCells('F'.(31+$i).':'.'G'.(31+$i));
+                    }
+                }else if($type == 0x02){
+                    $objPHPExcel->getActiveSheet()->insertNewRowBefore(25,$newrows);
+                    for($i=0; $i<$newrows;$i++){
+                        $objPHPExcel->getActiveSheet()->mergeCells('F'.(25+$i).':'.'G'.(25+$i));
+                    }
+                }else if($type == 0x03){
+                    $objPHPExcel->getActiveSheet()->insertNewRowBefore(23,$newrows);
+                    for($i=0; $i<$newrows;$i++){
+                        $objPHPExcel->getActiveSheet()->mergeCells('F'.(23+$i).':'.'G'.(23+$i));
+                    }
+                }else if($type == 0x04){
+                    $objPHPExcel->getActiveSheet()->insertNewRowBefore(31,$newrows);
+                    for($i=0; $i<$newrows;$i++){
+                        $objPHPExcel->getActiveSheet()->mergeCells('F'.(31+$i).':'.'G'.(31+$i));
+                        $objPHPExcel->getActiveSheet()->mergeCells('L'.(31+$i).':'.'M'.(31+$i));
+                    }
+                }
+               
                 for($item=$startitem+10;$item<(count($productlist)+$startitem);$item++){
-                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$item, $item-20);
+                    if(($type == 0x01)||($type == 0x06)||($type == 0x04)){
+                        $objPHPExcel->getActiveSheet()->setCellValue('A'.$item, $item-20);
+                    }else if(($type == 0x02)||($type == 0x03)){
+                        $objPHPExcel->getActiveSheet()->setCellValue('A'.$item, $item-14);
+                    }
+
                     $objPHPExcel->getActiveSheet()->setCellValue('B'.$item, $productlist[$item-$startitem]['product_type_name']);
                     $objPHPExcel->getActiveSheet()->setCellValue('C'.$item, $productlist[$item-$startitem]['brand_name']);
                     $objPHPExcel->getActiveSheet()->setCellValue('D'.$item, $productlist[$item-$startitem]['product_info_name']);
@@ -2727,22 +2767,9 @@
                     }
                 }
             }
-            //$objPHPExcel->getActiveSheet()->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1, 10);
-            header('Content-Type: application/vnd.ms-excel');
-            header('Content-Disposition: attachment;filename="'.$file_name.'.'.$file_extend.'"');
-            header('Cache-Control: max-age=0');
-            ob_clean();  //关键
-            flush();     //关键
 
-            if($file_extend == 'xlsx'){
-                $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel2007');
-            }else if($file_extend == 'xls'){
-                $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-            }
-            $objWriter->save("php://output");
-
-            //$objWriteHTML = new PHPExcel_Writer_HTML($objPHPExcel);
-            //$objWriteHTML->save("php://output");  /*输出至浏览器*/
+            $objWriteHTML = PHPExcel_IOFactory::createWriter($objPHPExcel,'HTML');
+            $objWriteHTML->save("php://output");  /*输出至浏览器*/
             exit;        //关键
         }
 
