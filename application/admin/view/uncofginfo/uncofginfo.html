@@ -6,6 +6,7 @@
         <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
         <link rel="stylesheet" type="text/css" href="/static/css/public.css"> 
         <link rel="stylesheet" type="text/css" href="/static/font-awesome-4.7.0/css/font-awesome.css">
+        <link rel="stylesheet" type="text/css" href="/static/UI-jquery/jquery-ui.min.css">
     	<style type="text/css">
             .hide{
                 display: none;
@@ -14,6 +15,8 @@
                 text-align: center;
                 left: 50%;
             }
+            .layui-table-style td{padding: 4px 1px;  border: 1px solid #8A8A8A}
+            .layui-table-style th{ border: 1px solid #8A8A8A;  color:black}
     	</style>
     </head>
     <body>
@@ -36,25 +39,25 @@
             <div class="layui-form-item" style="padding-top: 10px;">
                 <label class="layui-form-label">TO:</label>
                 <div class="layui-input-block">
-                    <input type="text" id="uoi_to" name="uoi_to" autocomplete="on" placeholder="" class="layui-input"> </div>
+                    <input type="text" id="uoi_to" name="uoi_to" autocomplete="on" placeholder="" class="layui-input look_disabled"> </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">订单编号</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="uoi_manual_ofg_id" name="uoi_manual_ofg_id" lay-verify="" placeholder="" autocomplete="on" class="layui-input">
+                        <input type="text" id="uoi_manual_ofg_id" name="uoi_manual_ofg_id" lay-verify="" placeholder="" autocomplete="on" class="layui-input look_disabled">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label">客户姓名</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="uoi_custom_name" name="uoi_custom_name" lay-verify="" placeholder="" autocomplete="on" class="layui-input">
+                        <input type="text" id="uoi_custom_name" name="uoi_custom_name" lay-verify="" placeholder="" autocomplete="on" class="layui-input look_disabled">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label">下达工厂</label>
                     <div class="layui-input-inline">
-                        <select id="uoi_to_place" name="uoi_to_place">
+                        <select id="uoi_to_place" name="uoi_to_place" class="look_disabled">
                             <option value="" disabled="" >选择</option>
                             <option value="迪士普" selected="">迪士普</option>
                             <option value="盛葆">盛葆</option>
@@ -64,37 +67,37 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">下单人</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="user_name" id="user_name" lay-verify="" placeholder="" autocomplete="on" class="layui-input">
+                        <input type="text" name="user_name" id="user_name" lay-verify="" placeholder="" autocomplete="on" class="layui-input look_disabled">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label">下单日期</label>
                     <div class="layui-input-inline">
-                        <input type="text"  name="uoi_date" id="uoi_date" autocomplete="on" value="{$date}" class="layui-input"> </div>
+                        <input type="text"  name="uoi_date" id="uoi_date" autocomplete="on" value="{$date}" class="layui-input look_disabled"> </div>
                 </div>
             </div>
 
             <div>
                 <h3 class="textcenter" style="margin-bottom: -30px">订购清单</h3>
-                <div>
-                    <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="add_order_item">
-                </div>
+                <!--<div>-->
+                    <!--<input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="add_order_item">-->
+                <!--</div>-->
             </div>
 
-            <table class="layui-table" id="tableorder">
+            <table class="layui-table layui-table-style" id="tableorder">
                 <colgroup>
                 </colgroup>
                 <thead>
                     <tr class="Wheat">
                         <th>序号</th>
-                        <th>产品名称</th>
                         <th>型号</th>
+                        <th>产品名称</th>
                         <th>产品分类</th>
                         <th>品牌</th>
                         <th>生产地</th>
-                        <th>非常规产品</th>
-                        <th>数量</th>
                         <th>单位</th>
+                        <th>数量</th>
+                        <th>非常规产品</th>
                         <th>订制要求</th>
                         <th>要求交货日期</th>
                         <th>备注</th>
@@ -108,17 +111,19 @@
             <div class="layui-form-item">
                 <label class="layui-form-label dark_blue">项目名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="uoi_project_name" id="uoi_project_name" autocomplete="on" placeholder="" class="layui-input"> </div>
+                    <input type="text" name="uoi_project_name" id="uoi_project_name" autocomplete="on" placeholder="" class="layui-input look_disabled"> </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label dark_blue">提供商</label>
                 <div class="layui-input-block">
-                    <input type="text" name="uoi_provider_name" id="uoi_provider_name" autocomplete="on" placeholder="" class="layui-input"> </div>
+                    <input type="text" name="uoi_provider_name" id="uoi_provider_name" autocomplete="on" placeholder="" class="layui-input look_disabled"> </div>
             </div>
         </form>
+        <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="/static/UI-jquery/jquery-ui.min.js"></script>
         <script type="text/javascript" src="/static/layui/layui.js"></script>
         <script type="text/javascript" src="/static/js/commondetect.js"></script>
-        <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="/static/UI-jquery/jquery-ui.js" ></script>
         <script type="text/javascript">
             var uoi_id = "";
             var delrowid = new Array();
@@ -129,57 +134,7 @@
             document.onkeypress = forbidBackSpace;
             document.onkeydown = forbidBackSpace;
 
-            $(document).ready(function() {
-                var layer = layui.layer;
-                type = {$type};
-                var data = null;
-                var wlength = window.parent.length;
-                var wParent = window.parent[window.parent.length - 2];
-                if(wParent.getUncofgInfoUI){
-                    data = wParent.getUncofgInfoUI();
-                }else {
-                    if(wParent[0].getUncofgInfoUI){
-                        data = wParent[0].getUncofgInfoUI();
-                    }
-                }
-                //var wParent = window.parent[window.parent.length - 2];
-                //var data = wParent.getUncofgInfoUI();
-                var jq = layui.jquery;
-                if (type == 0){
-                    $('#uoi_to').attr("disabled","disabled");
-                    $('#btn_add_order_item').attr("disabled","disabled");
-                    $('#btn_add_order_item').addClass('layui-disabled');
-                    $('#uoi_manual_ofg_id').attr("disabled","disabled");
-                    $('#uoi_custom_name').attr("disabled","disabled");
-                    $('#uoi_to_place').attr("disabled","disabled");
-                    $('#user_name').attr("disabled","disabled");
-                    $('#uoi_date').attr("disabled","disabled");
-                    $('#uoi_project_name').attr("disabled","disabled");
-                    $('#uoi_provider_name').attr("disabled","disabled");
-                    $('#btn_add_order_item').attr("disabled","disabled");
-                }
-                if(data == null){
-                    return;
-                }
 
-                var unc_ofg_info = data.unc_ofg_info;
-                var tableData = data.unc_ofg_items;
-                if (tableData != null && tableData != ""){
-                    var length = tableData.length;
-                    for (var i = 0; i < length; i++){
-                        addTableItem(tableData[i],i + 1);
-                    }
-                }
-                uoi_id = unc_ofg_info.uoi_id;
-                jq('#uoi_to').attr('value',unc_ofg_info.uoi_to);
-                jq('#uoi_manual_ofg_id').attr('value',unc_ofg_info.uoi_manual_ofg_id);
-                jq('#uoi_custom_name').attr('value',unc_ofg_info.uoi_custom_name);
-                jq('#uoi_to_place').val(unc_ofg_info.uoi_to_place);//.val(unc_ofg_info.uoi_to_place);
-                jq('#user_name').attr('value',unc_ofg_info.user_name);
-                jq('#uoi_date').attr('value',unc_ofg_info.uoi_date);
-                jq('#uoi_project_name').attr('value',unc_ofg_info.uoi_project_name);
-                jq('#uoi_provider_name').attr('value',unc_ofg_info.uoi_provider_name);
-            });
 
             layui.use(['form', 'laydate','jquery'], function () {
                 var form = layui.form,
@@ -261,178 +216,56 @@
                         });
                     return false;
                 });
-            });
-            //编辑或者新增Item 窗体，tableRowIndex：表序号 新增不填
-            function openWindow(tableRowIndex) {
-                var jq = layui.jquery;
-                var layer = layui.layer;
-                top.layer.open({
-                    type:2,
-                    title:'新增清单',
-                    area:['675px','80%'],
-                    shade: [0.7, '#393D49'],
-                    skin: 'layui-layer-molv',
-                    maxmin:true,
-                    content:"{:url('admin/uncofginfoitem/uncofginfoitem')}",
-                    btn:['确定','退出'],
-                    yes:function (index,layero) {
-                        var  iframeWin = top.window[layero.find('iframe')[0]['name']];
-                        var  orderItem = iframeWin.saveOrderItem();
-                        if (orderItem == "" || orderItem == null){
-                            return false;
-                        }
 
-                        if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
-                            var rowIndex = jq('#tableorder')[0].rows.length;
-                            addTableItem(orderItem,rowIndex);
-                            top.layer.msg('新增清单成功，序号：'+ rowIndex,{icon:1});
-                            iframeWin.clear();
+                jq(document).ready(function() {
+                    var layer = layui.layer;
+                    type = {$type};
+                    var data = null;
+                    var wlength = window.parent.length;
+                    var wParent = window.parent[window.parent.length - 2];
+                    if(wParent.getUncofgInfoUI){
+                        data = wParent.getUncofgInfoUI();
+                    }else {
+                        if(wParent[0].getUncofgInfoUI){
+                            data = wParent[0].getUncofgInfoUI();
                         }
-                        else {
-                            jq('#tableorder')[0].deleteRow(tableRowIndex);
-                            addTableItem(orderItem,tableRowIndex);
-                            top.layer.close(index);
-                        }
+                    }
+                    //var wParent = window.parent[window.parent.length - 2];
+                    //var data = wParent.getUncofgInfoUI();
+                    var jq = layui.jquery;
 
-                        //top.layer.close(index);
-                    },
-                    btn2: function (index) {
-                        top.layer.close(index);
-                    },
-                    success:function (layero, index){
-                        if(tableRowIndex === undefined || tableRowIndex == null || tableRowIndex == ""){
+                    if(data == null){
+                        addGoodsTableRow();
+                        return;
+                    }
+
+                    var unc_ofg_info = data.unc_ofg_info;
+                    var tableData = data.unc_ofg_items;
+                    if (tableData != null && tableData != ""){
+                        var length = tableData.length;
+                        for (var i = 0; i < length; i++){
+                            //addTableItem(tableData[i],i + 1);
+                            addGoodsTableRow();
+                            setGoodsRowValue(tableData[i],i+1);
                         }
-                        else {
-                            var rowData = getTableItemToDBObject(tableRowIndex);
-                            var iframeWin = top.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-                            iframeWin.loadingData(rowData);
-                        }
-                    },
+                    }
+                    uoi_id = unc_ofg_info.uoi_id;
+                    jq('#uoi_to').attr('value',unc_ofg_info.uoi_to);
+                    jq('#uoi_manual_ofg_id').attr('value',unc_ofg_info.uoi_manual_ofg_id);
+                    jq('#uoi_custom_name').attr('value',unc_ofg_info.uoi_custom_name);
+                    jq('#uoi_to_place').val(unc_ofg_info.uoi_to_place);//.val(unc_ofg_info.uoi_to_place);
+                    jq('#user_name').attr('value',unc_ofg_info.user_name);
+                    jq('#uoi_date').attr('value',unc_ofg_info.uoi_date);
+                    jq('#uoi_project_name').attr('value',unc_ofg_info.uoi_project_name);
+                    jq('#uoi_provider_name').attr('value',unc_ofg_info.uoi_provider_name);
+                    if (type == 0){
+                        jq('.look_disabled').addClass('layui-disabled');
+                        jq('.look_disabled').attr('disabled',true);
+                    }else
+                        addGoodsTableRow();
+                    layui.form.render('select');
                 });
-            }
-            //新增一条表数据   rowindex：插入位置
-            function addTableItem(itemData,rowIndex) {
-                if (itemData == null){
-                    return;
-                }
-                var jq = layui.jquery;
-                //+判断
-                var product_type_id = itemData.product_type_id;
-                var product_type_name = itemData.product_type_name;
-
-                var brand_id = itemData.brand_id;
-                var brand_name = itemData.brand_name;
-                var product_info_id = itemData.product_info_id;
-                var product_info_name = itemData.product_info_name;
-                var model = itemData.model;
-
-                var place_id = itemData.place_id;
-                var place_name = itemData.place_name;
-
-                var uod_id = itemData.uod_id;
-                var uod_unit = itemData.uod_unit;
-                var uod_count =itemData.uod_count;
-                var uod_delivery_date = itemData.uod_delivery_date;
-                var uod_requirement = itemData.uod_requirement
-                var uod_comment = itemData.uod_comment;
-
-                var unc_product_id = itemData.unc_product_id;
-                var unc_product_name = itemData.unc_product_name;
-
-                var new_tr = jq('#tableorder')[0].insertRow(rowIndex);//指定位置插入行
-                jq(new_tr).attr('uod_id',uod_id);
-                var col_0 = new_tr.insertCell(0);//添加列
-                col_0.innerHTML = "<td><a>"+ rowIndex+"</a></td>";
-                var col_1 = new_tr.insertCell(1);
-                col_1.innerHTML = "<td><a tag='"+ product_type_id +"'>"+ product_type_name +"</a></td>";
-                var col_2 = new_tr.insertCell(2);
-                col_2.innerHTML = "<td><a tag='"+ brand_id +"'>"+ brand_name +"</a></td>";
-
-                var col_3 = new_tr.insertCell(3);
-                col_3.innerHTML = "<td><a>"+ product_info_name +"</a></td>";//-------产品名称-------
-
-                var col_4 = new_tr.insertCell(4);
-                col_4.innerHTML = "<td><a tag = '"+ place_id +"'>"+ place_name +"</a></td>";
-
-
-
-                var col_5 = new_tr.insertCell(5);
-                col_5.innerHTML = "<td><a tag='" + product_info_id + "'>"+ model +"</a></td>";
-
-                var col_6 = new_tr.insertCell(6);
-                col_6.innerHTML = "<td><a tag='" + unc_product_id + "'>"+ unc_product_name +"</a></td>";
-
-                var col_7 = new_tr.insertCell(7);
-                col_7.innerHTML = "<td><a>"+ uod_count +"</a></td>";
-                var col_8 = new_tr.insertCell(8);
-                col_8.innerHTML = "<td><a>"+ uod_unit +"</a></td>";
-                var col_9 = new_tr.insertCell(9);
-                col_9.innerHTML = "<td><a>"+ uod_requirement +"</a></td>";
-                var col_10 = new_tr.insertCell(10);
-                col_10.innerHTML = "<td><a>"+ uod_delivery_date +"</a></td>";
-                var col_11 = new_tr.insertCell(11);
-                col_11.innerHTML = "<td><a>"+ uod_comment +"</a></td>";
-                if (type == 1){
-                    var col_12 = new_tr.insertCell(12);
-                    col_12.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
-                }else {
-                    var col_12 = new_tr.insertCell(12);
-                    col_12.innerHTML = "<td></td>";
-                }
-            }
-            //获取整个表数据
-            function getTableDataToDBObject(){
-                var jq = layui.jquery;
-                var mytable = document.getElementById('tableorder');
-                var rows = mytable.rows.length;
-                var retArray = [];
-                for(var i = 1; i < rows; i++){
-                    var itemInfo = getTableItemToDBObject(i);
-                    retArray[i - 1] = itemInfo;
-                }
-                return retArray;
-            }
-            //获取指定表行数据
-            function getTableItemToDBObject(rowIndex){
-                var jq = layui.jquery;
-                var mytable = document.getElementById('tableorder');
-                var itemInfo = {};
-                var rowdata = {};
-                var rowObj = mytable.rows[rowIndex];
-                for(var j = 0,cells = rowObj.cells.length; j<cells; j++){
-                    var tag = jq(rowObj.cells[j].innerHTML).attr('tag');
-                    var text = jq(rowObj.cells[j].innerHTML).text();
-                    var mymap = {};
-                    mymap['tag'] = tag;
-                    mymap['text'] = text;
-                    rowdata[j] = mymap;
-                }
-                var uod_id = jq(rowObj).attr('uod_id');
-                //DB product_type
-                itemInfo.product_type_id = rowdata[1]['tag'];
-                itemInfo.product_type_name = rowdata[1]['text'];
-                //DB product_brand
-                itemInfo.brand_id = rowdata[2]['tag'];
-                itemInfo.brand_name = rowdata[2]['text'];
-                //DB product_place
-                itemInfo.place_id = rowdata[4]['tag'];
-                itemInfo.place_name = rowdata[4]['text'];
-                //DB product_info
-                itemInfo.product_info_name = rowdata[3]['text'];
-                itemInfo.product_info_id = rowdata[5]['tag'];
-                itemInfo.model = rowdata[5]['text'];
-                //DB unc_ofg_detail
-                itemInfo.uod_id = uod_id === undefined ? "": uod_id;
-                itemInfo.uod_count = rowdata[7]['text'];
-                itemInfo.uod_unit = rowdata[8]['text'];
-                itemInfo.uod_requirement = rowdata[9]['text'];
-                itemInfo.uod_delivery_date = rowdata[10]['text'];
-                itemInfo.uod_comment = rowdata[11]['text'];
-
-                itemInfo.unc_product_id = rowdata[6]['tag'];
-                itemInfo.unc_product_name = rowdata[6]['text'];
-                return itemInfo;
-            }
+            });
             //父级调用 获取参数
             function getData() {
                 var jq = layui.jquery;
@@ -452,7 +285,7 @@
                 unc_ofg_info.uoi_date = jq('#uoi_date').val();
                 unc_ofg_info.uoi_project_name = uoi_project_name;
                 unc_ofg_info.uoi_provider_name = uoi_provider_name;
-                var tableItem = getTableDataToDBObject();
+                var tableItem = getGoodsTable();
                 var retData = new Object();
                 retData.unc_ofg_info = unc_ofg_info;
                 retData.unc_ofg_items = tableItem;
@@ -460,6 +293,10 @@
                 if ((tableItem == null || tableItem.length == 0) && uoi_to == "" && uoi_manual_ofg_id == ""
                  && uoi_custom_name == "" && uoi_to_place == "" && uoi_project_name == "" && uoi_provider_name == ""){
                     return null;
+                }
+                if(tableItem == false)
+                {
+                    return false;
                 }
                 if (uoi_manual_ofg_id == ""){
                     layer.msg('订单编号不能为空！',{icon:2});
@@ -495,6 +332,234 @@
                     return false;
                 }
             }
+
+            function getPrintData() {
+                var jq = layui.jquery;
+                var unc_ofg_info = new Object();
+                var uoi_to = jq('#uoi_to').val().trim();
+                var uoi_manual_ofg_id = jq('#uoi_manual_ofg_id').val().trim();
+                var uoi_custom_name = jq('#uoi_custom_name').val().trim();
+                var uoi_to_place = jq("#uoi_to_place").find("option:selected").val().trim();
+                var uoi_project_name = jq('#uoi_project_name').val().trim();
+                var uoi_provider_name = jq('#uoi_provider_name').val().trim();
+                unc_ofg_info.uoi_id = uoi_id;
+                unc_ofg_info.uoi_to = uoi_to;
+                unc_ofg_info.uoi_manual_ofg_id = uoi_manual_ofg_id;
+                unc_ofg_info.uoi_custom_name = uoi_custom_name;
+                unc_ofg_info.uoi_to_place = uoi_to_place;
+                unc_ofg_info.user_name = jq('#user_name').val();
+                unc_ofg_info.uoi_date = jq('#uoi_date').val();
+                unc_ofg_info.uoi_project_name = uoi_project_name;
+                unc_ofg_info.uoi_provider_name = uoi_provider_name;
+                unc_ofg_info.productlist = getGoodsTable();
+                return unc_ofg_info;
+            }
+
+            //增加清单一行
+            var rowIndex = 0;
+            function addGoodsTableRow() {
+                var jq = layui.jquery;
+                var rowNum = jq('#tableorder')[0].rows.length;
+                var newRow = jq('#tableorder')[0].insertRow(rowNum);//指定位置插入行
+
+                //保存每一行的标志
+                jq(newRow).attr('rowIndex',rowIndex);
+                jq(newRow).attr('uod_id',"");
+                jq(newRow).attr('isExistModel',true);
+                var col = newRow.insertCell(0);//添加列
+                col.innerHTML = "<td ><a style='margin: 0px 10px' >"+rowNum+"</a></td>";
+                col = newRow.insertCell(1);
+                col.innerHTML = "<td><input type='text' id ='model"+rowIndex+"' class='layui-input autocomplete-input look_disabled' style='color: #0C0C0C ;border:0px'/></td>";
+                col = newRow.insertCell(2);
+                col.innerHTML ="<td ><input type='text' id='product_info_name"+rowIndex+"' class='layui-input look_disabled' style='color: #0C0C0C ;border:0px'/></td>";
+                col = newRow.insertCell(3);
+                col.innerHTML ="<td ><select id='product_type_id"+rowIndex+"' style='border: none;' name='product_type_id'  class=' select-style-border-none look_disabled' > <option value='' selected>请选择</option>{volist name='producttypelist' id='vo'} <option value={$vo.product_type_id}>{$vo.product_type_name}</option>{/volist} </select></td>";
+                col = newRow.insertCell(4);
+                col.innerHTML ="<td><select id='brand_id"+rowIndex+"' style='color: #0C0C0C ;border:0px' name='brand_name' lay-filter='brand_name' class=' select-style-border-none look_disabled'> <option value='' selected>请选择</option>{volist name='brandlist' id='vo'};col_1.innerHTML =<option value={$vo.brand_id}>{$vo.brand_name}</option>{/volist} </select></td>";
+                col = newRow.insertCell(5);
+                col.innerHTML ="<td><select id='place_id"+rowIndex+"' style='color: #0C0C0C ;border:0px' name='place_name' lay-filter='place_name' class=' select-style-border-none look_disabled' > <option value='' selected>请选择</option>{volist name='placelist' id='vo'} <option value={$vo.place_id}>{$vo.place_name}</option>{/volist} </select></td>";
+                col = newRow.insertCell(6);
+                col.innerHTML ="<td><input type='text' id='uod_unit"+rowIndex+"' name='uod_unit' class='layui-input  look_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+                col = newRow.insertCell(7);
+                col.innerHTML ="<td><input type='text' id='uod_count"+rowIndex+"' name='uod_count' class='layui-input  look_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputnumber(this);'></td>";
+                col = newRow.insertCell(8);
+                col.innerHTML ="<td><select id='unc_product_id"+rowIndex+"' name='unc_product_id' lay-filter='unc_product_id'  class='select-style-border-none look_disabled'> <option value='' selected >请选择</option>{volist name='uncproductlist' id='vo1'} <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>{/volist} </select></td>";
+                col = newRow.insertCell(9);
+                col.innerHTML ="<td><input type='text' id='uod_requirement"+rowIndex+"' name='uod_requirement' class='layui-input  look_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+                col = newRow.insertCell(10);
+                col.innerHTML ="<td><input type='text' name='uod_delivery_date' id='uod_delivery_date"+rowIndex+"' autocomplete='on' class='layui-input time-item look_disabled' style='border: 0px'></td>";
+                jq.each(jq(".time-item"),function(){
+                    layui.laydate.render({ elem: this });
+                });
+                col = newRow.insertCell(11);
+                col.innerHTML ="<td><input type='text' name='uod_comment' id='uod_comment"+rowIndex+"' lay-filter='uod_comment' style='color: #0C0C0C ;border:0px' class='layui-input look_disabled' oninput='detectinputtext(this);'></td>";
+                if (type == 1){
+                    col = newRow.insertCell(12);
+                    col.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
+                }else {
+                    col = newRow.insertCell(12);
+                    col.innerHTML = "<td></td>";
+                }
+                var model ="#"+ "model"+rowIndex;
+                $(model).autocomplete({
+                    source: function (request, response) {
+                        var serachText = $(model).val().trim();
+                        console.log(11);
+                        jq.ajax({
+                            url: "{:url('index/common/serachmodelinfo')}",
+                            type: "POST",
+                            dataType: "json",
+                            data: { serrchText:serachText},
+                            success: function (data) {
+                                response(jq.map(data, function (item) {
+                                    return {
+                                        label: item.model,
+                                        value: item.model,
+                                    }
+                                }));
+                            },
+                        });},
+                    select:function (event,ui) {
+                        jq(model).val(ui.item.value);
+                        jq(model).blur();
+                    }
+                });
+                var product_info_name = "#"+"product_info_name"+ rowIndex ;
+                var product_type_id = "#"+"product_type_id"+rowIndex ;
+                var brand_id = "#"+"brand_id"+rowIndex ;
+                var place_id = "#"+"place_id"+rowIndex ;
+                $(model).blur(function () {
+                    var modelname = jq(model).val();
+                    if(modelname == '')
+                        return ;
+                    jq.ajax({
+                        url: "{:url('index/Common/coldserachmodelinfo')}",
+                        type: "POST",
+                        dataType: "json",
+                        async: false,
+                        data: { serrchText: modelname},
+                        success: function (data) {
+                            if(data == "" || data == null || data === undefined||data.length == 0) {
+                                console.log(173);
+                                top.layer.confirm('型号: <span style="color: red">'+modelname+'</span> 在数据库不存在，是否录入', {
+                                    btn: ['是','否'] //按钮
+                                }, function(index){
+                                    isExistModel = false;
+                                    top.layer.close(index);
+                                    jq(newRow).attr('isExistModel',false);
+                                    jq(newRow).attr('product_info_id','');
+                                    if(jq('#tableorder')[0].rows.length-1 == rowNum )//只有经理才增加
+                                    {
+                                        addGoodsTableRow();
+                                    }
+                                } ,function () {
+                                    jq(model).val('');
+                                    jq(model).focus();
+                                });
+                            } else {
+                                jq(product_info_name).val(data[0]['product_info_name']);
+                                jq(product_type_id).val(data[0]['product_type_id']);
+                                jq(brand_id).val(data[0]['brand_id']);
+                                jq(place_id).val(data[0]['place_id']);
+                                jq(newRow).attr('product_info_id',data[0]['product_info_id']);
+                                ///还要处理
+                                layui.form.render('select');
+
+                                jq(newRow).attr('isExistModel',true);
+                                if(jq('#tableorder')[0].rows.length-1 == rowNum )//只有经理才增加
+                                {
+                                    addGoodsTableRow();
+                                }
+                            }
+                        },
+                    });
+
+
+                });
+                rowIndex++;
+                layui.form.render('select');
+            }
+            //给清单赋值
+            function setGoodsRowValue(data,rowNum) {
+                console.log(data);
+                var table = document.getElementById('tableorder');
+                var row = table.rows[rowNum];
+                var rowIndex = $(row).attr('rowIndex');
+                $(row).attr('uod_id',data['uod_id']);
+                $(row).attr('isExistModel',true);
+                $('#model'+rowIndex).val(data['model']);
+                $('#product_info_name'+rowIndex).val(data['product_info_name']);
+                $('#product_type_id'+rowIndex).val(data['product_type_id']);
+                $('#brand_id'+rowIndex).val(data['brand_id']);
+                $('#place_id'+rowIndex).val(data['place_id']);
+                $('#uod_count'+rowIndex).val(data['uod_count']);
+                $('#uod_unit'+rowIndex).val(data['uod_unit']);
+                $('#unc_product_id'+rowIndex).val(data['unc_product_id']);
+                $('#uod_requirement'+rowIndex).val(data['uod_requirement']);
+                if(data['uod_delivery_date'] != '2000-01-01' )
+                    $('#uod_delivery_date'+rowIndex).val(data['uod_delivery_date']);
+                $('#uod_comment'+rowIndex).val(data['uod_comment']);
+            }
+            //获取全部清单，错误返回false
+            function getGoodsTable() {
+                var table = document.getElementById('tableorder');
+                if(table.rows.length <=1)
+                    return {};
+                var data = Array();
+                for(var i =1 ;i< table.rows.length;i++)
+                {
+                    var row = table.rows[i];
+                    var rowIndex = $(row).attr('rowIndex');
+                    if($("#model"+rowIndex).val() == ''&& i != table.rows.length-1)
+                    {
+                        top.layer.msg('订购清单第'+i+'行型号不能为空',{icon:2});
+                        return false;
+                    }
+                    else if($("#model"+rowIndex).val() == ''&& i == table.rows.length-1)
+                    {
+                        break;
+                    }
+                    var rowdata = {};
+                    rowdata.model = $("#model"+rowIndex).val();
+                    rowdata.product_info_name = $('#product_info_name'+rowIndex).val();
+                    rowdata.product_type_id = $('#product_type_id'+rowIndex).val();
+                    if(rowdata.product_type_id == "" || rowdata.product_type_id == undefined || rowdata.product_type_id == null){
+                        top.layer.msg('订购清单第'+i+'行，请输入产品分类',{icon:2});
+                        return false;
+                    }
+                    rowdata.brand_id = $('#brand_id'+rowIndex).val();
+                    if(rowdata.brand_id == "" || rowdata.brand_id == undefined || rowdata.brand_id == null){
+                        top.layer.msg('订购清单第'+i+'行，请输入品牌',{icon:2});
+                        return false;
+                    }
+                    rowdata.place_id = $('#place_id'+rowIndex).val();//
+                    if(rowdata.place_id == "" || rowdata.place_id == undefined || rowdata.place_id == null){
+                        rowdata.place_id = -1;
+                    }
+                    rowdata.uod_unit = $('#uod_unit'+rowIndex).val();
+                    rowdata.uod_count = $('#uod_count'+rowIndex).val();
+                    if(rowdata.uod_count == "" || rowdata.uod_count == undefined || rowdata.uod_count == null){
+                        top.layer.msg('订购清单第'+i+'行，请输入数量',{icon:2});
+                        return false;
+                    }
+                    rowdata.uod_requirement = $('#uod_requirement'+rowIndex).val();
+                    rowdata.uod_delivery_date = $('#uod_delivery_date'+rowIndex).val();
+                    if(rowdata.uod_delivery_date == "" || rowdata.uod_delivery_date == undefined || rowdata.uod_delivery_date == null){
+                        rowdata.uod_delivery_date = '2000-01-01';
+                    }
+                    rowdata.uod_comment = $('#uod_comment'+rowIndex).val();
+
+                    rowdata.unc_product_id = $('#unc_product_id'+rowIndex).val();
+                    if(rowdata.unc_product_id == "" || rowdata.unc_product_id == undefined || rowdata.unc_product_id == null){
+                        rowdata.unc_product_id = -1;
+                    }
+                    rowdata.uod_id = $(row).attr('uod_id');
+                    rowdata.isExistModel = $(row).attr('isExistModel');
+                    data[i-1]=rowdata;
+                }
+                return data;
+            }
+
         </script>
     </body>
 </html>

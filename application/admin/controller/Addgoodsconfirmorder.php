@@ -177,11 +177,22 @@ class Addgoodsconfirmorder extends Controller
             if(!empty($unc_ofg_info) && !empty($unc_ofg_detail)){
                 $unc_ofg_detail_length = count($unc_ofg_detail);
                 for($i = 0; $i < $unc_ofg_detail_length; $i++){
+                    if($unc_ofg_detail[$i]['isExistModel'] == 'false')
+                    {
+                        $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                        $order_goods_manager[$i]['product_info_id'] = $product_info_id;
+                        $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                        if(empty($retsql)||$retsql == false)
+                        {
+                            return self::retmsg(0,'保存失败，错误代码：1187');
+                        }
+                    }
                     $uod_id = \app\index\model\Admin::getmaxtableidretid('unc_ofg_detail', 'uod_id') + 1;
                     $unc_ofg_detail[$i]['uod_id'] = $uod_id;
                     $uod_id_arr[$i] = $uod_id;
                     $unc_ofg_detail[$i]['unc_ofg_info_id'] = $uoi_id;
                     $retunc_ofg_detail = \app\index\model\Admin::updateunc_ofg_detail($unc_ofg_detail[$i]);
+
                     if (empty($retunc_ofg_detail)){
                         return self::retmsg(0,'保存失败，错误代码：1169');
                     }
@@ -354,6 +365,16 @@ class Addgoodsconfirmorder extends Controller
             if(!empty($unc_ofg_info) && !empty($unc_ofg_detail)){
                 $unc_ofg_detail_length = count($unc_ofg_detail);
                 for($i = 0; $i < $unc_ofg_detail_length; $i++){
+                    if($unc_ofg_detail[$i]['isExistModel'] == 'false')
+                    {
+                        $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                        $order_goods_manager[$i]['product_info_id'] = $product_info_id;
+                        $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                        if(empty($retsql)||$retsql == false)
+                        {
+                            return self::retmsg(0,'保存失败，错误代码：1187');
+                        }
+                    }
                     $uod_id = $unc_ofg_detail[$i]['uod_id'];
                     if ($uod_id == ""){
                         $uod_id = \app\index\model\Admin::getmaxtableidretid('unc_ofg_detail', 'uod_id') + 1;
