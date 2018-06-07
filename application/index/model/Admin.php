@@ -2739,8 +2739,10 @@
             }else if($file_extend == 'xls'){
                 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
             }
+            $objWriter->save("php://output");
 
-            $objWriter->save("php://output");  /*输出至浏览器*/
+            //$objWriteHTML = new PHPExcel_Writer_HTML($objPHPExcel);
+            //$objWriteHTML->save("php://output");  /*输出至浏览器*/
             exit;        //关键
         }
 
