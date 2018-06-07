@@ -2369,9 +2369,9 @@
                 col = newRow.insertCell(11);
                 col.innerHTML ="<td><input type='text' name='replace_reason' id='replace_reason"+rowIndex+"' lay-filter='replace_reason' style='color: #0C0C0C ;border:0px' class='layui-input Wheat_disabled ' oninput='detectinputtext(this);'></td>";
                 col = newRow.insertCell(12);
-                col.innerHTML ="<td><select id='unc_product_id"+rowIndex+"' name='unc_product_id' lay-filter='unc_productname'  class='select-style-border-none dark_blue_disabled'> <option value='' selected >请选择</option>{volist name='uncproductlist' id='vo1'} <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>{/volist} </select></td>";
-                col = newRow.insertCell(13);
                 col.innerHTML ="<td><select id='ogl_product_state"+rowIndex+"' name='ogl_product_state' lay-filter='unc_productname' class='select-style-border-none dark_blue_disabled'> <option value='' selected>请选择</option> <option value='已更换' >已更换</option> <option value='未更换' >未更换</option> </select></td>";
+                col = newRow.insertCell(13);
+                col.innerHTML ="<td><select id='unc_product_id"+rowIndex+"' name='unc_product_id' lay-filter='unc_productname'  class='select-style-border-none dark_blue_disabled'> <option value='' selected >请选择</option>{volist name='uncproductlist' id='vo1'} <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>{/volist} </select></td>";
                 col = newRow.insertCell(14);
                 col.innerHTML ="<td><input type='text' name='ogl_comment' id='ogl_comment"+rowIndex+"' class='layui-input dark_blue_disabled' oninput='detectinputtext(this);' style='color: #0C0C0C ;border:0px'></td>";
                 col = newRow.insertCell(15);

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title></title>
     <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="/static/UI-jquery/jquery-ui.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/public.css"> </head>
 <style>
     .btnPicLightBg{
@@ -15,6 +16,8 @@
     .hide{
         display: none;
     }
+    .layui-table-style td{padding: 4px 1px;  border: 1px solid #8A8A8A}
+    .layui-table-style th{ border: 1px solid #8A8A8A;  color:black}
 </style>
 <body >
 <form class="layui-form layui-form-pane" action="">
@@ -342,23 +345,24 @@
 
 
     <h3>订购清单</h3>
-    <div class="layui-form-item">
-        <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled Wheat" lay-submit="" lay-filter="add_order_item" style="color: black;">
-    </div>
-    <table class="layui-form-item layui-table" id="tableorder">
+    <!--<div class="layui-form-item">-->
+        <!--<input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled Wheat" lay-submit="" lay-filter="add_order_item" style="color: black;">-->
+    <!--</div>-->
+    <table class="layui-table layui-table-style" id="tableorder">
         <thead>
         <tr >
             <th class="Wheat">序号</th>
+            <th class="Wheat">型号</th>
+            <th class="Wheat">产品名称</th>
             <th class="Wheat">产品分类</th>
             <th class="Wheat">品牌</th>
-            <th class="Wheat">产品名称</th>
-            <th class="Wheat">规格</th>
-            <th class="Wheat">型号</th>
+            <th class="Wheat">生产地</th>
             <th class="Wheat">单位</th>
             <th class="Wheat">数量</th>
-            <th class="Wheat">条码</th>
-            <th class="Wheat">归还日期</th>
-            <th class="Wheat">生产地</th>
+            <th class="Wheat">单价</th>
+            <th class="Wheat">总价</th>
+            <th class="Wheat">规格</th>
+            <th class="Wheat">备注</th>
             <th class="dark_blue">产品状态</th>
             <th class="dark_blue">非常规产品</th>
             <th class="dark_blue">备注</th>
@@ -387,8 +391,11 @@
     </div>
 </form>
 
+<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/static/UI-jquery/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/static/layui/layui.js"></script>
 <script type="text/javascript" src="/static/js/commondetect.js"></script>
+<script type="text/javascript" src="/static/UI-jquery/jquery-ui.js" ></script>
 <script type="text/javascript">
     var isloading = true;
     var delrowid = new Array();
@@ -445,6 +452,10 @@
                     LoadingManagerAndSelected(user_info['department_id'],user_info['user_id']);
                     document.getElementById('build_user_phone').value = user_info['phone'];
                 }
+
+                addGoodsTableRow();
+                addGoodsTableRow();
+
                 form.render('select');
 
                 return ;
@@ -535,10 +546,16 @@
                     var order_goods = data['order_goods'];
                     for( var i = 0 ; i<order_goods.length; i++)
                     {
-                        updateRow(order_goods[i],true);
+                        //updateRow(order_goods[i],true);
+                        addGoodsTableRow();
+                        setGoodsRowValue(order_goods[i],i+1);
                     }
                     jq('#order_goods_manager_explain').val( order_goods[0]['order_goods_manager_explain']);
                     jq('#ogl_explain').val( order_goods[0]['ogl_explain']);
+                }
+                if(current_user_type == 1)
+                {
+                    addGoodsTableRow();
                 }
                 ///logistic_info
                 if(data['logistic_info'] != null && data['logistic_info'].length>0)
@@ -745,16 +762,31 @@
             if((current_user_type) != 5 && (current_user_type != 1))
                 return ;
             var text = jq(this).parent().parent();
-            var id= jq(text[0].cells[0].innerHTML).attr("tag");
-            if(id != "")
-                delrowid.push(id);
-            var table = document.getElementById('tableorder');
-            table.deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
-            console.log(table);
-            for(var i = 1; i <= table.rows.length;i++){
-                jq(table.children[0].children[i].children[0].children[0]).text(i);
-            }
-            calculateTotalPrice();
+            top.layer.confirm('确定删除这条订购清单？', {
+                btn: ['确定','取消'] //按钮
+            }, function(index){
+                top.layer.close(index);
+                var id= jq(text).attr("order_goods_manager_id");
+                console.log(id);
+                if(id != "")
+                    delrowid.push(id);
+                var table = document.getElementById('tableorder');
+                table.deleteRow($(text[0].cells[0].innerHTML).text());//指定位置插入行
+                if(table.rows.length == 1)
+                {
+                    addGoodsTableRow();
+                }
+                else
+                {
+                    for(var i = 1; i <= table.rows.length;i++){
+                        var rowObj = table.rows[i]
+                        var cell = rowObj.cells[0];
+                        cell.innerHTML ="<a>"+ i+"</a>";
+                    }
+                    calculateTotalPrice();
+                }
+            });
+
         });
 
         //非定型订单弹窗
@@ -910,15 +942,18 @@
 
     //算总计
     function calculateTotalPrice() {
-        var jq = layui.jquery;
         var total = 0;
         var mytable = document.getElementById('tableorder');
         for(var i = 1,rows = mytable.rows.length; i < rows; i++) {
-            var row = jq(mytable.rows[i]);
-
-            total+=parseFloat(row.attr('fault_condition'));
+            var row = $(mytable.rows[i]);
+            var rowIndex = row.attr('rowIndex');
+            if($('#fault_condition'+rowIndex).val()== '' || $('#fault_condition'+rowIndex).val() == undefined)
+                continue;
+            if($('#model'+rowIndex).val()== '')
+                continue;
+            total+=parseFloat($('#fault_condition'+rowIndex).val());
         }
-        jq('#order_goods_manager_explain').val(total);
+        $('#order_goods_manager_explain').val(total );
     }
 
     //用户权限设置 屏蔽一些内容
@@ -1153,9 +1188,6 @@
     //新增时保存或者转交 新增单  state: 0,保存  1，转交给总监
     function saveOrDeliverToSql(uidata,state) {
         var jq = layui.jquery;
-        var  tabledata = getTableContent();
-        console.log(tabledata);
-
         setDisable(false);
         var data = getFormData();
         //判断必填项
@@ -1164,6 +1196,14 @@
             setDisable(true);
             return false;
         }
+        var  tabledata = getGoodsTable();
+        if(tabledata == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
+
         var cs_info = getCsInfo(data,true,false,state);
         console.log("以下确认单信息：");
         console.log(cs_info);
@@ -1196,7 +1236,7 @@
         console.log(order_goods_manager);
 
         jq.ajax({
-            url: "{:url('admin/Addpartsconfirmorder/addpartsorder')}",//php文件路径
+            url: "{:url('index/confirmordercommon/addconfirmorder')}",//php文件路径
             data: {
                 cs_info:cs_info,
                 custom_info:custom_info,
@@ -1332,6 +1372,14 @@
             setDisable(true);
             return false;
         }
+        var  tabledata = getGoodsTable();
+        if(tabledata == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
+
         var cs_info = getCsInfo(data,true,true,1);
         console.log("以下确认单信息：");
         console.log(cs_info);
@@ -1361,7 +1409,7 @@
         console.log(order_goods_manager);
 
         jq.ajax({
-            url: "{:url('admin/addpartsconfirmorder/managereditanddeliverorder')}",
+            url: "{:url('index/confirmordercommon/managereditanddeliverorder')}",
             data: {cs_info:cs_info,
                 custom_info:custom_info,
                 delivery_info:delivery_info,
@@ -1394,6 +1442,14 @@
             setDisable(true);
             return false;
         }
+        var  tabledata = getGoodsTable();
+        if(tabledata == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
+
         var jq = layui.jquery;
 
         var cs_info = getCsInfo(data,true,true,data['cs_info_state']);
@@ -1426,7 +1482,7 @@
         console.log(order_goods_manager);
 
         jq.ajax({
-            url: "{:url('admin/addpartsconfirmorder/managereditandsaveorder')}",
+            url: "{:url('index/confirmordercommon/managereditandsaveorder')}",
             data: {cs_info:cs_info,
                 custom_info:custom_info,
                 delivery_info:delivery_info,
@@ -1484,7 +1540,7 @@
         cs_examine[0] = departExamine;
         jq.ajax({
             type : "post",
-            url : "{:url('admin/addpartsconfirmorder/deliverorder')}",
+            url : "{:url('index/confirmordercommon/deliverorder')}",
             data : {param:cs_examine},
             async : false,
             success : function(result){
@@ -1575,7 +1631,7 @@
         cs_examine[0] = financeExamine;
         jq.ajax({
             type : "post",
-            url : "{:url('admin/addpartsconfirmorder/deliverorder')}",
+            url : "{:url('index/confirmordercommon/deliverorder')}",
             data : {param:cs_examine},
             async : false,
             success : function(result){
@@ -1597,6 +1653,14 @@
             setDisable(true);
             return false;
         }
+        var  tabledata = getGoodsTable();
+        if(tabledata == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
+
         var jq = layui.jquery;
 
         var cs_info = getCsInfo(data,false,true,data['cs_info_state']);
@@ -1654,7 +1718,7 @@
         console.log(cs_examine);
 
         jq.ajax({
-            url: "{:url('admin/addpartsconfirmorder/logisticeditandsaveorder')}",
+            url: "{:url('index/confirmordercommon/logisticeditandsaveorder')}",
             data: {cs_info:cs_info,
                 order_goods_manager:order_goods_manager,
                 payment_info:payment_info,
@@ -1768,7 +1832,7 @@
 
         jq.ajax({
             type : "post",
-            url : "{:url('admin/addpartsconfirmorder/returnorder')}",
+            url : "{:url('index/confirmordercommon/returnorder')}",
             data : {cs_info:cs_info,cs_examine:cs_examine},
             async : false,
             success : function(result){
@@ -2078,7 +2142,7 @@
     }
 
     function getOrderGoods(data,isEdit) {
-        var  tabledata = getTableContent();
+        var  tabledata = getGoodsTable();
         var rows = tabledata.length;
         var info= [];
         for(var i = 0; i < rows; i++){
@@ -2107,6 +2171,14 @@
             order_goods_manager_item['unc_product_id'] =tabledata[i]['unc_product_id'] == ''?-1:tabledata[i]['unc_product_id'];
             order_goods_manager_item['ogl_comment'] = tabledata[i]['ogl_comment'];
             order_goods_manager_item['ogl_explain'] = data['ogl_explain'];
+
+            order_goods_manager_item['isExistModel'] = tabledata[i]['isExistModel'];
+            order_goods_manager_item['model'] = tabledata[i]['model'];
+            order_goods_manager_item['product_info_name'] = tabledata[i]['product_info_name'];
+            order_goods_manager_item['product_type_id'] = tabledata[i]['product_type_id'];
+            order_goods_manager_item['brand_id'] = tabledata[i]['brand_id'];
+            order_goods_manager_item['place_id'] = tabledata[i]['place_id'];
+
             info[i] = order_goods_manager_item;
         }
         return info;
@@ -2190,11 +2262,259 @@
         return info;
     }
 
-    // document.onkeydown = function keyLogin(e) {
-    //     var event = (typeof event!= 'undefined') ? window.event : e;
-    //     if(event.keyCode==8) //屏蔽delete键
-    //         return false;
-    // }
+    //增加清单一行
+    var rowIndex = 0;
+    function addGoodsTableRow() {
+        var jq = layui.jquery;
+        var rowNum = jq('#tableorder')[0].rows.length;
+        var newRow = jq('#tableorder')[0].insertRow(rowNum);//指定位置插入行
+
+        //保存每一行的标志
+        jq(newRow).attr('rowIndex',rowIndex);
+        jq(newRow).attr('order_goods_manager_id',"");
+        jq(newRow).attr('ogl_id',"");
+        jq(newRow).attr('isExistModel',true);
+        var col = newRow.insertCell(0);//添加列
+        col.innerHTML = "<td ><a style='margin: 0px 10px' >"+rowNum+"</a></td>";
+        col = newRow.insertCell(1);
+        col.innerHTML = "<td><input type='text' id ='model"+rowIndex+"' class='layui-input autocomplete-input Wheat_disabled' style='color: #0C0C0C ;border:0px'/></td>";
+        col = newRow.insertCell(2);
+        col.innerHTML ="<td ><input type='text' id='product_info_name"+rowIndex+"' class='layui-input Wheat_disabled' style='color: #0C0C0C ;border:0px'/></td>";
+        col = newRow.insertCell(3);
+        col.innerHTML ="<td ><select id='product_type_id"+rowIndex+"' style='border: none;' name='product_type_id'  class='Wheat_disabled select-style-border-none' > <option value='' selected>请选择</option>{volist name='producttypelist' id='vo'} <option value={$vo.product_type_id}>{$vo.product_type_name}</option>{/volist} </select></td>";
+        col = newRow.insertCell(4);
+        col.innerHTML ="<td><select id='brand_id"+rowIndex+"' style='color: #0C0C0C ;border:0px' name='brand_name' lay-filter='brand_name' class='Wheat_disabled select-style-border-none'> <option value='' selected>请选择</option>{volist name='brandlist' id='vo'};col_1.innerHTML =<option value={$vo.brand_id}>{$vo.brand_name}</option>{/volist} </select></td>";
+        col = newRow.insertCell(5);
+        col.innerHTML ="<td><select id='place_id"+rowIndex+"' style='color: #0C0C0C ;border:0px' name='place_name' lay-filter='place_name' class='Wheat_disabled select-style-border-none' > <option value='' selected>请选择</option>{volist name='placelist' id='vo'} <option value={$vo.place_id}>{$vo.place_name}</option>{/volist} </select></td>";
+        col = newRow.insertCell(6);
+        col.innerHTML ="<td><input type='text' id='unit"+rowIndex+"' name='unit' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+        col = newRow.insertCell(7);
+        col.innerHTML ="<td><input type='text' id='order_goods_manager_count"+rowIndex+"' name='inputcount' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputnumber(this);'></td>";
+        col = newRow.insertCell(8);
+        col.innerHTML ="<td><input type='text' name='unit_price' id='unit_price"+rowIndex+"'  class='layui-input  Wheat_disabled' style='border: 0px' oninput='detectinputfloat(this);'></td>";
+        col = newRow.insertCell(9);
+        col.innerHTML ="<td><input type='text' id='fault_condition"+rowIndex+"' name='fault_condition' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputfloat(this);'></td>";
+        col = newRow.insertCell(10);
+        col.innerHTML ="<td><input type='text' name='specification' id='specification"+rowIndex+"' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px'></td>";
+        col = newRow.insertCell(11);
+        col.innerHTML ="<td><input type='text' name='comment' id='comment"+rowIndex+"' lay-filter='replace_reason' style='color: #0C0C0C ;border:0px' class='layui-input Wheat_disabled ' oninput='detectinputtext(this);'></td>";
+        col = newRow.insertCell(12);
+        col.innerHTML ="<td><select id='ogl_product_state"+rowIndex+"' name='ogl_product_state' lay-filter='unc_productname' class='select-style-border-none dark_blue_disabled'> <option value='' selected>请选择</option> <option value='定制' >定制</option> <option value='缺货' >缺货</option> <option value='已发货' >已发货</option></select></td>";
+        col = newRow.insertCell(13);
+        col.innerHTML ="<td><select id='unc_product_id"+rowIndex+"' name='unc_product_id' lay-filter='unc_productname'  class='select-style-border-none dark_blue_disabled'> <option value='' selected >请选择</option>{volist name='uncproductlist' id='vo1'} <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>{/volist} </select></td>";
+        col = newRow.insertCell(14);
+        col.innerHTML ="<td><input type='text' name='ogl_comment' id='ogl_comment"+rowIndex+"' class='layui-input dark_blue_disabled' oninput='detectinputtext(this);' style='color: #0C0C0C ;border:0px'></td>";
+        col = newRow.insertCell(15);
+        col.innerHTML ="<td><a class='layui-btn layui-btn-xs layui-btn-danger Wheat_disabled  del_btn del_disabled' style = 'margin: 0px 10px '>删除</a></td>";
+
+        var model ="#"+ "model"+rowIndex;
+        $(model).autocomplete({
+            source: function (request, response) {
+                var serachText = $(model).val().trim();
+                console.log(11);
+                jq.ajax({
+                    url: "{:url('index/common/serachmodelinfo')}",
+                    type: "POST",
+                    dataType: "json",
+                    data: { serrchText:serachText},
+                    success: function (data) {
+                        response(jq.map(data, function (item) {
+                            return {
+                                label: item.model,
+                                value: item.model,
+                            }
+                        }));
+                    },
+                });},
+            select:function (event,ui) {
+                jq(model).val(ui.item.value);
+                jq(model).blur();
+            }
+        });
+        var product_info_name = "#"+"product_info_name"+ rowIndex ;
+        var product_type_id = "#"+"product_type_id"+rowIndex ;
+        var brand_id = "#"+"brand_id"+rowIndex ;
+        var place_id = "#"+"place_id"+rowIndex ;
+        $(model).blur(function () {
+            var modelname = jq(model).val();
+            if(modelname == '')
+                return ;
+            jq.ajax({
+                url: "{:url('index/Common/coldserachmodelinfo')}",
+                type: "POST",
+                dataType: "json",
+                async: false,
+                data: { serrchText: modelname},
+                success: function (data) {
+                    if(data == "" || data == null || data === undefined||data.length == 0) {
+                        console.log(173);
+                        top.layer.confirm('型号: <span style="color: red">'+modelname+'</span> 在数据库不存在，是否录入', {
+                            btn: ['是','否'] //按钮
+                        }, function(index){
+                            isExistModel = false;
+                            top.layer.close(index);
+                            jq(newRow).attr('isExistModel',false);
+                            jq(newRow).attr('product_info_id','');
+                            if(jq('#tableorder')[0].rows.length-1 == rowNum && current_user_type == 1)//只有经理才增加
+                            {
+                                addGoodsTableRow();
+                            }
+                            calculateTotalPrice();
+                        } ,function () {
+                            jq(model).val('');
+                            jq(model).focus();
+                        });
+                    } else {
+                        jq(product_info_name).val(data[0]['product_info_name']);
+                        jq(product_type_id).val(data[0]['product_type_id']);
+                        jq(brand_id).val(data[0]['brand_id']);
+                        jq(place_id).val(data[0]['place_id']);
+                        jq(newRow).attr('product_info_id',data[0]['product_info_id']);
+                        ///还要处理
+                        layui.form.render('select');
+
+                        jq(newRow).attr('isExistModel',true);
+                        if(jq('#tableorder')[0].rows.length-1 == rowNum &&current_user_type == 1)//只有经理才增加
+                        {
+                            addGoodsTableRow();
+                        }
+                        calculateTotalPrice();
+                    }
+                },
+            });
+
+
+        });
+
+        //监听单价数量的输入
+        var unit_price = "#"+ "unit_price"+rowIndex;
+        var order_goods_manager_count = "#"+ "order_goods_manager_count"+rowIndex;
+        var fault_condition = "#"+ "fault_condition"+rowIndex;
+        $(unit_price).blur(function () {
+
+            var price =  $(unit_price).val();
+            var count =  $(order_goods_manager_count).val();
+            if(price == ''||price == undefined)
+                return ;
+            if(count == ''||count == undefined)
+                return ;
+            $(unit_price).val(price);
+            var totalprice =parseFloat(price)*parseFloat(count);
+            $(fault_condition).val(totalprice);
+            calculateTotalPrice();
+        });
+        $(order_goods_manager_count).blur(function () {
+            var price =  $(unit_price).val();
+            var count =  $(order_goods_manager_count).val();
+            if(price == ''||price == undefined)
+                return ;
+            if(count == ''||count == undefined)
+                return ;
+            var totalprice =parseFloat(price)*parseFloat(count);
+            $(fault_condition).val(totalprice);
+            calculateTotalPrice();
+        });
+        $(fault_condition).blur(function () {
+            calculateTotalPrice();
+        });
+
+        rowIndex++;
+        layui.form.render('select');
+    }
+    //给清单赋值
+    function setGoodsRowValue(data,rowNum) {
+        console.log(data);
+        var table = document.getElementById('tableorder');
+        var row = table.rows[rowNum];
+        var rowIndex = $(row).attr('rowIndex');
+        $(row).attr('order_goods_manager_id',data['order_goods_manager_id']);
+        $(row).attr('product_info_id',data['product_info_id']);
+        $(row).attr('ogl_id',data['ogl_id']);
+        $(row).attr('isExistModel',true);
+        $('#model'+rowIndex).val(data['model']);
+        $('#product_info_name'+rowIndex).val(data['product_info_name']);
+        $('#product_type_id'+rowIndex).val(data['product_type_id']);
+        $('#brand_id'+rowIndex).val(data['brand_id']);
+        $('#place_id'+rowIndex).val(data['place_id']);
+        $('#order_goods_manager_count'+rowIndex).val(data['order_goods_manager_count']);
+        $('#unit'+rowIndex).val(data['unit']);
+        $('#unit_price'+rowIndex).val(data['unit_price']);
+        $('#fault_condition'+rowIndex).val(data['fault_condition']);
+        $('#specification'+rowIndex).val(data['specification']);
+        $('#comment'+rowIndex).val(data['comment']);
+        $('#unc_product_id'+rowIndex).val(data['unc_product_id']);
+        $('#ogl_product_state'+rowIndex).val(data['ogl_product_state']);
+        $('#ogl_comment'+rowIndex).val(data['ogl_comment']);
+    }
+    //获取全部清单，错误返回false
+    function getGoodsTable() {
+        var table = document.getElementById('tableorder');
+        if(table.rows.length <=1)
+            return null;
+        var data = Array();
+        console.log(table.rows.length);
+        for(var i =1 ;i< table.rows.length;i++)
+        {
+            var row = table.rows[i];
+            console.log(i);
+            var rowIndex = $(row).attr('rowIndex');
+            if($("#model"+rowIndex).val() == ''&& i != table.rows.length-1)
+            {
+                top.layer.msg('订购清单第'+i+'行型号不能为空',{icon:2});
+                return false;
+            }
+            else if($("#model"+rowIndex).val() == ''&& i == table.rows.length-1)
+            {
+                break;
+            }
+            var rowdata = {};
+            rowdata.model = $("#model"+rowIndex).val();
+            rowdata.product_info_name = $('#product_info_name'+rowIndex).val();
+            rowdata.product_type_id = $('#product_type_id'+rowIndex).val();
+            if(rowdata.product_type_id == "" || rowdata.product_type_id == undefined || rowdata.product_type_id == null){
+                top.layer.msg('订购清单第'+i+'行，请输入产品分类',{icon:2});
+                return false;
+            }
+            rowdata.brand_id = $('#brand_id'+rowIndex).val();
+            if(rowdata.brand_id == "" || rowdata.brand_id == undefined || rowdata.brand_id == null){
+                top.layer.msg('订购清单第'+i+'行，请输入品牌',{icon:2});
+                return false;
+            }
+            rowdata.place_id = $('#place_id'+rowIndex).val();//
+            if(rowdata.place_id == "" || rowdata.place_id == undefined || rowdata.place_id == null){
+                rowdata.place_id = -1;
+            }
+            rowdata.unit = $('#unit'+rowIndex).val();
+            rowdata.order_goods_manager_count = $('#order_goods_manager_count'+rowIndex).val();
+            if(rowdata.order_goods_manager_count == "" || rowdata.order_goods_manager_count == undefined || rowdata.order_goods_manager_count == null){
+                top.layer.msg('订购清单第'+i+'行，请输入数量',{icon:2});
+                return false;
+            }
+            rowdata.unit_price = $('#unit_price'+rowIndex).val();
+            rowdata.fault_condition = $('#fault_condition'+rowIndex).val();
+            if(rowdata.fault_condition == "" || rowdata.fault_condition == undefined || rowdata.fault_condition == null){
+                top.layer.msg('订购清单第'+i+'行，请输入总价',{icon:2});
+                return false;
+            }
+            rowdata.specification = $('#specification'+rowIndex).val();
+            rowdata.back_date = '2000-01-01';
+            rowdata.bar_code = "";
+            rowdata.replace_reason = "";
+            rowdata.comment = $('#comment'+rowIndex).val();
+            rowdata.ogl_comment = $('#ogl_comment'+rowIndex).val();
+            rowdata.ogl_product_state = $('#ogl_product_state'+rowIndex).val();
+            rowdata.unc_product_id = $('#unc_product_id'+rowIndex).val();
+            if(rowdata.unc_product_id == "" || rowdata.unc_product_id == undefined || rowdata.unc_product_id == null){
+                rowdata.unc_product_id = -1;
+            }
+            rowdata.order_goods_manager_id = $(row).attr('order_goods_manager_id');
+            rowdata.product_info_id = $(row).attr('product_info_id');
+            rowdata.ogl_id = $(row).attr('ogl_id');
+            rowdata.isExistModel = $(row).attr('isExistModel');
+            data[i-1]=rowdata;
+        }
+        return data;
+    }
 
 </script>
 </body>

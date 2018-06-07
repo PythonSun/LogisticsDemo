@@ -1,121 +1,20 @@
 <?php
-namespace app\admin\controller;
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2018/6/6
+ * Time: 16:48
+ */
+
+namespace app\index\controller;
+
+
 use think\Controller;
-use think\Exception;
-use think\Request;
 
-class Addalternativeconfirmorder extends Controller
+class Confirmordercommon extends Controller
 {
-    public function addalternativeconfirmorder()
-    {
-        $organizeid = session("user_session");
-        $depid = $organizeid["organize_id"];  //部门id
-        $this->assign("depid", $depid);
-        $date = date('Y-m-d');
-        $this->assign("date", $date);
-        $companytable = \app\index\model\Admin::querydepartmentinfo(0);
-        if (!empty($companytable))
-            $this->assign("companylist", $companytable);
-        $this->assign("cs_id", "");
-        $this->assign("current_user_type", $this->getcurrentusertype());
-
-        $userinfo = Array();
-        $userinfo['user_id'] =$organizeid['user_id'];
-        $userinfo['department_id'] =$organizeid['organize_id'];
-        $ret= \app\index\model\Admin::getclassinfobyproperty('organize','organize_id',$userinfo['department_id']);
-        $userinfo['organize_id'] =0;
-        if(!empty($ret))
-            $userinfo['organize_id'] = $ret[0]['parent_id'];
-        $userinfo['phone'] =$organizeid['phone'];
-        $this->assign("userinfo", json_encode($userinfo));
-
-        $this->init();
-
-        return $this->fetch();
-    }
-
-    public function init()
-    {
-        $producttype = \app\index\model\Admin::getclassinfo('product_type','product_type_id');
-        $brand = \app\index\model\Admin::getclassinfo('product_brand','brand_id');
-        $place = \app\index\model\Admin::getclassinfo('product_place','place_id');
-        $uncproduct = \app\index\model\Admin::getuncproduct();
-        if (!empty($brand)){
-            $this->assign('producttypelist',$producttype);
-        }
-        if (!empty($brand)){
-            $this->assign('brandlist',$brand);
-        }
-        if (!empty($place)){
-            $this->assign('placelist',$place);
-        }
-        if (!empty($uncproduct)){
-            $this->assign('uncproductlist',$uncproduct);
-        }
-    }
-
-    public function  getcurrentusertype()
-    {
-        $queryuserinfo = session("user_querypower");
-        $rolename = $queryuserinfo['role_name'];
-        if( $rolename == "管理人员" || $rolename == "部长/主管"||$rolename == "物流部人员")
-        {
-            return 5;
-        }
-        elseif ($rolename == "财务人员")
-        {
-            return 4;
-        }
-
-        elseif($rolename == "总经理")
-        {
-            return 3;
-        }
-        elseif($rolename == "总监")
-        {
-            return 2;
-        }
-        elseif($rolename == "经理")
-        {
-            return 1;
-        }
-    }
-
-    public function editalternativeconfirmorder()
-    {
-        $cs_id = $_GET['cs_id'];
-
-        $current_user_type = $_GET['current_user_type'];
-
-        $organizeid = session("user_session");
-        $depid = $organizeid["organize_id"];  //部门id
-        $this->assign("depid", $depid);
-        $date = date('Ymd');
-        $this->assign("date", $date);
-        /*$orderid = \app\index\model\Admin::getcsinfomaxid();
-        $this->assign("orderid", $orderid);*/
-        $companytable = \app\index\model\Admin::querydepartmentinfo(0);
-        if (!empty($companytable))
-            $this->assign("companylist", $companytable);
-        $this->assign("cs_id", $cs_id);
-        $this->assign("current_user_type", $current_user_type);
-
-        $userinfo = array();
-        $userinfo['user_id'] =$organizeid['user_id'];
-        $userinfo['department_id'] =$organizeid['organize_id'];
-        $ret= \app\index\model\Admin::getclassinfobyproperty('organize','organize_id',$userinfo['department_id']);
-        $userinfo['organize_id'] =0;
-        if(!empty($ret))
-            $userinfo['organize_id'] = $ret[0]['parent_id'];
-        $userinfo['phone'] =$organizeid['phone'];
-        $this->assign("userinfo", json_encode($userinfo));
-
-        $this->init();
-
-        return $this->fetch('addalternativeconfirmorder');
-    }
     /**新增订单（包含审批 清单）**/
-    public function addalternativeorder()
+    public function addconfirmorder()
     {
         $data = array();
         $index = 0;
@@ -123,7 +22,6 @@ class Addalternativeconfirmorder extends Controller
         $cs_info = $_POST['cs_info'];
         $custom_info = $_POST['custom_info'];
         $delivery_info = $_POST['delivery_info'];
-        $return_info = $_POST['return_info'];
         $cs_belong = $_POST['cs_belong'];
         $cs_examine = $_POST['cs_examine'];
 
@@ -142,6 +40,7 @@ class Addalternativeconfirmorder extends Controller
         $index++;
         if (empty($ret_confirm_order)||$ret_confirm_order == false) {
             $this->deldata($data);
+            // dump(111);
             return false;
         }
 
@@ -157,6 +56,7 @@ class Addalternativeconfirmorder extends Controller
         $index++;
         if (empty($ret_cs_belog)||$ret_cs_belog == false) {
             $this->deldata($data);
+            //  dump(222);
             return false;
         }
 
@@ -169,6 +69,7 @@ class Addalternativeconfirmorder extends Controller
         $index++;
         if (empty($ret_custom_info)||$ret_custom_info == false) {
             $this->deldata($data);
+            //  dump(333);
             return false;//添加失败删除
         }
 
@@ -181,24 +82,48 @@ class Addalternativeconfirmorder extends Controller
         $index++;
         if (empty($ret_delivery_info)||$ret_delivery_info == false) {
             $this->deldata($data);
+            //  dump(444);
             return false;
+        }
+        $return_info_id = -1;
+        if(array_key_exists('return_info',$_POST))
+        {
+            $return_info = $_POST['return_info'];
+            $return_info_id = \app\index\model\Admin::getmaxtableidretid('return_info', 'return_info_id')+1;
+            $return_info['return_info_id'] = $return_info_id;
+            $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
+            $data[$index][0] = 'return_info';
+            $data[$index][1] = 'return_info_id';
+            $data[$index][2] = $delivery_info_id;
+            $index++;
+            if (empty($ret_return_info)||$ret_return_info == false) {
+                $this->deldata($data);
+                //    dump(555);
+                return false;
+            }
         }
 
-        $return_info_id = \app\index\model\Admin::getmaxtableidretid('return_info', 'return_info_id')+1;
-        $return_info['return_info_id'] = $return_info_id;
-        $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
-        $data[$index][0] = 'return_info';
-        $data[$index][1] = 'return_info_id';
-        $data[$index][2] = $delivery_info_id;
-        $index++;
-        if (empty($ret_return_info)||$ret_return_info == false) {
-            $this->deldata($data);
-            return false;
-        }
         if(array_key_exists('order_goods_manager',$_POST)){
             $order_goods_manager = $_POST['order_goods_manager'];
             $num = count($order_goods_manager);
             for ($i = 0; $i < $num; $i++) {
+                //新增产品型号
+                if($order_goods_manager[$i]['isExistModel'] == 'false')
+                {
+                    $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                    $order_goods_manager[$i]['product_info_id'] = $product_info_id;
+                    $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                    $data[$index][0] = 'product_info';
+                    $data[$index][1] = 'product_info_id';
+                    $data[$index][2] = $product_info_id;
+                    $index++;
+                    if(empty($retsql)||$retsql == false)
+                    {
+                        $this->deldata($data);
+                        dump(666);
+                        return false;
+                    }
+                }
                 //order_goods_manager
                 $order_goods_manager_id = \app\index\model\Admin::getmaxtableidretid('order_goods_manager', 'order_goods_manager_id')+1;
                 $order_goods_manager[$i]['order_goods_manager_id'] = $order_goods_manager_id;
@@ -211,6 +136,7 @@ class Addalternativeconfirmorder extends Controller
                 if(empty($retmanager)||$retmanager == false)
                 {
                     $this->deldata($data);
+                    dump(666);
                     return false;
                 }
                 //order_goods_logistics
@@ -226,13 +152,13 @@ class Addalternativeconfirmorder extends Controller
                 if(empty($retmanager)||$retmanager == false)
                 {
                     $this->deldata($data);
+                    dump(777);
                     return false;
                 }
+
             }
 
         }
-
-
 
         $length = count($cs_examine);
         $cs_examine_ids ="";
@@ -243,6 +169,7 @@ class Addalternativeconfirmorder extends Controller
                 $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '总监');
                 if (empty($dbleader)) {
                     $this->deldata($data);
+                    //   dump(888);
                     return false;
                 }
                 $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
@@ -253,6 +180,7 @@ class Addalternativeconfirmorder extends Controller
                 if (empty($dbleader)) {
                     $this->deldata($data);
                     return false;
+                    // dump(999);
                     //return false;
                 }
                 $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
@@ -261,6 +189,7 @@ class Addalternativeconfirmorder extends Controller
                 $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '财务人员');
                 if (empty($dbleader) ) {
                     $this->deldata($data);
+                    dump(1000);
                     return false;
                 }
                 $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
@@ -277,6 +206,7 @@ class Addalternativeconfirmorder extends Controller
             if(empty($rettest) || $rettest == false)
             {
                 $this->deldata($data);
+                // dump(1111);
                 return false;
             }
         }
@@ -293,6 +223,7 @@ class Addalternativeconfirmorder extends Controller
         if(empty($rettest) || $rettest == false)
         {
             $this->deldata($data);
+            // dump(2222);
             return false;
         }
 
@@ -314,27 +245,6 @@ class Addalternativeconfirmorder extends Controller
         {
             \app\index\model\Admin::deleterowtableid($item[0],$item[1],$item[2]);
         }
-    }
-
-    public function getdepartmentinfo()
-    {
-        $param = $_POST;
-        $result = \app\index\model\Admin::querydepartmentinfo($param['param']);
-        return $result;
-    }
-
-    public function getdspmanagerinfo()
-    {
-        $dep_id = $_POST['param'];
-        $result = \app\index\model\Admin::getuserinfobydepid($dep_id);
-        return $result;
-    }
-
-    public function getcsallinfo()
-    {
-        $param = $_POST;
-        //return $param['param'];
-        return \app\index\model\Admin::getallcsinfobycsid($param['param']);
     }
 
     /**审批订单 审批提交内容保存**/
@@ -386,15 +296,24 @@ class Addalternativeconfirmorder extends Controller
 
 
         //return_info
-        $return_info = $_POST['return_info'];
-        $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
-
+        if(array_key_exists('return_info',$_POST))
+        {
+            $return_info = $_POST['return_info'];
+            $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
+        }
 
         //order_goods_manager  order_goods_logistics
         if(array_key_exists('order_goods_manager',$_POST)){
             $order_goods_manager = $_POST['order_goods_manager'];
             $num = count($order_goods_manager);
             for ($i = 0; $i < $num; $i++) {
+                //新增产品型号
+                if($order_goods_manager[$i]['isExistModel'] == 'false')
+                {
+                    $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                    $order_goods_manager[$i]['product_info_id'] = $product_info_id;
+                    $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                }
                 //order_goods_manager
                 if($order_goods_manager[$i]['order_goods_manager_id'] == '')
                 {
@@ -488,14 +407,24 @@ class Addalternativeconfirmorder extends Controller
 
 
         //return_info
-        $return_info = $_POST['return_info'];
-        $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
+        if(array_key_exists('return_info',$_POST))
+        {
+            $return_info = $_POST['return_info'];
+            $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
+        }
 
         //order_goods_manager  order_goods_logistics
         if(array_key_exists('order_goods_manager',$_POST)){
             $order_goods_manager = $_POST['order_goods_manager'];
             $num = count($order_goods_manager);
             for ($i = 0; $i < $num; $i++) {
+                //新增产品型号
+                if($order_goods_manager[$i]['isExistModel'] == 'false')
+                {
+                    $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                    $order_goods_manager[$i]['product_info_id'] = $product_info_id;
+                    $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                }
                 //order_goods_manager
                 if($order_goods_manager[$i]['order_goods_manager_id'] == '')
                 {
@@ -555,6 +484,13 @@ class Addalternativeconfirmorder extends Controller
             $order_goods_manager = $_POST['order_goods_manager'];
             $num = count($order_goods_manager);
             for ($i = 0; $i < $num; $i++) {
+                //新增产品型号
+                if($order_goods_manager[$i]['isExistModel'] == 'false')
+                {
+                    $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                    $order_goods_manager[$i]['product_info_id'] = $product_info_id;
+                    $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                }
                 //order_goods_manager
                 if($order_goods_manager[$i]['order_goods_manager_id'] == '')
                 {
@@ -576,9 +512,7 @@ class Addalternativeconfirmorder extends Controller
         }
 
 
-
-
-        $uoi_id = "";
+        $uoi_id = "-1";
         $unc_ofg_info = $_POST['unc_ofg_info'];
         $unc_ofg_detail = $_POST['unc_ofg_detail'];
         $arr = array();
@@ -595,7 +529,8 @@ class Addalternativeconfirmorder extends Controller
             }
             $retfee_info = \app\index\model\Admin::updateunc_ofg_info($unc_ofg_info);
             array_push($arr,538);
-        }else{
+        }
+        else{
             array_push($arr,540);
             $uoi_id = "0";
             $unc_ofg_info_id = $cs_info['unc_ofg_info_id'];
@@ -635,8 +570,6 @@ class Addalternativeconfirmorder extends Controller
                     \app\index\model\Admin::deleterowtableid('unc_ofg_detail','uod_id',$item);
                 }
             }
-
-
         }
 
         //cs_examine
@@ -649,10 +582,6 @@ class Addalternativeconfirmorder extends Controller
                     \app\index\model\Admin::updatecsexamine($item);
                 }
             }
-
-
-
-
         }
     }
 
