@@ -19,6 +19,8 @@
                 text-align: center;
                 left: 50%;
             }
+            .layui-table-style td{padding: 4px 1px;  border: 1px solid #8A8A8A}
+            .layui-table-style th{ border: 1px solid #8A8A8A;  color:black}
         </style>
     <body>
         <form class="layui-form layui-form-pane" action="">
@@ -194,71 +196,26 @@
             </div>
             <h3>确认单产品</h3>
             <div class="layui-form-item" id="divorderproduct">
-                <!--<div class="layui-inline">-->
-                    <!--<label class="layui-form-label Wheat">总项数</label>-->
-                    <!--<div class="layui-input-inline">-->
-                        <!--<input type="text" name="delivered_total" id="delivered_total" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
-                <!--</div>-->
-                <!--<div class="layui-inline">-->
-                    <!--<label class="layui-form-label Wheat">公共广播</label>-->
-                    <!--<div class="layui-input-inline">-->
-                        <!--<input type="text" name="delivered_pa" id="delivered_pa" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
-                <!--</div>-->
-                <!--<div class="layui-inline">-->
-                    <!--<label class="layui-form-label Wheat">会议系统</label>-->
-                    <!--<div class="layui-input-inline">-->
-                        <!--<input type="text" name="delivered_conference" id="delivered_conference" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
-                <!--</div>-->
-                <!--<div class="layui-inline">-->
-                    <!--<label class="layui-form-label Wheat">订制</label>-->
-                    <!--<div class="layui-input-inline">-->
-                        <!--<input type="text" name="delivered_customization" id="delivered_customization" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
-                <!--</div>-->
-                <!--<div class="layui-inline">-->
-                    <!--<label class="layui-form-label Wheat">录播</label>-->
-                    <!--<div class="layui-input-inline">-->
-                        <!--<input type="text" name="delivered_record" id="delivered_record" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
-                <!--</div>-->
-                <!--<div class="layui-inline">-->
-                    <!--<label class="layui-form-label Wheat">地铁事业</label>-->
-                    <!--<div class="layui-input-inline">-->
-                        <!--<input type="text" name="delivered_metro" id="delivered_metro" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
-                <!--</div>-->
-                <!--<div class="layui-inline">-->
-                    <!--<label class="layui-form-label Wheat">澳斯迪</label>-->
-                    <!--<div class="layui-input-inline">-->
-                        <!--<input type="text" name="delivered_aux" id="delivered_aux" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
-                <!--</div>-->
-                <!--<div class="layui-inline">-->
-                    <!--<label class="layui-form-label Wheat">礼品</label>-->
-                    <!--<div class="layui-input-inline">-->
-                        <!--<input type="text" name="delivered_gift" id="delivered_gift" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
-                <!--</div>-->
-                <!--<div class="layui-inline">-->
-                    <!--<label class="layui-form-label Wheat">画册</label>-->
-                    <!--<div class="layui-input-inline">-->
-                        <!--<input type="text" name="delivered_album" id="delivered_album" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputnumber(this);"> </div>-->
-                <!--</div>-->
             </div>
             <div>
-                <h3 class="textcenter" style="margin-bottom: -30px">未发货产品</h3>
-                <div>
-                    <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="add_order_item">
-                </div>
+                <h3 class="textcenter" >未发货产品</h3>
+                <!--<div>-->
+                    <!--<input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="add_order_item">-->
+                <!--</div>-->
             </div>
-            <table class="layui-table" id="tableorder">
+            <table class="layui-table layui-table-style" id="tableorder">
                 <colgroup>
                 </colgroup>
                 <thead>
                     <tr class="Wheat">
                         <th>序号</th>
+                        <th>型号</th>
+                        <th>产品名称</th>
                         <th>产品分类</th>
                         <th>品牌</th>
-                        <th>产品名称</th>
-                        <th>型号</th>
+                        <th>生产地</th>
                         <th>单位</th>
                         <th>数量</th>
-                        <th>生产地</th>
                         <th class="dark_blue">产品状态</th>
                         <th class="dark_blue">备注</th>
                         <th class="dark_blue">操作</th>
@@ -273,10 +230,11 @@
                 </div>
             </div>
         </form>
-        <script type="text/javascript" src="/static/js/commondetect.js"></script>
         <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="/static/UI-jquery/jquery-ui.min.js"></script>
         <script type="text/javascript" src="/static/layui/layui.js"></script>
+        <script type="text/javascript" src="/static/js/commondetect.js"></script>
+        <script type="text/javascript" src="/static/UI-jquery/jquery-ui.js" ></script>
         <script type="text/javascript">
             var isLoading = true;
             //var hasUploadPic = false;
@@ -438,6 +396,8 @@
                         setHtmlType();
                         top.layer.closeAll('loading');
                         isLoading = false;
+                        addGoodsTableRow();
+                        addGoodsTableRow();
                         return ;
                     }
                     console.time("timer");
@@ -445,6 +405,7 @@
                     setHtmlType();
                     layui.form.render('select');
                     isLoading = false;
+                    addGoodsTableRow();
                     console.timeEnd("timer");
                 });
                 //监听提交
@@ -477,7 +438,9 @@
                     var fee_info = feeInfo(data);
                     console.log('下列输入费用情况：');
                     console.log(fee_info);
-                    var order_goods_cs_undeliver_goods_info = getTableDataToDBObject();
+                    var order_goods_cs_undeliver_goods_info = getGoodsTable();
+                    if(order_goods_cs_undeliver_goods_info == false)
+                        return false;
                     console.log('下列输入清单信息：');
                     console.log(order_goods_cs_undeliver_goods_info);
                     var product_number = order_goods_cs_undeliver_goods_info.length;
@@ -511,6 +474,8 @@
                     console.log('下列非常规清单信息：');
                     console.log(unc_ofg_detail);
                     var order_goods_cs_info = getorderGoodsInfo(data);
+                    if(order_goods_cs_info == false)
+                        return false;
                     order_goods_cs_info.product_number = product_number;
                     console.log('下列输入订货确认单信息：');
                     console.log(order_goods_cs_info);
@@ -670,9 +635,9 @@
                 });
                 //编辑行
                 jq(document).on('click', '.edit_btn', function() {
-                    var text = jq(this).parent().parent();
-                    var tableRowIndex = jq(text[0].cells[0].innerHTML).text();
-                    openWindow(tableRowIndex);
+                    // var text = jq(this).parent().parent();
+                    // var tableRowIndex = jq(text[0].cells[0].innerHTML).text();
+                    // openWindow(tableRowIndex);
                 });
                 //删除行
                 jq(document).on('click', '.del_btn', function(){
@@ -690,10 +655,17 @@
                         }
                         jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());
                         var table = document.getElementById("tableorder"); //获得整个表格对象
-                        for (var i = 1; i < table.rows.length; i++) {
-                            var rowObj = table.rows[i]
-                            var cell = rowObj.cells[0];
-                            cell.innerHTML ="<a>"+ i+"</a>";
+                        if(table.rows.length == 1)
+                        {
+                            addGoodsTableRow();
+                        }
+                        else
+                        {
+                            for(var i = 1; i <= table.rows.length;i++){
+                                var rowObj = table.rows[i]
+                                var cell = rowObj.cells[0];
+                                cell.innerHTML ="<a>"+ i+"</a>";
+                            }
                         }
                     });
                 });
@@ -810,91 +782,7 @@
 
 
                 })
-                /*var isOpen = false;
-                jq('#order_date').focus(function () {
-                    if(isOpen){
-                        return;
-                    }
-                    var value = jq('#order_date').val();
-                    var strDate = '';
-                    var strTime = '';
-                    if(value != ""){
-                        var date = new Date(value);
-                        var year = date.getFullYear();    //年
-                        var month = date.getMonth() + 1;
-                        month = month < 10 ? ('0'+ month) : month;   //月
-                        var day = date.getDate();      //日
-                        strDate = year + '-' + month + '-' + day;
-                        var hour = date.getHours(); //小时
-                        var minute = date.getMinutes();//分
-                        var secend = date.getSeconds(); //秒
-                        strTime = hour + ':' + minute + ':' + secend;
-                    }else {
-                        var now = new Date();
-                        var year = now.getFullYear();    //年
-                        var month = now.getMonth() + 1;   //月
-                        month = month < 10 ? ('0'+ month) : month;   //月
-                        var day = now.getDate();      //日
-                        strDate = year + '-' + month + '-' + day;
-                        var hour = now.getHours(); //小时
-                        var minute = now.getMinutes();//分
-                        var secend = now.getSeconds(); //秒
-                        strTime = hour + ':' + minute + ':' + secend;
-                    }
-                    var html = '<div><div class="layui-inline" id="divdate"></div><div class="layui-inline" id="divtime"></div></div>';
-                    var index =  layer.open({
-                        type: 1,
-                        title: false,
-                        closeBtn: 0,
-                        shadeClose: true,
-                        offset:  ['100px', '200px'],
-                        area: ['548px', '324px'],
-                        content: html
-                        ,success: function(){
-                            isOpen = true;
-                        }
-                        ,end: function () {
-                            isOpen = false;
-                        }
-                    });
-                    var  date1 = ''
-                    laydate.render({
-                        elem: '#divdate'
-                        ,position: 'static'
-                        ,btns:['now']
-                        ,value:strDate
-                        ,done: function(value, date, endDate){
-                            console.log(value); //得到日期生成的值，如：2017-08-18
-                            if(value != null){
-                                date1 = value;
-                            }
-                        }
-                    });
-                    laydate.render({
-                        elem: '#divtime'
-                        ,type: 'time'
-                        ,value:strTime
-                        ,position: 'static'
-                        ,choose: function (datas) {
-                            console.log('+++++++++choose++++++++');
-                            console.log(datas);
-                        }
-                        ,done: function(value, date, endDate){
-                            console.log(value);
-                            console.log(date);
-                            console.log(endDate);
-                            if(value != null && value != ""){
-                                date1 = date1 == ''? strDate:date1;
-                                var val = date1 + " " + value;
-                                jq('#order_date').val(val);
-                                layer.close(index);
-                            }else {
-                                jq('#order_date').val("");
-                                layer.close(index);
-                            }
-                        }
-                    });
-                })*/
+
             });
 
             //编辑或者新增Item 窗体，tableRowIndex：表序号 新增不填
@@ -1061,103 +949,7 @@
                 }
                 return retArray;
             }
-            //订货确认单 清单
-            function getTableDataToDBObject(){
-                var jq = layui.jquery;
-                var mytable = document.getElementById('tableorder');
-                var order_goods_cs_undeliver_goods_info = [];
-                var rows = mytable.rows.length;
-                for(var i = 1; i < rows; i++){
-                    var itemData = getTableItemToDBObject(i);
-                    order_goods_cs_undeliver_goods_info[i - 1] = itemData;
-                }
-                return order_goods_cs_undeliver_goods_info;
-            }
-            //订货确认单 清单
-            function getTableItemToDBObject(rowIndex){
-                var jq = layui.jquery;
-                var mytable = document.getElementById('tableorder');
-                var itemInfo = {};
-                var rowdata = {};
-                var rowObj = mytable.rows[rowIndex];
-                for(var j = 0,cells = rowObj.cells.length; j<cells; j++){
-                    var tag = jq(rowObj.cells[j].innerHTML).attr('tag');
-                    var text = jq(rowObj.cells[j].innerHTML).text();
-                    var mymap = {};
-                    mymap['tag'] = tag;
-                    mymap['text'] = text;
-                    rowdata[j] = mymap;
-                }
-                var ogcugi_id = jq(rowObj).attr('ogcugi_id');
-                var cs_id = jq(rowObj).attr('cs_id');
 
-                itemInfo.ogcugi_id = ogcugi_id === undefined? "" : ogcugi_id;
-                itemInfo.cs_id = cs_id === undefined? "" : cs_id;
-                itemInfo.product_type_id = rowdata[1]['tag'];
-                itemInfo.product_info_name = rowdata[3]['text'];
-                itemInfo.brand_id = rowdata[2]['tag'];
-                itemInfo.model = rowdata[4]['text'];
-                itemInfo.product_info_id = rowdata[4]['tag'];
-                itemInfo.ogcugi_count = rowdata[6]['text'];
-                itemInfo.place_id = rowdata[7]['tag'];
-                itemInfo.ogcugi_product_state = rowdata[8]['tag'];
-                itemInfo.ogcugi_comment = rowdata[9]['text'];
-                itemInfo.ogcugi_unit = rowdata[5]['text'];
-                return itemInfo;
-            }
-            //添加订货确认单 清单
-            function addTableItem(itemData,rowIndex) {
-                var jq = layui.jquery;
-                //+判断
-                var product_type_id = itemData.product_type_id;
-                var product_type_name = itemData.product_type_name;
-                var brand_id = itemData.brand_id;
-                var brand_name = itemData.brand_name;
-                var product_info_name = itemData.product_info_name;
-                var product_info_id = itemData.product_info_id;
-                var model = itemData.model;
-                var ogcugi_unit = itemData.ogcugi_unit;
-                var place_id = itemData.place_id;
-                var place_name = itemData.place_name;
-                var ogcugi_count =itemData.ogcugi_count;
-                var ogcugi_product_state = itemData.ogcugi_product_state;
-                var ogcugi_product_state_text = itemData.ogcugi_product_state_text;
-                var ogcugi_id = itemData.ogcugi_id;
-                var cs_id = itemData.cs_id;
-                var ogcugi_comment = itemData.ogcugi_comment;
-                //var rows = jq('#tableorder')[0].rows.length;
-                var new_tr = jq('#tableorder')[0].insertRow(rowIndex);//指定位置插入行
-                jq(new_tr).attr("ogcugi_id",ogcugi_id);
-                jq(new_tr).attr("cs_id",cs_id);
-                var col_0 = new_tr.insertCell(0);//添加列
-                col_0.innerHTML = "<td><a>"+ rowIndex+"</a></td>";
-                var col_1 = new_tr.insertCell(1);
-                col_1.innerHTML = "<td><a tag='"+ product_type_id +"'>"+ product_type_name +"</a></td>";
-                var col_2 = new_tr.insertCell(2);
-                col_2.innerHTML = "<td><a tag='"+ brand_id +"'>"+ brand_name +"</a></td>";
-                var col_3 = new_tr.insertCell(3);
-                col_3.innerHTML = "<td><a>"+ product_info_name +"</a></td>";//-------产品名称-------
-                var col_4 = new_tr.insertCell(4);
-                col_4.innerHTML = "<td><a tag='" + product_info_id + "'>"+ model +"</a></td>";
-                var col_5 = new_tr.insertCell(5);
-                col_5.innerHTML = "<td><a>"+ ogcugi_unit +"</a></td>";
-                var col_6 = new_tr.insertCell(6);
-                col_6.innerHTML = "<td><a>"+ ogcugi_count +"</a></td>";
-                var col_7 = new_tr.insertCell(7);
-                col_7.innerHTML = "<td><a tag = '"+ place_id +"'>"+ place_name +"</a></td>";
-                var col_8 = new_tr.insertCell(8);
-                col_8.innerHTML = "<td><a tag='" + ogcugi_product_state + "'>"+ ogcugi_product_state_text +"</a></td>";
-                var col_9 = new_tr.insertCell(9);
-                col_9.innerHTML = "<td><a>"+ ogcugi_comment +"</a></td>";
-                var col_10 = new_tr.insertCell(10);
-                if (type == 1){
-
-                    col_10.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger del_btn'>删除</a>" +"</td>";
-                }else {
-                    col_10.innerHTML = "<td></td>";
-                }
-
-            }
             //页面间数据传递
             function getUncofgInfoUI() {
                 return uncofginfo;
@@ -1333,7 +1125,8 @@
                                 ogcugi[i]['ogcugi_product_state_text'] = '';
                                 break;
                         }
-                        addTableItem(ogcugi[i],i + 1);
+                        addGoodsTableRow();
+                        setGoodsRowValue( ogcugi[i],i+1);
                     }
                 }
                 layui.form.render('select');
@@ -1420,7 +1213,9 @@
                 var fee_info = feeInfo(data);
                 console.log('下列输入费用情况：');
                 console.log(fee_info);
-                var order_goods_cs_undeliver_goods_info = getTableDataToDBObject();
+                var order_goods_cs_undeliver_goods_info = getGoodsTable();
+                if(order_goods_cs_undeliver_goods_info == false)
+                    return false;
                 console.log('下列输入清单信息：');
                 console.log(order_goods_cs_undeliver_goods_info);
                 var unc_ofg_info = null;
@@ -1661,14 +1456,205 @@
                 }
                 return true;
             }
-            /*function detectinputtext(object){
 
-                var value = $(object).val();
-                console.log(value);
-                if(/[^\u4E00-\u9FA5A-Za-z0-9-()（）']+/.test(value)){
-                    $(object).val(value.replace(/[^\u4E00-\u9FA5A-Za-z0-9-()（）']+/,""));
+            //增加清单一行
+            var rowIndex = 0;
+            function addGoodsTableRow() {
+                var jq = layui.jquery;
+                var rowNum = jq('#tableorder')[0].rows.length;
+                var newRow = jq('#tableorder')[0].insertRow(rowNum);//指定位置插入行
+
+                //保存每一行的标志
+                jq(newRow).attr('rowIndex',rowIndex);
+                jq(newRow).attr('ogcugi_id',"");
+                jq(newRow).attr('cs_id',"");
+                jq(newRow).attr('isExistModel',true);
+                var col = newRow.insertCell(0);//添加列
+                col.innerHTML = "<td ><a style='margin: 0px 10px' >"+rowNum+"</a></td>";
+                col = newRow.insertCell(1);
+                col.innerHTML = "<td><input type='text' id ='model"+rowIndex+"' class='layui-input autocomplete-input ' style='color: #0C0C0C ;border:0px'/></td>";
+                col = newRow.insertCell(2);
+                col.innerHTML ="<td ><input type='text' id='product_info_name"+rowIndex+"' class='layui-input ' style='color: #0C0C0C ;border:0px'/></td>";
+                col = newRow.insertCell(3);
+                col.innerHTML ="<td ><select id='product_type_id"+rowIndex+"' style='border: none;' name='product_type_id'  class=' select-style-border-none' > <option value='' selected>请选择</option>{volist name='producttypelist' id='vo'} <option value={$vo.product_type_id}>{$vo.product_type_name}</option>{/volist} </select></td>";
+                col = newRow.insertCell(4);
+                col.innerHTML ="<td><select id='brand_id"+rowIndex+"' style='color: #0C0C0C ;border:0px' name='brand_name' lay-filter='brand_name' class=' select-style-border-none'> <option value='' selected>请选择</option>{volist name='brandlist' id='vo'};col_1.innerHTML =<option value={$vo.brand_id}>{$vo.brand_name}</option>{/volist} </select></td>";
+                col = newRow.insertCell(5);
+                col.innerHTML ="<td><select id='place_id"+rowIndex+"' style='color: #0C0C0C ;border:0px' name='place_name' lay-filter='place_name' class=' select-style-border-none' > <option value='' selected>请选择</option>{volist name='placelist' id='vo'} <option value={$vo.place_id}>{$vo.place_name}</option>{/volist} </select></td>";
+                col = newRow.insertCell(6);
+                col.innerHTML ="<td><input type='text' id='ogcugi_unit"+rowIndex+"' name='ogcugi_unit' class='layui-input  ' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+                col = newRow.insertCell(7);
+                col.innerHTML ="<td><input type='text' id='ogcugi_count"+rowIndex+"' name='ogcugi_count' class='layui-input  ' style='color: #0C0C0C ;border:0px' oninput='detectinputnumber(this);'></td>";
+                col = newRow.insertCell(8);
+                col.innerHTML ="<td><select id='ogcugi_product_state"+rowIndex+"' name='ogcugi_product_state' lay-filter='unc_productname' class='select-style-border-none '> " +
+                    "<option value='' selected>请选择</option> " +
+                    " <option value='0'>未发货</option>" +
+                    "<option value='1'>处理中</option>" +
+                    "<option value='2'>已完成</option>" +
+                    "<option value='3'>取消</option>" +
+                    "<option value='4'>备货</option>" +
+                    "<option value='5'>缺货</option></select></td>";
+                col = newRow.insertCell(9);
+                col.innerHTML ="<td><input type='text' id='ogcugi_comment"+rowIndex+"' name='ogcugi_comment' class='layui-input  ' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+                col = newRow.insertCell(10);
+                col.innerHTML ="<td><a class='layui-btn layui-btn-xs layui-btn-danger del_btn ' style = 'margin: 0px 10px '>删除</a></td>";
+
+                var model ="#"+ "model"+rowIndex;
+                $(model).autocomplete({
+                    source: function (request, response) {
+                        var serachText = $(model).val().trim();
+                        console.log(11);
+                        jq.ajax({
+                            url: "{:url('index/common/serachmodelinfo')}",
+                            type: "POST",
+                            dataType: "json",
+                            data: { serrchText:serachText},
+                            success: function (data) {
+                                response(jq.map(data, function (item) {
+                                    return {
+                                        label: item.model,
+                                        value: item.model,
+                                    }
+                                }));
+                            },
+                        });},
+                    select:function (event,ui) {
+                        jq(model).val(ui.item.value);
+                        jq(model).blur();
+                    }
+                });
+                var product_info_name = "#"+"product_info_name"+ rowIndex ;
+                var product_type_id = "#"+"product_type_id"+rowIndex ;
+                var brand_id = "#"+"brand_id"+rowIndex ;
+                var place_id = "#"+"place_id"+rowIndex ;
+                $(model).blur(function () {
+                    var modelname = jq(model).val();
+                    if(modelname == '')
+                        return ;
+                    jq.ajax({
+                        url: "{:url('index/Common/coldserachmodelinfo')}",
+                        type: "POST",
+                        dataType: "json",
+                        async: false,
+                        data: { serrchText: modelname},
+                        success: function (data) {
+                            if(data == "" || data == null || data === undefined||data.length == 0) {
+                                console.log(173);
+                                top.layer.confirm('型号: <span style="color: red">'+modelname+'</span> 在数据库不存在，是否录入', {
+                                    btn: ['是','否'] //按钮
+                                }, function(index){
+                                    isExistModel = false;
+                                    top.layer.close(index);
+                                    jq(newRow).attr('isExistModel',false);
+                                    jq(newRow).attr('product_info_id','');
+                                    if(jq('#tableorder')[0].rows.length-1 == rowNum )
+                                    {
+                                        addGoodsTableRow();
+                                    }
+                                } ,function () {
+                                    jq(model).val('');
+                                    jq(model).focus();
+                                });
+                            } else {
+                                jq(product_info_name).val(data[0]['product_info_name']);
+                                jq(product_type_id).val(data[0]['product_type_id']);
+                                jq(brand_id).val(data[0]['brand_id']);
+                                jq(place_id).val(data[0]['place_id']);
+                                jq(newRow).attr('product_info_id',data[0]['product_info_id']);
+                                ///还要处理
+                                layui.form.render('select');
+
+                                jq(newRow).attr('isExistModel',true);
+                                if(jq('#tableorder')[0].rows.length-1 == rowNum)
+                                {
+                                    addGoodsTableRow();
+                                }
+                            }
+                        },
+                    });
+
+
+                });
+                rowIndex++;
+
+                layui.form.render('select');
+            }
+            //给清单赋值
+            function setGoodsRowValue(data,rowNum) {
+                console.log(data);
+                var table = document.getElementById('tableorder');
+                var row = table.rows[rowNum];
+                var rowIndex = $(row).attr('rowIndex');
+                $(row).attr('ogcugi_id',data['ogcugi_id']);
+                $(row).attr('product_info_id',data['product_info_id']);
+                $(row).attr('cs_id',data['cs_id']);
+                $(row).attr('isExistModel',true);
+                $('#model'+rowIndex).val(data['model']);
+                $('#product_info_name'+rowIndex).val(data['product_info_name']);
+                $('#product_type_id'+rowIndex).val(data['product_type_id']);
+                $('#brand_id'+rowIndex).val(data['brand_id']);
+                $('#place_id'+rowIndex).val(data['place_id']);
+                $('#ogcugi_count'+rowIndex).val(data['ogcugi_count']);
+                $('#ogcugi_unit'+rowIndex).val(data['ogcugi_unit']);
+                $('#ogcugi_product_state'+rowIndex).val(data['ogcugi_product_state']);
+                $('#ogcugi_comment'+rowIndex).val(data['ogcugi_comment']);
+            }
+            //获取全部清单，错误返回false
+            function getGoodsTable() {
+                var table = document.getElementById('tableorder');
+                if(table.rows.length <=1)
+                    return null;
+                var data = Array();
+                for(var i =1 ;i< table.rows.length;i++)
+                {
+                    var row = table.rows[i];
+                    var rowIndex = $(row).attr('rowIndex');
+                    if($("#model"+rowIndex).val() == ''&& i != table.rows.length-1)
+                    {
+                        top.layer.msg('订购清单第'+i+'行型号不能为空',{icon:2});
+                        return false;
+                    }
+                    else if($("#model"+rowIndex).val() == ''&& i == table.rows.length-1)
+                    {
+                        break;
+                    }
+                    var rowdata = {};
+                    rowdata.model = $("#model"+rowIndex).val();
+                    rowdata.product_info_name = $('#product_info_name'+rowIndex).val();
+                    rowdata.product_type_id = $('#product_type_id'+rowIndex).val();
+                    if(rowdata.product_type_id == "" || rowdata.product_type_id == undefined || rowdata.product_type_id == null){
+                        top.layer.msg('订购清单第'+i+'行，请输入产品分类',{icon:2});
+                        return false;
+                    }
+                    rowdata.brand_id = $('#brand_id'+rowIndex).val();
+                    if(rowdata.brand_id == "" || rowdata.brand_id == undefined || rowdata.brand_id == null){
+                        top.layer.msg('订购清单第'+i+'行，请输入品牌',{icon:2});
+                        return false;
+                    }
+                    rowdata.place_id = $('#place_id'+rowIndex).val();//
+                    if(rowdata.place_id == "" || rowdata.place_id == undefined || rowdata.place_id == null){
+                        rowdata.place_id = -1;
+                    }
+                    rowdata.ogcugi_unit = $('#ogcugi_unit'+rowIndex).val();
+                    rowdata.ogcugi_count = $('#ogcugi_count'+rowIndex).val();
+                    if(rowdata.ogcugi_count == "" || rowdata.ogcugi_count == undefined || rowdata.ogcugi_count == null){
+                        top.layer.msg('订购清单第'+i+'行，请输入数量',{icon:2});
+                        return false;
+                    }
+                    rowdata.ogcugi_product_state = $('#ogcugi_product_state'+rowIndex).val();
+                    if(rowdata.ogcugi_product_state == "" || rowdata.ogcugi_product_state == undefined || rowdata.ogcugi_product_state == null){
+                        rowdata.ogcugi_product_state = -1;
+                    }
+                    rowdata.ogcugi_comment = $('#ogcugi_comment'+rowIndex).val();
+                    rowdata.ogcugi_id = $(row).attr('ogcugi_id');
+                    rowdata.product_info_id = $(row).attr('product_info_id');
+                    rowdata.cs_id = $(row).attr('cs_id');
+                    rowdata.isExistModel = $(row).attr('isExistModel');
+                    data[i-1]=rowdata;
                 }
-            }*/
+                return data;
+            }
+
         </script>
     </body>
 </html>
