@@ -629,10 +629,6 @@ class Addborrowconfirmorder extends Controller
                     \app\index\model\Admin::updatecsexamine($item);
                 }
             }
-
-
-
-
         }
     }
 
@@ -641,5 +637,15 @@ class Addborrowconfirmorder extends Controller
         $cs_id = $_POST['cs_id'];
         $ret = \app\index\model\Admin::cancelcsinfobyid($cs_id);
         return $ret;
+    }
+
+    public function printuncorder(){
+        $printdata = $_GET['printdata'];
+        $strJson = str_replace('/$/@','"',$printdata);
+        $obj = json_decode($strJson);
+        $template_name = "非定型产品确认单.xls";
+        $file_name = '非定型产品确认单';
+        $file_extend = 'xlsx';
+        \app\index\model\Admin::printuncordergoods($file_name,$file_extend,$template_name,$obj);
     }
 }

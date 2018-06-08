@@ -802,7 +802,27 @@
                 btn:['打印','确定','退出'],
                 btnAlign: 'c',
                 yes:function (index,layero) {
-                    top.layer.msg(new Date().toLocaleDateString(),{icon:1});
+                    var  iframeWin = top.window[layero.find('iframe')[0]['name']];
+                        var  ret = iframeWin.getPrintData();
+                        if(ret === null){
+                            return;
+                        }
+                        var strJson = JSON.stringify(ret);
+                        var rstrJson = strJson.replaceAll('"',"/$/@");
+                            top.layer.open({
+                                type: 2,
+                                area: ['650px', '80%'],
+                                shade: 0.6,
+                                shadeClose:true,
+                                title: ['打印预览界面','text-align:center'],
+                                resize:false,
+                                btn: ['打印','取消'],
+                                content: "{:url('admin/addpartsconfirmorder/printuncorder')} ?printdata="+ rstrJson,
+                                yes:function(index,layero){
+                                    var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                                    iframeWin.print();
+                                }
+                            });
                 },
                 btn2: function (index,layero) {
                     var  iframeWin = top.window[layero.find('iframe')[0]['name']];
@@ -2520,6 +2540,14 @@
             data[i-1]=rowdata;
         }
         return data;
+    }
+
+    String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
+        if(!RegExp.prototype.isPrototypeOf(reallyDo)) {
+            return this.replace(new RegExp(reallyDo, (ignoreCase ? "gi" : "g")), replaceWith);
+        } else {
+            return this.replace(reallyDo, replaceWith);
+        }
     }
 
 </script>

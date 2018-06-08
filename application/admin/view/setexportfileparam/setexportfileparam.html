@@ -16,14 +16,13 @@
 			      <input name="title" lay-verify="title" autocomplete="off" placeholder="请输入文件名" class="layui-input" type="text" id="file_name">
 			    </div>
 		  	</div>
-
-	  	  	<div class="layui-form-item">
+<!-- 	  	  	<div class="layui-form-item">
 			    <label class="layui-form-label">后缀名</label>
 			    <div class="layui-input-block">
 			      <input name="extend" value="xls" title="xls" checked="" type="radio">
 			      <input name="extend" value="xlsx" title="xlsx" type="radio">
 		 		</div>
-		 	</div>
+		 	</div> -->
 		</form>
 	 	<script src="/static/layui/layui.js"></script>
 		<script type="text/javascript" src="/static/js/commondetect.js"></script>
@@ -43,7 +42,7 @@
 				var param = new Object();
 
 				param.file_name = jq('#file_name').val();
-				param.file_extend = jq('input[name="extend"]:checked').val();
+				//param.file_extend = jq('input[name="extend"]:checked').val();
 				return param;
 			}
 	 	</script>

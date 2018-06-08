@@ -111,7 +111,7 @@ class Queryborrowconfirmorder extends Controller
         $type=0x02;
         $param = json_decode($_GET['param']);
         $file_name = $_GET['file_name'];
-        $file_extend = $_GET['file_extend'];
+        $file_extend = 'xlsx';
 
         $ret = \app\index\model\Admin::queryexportcsinfoconfirmorder($param,$type);
         \app\index\model\Admin::exportcsinfoconfirmorder($file_name,$file_extend,$template_name,$ret);

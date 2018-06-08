@@ -568,9 +568,7 @@
                         yes:function (index,layero) {
                             var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                             var  ret = iframeWin.getPrintData();
-                            console.log(ret);
                             if(ret === null){
-                                top.layer.msg('11111');
                                 return;
                             }
                             var strJson = JSON.stringify(ret);
