@@ -1267,7 +1267,7 @@
                 console.log(order_goods_manager);
 
                 jq.ajax({
-                    url: "{:url('admin/addreplaceconfirmorder/addconfirmorder')}",//php文件路径
+                    url: "{:url('index/confirmordercommon/addconfirmorder')}",//php文件路径
                     data: {
                         cs_info:cs_info,
                         custom_info:custom_info,
@@ -1445,7 +1445,7 @@
                 console.log(order_goods_manager);
 
                 jq.ajax({
-                    url: "{:url('admin/addreplaceconfirmorder/managereditanddeliverorder')}",
+                    url: "{:url('index/confirmordercommon/managereditanddeliverorder')}",
                     data: {cs_info:cs_info,
                         custom_info:custom_info,
                         delivery_info:delivery_info,
@@ -1522,7 +1522,7 @@
                 console.log(order_goods_manager);
 
                 jq.ajax({
-                    url: "{:url('admin/addreplaceconfirmorder/managereditandsaveorder')}",
+                    url: "{:url('index/confirmordercommon/managereditandsaveorder')}",
                     data: {cs_info:cs_info,
                         custom_info:custom_info,
                         delivery_info:delivery_info,
@@ -1581,7 +1581,7 @@
                 cs_examine[0] = departExamine;
                 jq.ajax({
                     type : "post",
-                    url : "{:url('admin/Addreplaceconfirmorder/deliverorder')}",
+                    url : "{:url('index/confirmordercommon/deliverorder')}",
                     data : {param:cs_examine},
                     async : false,
                     success : function(result){
@@ -1627,7 +1627,7 @@
                 cs_examine[0] = companyExamine;
                 jq.ajax({
                     type : "post",
-                    url : "{:url('admin/Addreplaceconfirmorder/deliverorder')}",
+                    url : "{:url('index/confirmordercommon/deliverorder')}",
                     data : {param:cs_examine},
                     async : false,
                     success : function(result){
@@ -1672,7 +1672,7 @@
                 cs_examine[0] = financeExamine;
                 jq.ajax({
                     type : "post",
-                    url : "{:url('admin/Addreplaceconfirmorder/deliverorder')}",
+                    url : "{:url('index/confirmordercommon/deliverorder')}",
                     data : {param:cs_examine},
                     async : false,
                     success : function(result){
@@ -1727,17 +1727,7 @@
                         if (unc_ofg_detail == null){
                             unc_ofg_detail = [];
                         }
-                        var itemInfo = {};
-                        itemInfo.uod_id = unc_ofg_items[i].uod_id;
-                        itemInfo.unc_ofg_info_id = unc_ofg_info.uoi_id;
-                        itemInfo.product_info_id = unc_ofg_items[i].product_info_id;
-                        itemInfo.uod_count = unc_ofg_items[i].uod_count;
-                        itemInfo.uod_unit = unc_ofg_items[i].uod_unit;
-                        itemInfo.uod_requirement = unc_ofg_items[i].uod_requirement;
-                        itemInfo.uod_delivery_date = unc_ofg_items[i].uod_delivery_date;
-                        itemInfo.uod_comment = unc_ofg_items[i].uod_comment;
-                        itemInfo.unc_product_id = unc_ofg_items[i].unc_product_id;
-                        unc_ofg_detail[i] = itemInfo;
+                        unc_ofg_detail[i] = unc_ofg_items[i];
                     }
                 }
                 console.log('下列非常规订单信息：');
@@ -1757,7 +1747,7 @@
                 console.log(cs_examine);
 
                 jq.ajax({
-                    url: "{:url('admin/addreplaceconfirmorder/logisticeditandsaveorder')}",
+                    url: "{:url('index/confirmordercommon/logisticeditandsaveorder')}",
                     data: {cs_info:cs_info,
                         order_goods_manager:order_goods_manager,
                         payment_info:payment_info,
@@ -1886,7 +1876,7 @@
                 cs_info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
                 jq.ajax({
                     type : "post",
-                    url : "{:url('admin/Addreplaceconfirmorder/returnorder')}",
+                    url : "{:url('index/confirmordercommon/returnorder')}",
                     data : {cs_info:cs_info,cs_examine:cs_examine},
                     async : false,
                     success : function(result){
