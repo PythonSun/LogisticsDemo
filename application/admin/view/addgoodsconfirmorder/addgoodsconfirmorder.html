@@ -566,10 +566,26 @@
                         skin: 'layui-layer-molv',
                         maxmin:true,
                         content:"{:url('admin/uncofginfo/uncofginfo')}?type=1&parenttype=" + {$type},
-                        btn:['打印','确定','退出'],
+                        btn:['打印预览','确定','退出'],
                         btnAlign: 'c',
                         yes:function (index,layero) {
-                             top.layer.msg(new Date().toLocaleDateString(),{icon:1});
+                             //top.layer.msg(new Date().toLocaleDateString(),{icon:1});
+                            var  iframeWin = top.window[layero.find('iframe')[0]['name']];
+                            var  ret = iframeWin.getPrintData();
+                            top.layer.open({
+                                    type: 2,
+                                    area: ['650px', '80%'],
+                                    shade: 0.6,
+                                    shadeClose:true,
+                                    title: ['打印预览界面','text-align:center'],
+                                    resize:false,
+                                    btn: ['打印','取消'],
+                                    content: "{:url('admin/addgoodsconfirmorder/printuncorder')}?printdata="+ JSON.stringify(ret),
+                                    yes:function(index,layero){
+                                        var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                                        iframeWin.print();
+                                    }
+                                });
                         },
                         btn2: function (index,layero) {
                             var  iframeWin = top.window[layero.find('iframe')[0]['name']];

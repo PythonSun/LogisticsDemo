@@ -200,29 +200,29 @@
                 });
 
                 /*打印非定型订单*/
-                form.on('submit(printorder)',function(){
-                    var cs_id = {$cs_id};
-                    if(cs_id == 0){
-                        return;
-                    }
-                    top.layer.open({
-                        type: 2,
-                        area: ['600px', '250px'],
-                        shade: 0.6,
-                        shadeClose:true,
-                        title: '设置导出参数',
-                        resize:false,
-                        btn: ['保存','取消'],
-                        content: "{:url('admin/setexportfileparam/setexportfileparam')}",
-                        yes:function(index,layero){
-                                var iframeWin = top.window[layero.find('iframe')[0]['name']];
-                                var exportparam = iframeWin.getexportparam();
-                                top.layer.close(index);
-                                window.open("{:url('admin/uncofginfo/printuncofginfo')}?uoi_id="+ uoi_id + "&file_name=" + exportparam.file_name+ "&file_extend=" + exportparam.file_extend,"_self");
-                            }
-                        });
-                    return false;
-                });
+                // form.on('submit(printorder)',function(){
+                //     var cs_id = {$cs_id};
+                //     if(cs_id == 0){
+                //         return;
+                //     }
+                //     top.layer.open({
+                //         type: 2,
+                //         area: ['600px', '250px'],
+                //         shade: 0.6,
+                //         shadeClose:true,
+                //         title: '设置导出参数',
+                //         resize:false,
+                //         btn: ['保存','取消'],
+                //         content: "{:url('admin/setexportfileparam/setexportfileparam')}",
+                //         yes:function(index,layero){
+                //                 var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                //                 var exportparam = iframeWin.getexportparam();
+                //                 top.layer.close(index);
+                //                 window.open("{:url('admin/uncofginfo/printuncofginfo')}?uoi_id="+ uoi_id + "&file_name=" + exportparam.file_name+ "&file_extend=" + exportparam.file_extend,"_self");
+                //             }
+                //         });
+                //     return false;
+                // });
 
                 jq(document).ready(function() {
                     var layer = layui.layer;
