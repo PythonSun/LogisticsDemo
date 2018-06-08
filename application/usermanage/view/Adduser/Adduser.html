@@ -162,7 +162,7 @@
                 return '';
             }
             user.password= jq("#password").val();
-            if( user.fullname == '')
+            if( user.password == '')
             {
                 layer.msg('密码不能为空',{icon:2});
                 return '';
@@ -223,7 +223,7 @@
                 {
                    return true;
                 }
-                else {
+                else if(companyName=='物流部'&&departName == '仓库'&&roleName != '仓管'){
                     layer.msg(departName+'角色不能为'+roleName,{icon:2});
                     return false;
                 }
