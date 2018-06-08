@@ -568,7 +568,6 @@
                         yes:function (index,layero) {
                             var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                             var  ret = iframeWin.getPrintData();
-                            console.log(ret);
                             top.layer.open({
                                     type: 2,
                                     area: ['650px', '80%'],
@@ -577,7 +576,7 @@
                                     title: ['打印预览界面','text-align:center'],
                                     resize:false,
                                     btn: ['打印','取消'],
-                                    content: "{:url('admin/addgoodsconfirmorder/printuncorder')}?printdata="+ JSON.stringify(ret),
+                                    content: "{:url('admin/addgoodsconfirmorder/printuncorder')}?printdata="+ ret,
                                     yes:function(index,layero){
                                         var iframeWin = top.window[layero.find('iframe')[0]['name']];
                                         iframeWin.print();
