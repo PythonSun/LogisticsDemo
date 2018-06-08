@@ -568,7 +568,12 @@
                         yes:function (index,layero) {
                             var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                             var  ret = iframeWin.getPrintData();
-                            top.layer.open({
+                            if(ret == null){
+                                return;
+                            }
+                            var strJson = JSON.stringify(ret);
+                            var rstrJson = strJson.replaceAll('"',"/$/@");
+                                top.layer.open({
                                     type: 2,
                                     area: ['650px', '80%'],
                                     shade: 0.6,
@@ -576,7 +581,7 @@
                                     title: ['打印预览界面','text-align:center'],
                                     resize:false,
                                     btn: ['打印','取消'],
-                                    content: "{:url('admin/addgoodsconfirmorder/printuncorder')}?printdata="+ ret,
+                                    content: "{:url('admin/addgoodsconfirmorder/printuncorder')} ?printdata="+ rstrJson,
                                     yes:function(index,layero){
                                         var iframeWin = top.window[layero.find('iframe')[0]['name']];
                                         iframeWin.print();
@@ -1421,16 +1426,23 @@
                     return false;
                 }
 
-                var user_id = data['build_department_id'];
-                if (user_id == ""){
-                    data['build_department_id'] = -1;
+                var build_organize_id = data['build_organize_id'];
+                if (build_organize_id == ""|| build_organize_id == undefined){
+                    layer.msg('请选择总部门！',{icon:2});
+                    return false;
                 }
 
-                // var user_id = data['user_id'];
-                // if (user_id == ""){
-                //     layer.msg('请选择经理！',{icon:2});
-                //     return false;
-                // }
+                var build_department_id = data['build_department_id'];
+                if (build_department_id == ""|| build_organize_id == undefined){
+                    layer.msg('请选择子部门！',{icon:2});
+                    return false;
+                }
+
+                 var user_id = data['user_id'];
+                 if (user_id == ""|| build_organize_id == undefined){
+                     layer.msg('请输入经理！',{icon:2});
+                     return false;
+                 }
                 var transfer_mode = data['transfer_mode'];
                 if (transfer_mode == "" || transfer_mode === undefined){
                     data['transfer_mode'] = -1;
@@ -1666,6 +1678,13 @@
                 return data;
             }
 
+            String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
+                if(!RegExp.prototype.isPrototypeOf(reallyDo)) {
+                    return this.replace(new RegExp(reallyDo, (ignoreCase ? "gi" : "g")), replaceWith);
+                } else {
+                    return this.replace(reallyDo, replaceWith);
+                }
+            }
         </script>
     </body>
 </html>
