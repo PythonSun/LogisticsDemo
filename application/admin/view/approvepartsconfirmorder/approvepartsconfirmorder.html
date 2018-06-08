@@ -121,7 +121,8 @@
                                             curr: 1
                                         }
                                     });
-                                    top.layer.closeAll();
+                                    top.layer.close(index);
+                                    top.layer.msg("保存成功",{icon:1});
                                 },
                                 btn2: function (index,layero) {
                                     var iframeWin = top.window[layero.find('iframe')[0]['name']];
@@ -133,7 +134,8 @@
                                             curr: 1
                                         }
                                     });
-                                    top.layer.closeAll();
+                                    top.layer.close(index);
+                                    top.layer.msg("提交成功",{icon:1});
                                 },
                                 btn3:function () {
                                     top.layer.closeAll();
@@ -248,7 +250,8 @@
                                 curr: 1
                             }
                         });
-                        top.layer.closeAll();
+                        top.layer.close(index);
+                        top.layer.msg("保存成功",{icon:1});
                     },
                     btn2:function () {
                         top.layer.closeAll();
@@ -280,7 +283,8 @@
                                 curr: 1
                             }
                         });
-                        top.layer.closeAll();
+                        top.layer.close(index);
+                        top.layer.msg("保存成功",{icon:1});
                     },
                     btn2:function () {
                         top.layer.closeAll();
