@@ -2555,8 +2555,13 @@
             $sqlthree .= "where dsp_logistic.order_goods_manager.cs_id='$cs_id'";
             $explainobj = Db::query($sqlthree);
 
-            $tableobj[0]['order_goods_manager_explain'] = $explainobj[0]['order_goods_manager_explain'];
-            $tableobj[0]['ogl_explain'] = $explainobj[0]['ogl_explain'];
+            if(!empty($explainobj)){
+                $tableobj[0]['order_goods_manager_explain'] = $explainobj[0]['order_goods_manager_explain'];
+                $tableobj[0]['ogl_explain'] = $explainobj[0]['ogl_explain'];
+            }else{
+                $tableobj[0]['order_goods_manager_explain'] = '';
+                $tableobj[0]['ogl_explain'] = '';
+            }
 
             return $tableobj;
         }
