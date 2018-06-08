@@ -566,13 +566,15 @@
                         btn:['打印预览','确定','退出'],
                         btnAlign: 'c',
                         yes:function (index,layero) {
-                             //top.layer.msg(new Date().toLocaleDateString(),{icon:1});
                             var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                             var  ret = iframeWin.getPrintData();
+                            console.log(ret);
+                            if(ret === null){
+                                top.layer.msg('11111');
+                                return;
+                            }
                             var strJson = JSON.stringify(ret);
-                            console.log(strJson);
                             var rstrJson = strJson.replaceAll('"',"/$/@");
-                            console.log(rstrJson);
                                 top.layer.open({
                                     type: 2,
                                     area: ['650px', '80%'],
