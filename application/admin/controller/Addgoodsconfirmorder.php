@@ -206,8 +206,8 @@ class Addgoodsconfirmorder extends Controller
                     if($unc_ofg_detail[$i]['isExistModel'] == 'false')
                     {
                         $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
-                        $order_goods_manager[$i]['product_info_id'] = $product_info_id;
-                        $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                        $unc_ofg_detail[$i]['product_info_id'] = $product_info_id;
+                        $retsql = \app\index\model\Admin::addproductinfo($unc_ofg_detail[$i]);
                         if(empty($retsql)||$retsql == false)
                         {
                             return self::retmsg(0,'保存失败，错误代码：1187');
@@ -241,6 +241,16 @@ class Addgoodsconfirmorder extends Controller
             $ogcugi_id_arr =  array();
             if (!empty($order_goods_cs_undeliver_goods_info)){
                 for ($i = 0; $i < $ogcugi_length; $i++){
+                    if($order_goods_cs_undeliver_goods_info[$i]['isExistModel'] == 'false')
+                    {
+                        $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                        $order_goods_cs_undeliver_goods_info[$i]['product_info_id'] = $product_info_id;
+                        $retsql = \app\index\model\Admin::addproductinfo($order_goods_cs_undeliver_goods_info[$i]);
+                        if(empty($retsql)||$retsql == false)
+                        {
+                            return self::retmsg(0,'保存失败，错误代码：1252');
+                        }
+                    }
                     $ogcugi_id = \app\index\model\Admin::getmaxtableidretid('order_goods_cs_undeliver_goods_info', 'ogcugi_id') + 1;
                     $order_goods_cs_undeliver_goods_info[$i]['ogcugi_id'] = $ogcugi_id;
                     $order_goods_cs_undeliver_goods_info[$i]['cs_id'] = $cs_info_id;
@@ -394,8 +404,8 @@ class Addgoodsconfirmorder extends Controller
                     if($unc_ofg_detail[$i]['isExistModel'] == 'false')
                     {
                         $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
-                        $order_goods_manager[$i]['product_info_id'] = $product_info_id;
-                        $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                        $unc_ofg_detail[$i]['product_info_id'] = $product_info_id;
+                        $retsql = \app\index\model\Admin::addproductinfo($unc_ofg_detail[$i]);
                         if(empty($retsql)||$retsql == false)
                         {
                             return self::retmsg(0,'保存失败，错误代码：1187');
@@ -426,6 +436,16 @@ class Addgoodsconfirmorder extends Controller
             // }
             if (!empty($order_goods_cs_undeliver_goods_info)){
                 for ($i = 0; $i < $ogcugi_length; $i++){
+                    if($order_goods_cs_undeliver_goods_info[$i]['isExistModel'] == 'false')
+                    {
+                        $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                        $order_goods_cs_undeliver_goods_info[$i]['product_info_id'] = $product_info_id;
+                        $retsql = \app\index\model\Admin::addproductinfo($order_goods_cs_undeliver_goods_info[$i]);
+                        if(empty($retsql)||$retsql == false)
+                        {
+                            return self::retmsg(0,'保存失败，错误代码：1187');
+                        }
+                    }
                     $ogcugi_id = $order_goods_cs_undeliver_goods_info[$i]['ogcugi_id'];
                     if (empty($ogcugi_id)){
                         $ogcugi_id = \app\index\model\Admin::getmaxtableidretid('order_goods_cs_undeliver_goods_info', 'ogcugi_id') + 1;

@@ -815,7 +815,7 @@
                 }
             });
             return false;
-        })
+        });
         //删除非定型订单
         jq('#deluncofginfo').click(function () {
             top.layer.confirm('确定删除此非定型产品订货确认单？', {
@@ -853,7 +853,7 @@
                 },
             });
             return false;
-        })
+        });
 
         //开启日期弹框
         function setDatePopup() {
@@ -1653,6 +1653,14 @@
             for (var i = 0; i < length; i++){
                 if (unc_ofg_detail == null){
                     unc_ofg_detail = [];
+                }
+                if(unc_ofg_items[i]['isExistModel'] == undefined || unc_ofg_items[i]['isExistModel'] == null||unc_ofg_items[i]['isExistModel'] == '')
+                {
+                    unc_ofg_items[i]['isExistModel'] = true;
+                }
+                if(unc_ofg_items[i]['unc_product_id'] == undefined || unc_ofg_items[i]['unc_product_id'] == null||unc_ofg_items[i]['unc_product_id'] == '')
+                {
+                    unc_ofg_items[i]['unc_product_id'] = -1;
                 }
                 unc_ofg_detail[i] = unc_ofg_items[i];
             }
