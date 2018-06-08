@@ -709,7 +709,6 @@ class Addgoodsconfirmorder extends Controller
 
     public function printuncorder(){
         $printdata = $_GET['printdata'];
-
         $strJson = str_replace('/$/@','"',$printdata);
         $obj = json_decode($strJson);
         $template_name = "非定型产品确认单.xls";
