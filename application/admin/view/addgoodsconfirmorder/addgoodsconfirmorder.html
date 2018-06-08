@@ -1422,16 +1422,23 @@
                     return false;
                 }
 
-                var user_id = data['build_department_id'];
-                if (user_id == ""){
-                    data['build_department_id'] = -1;
+                var build_organize_id = data['build_organize_id'];
+                if (build_organize_id == ""|| build_organize_id == undefined){
+                    layer.msg('请选择总部门！',{icon:2});
+                    return false;
                 }
 
-                // var user_id = data['user_id'];
-                // if (user_id == ""){
-                //     layer.msg('请选择经理！',{icon:2});
-                //     return false;
-                // }
+                var build_department_id = data['build_department_id'];
+                if (build_department_id == ""|| build_organize_id == undefined){
+                    layer.msg('请选择子部门！',{icon:2});
+                    return false;
+                }
+
+                 var user_id = data['user_id'];
+                 if (user_id == ""|| build_organize_id == undefined){
+                     layer.msg('请输入经理！',{icon:2});
+                     return false;
+                 }
                 var transfer_mode = data['transfer_mode'];
                 if (transfer_mode == "" || transfer_mode === undefined){
                     data['transfer_mode'] = -1;
