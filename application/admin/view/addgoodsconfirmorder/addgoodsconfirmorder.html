@@ -456,17 +456,15 @@
                             if (unc_ofg_detail == null){
                                 unc_ofg_detail = [];
                             }
-                            var itemInfo = {};
-                            itemInfo.uod_id = unc_ofg_items[i].uod_id;
-                            itemInfo.unc_ofg_info_id = null;
-                            itemInfo.product_info_id = unc_ofg_items[i].product_info_id;
-                            itemInfo.uod_count = unc_ofg_items[i].uod_count;
-                            itemInfo.uod_unit = unc_ofg_items[i].uod_unit;
-                            itemInfo.uod_requirement = unc_ofg_items[i].uod_requirement;
-                            itemInfo.uod_delivery_date = unc_ofg_items[i].uod_delivery_date;
-                            itemInfo.uod_comment = unc_ofg_items[i].uod_comment;
-                            itemInfo.unc_product_id = unc_ofg_items[i].unc_product_id;
-                            unc_ofg_detail[i] = itemInfo;
+                            if(unc_ofg_items[i]['isExistModel'] == undefined || unc_ofg_items[i]['isExistModel'] == null||unc_ofg_items[i]['isExistModel'] == '')
+                            {
+                                unc_ofg_items[i]['isExistModel'] = true;
+                            }
+                            if(unc_ofg_items[i]['unc_product_id'] == undefined || unc_ofg_items[i]['unc_product_id'] == null||unc_ofg_items[i]['unc_product_id'] == '')
+                            {
+                                unc_ofg_items[i]['unc_product_id'] = -1;
+                            }
+                            unc_ofg_detail[i] = unc_ofg_items[i];
                         }
                     }
                     console.log('下列非常规订单信息：');
@@ -1229,17 +1227,16 @@
                         if (unc_ofg_detail == null){
                             unc_ofg_detail = [];
                         }
-                        var itemInfo = {};
-                        itemInfo.uod_id = unc_ofg_items[i].uod_id;
-                        itemInfo.unc_ofg_info_id = unc_ofg_info.uoi_id;
-                        itemInfo.product_info_id = unc_ofg_items[i].product_info_id;
-                        itemInfo.uod_count = unc_ofg_items[i].uod_count;
-                        itemInfo.uod_unit = unc_ofg_items[i].uod_unit;
-                        itemInfo.uod_requirement = unc_ofg_items[i].uod_requirement;
-                        itemInfo.uod_delivery_date = unc_ofg_items[i].uod_delivery_date;
-                        itemInfo.uod_comment = unc_ofg_items[i].uod_comment;
-                        itemInfo.unc_product_id = unc_ofg_items[i].unc_product_id;
-                        unc_ofg_detail[i] = itemInfo;
+                        if(unc_ofg_items[i]['isExistModel'] == undefined || unc_ofg_items[i]['isExistModel'] == null||unc_ofg_items[i]['isExistModel'] == '')
+                        {
+                            unc_ofg_items[i]['isExistModel'] = true;
+                        }
+                        if(unc_ofg_items[i]['unc_product_id'] == undefined || unc_ofg_items[i]['unc_product_id'] == null||unc_ofg_items[i]['unc_product_id'] == '')
+                        {
+                            unc_ofg_items[i]['unc_product_id'] = -1;
+                        }
+
+                        unc_ofg_detail[i] = unc_ofg_items[i];
                     }
                 }
                 console.log('下列非常规订单信息：');
