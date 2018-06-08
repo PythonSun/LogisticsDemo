@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title></title>
     <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="/static/UI-jquery/jquery-ui.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/public.css"> </head>
 <style>
     .btnPicLightBg{
@@ -15,6 +16,8 @@
     .hide{
         display: none;
     }
+    .layui-table-style td{padding: 4px 1px;  border: 1px solid #8A8A8A}
+    .layui-table-style th{ border: 1px solid #8A8A8A;  color:black}
 </style>
 <body >
 <form class="layui-form layui-form-pane" action="">
@@ -376,24 +379,24 @@
 
 
     <h3>订购清单</h3>
-    <div class="layui-form-item">
-        <input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled Wheat" lay-submit="" lay-filter="add_order_item" style="color: black;">
-    </div>
-    <table class="layui-form-item layui-table" id="tableorder">
+    <!--<div class="layui-form-item">-->
+        <!--<input type="button" value="添加清单" id="btn_add_order_item" class="layui-btn layui-btn-normal Wheat_disabled Wheat" lay-submit="" lay-filter="add_order_item" style="color: black;">-->
+    <!--</div>-->
+    <table class="layui-table layui-table-style" id="tableorder">
         <thead>
         <tr >
             <th class="Wheat">序号</th>
+            <th class="Wheat">型号</th>
+            <th class="Wheat">产品名称</th>
             <th class="Wheat">产品分类</th>
             <th class="Wheat">品牌</th>
-            <th class="Wheat">产品名称</th>
-            <th class="Wheat">规格</th>
-            <th class="Wheat">型号</th>
+            <th class="Wheat">生产地</th>
             <th class="Wheat">单位</th>
             <th class="Wheat">数量</th>
-            <th class="Wheat">条码</th>
             <th class="Wheat">归还日期</th>
-            <th class="Wheat">归跟换代用原因</th>
-            <th class="Wheat">生产地</th>
+            <th class="Wheat">规格</th>
+            <th class="Wheat">条码</th>
+            <th class="Wheat">代用原因</th>
             <th class="dark_blue">产品状态</th>
             <th class="dark_blue">非常规产品</th>
             <th class="dark_blue">备注</th>
@@ -422,8 +425,11 @@
     </div>
 </form>
 
+<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/static/UI-jquery/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/static/layui/layui.js"></script>
 <script type="text/javascript" src="/static/js/commondetect.js"></script>
+<script type="text/javascript" src="/static/UI-jquery/jquery-ui.js" ></script>
 <script type="text/javascript">
     var isloading = true;
     var delrowid = new Array();
@@ -476,6 +482,8 @@
                     LoadingManagerAndSelected(user_info['department_id'],user_info['user_id']);
                     document.getElementById('build_user_phone').value = user_info['phone'];
                 }
+                addGoodsTableRow();
+                addGoodsTableRow();
                 form.render('select');
 
                 return ;
@@ -572,10 +580,16 @@
                     var order_goods = data['order_goods'];
                     for( var i = 0 ; i<order_goods.length; i++)
                     {
-                        updateRow(order_goods[i],true);
+                        //updateRow(order_goods[i],true);
+                        addGoodsTableRow();
+                        setGoodsRowValue(order_goods[i],i+1);
                     }
                     jq('#order_goods_manager_explain').val( order_goods[0]['order_goods_manager_explain']);
                     jq('#ogl_explain').val( order_goods[0]['ogl_explain']);
+                }
+                if(current_user_type == 1)
+                {
+                    addGoodsTableRow();
                 }
                 ///logistic_info
                 if(data['logistic_info'] != null && data['logistic_info'].length>0)
@@ -685,109 +699,34 @@
             }
         });
 
-        jq('#btn_add_order_item').click(function () {
-            top.layer.open({
-                type:2,
-                title:'新增清单',
-                area:['800px','70%'],
-                shade:0.8,
-                maxmin:true,
-                content:"{:url('admin/addconfirmorderitem/addconfirmorderitem')}?type= 0",
-                btn:['保存','退出'],
-                yes:function (index,layero) {
-                    var  iframeWin = top.window[layero.find('iframe')[0]['name']];
-                    var  orderItem = iframeWin.saveOrderItem();
-                    if(isEmptyObject(orderItem)){
-                        return;
-                    }
-                    //+判断
-                    //console.log(orderItem);
-                    orderItem.ogl_id = "";
-                    orderItem.order_goods_manager_id = "";
-                    updateRow(orderItem,true);
-                    iframeWin.clear();
-                    layer.msg('保存成功！',{icon:1});
-
-                },
-                btn2: function () {
-                }
-            });
-            return false;
-        });
-        jq(document).on('click', '.edit_btn', function() {
-            if((current_user_type != 5) && (current_user_type != 1))
-                return ;
-            var text = jq(this).parent().parent();
-            var type = current_user_type == 5?1:0;
-            top.layer.open({
-                type:2,
-                title:'修改清单',
-                area:['800px','90%'],
-                shade:0.9,
-                maxmin:true,
-                content:"{:url('admin/addconfirmorderitem/addconfirmorderitem')}?type="+ type,
-                btn:['保存','退出'],
-                yes:function (index,layero) {
-                    var  iframeWin = top.window[layero.find('iframe')[0]['name']];
-                    var  orderItem = iframeWin.saveOrderItem();
-                    if(orderItem.product_info_name == null){
-                        return null;
-                    }
-                    // console.log(orderItem);
-
-                    // console.log("length: "+ jq('#tableorder')[0].rows.length);
-                    orderItem.order_goods_manager_id = text.attr("order_goods_manager_id");
-                    orderItem.ogl_id = text.attr("ogl_id");
-                    orderItem.num = text.attr("num");
-                    updateRow(orderItem,false)
-
-                    top.layer.close(index);
-                },
-                btn2: function (index,layero) {
-                   // top.layer.closeAll(index);
-                },
-                success:function (layero, index) {
-                    var orderItem = new Object();
-                    //var text = jq(this).parent().parent();
-                    orderItem.product_type_id = text.attr("product_type_id");
-                    orderItem.product_type_name = text.attr("product_type_name");
-                    orderItem.brand_id = text.attr("brand_id");
-                    orderItem.brand_name = text.attr("brand_name");
-                    orderItem.model = text.attr("model");
-                    orderItem.order_goods_manager_count = text.attr("order_goods_manager_count");
-                    orderItem.unit = text.attr("unit");
-                    orderItem.specification = text.attr("specification");
-                    orderItem.bar_code = text.attr("bar_code");
-                    orderItem.back_date = text.attr("back_date");
-                    orderItem.replace_reason = text.attr("replace_reason");
-                    orderItem.place_name = text.attr("place_name");
-                    orderItem.place_id = text.attr("place_id");
-                    orderItem.ogl_product_state = text.attr("ogl_product_state");
-                    orderItem.unc_product_name = text.attr("unc_product_name");
-                    orderItem.unc_product_id = text.attr("unc_product_id");
-                    orderItem.ogl_comment = text.attr("ogl_comment");
-                    orderItem.product_info_id = text.attr("product_info_id");
-                    orderItem.product_info_name = text.attr("product_info_name");
-                    var iframeWin = top.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-
-                    iframeWin.LoadingData(orderItem);
-                    console.log(orderItem);
-                }
-            });
-        });
         jq(document).on('click', '.del_btn', function(){
             if((current_user_type) != 5 && (current_user_type != 1))
                 return ;
             var text = jq(this).parent().parent();
-            var id= jq(text[0].cells[0].innerHTML).attr("tag");
-            if(id != "")
-                delrowid.push(id);
-            var table = document.getElementById('tableorder');
-            table.deleteRow(jq(text[0].cells[0].innerHTML).text());//指定位置插入行
-            console.log(table);
-            for(var i = 1; i <= table.rows.length;i++){
-                jq(table.children[0].children[i].children[0].children[0]).text(i);
-            }
+            top.layer.confirm('确定删除这条订购清单？', {
+                btn: ['确定','取消'] //按钮
+            }, function(index){
+                top.layer.close(index);
+                var id= jq(text).attr("order_goods_manager_id");
+                console.log(id);
+                if(id != "")
+                    delrowid.push(id);
+                var table = document.getElementById('tableorder');
+                table.deleteRow($(text[0].cells[0].innerHTML).text());//指定位置插入行
+                if(table.rows.length == 1)
+                {
+                    addGoodsTableRow();
+                }
+                else
+                {
+                    for(var i = 1; i <= table.rows.length;i++){
+                        var rowObj = table.rows[i]
+                        var cell = rowObj.cells[0];
+                        cell.innerHTML ="<a>"+ i+"</a>";
+                    }
+                }
+
+            });
         });
 
         //非定型订单弹窗
@@ -1069,108 +1008,6 @@
         }
     }
 
-
-    function updateRow(row ,isAdd) {
-        //console.log(row);
-        var jq = layui.jquery;
-        var rows = jq('#tableorder')[0].rows.length;
-        if(isAdd == false)
-        {
-            rows = row.num;
-            jq('#tableorder')[0].deleteRow(rows)
-        }
-        console.log(row);
-        var new_tr = jq('#tableorder')[0].insertRow(rows);//指定位置插入行
-
-        jq(new_tr).attr('product_type_id',row.product_type_id);
-        if(row.product_type_name == undefined||row.product_type_name == null)
-            row.product_type_name = "";
-        jq(new_tr).attr('product_type_name',row.product_type_name);
-        jq(new_tr).attr('brand_id',row.brand_id);
-        if(row.brand_name == undefined||row.brand_name == null)
-            row.brand_name = "";
-        jq(new_tr).attr('brand_name',row.brand_name);
-        if(row.product_info_name == undefined||row.product_info_name == null)
-            row.product_info_name = "";
-        jq(new_tr).attr('product_info_name',row.product_info_name);
-        jq(new_tr).attr('product_info_id',row.product_info_id);
-        jq(new_tr).attr('model',row.model);
-        if(row.unit == undefined||row.unit == null)
-            row.unit = "";
-        jq(new_tr).attr('unit',row.unit);
-        jq(new_tr).attr('place_id',row.place_id);
-        if(row.place_name == undefined||row.place_name == null)
-            row.place_name = "";
-        jq(new_tr).attr('place_name',row.place_name);
-        jq(new_tr).attr('order_goods_manager_count',row.order_goods_manager_count);
-        if(row.unc_product_name == undefined||row.unc_product_name == null)
-            row.unc_product_name = "";
-        jq(new_tr).attr('unc_product_name',row.unc_product_name);
-        jq(new_tr).attr('unc_product_id',row.unc_product_id);
-        if(row.specification == undefined||row.specification == null)
-            row.specification = "";
-        jq(new_tr).attr('specification',row.specification);
-        jq(new_tr).attr('back_date',row.back_date);
-        if(row.ogl_product_state == undefined||row.ogl_product_state == null)
-            row.ogl_product_state = "";
-        jq(new_tr).attr('ogl_product_state',row.ogl_product_state);
-        jq(new_tr).attr('bar_code',row.bar_code);
-        if(row.replace_reason == undefined||row.replace_reason == null)
-            row.replace_reason = "";
-        jq(new_tr).attr('replace_reason',row.replace_reason);
-        if(row.ogl_comment == undefined||row.ogl_comment == null)
-            row.ogl_comment = "";
-        jq(new_tr).attr('ogl_comment',row.ogl_comment);
-        // console.log("length: "+ jq('#tableorder')[0].rows.length);
-        jq(new_tr).attr('order_goods_manager_id', row.order_goods_manager_id);
-        jq(new_tr).attr('ogl_id',row.ogl_id);
-        jq(new_tr).attr('num',rows);
-
-
-        var col_0 = new_tr.insertCell(0);//添加列
-        col_0.innerHTML = "<td><a>"+ rows+"</a></td>"; //id是保存在数据库的id,新增时为空
-        var col_1 = new_tr.insertCell(1);//添加列
-        col_1.innerHTML = "<td><a >"+ row.product_type_name +"</a></td>";
-        var col_2 = new_tr.insertCell(2);//添加列
-        col_2.innerHTML = "<td><a >"+ row.brand_name +"</a></td>";
-        var col_3 = new_tr.insertCell(3);
-        col_3.innerHTML = "<td><a>"+ row.product_info_name +"</a></td>";//-------产品名称-------
-        var col_4 = new_tr.insertCell(4);
-        col_4.innerHTML = "<td><a>"+ row.specification +"</a></td>";
-        var col_5 = new_tr.insertCell(5);
-        col_5.innerHTML = "<td><a >"+ row.model +"</a></td>";
-        var col_6 = new_tr.insertCell(6);
-        col_6.innerHTML = "<td><a>"+ row.unit +"</a></td>";
-        var col_7 = new_tr.insertCell(7);
-        col_7.innerHTML = "<td><a>"+  row.order_goods_manager_count +"</a></td>";
-        var col_8 = new_tr.insertCell(8);
-        col_8.innerHTML = "<td><a>"+ row.bar_code +"</a></td>";
-        var col_9 = new_tr.insertCell(9);
-        var date = '';
-        if(row.back_date != '' || row.back_date != null || row.back_date != '2000-1-1')
-            date = row.back_date;
-        col_9.innerHTML = "<td><a>"+ date +"</a></td>";
-        var col_10 = new_tr.insertCell(10);
-        col_10.innerHTML = "<td><a>"+ row.replace_reason +"</a></td>";
-        var col_11 = new_tr.insertCell(11);
-        col_11.innerHTML = "<td><a >"+ row.place_name +"</a></td>";
-        var col_12 = new_tr.insertCell(12);
-        col_12.innerHTML = "<td><a>"+ row.ogl_product_state +"</a></td>";
-        var col_13 = new_tr.insertCell(13);
-        if(row.unc_product_name == null){
-            col_13.innerHTML = "<td><a >"+ row.unc_product_name +"</a></td>";
-        }else{
-            col_13.innerHTML = "<td><a >"+ row.unc_product_name +"</a></td>";
-        }
-        var col_14 = new_tr.insertCell(14);
-        col_14.innerHTML = "<td><a>"+ row.ogl_comment +"</a></td>";
-        var col_14 = new_tr.insertCell(15);
-        col_14.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn edit_disabled'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger Wheat_disabled  del_btn del_disabled'>删除</a>" +"</td>";
-        if(current_user_type == 5){
-            jq('.del_disabled').addClass('hide');
-        }
-    }
-
     //新增时保存或者转交 新增单  state: 0,保存  1，转交给总监
     function saveOrDeliverToSql(uidata,state) {
         var jq = layui.jquery;
@@ -1185,6 +1022,13 @@
             setDisable(true);
             return false;
         }
+        var  tabledata = getGoodsTable();
+        if(tabledata == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
         var cs_info = getCsInfo(data,true,false,state);
         console.log("以下确认单信息：");
         console.log(cs_info);
@@ -1221,7 +1065,7 @@
         console.log(order_goods_manager);
 
         jq.ajax({
-            url: "{:url('admin/Addalternativeconfirmorder/addalternativeorder')}",//php文件路径
+            url: "{:url('index/confirmordercommon/addconfirmorder')}",//php文件路径
             data: {
                 cs_info:cs_info,
                 custom_info:custom_info,
@@ -1321,6 +1165,13 @@
             setDisable(true);
             return false;
         }
+        var  tabledata = getGoodsTable();
+        if(tabledata == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
         var cs_info = getCsInfo(data,true,true,1);
         console.log("以下确认单信息：");
         console.log(cs_info);
@@ -1353,7 +1204,7 @@
         console.log(order_goods_manager);
 
         jq.ajax({
-            url: "{:url('admin/Addalternativeconfirmorder/managereditanddeliverorder')}",
+            url: "{:url('index/confirmordercommon/managereditanddeliverorder')}",
             data: {cs_info:cs_info,
                 custom_info:custom_info,
                 delivery_info:delivery_info,
@@ -1387,6 +1238,13 @@
             setDisable(true);
             return false;
         }
+        var  tabledata = getGoodsTable();
+        if(tabledata == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
         var jq = layui.jquery;
 
         var cs_info = getCsInfo(data,true,true,data['cs_info_state']);
@@ -1423,7 +1281,7 @@
         console.log(order_goods_manager);
 
         jq.ajax({
-            url: "{:url('admin/Addalternativeconfirmorder/managereditandsaveorder')}",
+            url: "{:url('index/confirmordercommon/managereditandsaveorder')}",
             data: {cs_info:cs_info,
                 custom_info:custom_info,
                 delivery_info:delivery_info,
@@ -1482,7 +1340,7 @@
         cs_examine[0] = departExamine;
         jq.ajax({
             type : "post",
-            url : "{:url('admin/Addalternativeconfirmorder/deliverorder')}",
+            url : "{:url('index/confirmordercommon/deliverorder')}",
             data : {param:cs_examine},
             async : false,
             success : function(result){
@@ -1528,7 +1386,7 @@
         cs_examine[0] = companyExamine;
         jq.ajax({
             type : "post",
-            url : "{:url('admin/Addalternativeconfirmorder/deliverorder')}",
+            url : "{:url('index/confirmordercommon/deliverorder')}",
             data : {param:cs_examine},
             async : false,
             success : function(result){
@@ -1573,7 +1431,7 @@
         cs_examine[0] = financeExamine;
         jq.ajax({
             type : "post",
-            url : "{:url('admin/Addalternativeconfirmorder/deliverorder')}",
+            url : "{:url('index/confirmordercommon/deliverorder')}",
             data : {param:cs_examine},
             async : false,
             success : function(result){
@@ -1595,6 +1453,13 @@
             setDisable(true);
             return false;
         }
+        var  tabledata = getGoodsTable();
+        if(tabledata == false)
+        {
+            setDisable(true);
+            return false;
+        }
+
         var jq = layui.jquery;
 
         var cs_info = getCsInfo(data,false,true,data['cs_info_state']);
@@ -1652,7 +1517,7 @@
         console.log(cs_examine);
 
         jq.ajax({
-            url: "{:url('admin/Addalternativeconfirmorder/logisticeditandsaveorder')}",
+            url: "{:url('index/confirmordercommon/logisticeditandsaveorder')}",
             data: {cs_info:cs_info,
                 order_goods_manager:order_goods_manager,
                 payment_info:payment_info,
@@ -1760,7 +1625,7 @@
 
         console.log(cs_examine);
         var cs_info = getCsInfo(data,true,true,5);
-        jq.post("{:url('admin/Addalternativeconfirmorder/returnorder')}",{'cs_info':cs_info,'cs_examine':cs_examine},function (result) {
+        jq.post("{:url('index/confirmordercommon/returnorder')}",{'cs_info':cs_info,'cs_examine':cs_examine},function (result) {
             console.log(result);
         });
         return true;
@@ -2048,7 +1913,8 @@
         info.can_edit = isCanWrite == true?1:0;                              //0 经理不可编辑
         info.cs_info_state = csState;
         info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate']; //cs_info       //新增 无完成日期
-        info.product_number = document.getElementById('tableorder').rows.length-1;
+        var dataTable = getGoodsTable();
+        info.product_number =dataTable==null?0 :dataTable.length;
         info.unc_ofg_info_id = isEdit == true?editOrderData['unc_ofg_info_id']:0;
         info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
         return info;
@@ -2114,7 +1980,7 @@
     }
 
     function getOrderGoods(data,isEdit) {
-        var  tabledata = getTableContent();
+        var  tabledata = getGoodsTable();
         var rows = tabledata.length;
         var info= [];
         for(var i = 0; i < rows; i++){
@@ -2143,6 +2009,14 @@
             order_goods_manager_item['unc_product_id'] =tabledata[i]['unc_product_id'] == ''?-1:tabledata[i]['unc_product_id'];
             order_goods_manager_item['ogl_comment'] = tabledata[i]['ogl_comment'];
             order_goods_manager_item['ogl_explain'] = data['ogl_explain'];
+
+            order_goods_manager_item['isExistModel'] = tabledata[i]['isExistModel'];
+            order_goods_manager_item['model'] = tabledata[i]['model'];
+            order_goods_manager_item['product_info_name'] = tabledata[i]['product_info_name'];
+            order_goods_manager_item['product_type_id'] = tabledata[i]['product_type_id'];
+            order_goods_manager_item['brand_id'] = tabledata[i]['brand_id'];
+            order_goods_manager_item['place_id'] = tabledata[i]['place_id'];
+
             info[i] = order_goods_manager_item;
         }
         return info;
@@ -2226,11 +2100,231 @@
         return info;
     }
 
-    // document.onkeydown = function keyLogin(e) {
-    //     var event = (typeof event!= 'undefined') ? window.event : e;
-    //     if(event.keyCode==8) //屏蔽delete键
-    //         return false;
-    // }
+    //增加清单一行
+    var rowIndex = 0;
+    function addGoodsTableRow() {
+        var jq = layui.jquery;
+        var rowNum = jq('#tableorder')[0].rows.length;
+        var newRow = jq('#tableorder')[0].insertRow(rowNum);//指定位置插入行
+
+        //保存每一行的标志
+        jq(newRow).attr('rowIndex',rowIndex);
+        jq(newRow).attr('order_goods_manager_id',"");
+        jq(newRow).attr('ogl_id',"");
+        jq(newRow).attr('isExistModel',true);
+        var col = newRow.insertCell(0);//添加列
+        col.innerHTML = "<td ><a style='margin: 0px 10px' >"+rowNum+"</a></td>";
+        col = newRow.insertCell(1);
+        col.innerHTML = "<td><input type='text' id ='model"+rowIndex+"' class='layui-input autocomplete-input Wheat_disabled' style='color: #0C0C0C ;border:0px'/></td>";
+        col = newRow.insertCell(2);
+        col.innerHTML ="<td ><input type='text' id='product_info_name"+rowIndex+"' class='layui-input Wheat_disabled' style='color: #0C0C0C ;border:0px'/></td>";
+        col = newRow.insertCell(3);
+        col.innerHTML ="<td ><select id='product_type_id"+rowIndex+"' style='border: none;' name='product_type_id'  class='Wheat_disabled select-style-border-none' > <option value='' selected>请选择</option>{volist name='producttypelist' id='vo'} <option value={$vo.product_type_id}>{$vo.product_type_name}</option>{/volist} </select></td>";
+        col = newRow.insertCell(4);
+        col.innerHTML ="<td><select id='brand_id"+rowIndex+"' style='color: #0C0C0C ;border:0px' name='brand_name' lay-filter='brand_name' class='Wheat_disabled select-style-border-none'> <option value='' selected>请选择</option>{volist name='brandlist' id='vo'};col_1.innerHTML =<option value={$vo.brand_id}>{$vo.brand_name}</option>{/volist} </select></td>";
+        col = newRow.insertCell(5);
+        col.innerHTML ="<td><select id='place_id"+rowIndex+"' style='color: #0C0C0C ;border:0px' name='place_name' lay-filter='place_name' class='Wheat_disabled select-style-border-none' > <option value='' selected>请选择</option>{volist name='placelist' id='vo'} <option value={$vo.place_id}>{$vo.place_name}</option>{/volist} </select></td>";
+        col = newRow.insertCell(6);
+        col.innerHTML ="<td><input type='text' id='unit"+rowIndex+"' name='unit' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+        col = newRow.insertCell(7);
+        col.innerHTML ="<td><input type='text' id='order_goods_manager_count"+rowIndex+"' name='inputcount' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputnumber(this);'></td>";
+        col = newRow.insertCell(8);
+        col.innerHTML ="<td><input type='text' name='back_date' id='back_date"+rowIndex+"' autocomplete='on' class='layui-input time-item Wheat_disabled' style='border: 0px'></td>";
+        jq.each(jq(".time-item"),function(){
+            layui.laydate.render({ elem: this });
+        });
+        col = newRow.insertCell(9);
+        col.innerHTML ="<td><input type='text' id='specification"+rowIndex+"' name='specification' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+        col = newRow.insertCell(10);
+        col.innerHTML ="<td><input type='text' name='bar_code' id='bar_code"+rowIndex+"' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px'></td>";
+        col = newRow.insertCell(11);
+        col.innerHTML ="<td><input type='text' name='replace_reason' id='replace_reason"+rowIndex+"' lay-filter='replace_reason' style='color: #0C0C0C ;border:0px' class='layui-input Wheat_disabled ' oninput='detectinputtext(this);'></td>";
+        col = newRow.insertCell(12);
+        col.innerHTML ="<td><select id='ogl_product_state"+rowIndex+"' name='ogl_product_state' lay-filter='unc_productname' class='select-style-border-none dark_blue_disabled'> <option value='' selected>请选择</option> <option value='已更换' >已更换</option> <option value='未更换' >未更换</option> </select></td>";
+        col = newRow.insertCell(13);
+        col.innerHTML ="<td><select id='unc_product_id"+rowIndex+"' name='unc_product_id' lay-filter='unc_productname'  class='select-style-border-none dark_blue_disabled'> <option value='' selected >请选择</option>{volist name='uncproductlist' id='vo1'} <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>{/volist} </select></td>";
+        col = newRow.insertCell(14);
+        col.innerHTML ="<td><input type='text' name='ogl_comment' id='ogl_comment"+rowIndex+"' class='layui-input dark_blue_disabled' oninput='detectinputtext(this);' style='color: #0C0C0C ;border:0px'></td>";
+        col = newRow.insertCell(15);
+        col.innerHTML ="<td><a class='layui-btn layui-btn-xs layui-btn-danger Wheat_disabled  del_btn del_disabled' style = 'margin: 0px 10px '>删除</a></td>";
+
+        var model ="#"+ "model"+rowIndex;
+        $(model).autocomplete({
+            source: function (request, response) {
+                var serachText = $(model).val().trim();
+                console.log(11);
+                jq.ajax({
+                    url: "{:url('index/common/serachmodelinfo')}",
+                    type: "POST",
+                    dataType: "json",
+                    data: { serrchText:serachText},
+                    success: function (data) {
+                        response(jq.map(data, function (item) {
+                            return {
+                                label: item.model,
+                                value: item.model,
+                            }
+                        }));
+                    },
+                });},
+            select:function (event,ui) {
+                jq(model).val(ui.item.value);
+                jq(model).blur();
+            }
+        });
+        var product_info_name = "#"+"product_info_name"+ rowIndex ;
+        var product_type_id = "#"+"product_type_id"+rowIndex ;
+        var brand_id = "#"+"brand_id"+rowIndex ;
+        var place_id = "#"+"place_id"+rowIndex ;
+        $(model).blur(function () {
+            var modelname = jq(model).val();
+            if(modelname == '')
+                return ;
+            jq.ajax({
+                url: "{:url('index/Common/coldserachmodelinfo')}",
+                type: "POST",
+                dataType: "json",
+                async: false,
+                data: { serrchText: modelname},
+                success: function (data) {
+                    if(data == "" || data == null || data === undefined||data.length == 0) {
+                        console.log(173);
+                        top.layer.confirm('型号: <span style="color: red">'+modelname+'</span> 在数据库不存在，是否录入', {
+                            btn: ['是','否'] //按钮
+                        }, function(index){
+                            isExistModel = false;
+                            top.layer.close(index);
+                            jq(newRow).attr('isExistModel',false);
+                            jq(newRow).attr('product_info_id','');
+                            if(jq('#tableorder')[0].rows.length-1 == rowNum && current_user_type == 1)//只有经理才增加
+                            {
+                                addGoodsTableRow();
+                            }
+                        } ,function () {
+                            jq(model).val('');
+                            jq(model).focus();
+                        });
+                    } else {
+                        jq(product_info_name).val(data[0]['product_info_name']);
+                        jq(product_type_id).val(data[0]['product_type_id']);
+                        jq(brand_id).val(data[0]['brand_id']);
+                        jq(place_id).val(data[0]['place_id']);
+                        jq(newRow).attr('product_info_id',data[0]['product_info_id']);
+                        ///还要处理
+                        layui.form.render('select');
+
+                        jq(newRow).attr('isExistModel',true);
+                        if(jq('#tableorder')[0].rows.length-1 == rowNum &&current_user_type == 1)//只有经理才增加
+                        {
+                            addGoodsTableRow();
+                        }
+                    }
+                },
+            });
+
+
+        });
+        rowIndex++;
+        if(current_user_type == 1)
+        {
+            jq('.dark_blue_disabled').addClass('layui-disabled');
+            jq('.dark_blue_disabled').attr('disabled',true);
+
+            jq.each(jq(".time-item"),function(){
+                layui.laydate.render({ elem: this });
+            });
+        }
+        layui.form.render('select');
+    }
+    //给清单赋值
+    function setGoodsRowValue(data,rowNum) {
+        console.log(data);
+        var table = document.getElementById('tableorder');
+        var row = table.rows[rowNum];
+        var rowIndex = $(row).attr('rowIndex');
+        $(row).attr('order_goods_manager_id',data['order_goods_manager_id']);
+        $(row).attr('product_info_id',data['product_info_id']);
+        $(row).attr('ogl_id',data['ogl_id']);
+        $(row).attr('isExistModel',true);
+        $('#model'+rowIndex).val(data['model']);
+        $('#product_info_name'+rowIndex).val(data['product_info_name']);
+        $('#product_type_id'+rowIndex).val(data['product_type_id']);
+        $('#brand_id'+rowIndex).val(data['brand_id']);
+        $('#place_id'+rowIndex).val(data['place_id']);
+        $('#order_goods_manager_count'+rowIndex).val(data['order_goods_manager_count']);
+        $('#unit'+rowIndex).val(data['unit']);
+        $('#specification'+rowIndex).val(data['specification']);
+        if(data['back_date'] != '2000-01-01' )
+            $('#back_date'+rowIndex).val(data['back_date']);
+        $('#bar_code'+rowIndex).val(data['bar_code']);
+        $('#replace_reason'+rowIndex).val(data['replace_reason']);
+        $('#unc_product_id'+rowIndex).val(data['unc_product_id']);
+        $('#ogl_product_state'+rowIndex).val(data['ogl_product_state']);
+        $('#ogl_comment'+rowIndex).val(data['ogl_comment']);
+    }
+    //获取全部清单，错误返回false
+    function getGoodsTable() {
+        var table = document.getElementById('tableorder');
+        if(table.rows.length <=1)
+            return null;
+        var data = Array();
+        for(var i =1 ;i< table.rows.length;i++)
+        {
+            var row = table.rows[i];
+            var rowIndex = $(row).attr('rowIndex');
+            if($("#model"+rowIndex).val() == ''&& i != table.rows.length-1)
+            {
+                top.layer.msg('订购清单第'+i+'行型号不能为空',{icon:2});
+                return false;
+            }
+            else if($("#model"+rowIndex).val() == ''&& i == table.rows.length-1)
+            {
+                break;
+            }
+            var rowdata = {};
+            rowdata.model = $("#model"+rowIndex).val();
+            rowdata.product_info_name = $('#product_info_name'+rowIndex).val();
+            rowdata.product_type_id = $('#product_type_id'+rowIndex).val();
+            if(rowdata.product_type_id == "" || rowdata.product_type_id == undefined || rowdata.product_type_id == null){
+                top.layer.msg('订购清单第'+i+'行，请输入产品分类',{icon:2});
+                return false;
+            }
+            rowdata.brand_id = $('#brand_id'+rowIndex).val();
+            if(rowdata.brand_id == "" || rowdata.brand_id == undefined || rowdata.brand_id == null){
+                top.layer.msg('订购清单第'+i+'行，请输入品牌',{icon:2});
+                return false;
+            }
+            rowdata.place_id = $('#place_id'+rowIndex).val();//
+            if(rowdata.place_id == "" || rowdata.place_id == undefined || rowdata.place_id == null){
+                rowdata.place_id = -1;
+            }
+            rowdata.unit = $('#unit'+rowIndex).val();
+            rowdata.order_goods_manager_count = $('#order_goods_manager_count'+rowIndex).val();
+            if(rowdata.order_goods_manager_count == "" || rowdata.order_goods_manager_count == undefined || rowdata.order_goods_manager_count == null){
+                top.layer.msg('订购清单第'+i+'行，请输入数量',{icon:2});
+                return false;
+            }
+            rowdata.specification = $('#specification'+rowIndex).val();
+            rowdata.back_date = $('#back_date'+rowIndex).val();
+            if(rowdata.back_date == "" || rowdata.back_date == undefined || rowdata.back_date == null){
+                rowdata.back_date = '2000-01-01';
+            }
+            rowdata.bar_code = $('#bar_code'+rowIndex).val();
+            rowdata.replace_reason = $('#replace_reason'+rowIndex).val();
+            rowdata.ogl_comment = $('#ogl_comment'+rowIndex).val();
+            rowdata.ogl_product_state = $('#ogl_product_state'+rowIndex).val();
+            rowdata.unc_product_id = $('#unc_product_id'+rowIndex).val();
+            if(rowdata.unc_product_id == "" || rowdata.unc_product_id == undefined || rowdata.unc_product_id == null){
+                rowdata.unc_product_id = -1;
+            }
+            rowdata.order_goods_manager_id = $(row).attr('order_goods_manager_id');
+            rowdata.product_info_id = $(row).attr('product_info_id');
+            rowdata.ogl_id = $(row).attr('ogl_id');
+            rowdata.isExistModel = $(row).attr('isExistModel');
+            data[i-1]=rowdata;
+        }
+        return data;
+    }
 
 </script>
 </body>

@@ -38,7 +38,10 @@ class Addgoodsconfirmorder extends Controller
         $this->assign('type',1);
         if (!empty($productlist))
             $this->assign("productlist", json_encode($productlist));
-    	return $this->fetch();
+
+        $this->init();
+
+        return $this->fetch();
     }
 
     public function editgoodsconfirmorder(){
@@ -84,7 +87,30 @@ class Addgoodsconfirmorder extends Controller
         $this->assign('type',$type);
         if (!empty($productlist))
             $this->assign("productlist", json_encode($productlist));
+
+        $this->init();
+
         return $this->fetch('addgoodsconfirmorder');
+    }
+
+    public function init()
+    {
+        $producttype = \app\index\model\Admin::getclassinfo('product_type','product_type_id');
+        $brand = \app\index\model\Admin::getclassinfo('product_brand','brand_id');
+        $place = \app\index\model\Admin::getclassinfo('product_place','place_id');
+        $uncproduct = \app\index\model\Admin::getuncproduct();
+        if (!empty($brand)){
+            $this->assign('producttypelist',$producttype);
+        }
+        if (!empty($brand)){
+            $this->assign('brandlist',$brand);
+        }
+        if (!empty($place)){
+            $this->assign('placelist',$place);
+        }
+        if (!empty($uncproduct)){
+            $this->assign('uncproductlist',$uncproduct);
+        }
     }
 
     public function getdepartmentinfo()
@@ -177,11 +203,22 @@ class Addgoodsconfirmorder extends Controller
             if(!empty($unc_ofg_info) && !empty($unc_ofg_detail)){
                 $unc_ofg_detail_length = count($unc_ofg_detail);
                 for($i = 0; $i < $unc_ofg_detail_length; $i++){
+                    if($unc_ofg_detail[$i]['isExistModel'] == 'false')
+                    {
+                        $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                        $order_goods_manager[$i]['product_info_id'] = $product_info_id;
+                        $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                        if(empty($retsql)||$retsql == false)
+                        {
+                            return self::retmsg(0,'保存失败，错误代码：1187');
+                        }
+                    }
                     $uod_id = \app\index\model\Admin::getmaxtableidretid('unc_ofg_detail', 'uod_id') + 1;
                     $unc_ofg_detail[$i]['uod_id'] = $uod_id;
                     $uod_id_arr[$i] = $uod_id;
                     $unc_ofg_detail[$i]['unc_ofg_info_id'] = $uoi_id;
                     $retunc_ofg_detail = \app\index\model\Admin::updateunc_ofg_detail($unc_ofg_detail[$i]);
+
                     if (empty($retunc_ofg_detail)){
                         return self::retmsg(0,'保存失败，错误代码：1169');
                     }
@@ -354,6 +391,16 @@ class Addgoodsconfirmorder extends Controller
             if(!empty($unc_ofg_info) && !empty($unc_ofg_detail)){
                 $unc_ofg_detail_length = count($unc_ofg_detail);
                 for($i = 0; $i < $unc_ofg_detail_length; $i++){
+                    if($unc_ofg_detail[$i]['isExistModel'] == 'false')
+                    {
+                        $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
+                        $order_goods_manager[$i]['product_info_id'] = $product_info_id;
+                        $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                        if(empty($retsql)||$retsql == false)
+                        {
+                            return self::retmsg(0,'保存失败，错误代码：1187');
+                        }
+                    }
                     $uod_id = $unc_ofg_detail[$i]['uod_id'];
                     if ($uod_id == ""){
                         $uod_id = \app\index\model\Admin::getmaxtableidretid('unc_ofg_detail', 'uod_id') + 1;

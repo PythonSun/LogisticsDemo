@@ -398,7 +398,7 @@
                         <th class="Wheat">归还日期</th>
                         <th class="Wheat" >规格</th>
                         <th class="Wheat">条码</th>
-                        <th class="Wheat">归跟换代用原因</th>
+                        <th class="Wheat">更换原因</th>
                         <th class="dark_blue">产品状态</th>
                         <th class="dark_blue">非常规产品</th>
                         <th class="dark_blue">备注</th>
@@ -458,7 +458,7 @@
             layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
                 var form = layui.form,
                     laydate = layui.laydate,
-                    jq = layui.jquery;
+                    jq = layui.jquery,
                     layer = layui.layer;
 
                 laydate.render({
@@ -2143,7 +2143,8 @@
                 info.can_edit = isCanWrite == true?1:0;                              //0 不可编辑
                 info.cs_info_state = csState;
                 info.complete_date = data['orderdate'] == ''?'2000-01-01':data['orderdate']; //cs_info       //新增 无完成日期
-                info.product_number = document.getElementById('tableorder').rows.length-1;
+                var dataTable = getGoodsTable();
+                info.product_number =dataTable==null?0 :dataTable.length;
                 info.unc_ofg_info_id = isEdit == true?editOrderData['unc_ofg_info_id']:0;
                 info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
                 return info;
@@ -2359,19 +2360,17 @@
                 col.innerHTML ="<td><input type='text' id='order_goods_manager_count"+rowIndex+"' name='inputcount' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputnumber(this);'></td>";
                 col = newRow.insertCell(8);
                 col.innerHTML ="<td><input type='text' name='back_date' id='back_date"+rowIndex+"' autocomplete='on' class='layui-input time-item Wheat_disabled' style='border: 0px'></td>";
-                jq.each(jq(".time-item"),function(){
-                    layui.laydate.render({ elem: this });
-                });
+
                 col = newRow.insertCell(9);
                 col.innerHTML ="<td><input type='text' id='specification"+rowIndex+"' name='specification' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
                 col = newRow.insertCell(10);
                 col.innerHTML ="<td><input type='text' name='bar_code' id='bar_code"+rowIndex+"' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px'></td>";
                 col = newRow.insertCell(11);
-                col.innerHTML ="<td><input type='text' name='replace_reason' id='replace_reason"+rowIndex+"' lay-filter='replace_reason' style='color: #0C0C0C ;border:0px' class='layui-input Wheat_disabled ' oninput='detectinputtext(this);'></td>";
+                col.innerHTML ="<td><input type='text' name='replace_reason' id='replace_reason"+rowIndex+"' lay-filter='replace_reason' style='color: #0C0C0C ;border:0px' class='layui-input Wheat_disabled Wheat_disabled' oninput='detectinputtext(this);'></td>";
                 col = newRow.insertCell(12);
-                col.innerHTML ="<td><select id='unc_product_id"+rowIndex+"' name='unc_product_id' lay-filter='unc_productname'  class='select-style-border-none dark_blue_disabled'> <option value='' selected >请选择</option>{volist name='uncproductlist' id='vo1'} <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>{/volist} </select></td>";
+                col.innerHTML ="<td><select id='ogl_product_state"+rowIndex+"' name='ogl_product_state' lay-filter='unc_productname' class='select-style-border-none dark_blue_disabled'> <option value='' selected>请选择</option> <option value='定制' >定制</option> <option value='缺货' >缺货</option> <option value='已发货' >已发货</option></select></td>";
                 col = newRow.insertCell(13);
-                col.innerHTML ="<td><select id='ogl_product_state"+rowIndex+"' name='ogl_product_state' lay-filter='unc_productname' class='select-style-border-none dark_blue_disabled'> <option value='' selected>请选择</option> <option value='已更换' >已更换</option> <option value='未更换' >未更换</option> </select></td>";
+                col.innerHTML ="<td><select id='unc_product_id"+rowIndex+"' name='unc_product_id' lay-filter='unc_productname'  class='select-style-border-none dark_blue_disabled'> <option value='' selected >请选择</option>{volist name='uncproductlist' id='vo1'} <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>{/volist} </select></td>";
                 col = newRow.insertCell(14);
                 col.innerHTML ="<td><input type='text' name='ogl_comment' id='ogl_comment"+rowIndex+"' class='layui-input dark_blue_disabled' oninput='detectinputtext(this);' style='color: #0C0C0C ;border:0px'></td>";
                 col = newRow.insertCell(15);
@@ -2454,6 +2453,16 @@
 
                 });
                 rowIndex++;
+
+                if(current_user_type == 1)
+                {
+                    jq('.dark_blue_disabled').addClass('layui-disabled');
+                    jq('.dark_blue_disabled').attr('disabled',true);
+
+                    jq.each(jq(".time-item"),function(){
+                        layui.laydate.render({ elem: this });
+                    });
+                }
                 layui.form.render('select');
             }
             //给清单赋值
@@ -2488,11 +2497,9 @@
                 if(table.rows.length <=1)
                     return null;
                 var data = Array();
-                console.log(table.rows.length);
                 for(var i =1 ;i< table.rows.length;i++)
                 {
                     var row = table.rows[i];
-                    console.log(i);
                     var rowIndex = $(row).attr('rowIndex');
                     if($("#model"+rowIndex).val() == ''&& i != table.rows.length-1)
                     {

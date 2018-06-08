@@ -38,8 +38,31 @@ class Uncofginfo extends Controller
         
         //$this->assign('user_id',$login_user_id);
         //$this->assign('user_name',$login_user_name);
+        $this->init();
+
         return $this->fetch();
     }
+
+    public function init()
+    {
+        $producttype = \app\index\model\Admin::getclassinfo('product_type','product_type_id');
+        $brand = \app\index\model\Admin::getclassinfo('product_brand','brand_id');
+        $place = \app\index\model\Admin::getclassinfo('product_place','place_id');
+        $uncproduct = \app\index\model\Admin::getuncproduct();
+        if (!empty($brand)){
+            $this->assign('producttypelist',$producttype);
+        }
+        if (!empty($brand)){
+            $this->assign('brandlist',$brand);
+        }
+        if (!empty($place)){
+            $this->assign('placelist',$place);
+        }
+        if (!empty($uncproduct)){
+            $this->assign('uncproductlist',$uncproduct);
+        }
+    }
+
     public function checkid(){
         $uoi_manual_ofg_id = $_POST['id'];
         $uoi_id = $_POST['uoi_id'];
@@ -59,6 +82,7 @@ class Uncofginfo extends Controller
             return true;
         }
     }
+
 
     /*打印非常规订单确认单*/
     public function printuncofginfo(){

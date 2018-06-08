@@ -21,7 +21,6 @@ class Addreplaceconfirmorder extends Controller
             $this->assign("companylist", $companytable);
         $this->assign("cs_id", "");
         $this->assign("current_user_type", $this->getcurrentusertype());
-
         $userinfo = Array();
         $userinfo['user_id'] =$organizeid['user_id'];
         $userinfo['department_id'] =$organizeid['organize_id'];
@@ -32,6 +31,13 @@ class Addreplaceconfirmorder extends Controller
         $userinfo['phone'] =$organizeid['phone'];
         $this->assign("userinfo", json_encode($userinfo));
 
+        $this->init();
+
+        return $this->fetch();
+    }
+
+    public function init()
+    {
         $producttype = \app\index\model\Admin::getclassinfo('product_type','product_type_id');
         $brand = \app\index\model\Admin::getclassinfo('product_brand','brand_id');
         $place = \app\index\model\Admin::getclassinfo('product_place','place_id');
@@ -48,9 +54,6 @@ class Addreplaceconfirmorder extends Controller
         if (!empty($uncproduct)){
             $this->assign('uncproductlist',$uncproduct);
         }
-
-
-        return $this->fetch();
     }
 
     public function  getcurrentusertype()
@@ -109,22 +112,7 @@ class Addreplaceconfirmorder extends Controller
         $userinfo['phone'] =$organizeid['phone'];
         $this->assign("userinfo", json_encode($userinfo));
 
-        $producttype = \app\index\model\Admin::getclassinfo('product_type','product_type_id');
-        $brand = \app\index\model\Admin::getclassinfo('product_brand','brand_id');
-        $place = \app\index\model\Admin::getclassinfo('product_place','place_id');
-        $uncproduct = \app\index\model\Admin::getuncproduct();
-        if (!empty($brand)){
-            $this->assign('producttypelist',$producttype);
-        }
-        if (!empty($brand)){
-            $this->assign('brandlist',$brand);
-        }
-        if (!empty($place)){
-            $this->assign('placelist',$place);
-        }
-        if (!empty($uncproduct)){
-            $this->assign('uncproductlist',$uncproduct);
-        }
+        $this->init();
 
         return $this->fetch('addreplaceconfirmorder');
     }

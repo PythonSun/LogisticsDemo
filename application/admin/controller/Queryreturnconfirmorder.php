@@ -106,6 +106,7 @@ class Queryreturnconfirmorder extends Controller
         return $tablelist;
     }
 
+    /*退货确认单*/
     public function exportreturnconfirmorder(){
         $template_name = "订单登记系统导出.xlsx";
         $type=0x03;
@@ -115,5 +116,17 @@ class Queryreturnconfirmorder extends Controller
 
         $ret = \app\index\model\Admin::queryexportcsinfoconfirmorder($param,$type);
         \app\index\model\Admin::exportcsinfoconfirmorder($file_name,$file_extend,$template_name,$ret);
+    }
+
+    /*退货确认单*/
+    public function printreturnconfirmorder(){
+        $template_name = "退货确认单.xlsx";
+        $type=0x03;
+        $cs_id = $_GET['cs_id'];
+        $file_name = '退货确认单';
+        $file_extend = 'xlsx';
+
+        $ret = \app\index\model\Admin::queryprintcsinfoorder($cs_id,$type);
+        \app\index\model\Admin::printreplaceconfirmorder($file_name,$file_extend,$template_name,$ret,$type);
     }
 }
