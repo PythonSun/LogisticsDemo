@@ -170,6 +170,7 @@
                     top.layer.confirm('是否删除此行信息？', {
                         btn: ['是','否'] //按钮
                     }, function(index){
+                        top.layer.close(index);
                         var uod_id = jq(text).attr("uod_id");
                         if (uod_id === undefined || uod_id == ""){
                             //return;
@@ -177,8 +178,6 @@
                             delrowid.push(uod_id);
                         }
                         jq('#tableorder')[0].deleteRow(jq(text[0].cells[0].innerHTML).text());
-
-
                         var table = document.getElementById("tableorder"); //获得整个表格对象
                         if(table.rows.length == 1)
                         {
@@ -192,7 +191,7 @@
                                 cell.innerHTML ="<a>"+ i+"</a>";
                             }
                         }
-                        top.layer.close(index);
+
                     }, function(){
 
                     });
@@ -297,11 +296,12 @@
                 retData.unc_ofg_info = unc_ofg_info;
                 retData.unc_ofg_items = tableItem;
                 retData.del_unc_ofg_detail_id_arr = delrowid;
-                if ((tableItem == null || tableItem.length == 0) && uoi_to == "" && uoi_manual_ofg_id == ""
-                 && uoi_custom_name == "" && uoi_to_place == "" && uoi_project_name == "" && uoi_provider_name == ""){
-                    return null;
-                }
-                if(tableItem == false)
+                // if ((tableItem == null || tableItem.length == 0) && uoi_to == "" && uoi_manual_ofg_id == ""
+                //  && uoi_custom_name == "" && uoi_to_place == "" && uoi_project_name == "" && uoi_provider_name == ""){
+                //     return null;
+                // }
+
+                if(tableItem === false)
                 {
                     return false;
                 }
@@ -314,6 +314,7 @@
                     layer.msg('请填写完整非定型订货单信息！',{icon:2});
                     return false;
                 }
+                console.log(111);
                 var retbo = false;
                 jq.ajax({
                     url: "{:url('admin/uncofginfo/checkid')}",//php文件路径
