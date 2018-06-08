@@ -1654,6 +1654,14 @@
                 if (unc_ofg_detail == null){
                     unc_ofg_detail = [];
                 }
+                if(unc_ofg_items[i]['isExistModel'] == undefined || unc_ofg_items[i]['isExistModel'] == null||unc_ofg_items[i]['isExistModel'] == '')
+                {
+                    unc_ofg_items[i]['isExistModel'] = true;
+                }
+                if(unc_ofg_items[i]['unc_product_id'] == undefined || unc_ofg_items[i]['unc_product_id'] == null||unc_ofg_items[i]['unc_product_id'] == '')
+                {
+                    unc_ofg_items[i]['unc_product_id'] = -1;
+                }
                 unc_ofg_detail[i] = unc_ofg_items[i];
             }
         }
