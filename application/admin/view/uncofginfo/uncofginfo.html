@@ -360,6 +360,8 @@
                 unc_ofg_info.uoi_project_name = uoi_project_name;
                 unc_ofg_info.uoi_provider_name = uoi_provider_name;
                 unc_ofg_info.productlist = getGoodsTable();
+                if(unc_ofg_info.productlist === false)
+                    return null;
                 return unc_ofg_info;
             }
 
