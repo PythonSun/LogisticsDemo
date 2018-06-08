@@ -707,4 +707,12 @@ class Addgoodsconfirmorder extends Controller
         return $dbproductinfo;
     }
 
+    public function printuncorder(){
+        $printdata = json_decode($_GET['printdata']);
+        $template_name = "非定型产品确认单.xls";
+        $file_name = '非定型产品确认单';
+        $file_extend = 'xlsx';
+        \app\index\model\Admin::printuncordergoods($file_name,$file_extend,$template_name,$printdata);
+    }
+
 }

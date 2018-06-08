@@ -31,14 +31,14 @@
                         <input type="text" disabled name="cs_belong_create_time" id="cs_belong_create_time" autocomplete="on" class="layui-input light_gray" value="{$date}" onkeypress="if(event.keyCode==13) focusNextInput(this);"> </div>
                 </div>
                 <div class="layui-inline">
-                    <label class="layui-form-label dark_blue">接收时间</label>
-                    <div class="layui-input-inline dark_blue">
-                        <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input dark_blue dark_blue_disabled" onkeypress="if(event.keyCode==13) focusNextInput(this);"> </div>
-                </div>
-                <div class="layui-inline">
                     <label class="layui-form-label light_gray">流水号</label>
                     <div class="layui-input-inline">
                         <input type="text" name="cs_id" id="cs_id" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray" disabled> </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label light_gray">部门编号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" disabled name="department_number" id="department_number" autocomplete="on" class="layui-input light_gray "  value="{$depid}"> </div>
                 </div>
                 <div class="layui-inline"> 
                     <label class="layui-form-label dark_blue">状态</label>
@@ -55,10 +55,11 @@
                     </div>
                 </div>
                 <div class="layui-inline">
-                    <label class="layui-form-label light_gray">部门编号</label>
-                    <div class="layui-input-inline">
-                        <input type="text" disabled name="department_number" id="department_number" autocomplete="on" class="layui-input light_gray "  value="{$depid}"> </div>
+                    <label class="layui-form-label dark_blue">接收时间</label>
+                    <div class="layui-input-inline dark_blue">
+                        <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input dark_blue dark_blue_disabled" onkeypress="if(event.keyCode==13) focusNextInput(this);"> </div>
                 </div>
+
             </div>
             <h3>物流信息</h3>
             <div class="layui-form-item">
