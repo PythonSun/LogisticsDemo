@@ -72,7 +72,7 @@
 				form.on('submit(export)',function(data){
 					top.layer.open({
 						type: 2,
-						area: ['600px', '250px'],
+						area: ['600px', '150px'],
 						shade: 0.6,
 						shadeClose:true,
 						title: '设置导出参数',
@@ -145,7 +145,7 @@
                         		if(customproduct != ''){
                         			param.customproduct = customproduct;
                         		}
-                        		window.open("{:url('admin/queryborrowconfirmorder/exportborrowconfirmorder')}?param="+ JSON.stringify(param) + "&file_name=" + exportparam.file_name+ "&file_extend=" + exportparam.file_extend,"_self");
+                        		window.open("{:url('admin/queryborrowconfirmorder/exportborrowconfirmorder')}?param="+ JSON.stringify(param) + "&file_name=" + exportparam.file_name,"_self");
 							}
 						});
 					return false;
@@ -204,6 +204,10 @@
                             btn: [ '打印预览','退出'],
                             btnAlign: 'c',
                             yes: function (index,layero) {
+                                if (!!window.ActiveXObject || "ActiveXObject" in window){
+                                    top.layer.msg('请使用非IE浏览器或者非IE内核浏览器打印',{icon:2});
+                                    return;
+                                }
                                 var cs_id = data.cs_id;
                                 top.layer.open({
                                     type: 2,

@@ -569,9 +569,13 @@
                         btn:['打印预览','确定','退出'],
                         btnAlign: 'c',
                         yes:function (index,layero) {
+                            if (!!window.ActiveXObject || "ActiveXObject" in window){   
+                                top.layer.msg('请使用非IE浏览器或者非IE内核浏览器打印',{icon:2});
+                                return;
+                            }
                             var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                             var  ret = iframeWin.getPrintData();
-                            if(ret == null){
+                            if(ret === null){
                                 return;
                             }
                             var strJson = JSON.stringify(ret);

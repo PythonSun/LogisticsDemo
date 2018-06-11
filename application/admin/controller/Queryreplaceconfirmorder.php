@@ -115,7 +115,7 @@ class Queryreplaceconfirmorder extends Controller
         $type=0x01;
         $param = json_decode($_GET['param']);
         $file_name = $_GET['file_name'];
-        $file_extend = $_GET['file_extend'];
+        $file_extend = 'xlsx';
 
         $ret = \app\index\model\Admin::queryexportcsinfoconfirmorder($param,$type);
         \app\index\model\Admin::exportcsinfoconfirmorder($file_name,$file_extend,$template_name,$ret);
@@ -123,7 +123,7 @@ class Queryreplaceconfirmorder extends Controller
 
     /*打印更换确认单*/
     public function printreplaceconfirmorder(){
-        $template_name = "更换代用确认单.xlsx";
+        $template_name = "更换确认单.xlsx";
         $type=0x01;
         $cs_id = $_GET['cs_id'];
         $file_name = '更换确认单';
