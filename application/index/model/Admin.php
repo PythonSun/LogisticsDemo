@@ -1347,6 +1347,7 @@
         /*根据增加和更新用户*/
         public static function updateuser($user)
         {
+            $username= $user["username"];
             $fullname = $user["fullname"];
             $password = $user["password"];
             $phone = $user["phone"];
@@ -1363,15 +1364,15 @@
             if($user_id != "")
             {
                 $sql = " UPDATE dsp_logistic.user ";
-                $sql.="  SET  fullname = '{$fullname}', password = '{$password}', phone = '{$phone}', organize_id = '{$organize_id}', job_id = '{$job_id}', role_id = '{$role_id}' ";
+                $sql.="  SET  username = '{$username}', fullname = '{$fullname}', password = '{$password}', phone = '{$phone}', organize_id = '{$organize_id}', job_id = '{$job_id}', role_id = '{$role_id}' ";
                 $sql.=" where user_id = '{$user_id}'";
                 $result = Db::execute($sql);
                 return $result;
             }
             else
             {
-                $sql = "INSERT INTO `dsp_logistic`.`user` (`fullname`, `password`, `phone`, `organize_id`, `job_id`, `role_id`)";
-                $sql.="  VALUES ('{$fullname}', '{$password}', '{$phone}', '{$organize_id}', '{$job_id}', '{$role_id}');";
+                $sql = "INSERT INTO `dsp_logistic`.`user` (`username`,`fullname`, `password`, `phone`, `organize_id`, `job_id`, `role_id`)";
+                $sql.="  VALUES ('$username','{$fullname}', '{$password}', '{$phone}', '{$organize_id}', '{$job_id}', '{$role_id}');";
                 $result = Db::execute($sql);
                 return $result;
             }
@@ -1818,7 +1819,7 @@
         }
 
         public static function login($username,$password){
-            $where['fullname'] = $username;
+            $where['username'] = $username;
             $where['password'] = $password;
 
             $user = Db::name('dsp_logistic.user')->where($where)->find();   /*用户信息检测*/
@@ -1965,7 +1966,7 @@
             if(count($tableobj) > 0){
                 for($i=0; $i < count($tableobj); $i++){
                     $cs_id = $tableobj[$i]['cs_id'];
-                    $sqlfour = "select dsp_logistic.logistics_info.delivery_date from dsp_logistic.logistics_info where cs_id='$cs_id'";
+                    $sqlfour = "select dsp_logistic.logistics_info.* from dsp_logistic.logistics_info where cs_id='$cs_id'";
                     $dateobj = Db::query($sqlfour);
                     $tableobj[$i]['logistic_date'] = $dateobj;
                 }
@@ -2055,16 +2056,19 @@
                 /*发货日期*/
                 $logistic_date = $tableobj[$i]['logistic_date'];
                 $delivery_logistic_date = "";
+                $delivery_logistic_yard = "";
                 for($l = 0 ; $l < count($logistic_date) ; $l++){
                     $delivery_logistic_date .= $logistic_date[$l]['delivery_date'].',';
+                    $delivery_logistic_yard .= $logistic_date[$l]['goods_yard_name'].',';
                 }
                 $tableobj[$i]['delivery_logistic_date'] = $delivery_logistic_date;
+                $tableobj[$i]['delivery_logistic_yard'] = $delivery_logistic_yard;
             }
             return $tableobj;
         }
 
         /*导出更换确认单 代用确认单 维修确认单  退货确认单 配件确认单 借用确认单*/
-        public static function exportcsinfoconfirmorder($file_name,$file_extend,$template_name,$ret){
+        public static function exportcsinfoconfirmorder($file_name,$file_extend,$template_name,$ret,$type){
             $root_url = $_SERVER['DOCUMENT_ROOT'];
             $file_name = iconv("utf-8","gb2312",$file_name);
             $template_name = iconv("utf-8","gb2312",$template_name);
@@ -2080,8 +2084,13 @@
                 $objPHPExcel->getActiveSheet()->setCellValue('B'.($item+$liststart), $ret[$item-3]['delivery_logistic_date']);
                 $objPHPExcel->getActiveSheet()->setCellValue('C'.($item+$liststart), $ret[$item-3]['build_department_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('D'.($item+$liststart), $ret[$item-3]['build_user_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('E'.($item+$liststart), $ret[$item-3]['delivery_info_receiver_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('F'.($item+$liststart), $ret[$item-3]['delivery_info_goods_yard_name']);
+                if(($type == 2)||($type == 5)){
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.($item+$liststart), $ret[$item-3]['delivery_info_receiver_name']);
+                }else{
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.($item+$liststart), $ret[$item-3]['return_info_receiver_name']);
+                }
+
+                $objPHPExcel->getActiveSheet()->setCellValue('F'.($item+$liststart), $ret[$item-3]['delivery_logistic_yard']);
                 /*订单状态*/
                 if($ret[$item-3]['cs_info_state'] == 1){
                     $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), '处理中');
@@ -2312,7 +2321,7 @@
             if(count($tableobj) > 0){
                 for($i=0; $i < count($tableobj); $i++){
                     $cs_id = $tableobj[$i]['cs_id'];
-                    $sqlfour = "select dsp_logistic.logistics_info.delivery_date from dsp_logistic.logistics_info where cs_id='$cs_id'";
+                    $sqlfour = "select dsp_logistic.logistics_info.* from dsp_logistic.logistics_info where cs_id='$cs_id'";
                     $dateobj = Db::query($sqlfour);
                     $tableobj[$i]['logistic_date'] = $dateobj;
                 }
@@ -2412,10 +2421,13 @@
                 // /*发货日期*/
                 $logistic_date = $tableobj[$i]['logistic_date'];
                 $delivery_logistic_date = "";
+                $delivery_logistic_yard = "";
                 for($l = 0 ; $l < count($logistic_date) ; $l++){
                     $delivery_logistic_date .= $logistic_date[$l]['delivery_date'].',';
+                    $delivery_logistic_yard .= $logistic_date[$l]['goods_yard_name'].',';
                 }
                 $tableobj[$i]['delivery_logistic_date'] = $delivery_logistic_date;
+                $tableobj[$i]['delivery_logistic_yard'] = $delivery_logistic_yard;
             }
             return $tableobj;
         }
@@ -2438,7 +2450,7 @@
                 $objPHPExcel->getActiveSheet()->setCellValue('C'.($item+$liststart), $ret[$item-3]['build_department_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('D'.($item+$liststart), $ret[$item-3]['build_user_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('E'.($item+$liststart), $ret[$item-3]['receiver_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('F'.($item+$liststart), $ret[$item-3]['receiver_address']);
+                $objPHPExcel->getActiveSheet()->setCellValue('F'.($item+$liststart), $ret[$item-3]['delivery_logistic_yard']);
                 /*订单状态*/
                 if($ret[$item-3]['cs_info_state'] == 1){
                     $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), '处理中');
@@ -2841,17 +2853,17 @@
             $objPHPExcel->getActiveSheet()->setCellValue('A16', "提供商：".$ret->uoi_provider_name);
 
             /*超过默认行数*/
-            if(count($productlist) > 8){
+            if(count($productlist) > 5){
                 /*插入多行数据*/
-                $newrows = count($productlist) - 8;
-                $objPHPExcel->getActiveSheet()->insertNewRowBefore(15,$newrows);
+                $newrows = count($productlist) - 5;
+                $objPHPExcel->getActiveSheet()->insertNewRowBefore(12,$newrows);
                 for($i=0; $i<$newrows;$i++){
-                    $objPHPExcel->getActiveSheet()->mergeCells('E'.(15+$i).':'.'J'.(15+$i));
-                    $objPHPExcel->getActiveSheet()->mergeCells('K'.(15+$i).':'.'L'.(15+$i));
-                    $objPHPExcel->getActiveSheet()->mergeCells('N'.(15+$i).':'.'Q'.(15+$i));
+                    $objPHPExcel->getActiveSheet()->mergeCells('E'.(12+$i).':'.'J'.(12+$i));
+                    $objPHPExcel->getActiveSheet()->mergeCells('K'.(12+$i).':'.'L'.(12+$i));
+                    $objPHPExcel->getActiveSheet()->mergeCells('N'.(12+$i).':'.'Q'.(12+$i));
                 }
 
-                for($item=15;$item<(count($productlist)+15-8);$item++){
+                for($item=12;$item<(count($productlist)+12-5);$item++){
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$item, $item-6);
                     $objPHPExcel->getActiveSheet()->setCellValue('B'.$item, $productlist[$item-7]->model);
                     $objPHPExcel->getActiveSheet()->setCellValue('C'.$item, $productlist[$item-7]->uod_count);
@@ -3258,6 +3270,15 @@
             }
             $sql.= ' limit 0 , 5;';
             $retsql = Db::query($sql);
+            return $retsql;
+        }
+
+        public  static  function serachusername($name)
+        {
+            $sql = "SELECT dsp_logistic.user.* FROM dsp_logistic.user WHERE username = '$name' ";
+            $retsql = Db::query($sql);
+            if(empty($retsql))
+                return "";
             return $retsql;
         }
         /*模糊搜索部门  */

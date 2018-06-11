@@ -11,10 +11,10 @@ class Login extends Controller
 
     /*登录验证*/
     public function  loginconfirm(){
-    	$fullname = $_POST['fullname'];
+    	$username = $_POST['username'];
     	$password = $_POST['password'];
 
-    	$ret = \app\index\model\Admin::login($fullname,$password);
+    	$ret = \app\index\model\Admin::login($username,$password);
     	return $ret;
     }
 }

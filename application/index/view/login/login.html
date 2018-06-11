@@ -58,7 +58,7 @@
                 /*监听登录按键*/
                 form.on('submit(login)', function (data) {
                     var userinfo = data.field;
-                    jq.post("{:url('index/login/loginconfirm')}", { 'fullname': userinfo.username, 'password': userinfo.password }, function (data) {
+                    jq.post("{:url('index/login/loginconfirm')}", { 'username': userinfo.username, 'password': userinfo.password }, function (data) {
                         if(data) {
                             layer.msg('登录成功', {
                                 icon: 1,

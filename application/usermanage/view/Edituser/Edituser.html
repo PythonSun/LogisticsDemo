@@ -12,6 +12,12 @@
         <form class="layui-form">
             <div class="layui-form-item">
                 <div class="layui-inline">
+                    <label class="layui-form-label">账号名：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id = "username" name="username" lay-filter="username" placeholder="请输入账号名" autocomplete="off" class="layui-input" oninput="detectinputtext(this);">
+                    </div>
+                </div>
+                <div class="layui-inline">
                     <label class="layui-form-label">用户名：</label>
                     <div class="layui-input-inline">
                         <input type="text" id = "fullname" name="fullname" lay-filter="fullname" placeholder="请输入用户名" autocomplete="off" class="layui-input" oninput="detectinputtext(this);">
@@ -152,6 +158,37 @@
             }
 
             var user = new Object();
+            var isExist = false;
+            user.username= jq("#username").val();
+            if( user.username == '')
+            {
+                layer.msg('账号名不能为空',{icon:2});
+                return '';
+            }
+            if(oldUser.username != user.username)
+            {
+                jq.ajax({
+                    url: "{:url('index/common/judgeusernameexist')}",
+                    type: "POST",
+                    dataType: "json",
+                    async: false,
+                    data: {username: user.username},
+                    success: function (data) {
+                        console.log(data);
+                        if(data != '' && data!= null && data.length>0)
+                        {
+                            isExist = true;
+                        }
+                    },
+                });
+                if(isExist == true)
+                {
+                    layer.msg('该账号已存在',{icon:2});
+                    jq('#username').val('');
+                    return '';
+                }
+            }
+
             user.fullname= jq("#fullname").val();
             if( user.fullname == '')
             {
@@ -169,7 +206,6 @@
             }
             user.company_id= jq("#company_id").val();
             user.department_id= jq("#department_id").val();
-            var isExist = false;
             if(oldUser.fullname != user.fullname||oldUser.companyid!= user.company_id||oldUser.organize_id !=user.department_id)
             {
                 jq.ajax({
@@ -192,6 +228,9 @@
                 layer.msg("该部门已存在:"+ jq("#fullname").val(),{icon:2});
                 return '';
             }
+
+
+
             user.job_id= jq("#job_id").val();
             if(user.job_id == '' ||user.job_id == undefined )
             {
@@ -266,6 +305,7 @@
             //document.getElementById('department_id').value = user['organize_id'];
 
             jq('#fullname').attr('value',user['fullname']);
+            jq('#username').attr('value',user['username']);
             jq('#password').attr('value',user['password']);
             jq('#phone').attr('value',user['phone']);
             //console.log(user);
