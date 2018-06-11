@@ -114,7 +114,7 @@ class Queryborrowconfirmorder extends Controller
         $file_extend = 'xlsx';
 
         $ret = \app\index\model\Admin::queryexportcsinfoconfirmorder($param,$type);
-        \app\index\model\Admin::exportcsinfoconfirmorder($file_name,$file_extend,$template_name,$ret);
+        \app\index\model\Admin::exportcsinfoconfirmorder($file_name,$file_extend,$template_name,$ret,$type);
     }
 
     /*打印借样确认单*/
