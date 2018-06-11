@@ -146,6 +146,16 @@
                     </div>
                 </div>
             </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label Wheat">公司名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="company_name" id="company_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label Wheat">公司地址</label>
+                <div class="layui-input-block">
+                    <input type="text" name="company_address" id="company_address" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+            </div>
             <h3>费用情况</h3>
             <div class="layui-form-item">
                 <div class="layui-inline">
@@ -895,6 +905,8 @@
                 ofg_info.receiver_name = data['receiver_name'];
                 ofg_info.receiver_phone = data['receiver_phone'];
                 ofg_info.receiver_address = data['receiver_address'];
+                ofg_info.company_name = data['company_name'];
+                ofg_info.company_address = data['company_address'];
                 ofg_info.user_id = user_id;
                 return ofg_info;
             }
@@ -1104,6 +1116,8 @@
                 jq('#receiver_name').val(ofg_info.receiver_name);
                 jq('#receiver_phone').val(ofg_info.receiver_phone);
                 jq('#receiver_address').val(ofg_info.receiver_address);
+                jq('#company_name').val(ofg_info.company_name);
+                jq('#company_address').val(ofg_info.company_address);
                 //document.getElementById('user_id').value = ofg_info.user_id;
 
                 if (unc_ofg_info != ""){
