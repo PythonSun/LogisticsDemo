@@ -1819,7 +1819,7 @@
         }
 
         public static function login($username,$password){
-            $where['fullname'] = $username;
+            $where['username'] = $username;
             $where['password'] = $password;
 
             $user = Db::name('dsp_logistic.user')->where($where)->find();   /*用户信息检测*/
