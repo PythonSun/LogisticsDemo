@@ -219,10 +219,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-
-    <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label Wheat">销售合同</label>
             <div class="dsppa-input-panel">
@@ -244,11 +240,12 @@
                 </select>
             </div>
         </div>
-        <div class="layui-inline">
-            <label class="layui-form-label Wheat" id="order_delivery_require_label" style="padding-left: 0px;padding-right: 0px">订单发货要求</label>
-            <div class="layui-input-inline">
-                <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);">
-            </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label Wheat" id="order_delivery_require_label" style="padding-left: 0px;padding-right: 0px">订单发货要求</label>
+        <div class="layui-input-block">
+            <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);">
         </div>
     </div>
     <h3>部门总监审批</h3>
@@ -273,11 +270,11 @@
                 <input type="text" name="examinationapprovaldatefirst" id="date4" autocomplete="on" class="layui-input light_green depart_blue_disabled">
             </div>
         </div>
-        <div class="layui-inline">
-            <label class="layui-form-label light_green">备注</label>
-            <div class="layui-input-inline">
-                <input type="text" name="remarkfirst" id="remarkfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green depart_blue_disabled" oninput="detectinputtext(this);">
-            </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label light_green">备注</label>
+        <div class="layui-input-block">
+            <input type="text" name="remarkfirst" id="remarkfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green depart_blue_disabled" oninput="detectinputtext(this);">
         </div>
     </div>
     <h3>执行总经理审批</h3>
@@ -301,13 +298,13 @@
             <div class="layui-input-inline">
                 <input type="text" name="examinationapprovaldatesecond" id="date5" autocomplete="on" class="layui-input light_green company_blue_disabled"> </div>
         </div>
-        <div class="layui-inline">
-            <label class="layui-form-label light_green">备注</label>
-            <div class="layui-input-inline">
-                <input type="text" name="remarksecond" id="remarksecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green company_blue_disabled" oninput="detectinputtext(this);"> </div>
-        </div>
-    </div>
 
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label light_green">备注</label>
+        <div class="layui-input-block">
+            <input type="text" name="remarksecond" id="remarksecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green company_blue_disabled" oninput="detectinputtext(this);"> </div>
+    </div>
     <h3>财务审批</h3>
     <div class="layui-form-item">
         <label class="layui-form-label Wheat">审批内容</label>
@@ -329,11 +326,11 @@
             <div class="layui-input-inline">
                 <input type="text" name="examinationapprovaldatethird" id="date6" autocomplete="on" class="layui-input light_green finance_blue_disabled"> </div>
         </div>
-        <div class="layui-inline">
-            <label class="layui-form-label light_green">备注</label>
-            <div class="layui-input-inline">
-                <input type="text" name="remarkthird" id="remarkthird" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green finance_blue_disabled" oninput="detectinputtext(this);"> </div>
-        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label light_green">备注</label>
+        <div class="layui-input-block">
+            <input type="text" name="remarkthird" id="remarkthird" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green finance_blue_disabled" oninput="detectinputtext(this);"> </div>
     </div>
 
     <h3>款项情况</h3>
