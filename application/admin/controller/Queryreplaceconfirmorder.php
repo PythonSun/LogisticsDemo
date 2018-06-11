@@ -123,7 +123,7 @@ class Queryreplaceconfirmorder extends Controller
 
     /*打印更换确认单*/
     public function printreplaceconfirmorder(){
-        $template_name = "更换代用确认单.xlsx";
+        $template_name = "更换确认单.xlsx";
         $type=0x01;
         $cs_id = $_GET['cs_id'];
         $file_name = '更换确认单';

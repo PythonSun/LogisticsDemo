@@ -58,6 +58,7 @@ function forbidBackSpace(e){
     }
     else if(ev.keyCode == 13 &&t == "text")
     {
+        
         return false;
     }
 }
