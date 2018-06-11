@@ -864,7 +864,7 @@
                     var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                     var  ret = iframeWin.getData();
 
-                    if (ret == false){
+                    if (ret === false){
                         return false;
                     }else if (ret == null){
                         uncofginfo = ret;
@@ -1235,7 +1235,7 @@
             return false;
         }
         var  tabledata = getGoodsTable();
-        if(tabledata == false)
+        if(tabledata === false)
         {
             setDisable(true);
             return false;
@@ -1408,7 +1408,7 @@
             return false;
         }
         var  tabledata = getGoodsTable();
-        if(tabledata == false)
+        if(tabledata === false)
         {
             setDisable(true);
             return false;
@@ -1477,7 +1477,7 @@
             return false;
         }
         var  tabledata = getGoodsTable();
-        if(tabledata == false)
+        if(tabledata === false)
         {
             setDisable(true);
             return false;
@@ -1687,7 +1687,7 @@
             return false;
         }
         var  tabledata = getGoodsTable();
-        if(tabledata == false)
+        if(tabledata === false)
         {
             setDisable(true);
             return false;
