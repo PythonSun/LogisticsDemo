@@ -845,7 +845,7 @@
                     var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                     var  ret = iframeWin.getData();
 
-                    if (ret == false){
+                    if (ret === false){
                         return false;
                     }else if (ret == null){
                         uncofginfo = ret;
@@ -1223,7 +1223,7 @@
             return false;
         }
         var  tabledata = getGoodsTable();
-        if(tabledata == false)
+        if(tabledata === false)
         {
             setDisable(true);
             return false;
@@ -1407,7 +1407,7 @@
             return false;
         }
         var  tabledata = getGoodsTable();
-        if(tabledata == false)
+        if(tabledata === false)
         {
             setDisable(true);
             return false;
@@ -1480,7 +1480,7 @@
             return false;
         }
         var  tabledata = getGoodsTable();
-        if(tabledata == false)
+        if(tabledata === false)
         {
             setDisable(true);
             return false;
@@ -1695,7 +1695,7 @@
             return false;
         }
         var  tabledata = getGoodsTable();
-        if(tabledata == false)
+        if(tabledata === false)
         {
             setDisable(true);
             return false;
@@ -2138,7 +2138,7 @@
         info.pre_process_user_id = isEdit == true?editOrderData['pre_process_user_id']:data['build_user_id'];
         info.cs_id = isEdit == true?editOrderData['cs_id']:'';
         info.cs_examine_ids = isEdit == true?editOrderData['cs_examine_ids']:'';
-        info.write_date = isCanWrite == true?editOrderData['write_date']:'';
+        info.write_date = isEdit == true?editOrderData['write_date']:'';
         info.cs_info_type = cs_info_type;                               //1：更换 详细看数据库
         info.can_edit = isCanWrite == true?1:0;                              //0 不可编辑
         info.cs_info_state = csState;
