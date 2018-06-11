@@ -438,8 +438,11 @@
                     console.log('下列输入费用情况：');
                     console.log(fee_info);
                     var order_goods_cs_undeliver_goods_info = getGoodsTable();
-                    if(order_goods_cs_undeliver_goods_info == false)
+                    if(order_goods_cs_undeliver_goods_info === false)
+                    {
                         return false;
+                    }
+
                     console.log('下列输入清单信息：');
                     console.log(order_goods_cs_undeliver_goods_info);
                     var product_number = order_goods_cs_undeliver_goods_info.length;
