@@ -1347,6 +1347,7 @@
         /*根据增加和更新用户*/
         public static function updateuser($user)
         {
+            $username= $user["username"];
             $fullname = $user["fullname"];
             $password = $user["password"];
             $phone = $user["phone"];
@@ -1363,15 +1364,15 @@
             if($user_id != "")
             {
                 $sql = " UPDATE dsp_logistic.user ";
-                $sql.="  SET  fullname = '{$fullname}', password = '{$password}', phone = '{$phone}', organize_id = '{$organize_id}', job_id = '{$job_id}', role_id = '{$role_id}' ";
+                $sql.="  SET  username = '{$username}', fullname = '{$fullname}', password = '{$password}', phone = '{$phone}', organize_id = '{$organize_id}', job_id = '{$job_id}', role_id = '{$role_id}' ";
                 $sql.=" where user_id = '{$user_id}'";
                 $result = Db::execute($sql);
                 return $result;
             }
             else
             {
-                $sql = "INSERT INTO `dsp_logistic`.`user` (`fullname`, `password`, `phone`, `organize_id`, `job_id`, `role_id`)";
-                $sql.="  VALUES ('{$fullname}', '{$password}', '{$phone}', '{$organize_id}', '{$job_id}', '{$role_id}');";
+                $sql = "INSERT INTO `dsp_logistic`.`user` (`username`,`fullname`, `password`, `phone`, `organize_id`, `job_id`, `role_id`)";
+                $sql.="  VALUES ('$username','{$fullname}', '{$password}', '{$phone}', '{$organize_id}', '{$job_id}', '{$role_id}');";
                 $result = Db::execute($sql);
                 return $result;
             }
@@ -3258,6 +3259,15 @@
             }
             $sql.= ' limit 0 , 5;';
             $retsql = Db::query($sql);
+            return $retsql;
+        }
+
+        public  static  function serachusername($name)
+        {
+            $sql = "SELECT dsp_logistic.user.* FROM dsp_logistic.user WHERE username = '$name' ";
+            $retsql = Db::query($sql);
+            if(empty($retsql))
+                return "";
             return $retsql;
         }
         /*模糊搜索部门  */

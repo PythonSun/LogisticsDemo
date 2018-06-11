@@ -90,4 +90,14 @@ class Common extends Controller
             return  '';
         return $model;
     }
+
+    public function judgeusernameexist()
+    {
+        if(array_key_exists('username',$_POST))
+        {
+            $condition['username'] = $_POST['username'];
+            return \app\index\model\Admin::serachusername($_POST['username']);
+        }
+        return true;
+    }
 }

@@ -8,13 +8,19 @@
     <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
 </head>
 <body>
-    <div style="margin: 0px 20px">
+    <div style="margin: 10px 20px">
         <form class="layui-form">
             <div class="layui-form-item">
                 <div class="layui-inline">
+                    <label class="layui-form-label">账号名：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id = "username" name="username" lay-filter="username" placeholder="请输入账号名" autocomplete="off" class="layui-input" oninput="detectinputtext(this);">
+                    </div>
+                </div>
+                <div class="layui-inline">
                     <label class="layui-form-label">姓名：</label>
                     <div class="layui-input-inline">
-                        <input type="text" id = "fullname" name="fullname" lay-filter="fullname" placeholder="请输入用户名" autocomplete="off" class="layui-input" oninput="detectinputtext(this);">
+                        <input type="text" id = "fullname" name="fullname" lay-filter="fullname" placeholder="请输入姓名" autocomplete="off" class="layui-input" oninput="detectinputtext(this);">
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -155,6 +161,32 @@
                 return '';
             }
             var user = new Object();
+            user.username= jq("#username").val();
+            if( user.username == '')
+            {
+                layer.msg('账号名不能为空',{icon:2});
+                return '';
+            }
+            jq.ajax({
+                url: "{:url('index/common/judgeusernameexist')}",
+                type: "POST",
+                dataType: "json",
+                async: false,
+                data: {username: user.username},
+                success: function (data) {
+                    console.log(data);
+                    if(data != '' && data!= null && data.length>0)
+                    {
+                        isExist = true;
+                    }
+                },
+            });
+            if(isExist == true)
+            {
+                layer.msg('该账号已存在',{icon:2});
+                jq('#username').val('');
+                return '';
+            }
             user.fullname= jq("#fullname").val();
             if( user.fullname == '')
             {
