@@ -18,6 +18,18 @@
     }
     .layui-table-style td{padding: 4px 1px;  border: 1px solid #8A8A8A}
     .layui-table-style th{ border: 1px solid #8A8A8A;  color:black}
+    .dsppa-input {
+        border-style:solid;
+        border-width:1px;
+        border-color:#000;
+        border-radius:0 2px 2px 0 ;
+        width: 178px;
+        padding-left: 10px;
+    }
+    .dsppa-input-panel{
+        margin-right: 10px;
+        background: #f6deb3
+    }
 </style>
 <body >
 <form class="layui-form layui-form-pane" action="">
@@ -30,16 +42,15 @@
             <div class="layui-input-inline">
                 <input type="text" disabled name="cs_belong_create_time" id="cs_belong_create_time" autocomplete="on" class="layui-input light_gray" value="{$date}"> </div>
         </div>
-        <div class="layui-inline ">
-            <label class="layui-form-label dark_blue">接收时间</label>
-            <div class="layui-input-inline ">
-                <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input light_gray dark_blue_disabled"> </div>
-        </div>
-
         <div class="layui-inline">
             <label class="layui-form-label light_gray">流水号</label>
             <div class="layui-input-inline">
                 <input type="text" name="cs_id" id="cs_id" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray" disabled> </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label light_gray">部门编号</label>
+            <div class="layui-input-inline">
+                <input type="text" disabled name="department_number" id="department_number" autocomplete="on" class="layui-input light_gray "  value="{$depid}"> </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label dark_blue">状态</label>
@@ -55,10 +66,10 @@
                 </select>
             </div>
         </div>
-        <div class="layui-inline">
-            <label class="layui-form-label light_gray">部门编号</label>
-            <div class="layui-input-inline">
-                <input type="text" disabled name="department_number" id="department_number" autocomplete="on" class="layui-input light_gray "  value="{$depid}"> </div>
+        <div class="layui-inline ">
+            <label class="layui-form-label dark_blue">接收时间</label>
+            <div class="layui-input-inline dark_blue">
+                <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input dark_blue dark_blue_disabled"> </div>
         </div>
     </div>
     <h3>物流信息</h3>
@@ -109,7 +120,7 @@
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label Wheat " style="width: 130px">区域经理电话</label>
+            <label class="layui-form-label Wheat " style="padding-left: 0px;padding-right: 0px">区域经理电话</label>
             <div class="layui-input-inline Wheat">
                 <input type="text"  name="build_user_phone" id="build_user_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);">
             </div>
@@ -183,32 +194,39 @@
         <div class="layui-input-block">
             <input type="text" name="delivery_info_receiver_address" id="delivery_info_receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
     </div>
-    <div class="layui-form-item Wheat" pane="">
-        <label class="layui-form-label Wheat">是否买保险</label>
-        <div class="layui-input-block ">
-            <input type="radio" name="is_insure" value="1" title="买" class="Wheat_disabled">
-            <input type="radio" name="is_insure" value="0" title="不买" class="Wheat_disabled" checked=""> </div>
-    </div>
-    <div class="layui-form-item">
+    <div class="layui-form-item" >
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">是否买保险</label>
+            <div class="dsppa-input-panel">
+                <div class="layui-input-block dsppa-input">
+                    <input type="radio" name="is_insure" value="1" title="买" class="Wheat_disabled">
+                    <input type="radio" name="is_insure" value="0" title="不买" class="Wheat_disabled" checked="">
+                </div>
+            </div>
+        </div>
         <div class="layui-inline">
             <label class="layui-form-label Wheat">保额</label>
             <div class="layui-input-inline">
-                <input type="text" name="insure_amount" id="insure_amount" lay-verify="insure_amount" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputfloat(this);"> </div>
+                <input type="text" name="insure_amount" id="insure_amount" lay-verify="insure_amount" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputfloat(this);">
+            </div>
+        </div>
+        <div class="layui-inline" pane="">
+            <label class="layui-form-label Wheat ">客户性质</label>
+            <div class="dsppa-input-panel">
+                <div class="layui-input-block dsppa-input">
+                    <input type="radio" name="is_sign" value="1" title="签约" checked="" class="Wheat_disabled">
+                    <input type="radio" name="is_sign" value="0" title="非签约" class="Wheat_disabled">
+                </div>
+            </div>
         </div>
     </div>
-    <div class="layui-form-item Wheat" pane="">
-        <label class="layui-form-label Wheat ">客户性质</label>
-        <div class="layui-input-block ">
-            <input type="radio" name="is_sign" value="1" title="签约" checked="" class="Wheat_disabled">
-            <input type="radio" name="is_sign" value="0" title="非签约" class="Wheat_disabled"> </div>
-    </div>
-    <div class="layui-form-item Wheat" pane="">
-        <label class="layui-form-label Wheat">销售合同</label>
-        <div class="layui-input-block ">
-            <input type="radio" name="has_contract" value="1" title="有" class="Wheat_disabled" checked="">
-            <input type="radio" name="has_contract" value="0" title="无" class="Wheat_disabled"> </div>
-    </div>
     <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label Wheat">销售合同</label>
+            <div class="layui-input-block ">
+                <input type="radio" name="has_contract" value="1" title="有" class="Wheat_disabled" checked="">
+                <input type="radio" name="has_contract" value="0" title="无" class="Wheat_disabled"> </div>
+        </div>
         <div class="layui-inline">
             <label class="layui-form-label Wheat">运费方式</label>
             <div class="layui-input-inline Wheat">
@@ -221,12 +239,14 @@
                 </select>
             </div>
         </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label Wheat label_change"  style="padding-left: 0px;padding-right: 0px">订单发货要求</label>
+            <div class="layui-input-inline">
+                <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+        </div>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label Wheat label_change">订单发货要求</label>
-        <div class="layui-input-inline">
-            <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
-    </div>
+
+
     <h3>部门总监审批</h3>
     <div class="layui-form-item">
         <label class="layui-form-label Wheat">审批内容</label>
