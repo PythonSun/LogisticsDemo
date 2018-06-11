@@ -134,7 +134,7 @@
                 <input type="text" name="company_name" id="company_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label Wheat label_change">公司电话/传真</label>
+            <label class="layui-form-label Wheat" style="padding-left: 0px;padding-right: 0px">公司电话/传真</label>
             <div class="layui-input-inline">
                 <input type="text" name="company_phone" id="company_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);"> </div>
         </div>
@@ -219,13 +219,14 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label Wheat">销售合同</label>
-            <div class="layui-input-block ">
-                <input type="radio" name="has_contract" value="1" title="有" class="Wheat_disabled" checked="">
-                <input type="radio" name="has_contract" value="0" title="无" class="Wheat_disabled"> </div>
+            <div class="dsppa-input-panel">
+                <div class="layui-input-block dsppa-input">
+                    <input type="radio" name="has_contract" value="1" title="有" class="Wheat_disabled" checked="">
+                    <input type="radio" name="has_contract" value="0" title="无" class="Wheat_disabled">
+                </div>
+            </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label Wheat">运费方式</label>
@@ -239,10 +240,11 @@
                 </select>
             </div>
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label Wheat label_change"  style="padding-left: 0px;padding-right: 0px">订单发货要求</label>
-            <div class="layui-input-inline">
-                <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label Wheat" style="padding-left: 0px;padding-right: 0px">订单发货要求</label>
+        <div class="layui-input-block">
+            <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat Wheat_disabled" oninput="detectinputtext(this);">
         </div>
     </div>
 
@@ -852,7 +854,7 @@
                     var  iframeWin = top.window[layero.find('iframe')[0]['name']];
                     var  ret = iframeWin.getData();
 
-                    if (ret == false){
+                    if (ret === false){
                         return false;
                     }else if (ret == null){
                         uncofginfo = ret;
@@ -1241,7 +1243,7 @@
             return false;
         }
         var  tabledata = getGoodsTable();
-        if(tabledata == false)
+        if(tabledata === false)
         {
             setDisable(true);
             return false;
@@ -1417,7 +1419,7 @@
             return false;
         }
         var  tabledata = getGoodsTable();
-        if(tabledata == false)
+        if(tabledata === false)
         {
             setDisable(true);
             return false;
@@ -1487,7 +1489,7 @@
             return false;
         }
         var  tabledata = getGoodsTable();
-        if(tabledata == false)
+        if(tabledata === false)
         {
             setDisable(true);
             return false;
@@ -1698,7 +1700,7 @@
             return false;
         }
         var  tabledata = getGoodsTable();
-        if(tabledata == false)
+        if(tabledata === false)
         {
             setDisable(true);
             return false;
