@@ -2941,11 +2941,13 @@
             $receiver_name = $info['receiver_name'];
             $receiver_phone = $info['receiver_phone'];
             $receiver_address = $info['receiver_address'];
+            $company_name = $info['company_name'];
+            $company_address = $info['company_address'];
             $user_id = $info['user_id'];
-            $sql_value ="'{$ofg_info_id}','{$receiver_name}','{$receiver_phone}','{$receiver_address}','{$user_id}'";
-            $sql = "INSERT INTO dsp_logistic.ofg_info (ofg_info_id,receiver_name,receiver_phone,receiver_address,user_id) VALUES ({$sql_value})";
+            $sql_value ="'{$ofg_info_id}','{$receiver_name}','{$receiver_phone}','{$receiver_address}','{$user_id}','{$company_name}','{$company_address}'";
+            $sql = "INSERT INTO dsp_logistic.ofg_info (ofg_info_id,receiver_name,receiver_phone,receiver_address,user_id,company_name,company_address) VALUES ({$sql_value})";
             $sql .= " ON DUPLICATE KEY UPDATE receiver_name = '{$receiver_name}',receiver_phone = '{$receiver_phone}',receiver_address = '{$receiver_address}'";
-            $sql .= ",user_id = '{$user_id}'";
+            $sql .= ",user_id = '{$user_id}',company_name='{$company_name}',company_address='{$company_address}'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }

@@ -376,6 +376,7 @@
                 jq(newRow).attr('rowIndex',rowIndex);
                 jq(newRow).attr('uod_id',"");
                 jq(newRow).attr('isExistModel',true);
+                jq(newRow).attr('unc_ofg_info_id',uoi_id);
                 var col = newRow.insertCell(0);//添加列
                 col.innerHTML = "<td ><a style='margin: 0px 10px' >"+rowNum+"</a></td>";
                 col = newRow.insertCell(1);
@@ -497,6 +498,7 @@
                 var rowIndex = $(row).attr('rowIndex');
                 $(row).attr('uod_id',data['uod_id']);
                 $(row).attr('isExistModel',true);
+                $(row).attr('unc_ofg_info_id',data['unc_ofg_info_id']);
                 $('#model'+rowIndex).val(data['model']);
                 $('#product_info_name'+rowIndex).val(data['product_info_name']);
                 $('#product_type_id'+rowIndex).val(data['product_type_id']);
@@ -530,6 +532,7 @@
                         break;
                     }
                     var rowdata = {};
+                    rowdata.unc_ofg_info_id = $(row).attr('unc_ofg_info_id');
                     rowdata.model = $("#model"+rowIndex).val();
                     rowdata.product_info_name = $('#product_info_name'+rowIndex).val();
                     rowdata.product_type_id = $('#product_type_id'+rowIndex).val();
