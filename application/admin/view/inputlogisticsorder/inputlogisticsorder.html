@@ -4,9 +4,10 @@
         <meta charset="UTF-8">
         <title></title>
         <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/public.css"> </head>
+        <link rel="stylesheet" type="text/css" href="/static/css/public.css"> 
+    </head>
     <body>
-        <form class="layui-form layui-form-pane" action="">
+        <form class="layui-form layui-form-pane" id="form" action="">
             <div class="toph2">
                 <h2>物流单号输入</h2>
             </div>
@@ -26,10 +27,11 @@
                     <div class="layui-input-inline">
                         <input type="text" name="consigneephone" id="consigneephone" disabled="" lay-verify="" autocomplete="on" placeholder="" class="layui-input layui-disabled light_gray"> </div>
                 </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label light_gray">收货地址</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="shippingaddress" id="shippingaddress" disabled="" lay-verify="" autocomplete="on" placeholder="" class="layui-input layui-disabled light_gray"> </div>
+            </div>
+            <div class="layui-form-item">
+            	<label class="layui-form-label light_gray">收货地址</label>
+                <div class="layui-input-block layui-input-block-custom-settings">
+                    <input type="text" name="shippingaddress" id="shippingaddress" disabled="" lay-verify="" autocomplete="on" placeholder="" class="layui-input layui-disabled light_gray"> 
                 </div>
             </div>
             <div class="layui-form-item">
@@ -60,7 +62,7 @@
                 </div>
             </div>
         </form>
-        <h2>物流单查询结果</h2>
+        <h2 id="h2">物流单查询结果</h2>
         <table class="layui-hide" id="logisticstablequeryresult" lay-filter="logisticstablequeryresult"></table>
         <script type="text/html" id="barDemo">
             <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
@@ -71,17 +73,27 @@
         <script type="text/javascript" src="/static/layui/layui.js"></script>
         <script type="text/javascript" src="/static/js/commondetect.js"></script>
         <script type="text/javascript">
-
             //禁止backspace键
             document.onkeypress = forbidBackSpace;
             document.onkeydown = forbidBackSpace;
-
+            var winhei,remain,heightone,heigthtwo,formheight;
             layui.use(['form', 'laydate', 'jquery', 'layer', 'table'], function () {
                 var form = layui.form,
                     laydate = layui.laydate,
                     $ = layui.jquery,
                     layer = layui.layer,
                     table = layui.table;
+                heightone = document.getElementById('form').offsetHeight;
+                heigthtwo = document.getElementById('h2').offsetHeight;
+                formheight = heightone + heigthtwo;
+                winhei = $(window).height();
+                remain = winhei - formheight-70;
+                if(remain < 200){
+                    remain = 200;
+                }
+                $(window).resize(function () {
+                    window.location.reload();
+                });
                 $("#cs_id").blur(function () {
                     var cs_id = $('#cs_id').val();
                     $.post("{:url('admin/inputlogisticsorder/serialnumber')}", { 'cs_id': cs_id }, function (res) {
@@ -112,26 +124,18 @@
                 //第一个实例
                 table.render({
                     elem: '#logisticstablequeryresult',
-                    height: 300,
+                    height: remain,
                     url: "{:url('admin/inputlogisticsorder/loadingdata')}",
                     page: true,
                     limit: 10,
                     cols: [
-                        [
-                        { field: 'cs_id', title: '流水号', sort: true, fixed: 'left' },
-                        { field: 'goods_yard_name', title: '货场名称' }, 
-                        { field: 'transfer_order_num', title: '运单号' }, 
-                        { field: 'delivery_date', title: '发货日期' }, 
-                        { field: 'count', title: '件数' }, 
-                        { fixed: 'right', width: 250, align: 'center', toolbar: '#barDemo' }
-                        ]
+                        [{ field: 'cs_id', title: '流水号', sort: true, fixed: 'left' }, { field: 'goods_yard_name', title: '货场名称' }, { field: 'transfer_order_num', title: '运单号' }, { field: 'delivery_date', title: '发货日期' }, { field: 'count', title: '件数' }, { fixed: 'right', width: 250, align: 'center', toolbar: '#barDemo' }]
                     ]
                 });
                 //监听工具条
                 table.on('tool(logisticstablequeryresult)', function (obj) {
                     var data = obj.data, //获得当前行数据
                         layEvent = obj.event; //获得 lay-event 对应的值
-                        console.log(data);
                     if(layEvent === 'detail') {
                         top.layer.open({
                             type: 2,
@@ -203,13 +207,13 @@
                         });
                     } else if(layEvent == 'sendmessage') {
                         $.post("{:url('admin/inputlogisticsorder/sendmessage')}", { 'cs_id': data.cs_id }, function (res) {
-                        	console.log(res);
-                        	var params = new Array();
-                        	params['receiver_name']=res.receiver_name;
-                        	params['receiver_phone']=res.receiver_phone;
-                        	params['goods_yard_name']=data.goods_yard_name;
-                        	params['cs_id']=data.cs_id;
-                        	params['count']=data.count;
+                            console.log(res);
+                            var params = new Array();
+                            params['receiver_name'] = res.receiver_name;
+                            params['receiver_phone'] = res.receiver_phone;
+                            params['goods_yard_name'] = data.goods_yard_name;
+                            params['cs_id'] = data.cs_id;
+                            params['count'] = data.count;
                         });
                         layer.msg('发送短信');
                     }

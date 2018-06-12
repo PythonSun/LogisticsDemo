@@ -29,7 +29,9 @@ button[lay-filter="save"], button[lay-filter="deliver"], button[lay-filter="canc
 	float: right;
 	cursor: pointer;
 }
-
+.layui-input-block-custom-settings {
+    width: 834px!important;
+}
 /*对lable标签和input输入标签颜色的设定开始*/
 label,input,div[pane=""]{
 	border-color:#000000!important;
@@ -51,3 +53,14 @@ label,input,div[pane=""]{
 	border-color:#000000!important;
 }
 /*对lable标签和input输入标签颜色的设定结束*/
+
+@media screen and (max-width:1184px) and (min-width:855px) {
+    .layui-input-block-custom-settings {
+    	width: 513px!important;
+	}  		
+}
+@media screen and (max-width:854px ) {
+    .layui-input-block-custom-settings {
+    	width: 191px!important;
+	}  		
+}
