@@ -499,6 +499,7 @@
                 $(row).attr('uod_id',data['uod_id']);
                 $(row).attr('isExistModel',true);
                 $(row).attr('unc_ofg_info_id',data['unc_ofg_info_id']);
+                $(row).attr('product_info_id',data['product_info_id']);
                 $('#model'+rowIndex).val(data['model']);
                 $('#product_info_name'+rowIndex).val(data['product_info_name']);
                 $('#product_type_id'+rowIndex).val(data['product_type_id']);
@@ -571,6 +572,7 @@
                     rowdata.product_info_id= $(row).attr('product_info_id');
                     data[i-1]=rowdata;
                 }
+                console.log(data);
                 return data;
             }
 
