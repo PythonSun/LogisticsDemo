@@ -1426,7 +1426,7 @@
         /*模糊搜索型号 弃用*/
         public  static function serachmodelinfo($serachText)
         {
-            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model LIKE '%{$serachText}%' ";
+            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model LIKE '%{$serachText}%' limit 10";
             $retsql = Db::query($sql);
             return $retsql;
         }
@@ -1475,6 +1475,9 @@
             $sql = "SELECT max({$tableID}) FROM dsp_logistic.{$tablename}";
             $organizeID = Db::query($sql);
             if (!empty($organizeID)){
+                if( count($organizeID) == 0 ){
+                    return 0;
+                }
                 $id = $organizeID[0]["max({$tableID})"];
                 if (empty($id)){
                     return 0;
@@ -3309,6 +3312,109 @@
             if(!empty($retsql))
                 return $retsql;
             return '';
+        }
+
+        /*检测产品型号是否存在*/
+        public static function detectmodelisexist($model){
+            $sql = "SELECT *  FROM dsp_logistic.product_info  where model = '$model' ";
+            $ret = Db::query($sql);
+            if(!empty($ret))
+                return $ret;
+            return '';
+        }
+
+        /*product_type 产品类别*/
+        public static function producttype($product_type_name){
+            switch($product_type_name){
+                case '公共广播':
+                return 1;
+
+                case '会议系统':
+                return 2;
+
+                case '地铁事业':
+                return 3;
+
+                case '智能音响':
+                return 4;
+
+                case '录播系统':
+                return 5;
+
+                case '应急广播':
+                return 6;
+
+                case '音视频一线通':
+                return 7;
+
+                case '视频会议':
+                return 8;
+
+                case '视频监控':
+                return 9;
+
+                case '专业音响':
+                return 10;
+
+                case '数字班牌':
+                return 11;
+
+                default:
+                return 12;
+            }
+        }
+
+        /*product_brand*/
+        public static function productbrand($brand_name){
+            switch ($brand_name){
+                case 'DSPPA':
+                    return 1;
+                case 'ZABKZ':
+                    return 2;
+                case 'OTEWA':
+                    return 3;
+                case 'AUXDIO':
+                    return 4;
+                case '推荐产品':
+                    return 5;
+                default:
+                    return 6;
+            }
+        }
+
+        /*product_place*/
+        public static function productplace($place_name){
+            switch ($place_name){
+                case '总厂':
+                    return 1;
+                case '盛葆':
+                    return 2;
+                case '乐坊':
+                    return 3;
+                case '总厂外购':
+                    return 4;
+                case '澳斯迪':
+                    return 5;
+                case '智慧科技':
+                    return 6;
+                case '信息科技':
+                    return 7;
+                case '盛葆外购':
+                    return 8;
+                case '智慧平台':
+                    return 9;
+                case '外购':
+                    return 10;
+                default:
+                    return 11;
+            }
+        }
+
+        /*insertproductinfo*/
+        public static function insertproductinfo($mysql){
+            $sql = "INSERT INTO dsp_logistic.product_info (model,product_info_name,product_type_id,brand_id,place_id) VALUES ".$mysql;
+            $sqlret = Db::execute($sql);
+            return $sqlret;
         }
 	}
 ?>
