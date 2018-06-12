@@ -34,12 +34,7 @@
                         <input type="text" disabled name="cs_belong_create_time" id="cs_belong_create_time" autocomplete="on" class="layui-input light_gray" value="{$date}">
                     </div>
                 </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">接收时间</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="order_date" id="order_date" autocomplete="on" class="layui-input Wheat">
-                    </div>
-                </div>
+
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">流水号</label>
                     <div class="layui-input-inline">
@@ -57,6 +52,12 @@
                             <option value="4">备货</option>
                             <option value="6">缺货</option>
                         </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label Wheat">接收时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="order_date" id="order_date" autocomplete="on" class="layui-input Wheat">
                     </div>
                 </div>
             </div>
@@ -145,6 +146,16 @@
                         <input type="text" name="receiver_address" id="receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);">
                     </div>
                 </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label Wheat">公司名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="company_name" id="company_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label Wheat">公司地址</label>
+                <div class="layui-input-block">
+                    <input type="text" name="company_address" id="company_address" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
             </div>
             <h3>费用情况</h3>
             <div class="layui-form-item">
@@ -438,6 +449,7 @@
                     console.log('下列输入费用情况：');
                     console.log(fee_info);
                     var order_goods_cs_undeliver_goods_info = getGoodsTable();
+                    console.log(order_goods_cs_undeliver_goods_info);
                     if(order_goods_cs_undeliver_goods_info === false)
                     {
                         return false;
@@ -895,6 +907,8 @@
                 ofg_info.receiver_name = data['receiver_name'];
                 ofg_info.receiver_phone = data['receiver_phone'];
                 ofg_info.receiver_address = data['receiver_address'];
+                ofg_info.company_name = data['company_name'];
+                ofg_info.company_address = data['company_address'];
                 ofg_info.user_id = user_id;
                 return ofg_info;
             }
@@ -1104,6 +1118,8 @@
                 jq('#receiver_name').val(ofg_info.receiver_name);
                 jq('#receiver_phone').val(ofg_info.receiver_phone);
                 jq('#receiver_address').val(ofg_info.receiver_address);
+                jq('#company_name').val(ofg_info.company_name);
+                jq('#company_address').val(ofg_info.company_address);
                 //document.getElementById('user_id').value = ofg_info.user_id;
 
                 if (unc_ofg_info != ""){
@@ -1238,7 +1254,7 @@
                 console.log('下列输入费用情况：');
                 console.log(fee_info);
                 var order_goods_cs_undeliver_goods_info = getGoodsTable();
-                if(order_goods_cs_undeliver_goods_info == false)
+                if(order_goods_cs_undeliver_goods_info === false)
                     return false;
                 console.log('下列输入清单信息：');
                 console.log(order_goods_cs_undeliver_goods_info);

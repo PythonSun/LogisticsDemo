@@ -1426,7 +1426,7 @@
         /*模糊搜索型号 弃用*/
         public  static function serachmodelinfo($serachText)
         {
-            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model LIKE '%{$serachText}%' ";
+            $sql = "SELECT * FROM dsp_logistic.product_info WHERE model LIKE '%{$serachText}%' limit 10";
             $retsql = Db::query($sql);
             return $retsql;
         }
