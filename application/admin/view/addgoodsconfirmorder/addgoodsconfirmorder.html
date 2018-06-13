@@ -404,19 +404,19 @@
                     console.log(order_info);
                     if(order_info == "-1"){
                         //addLogisticsItem(null);      /*物流信息不需要手动填写*/
+                        addGoodsTableRow();
                         setHtmlType();
                         top.layer.closeAll('loading');
                         isLoading = false;
-                        addGoodsTableRow();
                         return ;
                     }
                     console.time("timer");
-                    setDBDateToHtml(order_info);
-                    setHtmlType();
                     layui.form.render('select');
-                    isLoading = false;
                     addGoodsTableRow();
                     console.timeEnd("timer");
+                    setDBDateToHtml(order_info);
+                    setHtmlType();
+                    isLoading = false;
                 });
                 //监听提交
                 form.on('submit(save)', function (uidata) {
@@ -1443,7 +1443,13 @@
                 col = newRow.insertCell(9);
                 col.innerHTML ="<td><input type='text' id='ogcugi_comment"+rowIndex+"' name='ogcugi_comment' class='layui-input  ' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
                 col = newRow.insertCell(10);
-                col.innerHTML ="<td><a class='layui-btn layui-btn-xs layui-btn-danger del_btn ' style = 'margin: 0px 10px '>删除</a></td>";
+                if(type == 1){
+                    col.innerHTML ="<td><a class='layui-btn layui-btn-xs layui-btn-danger del_btn ' style = 'margin: 0px 10px '>删除</a></td>";
+                }
+                else {
+                    col.innerHTML ="<td></td>";
+                }
+
 
                 var model ="#"+ "model"+rowIndex;
                 $(model).autocomplete({
