@@ -1252,8 +1252,11 @@
 
         var cs_examine = [];
         cs_examine[0] = getDirectorExamine(data,false,1);
+        cs_examine[0]['cs_id'] = editOrderData['depart_examine']['cs_id'];
         cs_examine[1] = getGeneralManagerExamine(data,false,1);
+        cs_examine[0]['cs_id'] = editOrderData['company_examine']['cs_id'];
         cs_examine[2] = getFinanceExamine(data,false,1);
+        cs_examine[0]['cs_id'] = editOrderData['finance_examine']['cs_id'];
         console.log("以下订单审批信息：");
         console.log(cs_examine);
 
@@ -1262,7 +1265,7 @@
         console.log(order_goods_manager);
 
         jq.ajax({
-            url: "{:url('index/confirmordercommon/managereditanddeliverorder')}",
+            url: "{:url('index/confirmordercommon/managereditandsaveorder')}",
             data: {cs_info:cs_info,
                 custom_info:custom_info,
                 delivery_info:delivery_info,

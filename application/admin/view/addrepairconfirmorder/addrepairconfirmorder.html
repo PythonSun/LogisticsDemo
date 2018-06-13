@@ -1399,33 +1399,6 @@
             layui.form.render('select');
         });
     }
-    //添加一条物流信息 data == null 表示新增一条空数据
-    function addLogisticsItem(data,tableindex) {
-        if (data == null){
-            return ;
-        }
-        var jq = layui.jquery;
-        if (!tableindex){
-            tableindex = jq('#tablelogistics')[0].rows.length;
-        }
-        var laydate = layui.laydate;
-        var form = layui.form;
-        var new_tr = jq('#tablelogistics')[0].insertRow(tableindex);//指定位置插入行
-
-        var col_0 = new_tr.insertCell(0);//添加列
-        col_0.innerHTML = "<td><input name ='text' type='text' autocomplete='on' class='layui-input  light_gray ' readonly value='"+ tableindex +"'</td>";
-        var col_1 = new_tr.insertCell(1);//添加列
-        col_1.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input  time-item light_gray ' disabled value='"+ data.delivery_date +"'></td>";
-        jq.each(jq(".time-item"),function(){
-            laydate.render({ elem: this });
-        });
-        var col_2 = new_tr.insertCell(2);//添加列
-        col_2.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input  light_gray ' readonly value='"+ data.goods_yard_name +"'></td>";
-        var col_3 = new_tr.insertCell(3);//添加列
-        col_3.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input light_gray ' readonly value='"+ data.transfer_order_num +"'></td>";
-        var col_4 = new_tr.insertCell(4);//添加列
-        col_4.innerHTML = "<td><input type= 'text' autocomplete='on' class= 'layui-input light_gray ' readonly value='"+ data.count +"'></td>";
-    }
     //修改时 经理的提交
     function managerDeliver () {
         var data = getFormData();
@@ -1466,8 +1439,11 @@
 
         var cs_examine = [];
         cs_examine[0] = getDirectorExamine(data,false,1);
+        cs_examine[0]['cs_id'] = editOrderData['depart_examine']['cs_id'];
         cs_examine[1] = getGeneralManagerExamine(data,false,1);
+        cs_examine[0]['cs_id'] = editOrderData['company_examine']['cs_id'];
         cs_examine[2] = getFinanceExamine(data,false,1);
+        cs_examine[0]['cs_id'] = editOrderData['finance_examine']['cs_id'];
         console.log("以下订单审批信息：");
         console.log(cs_examine);
 
@@ -1476,7 +1452,7 @@
         console.log(order_goods_manager);
 
         jq.ajax({
-            url: "{:url('index/confirmordercommon/managereditanddeliverorder')}",
+            url: "{:url('index/confirmordercommon/managereditandsaveorder')}",
             data: {cs_info:cs_info,
                 custom_info:custom_info,
                 delivery_info:delivery_info,
