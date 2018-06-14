@@ -1214,9 +1214,15 @@
         }
 
         /*根据条件查询用户信息*/
-        public static function queryuserinfo($pagenum,$length)
+        public static function queryuserinfo(...$args)
         {
-            $sql = "select count(*) from dsp_logistic.user ;";
+            $pagenum = $args[0];
+            $length = $args[1];
+            $sql = "select count(*) from dsp_logistic.user ";
+            if(count($args) == 3){
+                $user_id = $args[2];
+                $sql.= " where dsp_logistic.user.user_id='$user_id'";
+            }
             $countobj = Db::query($sql);
             $count = $countobj[0]['count(*)'];
             if($count == 0){
@@ -1232,7 +1238,11 @@
             $sql .= "left join dsp_logistic.organize on dsp_logistic.organize.organize_id = dsp_logistic.user.organize_id ";
             $sql .= "left join dsp_logistic.role on dsp_logistic.role.role_id = dsp_logistic.user.role_id ";
             $sql .= "left join dsp_logistic.job on dsp_logistic.job.job_id = dsp_logistic.user.job_id ";
-            $sql .= " order By dsp_logistic.user.organize_id DESC limit {$offset},{$length} ;";
+            if(count($args) == 3){
+                $user_id = $args[2];
+                $sql .= " where dsp_logistic.user.user_id='$user_id'";
+            }
+            $sql .= " order By dsp_logistic.user.organize_id DESC limit {$offset},{$length} ";
             $tableobj = Db::query($sql);
             if(!empty($tableobj)){
                 $datacount = count($tableobj);
@@ -1802,17 +1812,17 @@
                     $userquerypower["departmentname"] ="";
                     $userquerypower["areamanager"] ="";
                 }
-                if($rolename == "总监")
+                if($rolename == "部门总监")
                 {
                     $userquerypower["departmentname"] = \app\index\model\Admin::querydepartmentname($user["organize_id"]);
                     $userquerypower["areamanager"] ="";
                     $organize = \app\index\model\Admin::getdepleaderbyuserid($user["user_id"],"总经理");
                     $userquerypower["organizename"] = \app\index\model\Admin::querydepartmentname($organize[0]["organize_id"]);
                 }
-                if($rolename == "经理")
+                if($rolename == "区域经理")
                 {
                     $userquerypower["areamanager"] = $user["fullname"];
-                    $depart = \app\index\model\Admin::getdepleaderbyuserid($user["user_id"],"总监");
+                    $depart = \app\index\model\Admin::getdepleaderbyuserid($user["user_id"],"部门总监");
                     $userquerypower["departmentname"] = \app\index\model\Admin::querydepartmentname($depart[0]["organize_id"]);
                     $organize = \app\index\model\Admin::getdepleaderbyuserid($depart[0]["user_id"],"总经理");
                     $userquerypower["organizename"] = \app\index\model\Admin::querydepartmentname($organize[0]["organize_id"]);
@@ -3276,6 +3286,39 @@
             $sql.= ' limit 0 , 5;';
             $retsql = Db::query($sql);
             return $retsql;
+        }
+
+        public static function serachuserlike($param){
+            if(empty($param))
+                return null;
+            $count = count($param);
+            if($count == 0)
+                return null;
+
+            $sql = "SELECT dsp_logistic.user.* FROM dsp_logistic.user ";
+            if(array_key_exists('serachText',$param))
+            {
+                $serachText = $param['serachText'];
+                $sql .= "WHERE dsp_logistic.user.fullname LIKE '%{$serachText}%' or dsp_logistic.user.username LIKE '%{$serachText}%' ";
+            }
+            $sql.= ' limit 0 , 5;';
+            $retsql = Db::query($sql);
+            return $retsql;
+        }
+
+        public static function updatepersonalinfo($param){
+            $username= $param["username"];
+            $password = $param["oldpassword"];
+            $newpassword = $param["newpassword"];
+
+            $sqlone = "SELECT *  FROM dsp_logistic.user  where username = '$username' and password = '$password'";
+            $retsql = Db::query($sqlone);
+            if(empty($retsql))
+                return "";
+            $user_id = intval($retsql[0]['user_id']);
+            $sqltwo = " UPDATE dsp_logistic.user SET password = '{$newpassword}' where user_id = '{$user_id}'";
+            $result = Db::execute($sqltwo);
+            return $result;
         }
 
         public  static  function serachusername($name)

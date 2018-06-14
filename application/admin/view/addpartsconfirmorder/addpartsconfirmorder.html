@@ -947,8 +947,8 @@
         }
         else if(current_user_type == 2)
         {
-            jq('.Wheat_disabled').addClass('layui-disabled');
-            jq('.Wheat_disabled').attr('disabled',value);
+            //jq('.Wheat_disabled').addClass('layui-disabled');
+            //jq('.Wheat_disabled').attr('disabled',value);
 
             jq('.company_blue_disabled').addClass('layui-disabled');
             jq('.company_blue_disabled').attr('disabled',value);
@@ -1046,106 +1046,6 @@
             //jq('.edit_disabled').attr('disabled',value);
 
             jq('.edit_disabled').addClass('hide');
-            jq('.del_disabled').addClass('hide');
-        }
-    }
-
-    function updateRow(row ,isAdd) {
-        //console.log(row);
-        var jq = layui.jquery;
-        var rows = jq('#tableorder')[0].rows.length;
-        if(isAdd == false)
-        {
-            rows = row.num;
-            jq('#tableorder')[0].deleteRow(rows)
-        }
-        console.log(row);
-        var new_tr = jq('#tableorder')[0].insertRow(rows);//指定位置插入行
-
-        jq(new_tr).attr('product_type_id',row.product_type_id);
-        if(row.product_type_name == undefined||row.product_type_name == null)
-            row.product_type_name = "";
-        jq(new_tr).attr('product_type_name',row.product_type_name);
-        jq(new_tr).attr('brand_id',row.brand_id);
-        if(row.brand_name == undefined||row.brand_name == null)
-            row.brand_name = "";
-        jq(new_tr).attr('brand_name',row.brand_name);
-        if(row.product_info_name == undefined||row.product_info_name == null)
-            row.product_info_name = "";
-        jq(new_tr).attr('product_info_name',row.product_info_name);
-        jq(new_tr).attr('product_info_id',row.product_info_id);
-        jq(new_tr).attr('model',row.model);
-        if(row.unit == undefined||row.unit == null)
-            row.unit = "";
-        jq(new_tr).attr('unit',row.unit);
-        jq(new_tr).attr('place_id',row.place_id);
-        if(row.place_name == undefined||row.place_name == null)
-            row.place_name = "";
-        jq(new_tr).attr('place_name',row.place_name);
-        jq(new_tr).attr('order_goods_manager_count',row.order_goods_manager_count);
-        if(row.unc_product_name == undefined||row.unc_product_name == null)
-            row.unc_product_name = "";
-        jq(new_tr).attr('unc_product_name',row.unc_product_name);
-        jq(new_tr).attr('unc_product_id',row.unc_product_id);
-        if(row.specification == undefined||row.specification == null)
-            row.specification = "";
-        jq(new_tr).attr('specification',row.specification);
-        jq(new_tr).attr('back_date',row.back_date);
-        jq(new_tr).attr('unit_price',row.unit_price);
-        jq(new_tr).attr('fault_condition',row.fault_condition);
-        if(row.ogl_product_state == undefined||row.ogl_product_state == null)
-            row.ogl_product_state = "";
-        jq(new_tr).attr('ogl_product_state',row.ogl_product_state);
-        jq(new_tr).attr('bar_code',row.bar_code);
-        if(row.replace_reason == undefined||row.replace_reason == null)
-            row.replace_reason = "";
-        jq(new_tr).attr('replace_reason',row.replace_reason);
-        if(row.ogl_comment == undefined||row.ogl_comment == null)
-            row.ogl_comment = "";
-        jq(new_tr).attr('ogl_comment',row.ogl_comment);
-        // console.log("length: "+ jq('#tableorder')[0].rows.length);
-        jq(new_tr).attr('order_goods_manager_id', row.order_goods_manager_id);
-        jq(new_tr).attr('ogl_id',row.ogl_id);
-        jq(new_tr).attr('num',rows);
-
-
-        var col_0 = new_tr.insertCell(0);//添加列
-        col_0.innerHTML = "<td><a>"+ rows+"</a></td>"; //id是保存在数据库的id,新增时为空
-        var col_1 = new_tr.insertCell(1);//添加列
-        col_1.innerHTML = "<td><a >"+ row.product_type_name +"</a></td>";
-        var col_2 = new_tr.insertCell(2);//添加列
-        col_2.innerHTML = "<td><a >"+ row.brand_name +"</a></td>";
-        var col_3 = new_tr.insertCell(3);
-        col_3.innerHTML = "<td><a>"+ row.product_info_name +"</a></td>";//-------产品名称-------
-        var col_4 = new_tr.insertCell(4);
-        col_4.innerHTML = "<td><a>"+ row.specification +"</a></td>";
-        var col_5 = new_tr.insertCell(5);
-        col_5.innerHTML = "<td><a >"+ row.model +"</a></td>";
-        var col_6 = new_tr.insertCell(6);
-        col_6.innerHTML = "<td><a>"+ row.unit +"</a></td>";
-        var col_7 = new_tr.insertCell(7);
-        col_7.innerHTML = "<td><a>"+  row.order_goods_manager_count +"</a></td>";
-        var col_8 = new_tr.insertCell(8);
-        col_8.innerHTML = "<td><a>"+ row.unit_price +"</a></td>";
-        var col_9 = new_tr.insertCell(9);
-        col_9.innerHTML = "<td><a>"+ row.fault_condition +"</a></td>";
-        var col_10 = new_tr.insertCell(10);
-        col_10.innerHTML = "<td><a>"+ row.replace_reason +"</a></td>";
-        var col_11 = new_tr.insertCell(11);
-        col_11.innerHTML = "<td><a >"+ row.place_name +"</a></td>";
-        var col_12 = new_tr.insertCell(12);
-        col_12.innerHTML = "<td><a>"+ row.ogl_product_state +"</a></td>";
-        var col_13 = new_tr.insertCell(13);
-        if(row.unc_product_name == null){
-            col_13.innerHTML = "<td><a >"+ row.unc_product_name +"</a></td>";
-        }else{
-            col_13.innerHTML = "<td><a >"+ row.unc_product_name +"</a></td>";
-        }
-        var col_14 = new_tr.insertCell(14);
-        col_14.innerHTML = "<td><a>"+ row.ogl_comment +"</a></td>";
-        var col_15 = new_tr.insertCell(15);
-        col_15.innerHTML = "<td>" + "<a class='layui-btn layui-btn-xs edit_btn edit_disabled'>编辑</a>" + "<a class='layui-btn layui-btn-xs layui-btn-danger Wheat_disabled  del_btn del_disabled'>删除</a>" +"</td>";
-        if(current_user_type == 5){
             jq('.del_disabled').addClass('hide');
         }
     }
@@ -1326,12 +1226,21 @@
         console.log(cs_belong);
 
         var cs_examine = [];
-        cs_examine[0] = getDirectorExamine(data,false,1);
-        cs_examine[0]['cs_id'] = editOrderData['depart_examine']['cs_id'];
-        cs_examine[1] = getGeneralManagerExamine(data,false,1);
-        cs_examine[0]['cs_id'] = editOrderData['company_examine']['cs_id'];
-        cs_examine[2] = getFinanceExamine(data,false,1);
-        cs_examine[0]['cs_id'] = editOrderData['finance_examine']['cs_id'];
+        cs_examine[0] = getDirectorExamine(data,true,1);
+        cs_examine[1] = getGeneralManagerExamine(data,true,1);
+        cs_examine[2] = getFinanceExamine(data,true,1);
+        if(data['cs_info_state'] == '5' || data['cs_info_state'] == 5) //退回状态下提交
+        {
+            cs_examine[0]['cs_examine_date'] ='2000-01-01';
+            cs_examine[0]['cs_examine_comment'] = '';
+            cs_examine[0]['cs_examine_result'] = "";
+            cs_examine[1]['cs_examine_date'] ='2000-01-01';
+            cs_examine[1]['cs_examine_comment'] = '';
+            cs_examine[1]['cs_examine_result'] = "";
+            cs_examine[2]['cs_examine_date'] ='2000-01-01';
+            cs_examine[2]['cs_examine_comment'] = '';
+            cs_examine[2]['cs_examine_result'] = "";
+        }
         console.log("以下订单审批信息：");
         console.log(cs_examine);
 

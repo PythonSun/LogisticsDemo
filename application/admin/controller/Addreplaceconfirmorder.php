@@ -73,11 +73,11 @@ class Addreplaceconfirmorder extends Controller
         {
             return 3;
         }
-        elseif($rolename == "总监")
+        elseif($rolename == "部门总监")
         {
             return 2;
         }
-        elseif($rolename == "经理")
+        elseif($rolename == "区域经理")
         {
             return 1;
         }

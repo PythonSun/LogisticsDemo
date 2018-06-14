@@ -64,11 +64,11 @@ class Queryreplaceconfirmorder extends Controller
         {
             $this->assign('current_user_type',3);
         }
-        elseif($rolename == "总监")
+        elseif($rolename == "部门总监")
         {
             $this->assign('current_user_type',2);
         }
-        elseif($rolename == "经理")
+        elseif($rolename == "区域经理")
         {
             $this->assign('current_user_type',1);
         }

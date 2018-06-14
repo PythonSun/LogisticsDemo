@@ -21,7 +21,7 @@ class Approvealternativeconfirmorder extends Controller
         {
             $this->assign('current_user_type',3);
         }
-        elseif($rolename == "总监")
+        elseif($rolename == "部门总监")
         {
             $this->assign('current_user_type',2);
         }
