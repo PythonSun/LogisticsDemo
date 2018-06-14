@@ -163,7 +163,7 @@ class Confirmordercommon extends Controller
             $cs_examine[$i]['cs_id'] = $cs_info['cs_id'];
             $user_id = $cs_examine[$i]['submit_user_id'];
             if ($i == 0) {
-                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '总监');
+                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '部门总监');
                 if (empty($dbleader)) {
                     $this->deldata($data);
                     //   dump(888);
@@ -339,7 +339,7 @@ class Confirmordercommon extends Controller
         $cs_examine_ids ="";
         for ($i = 0; $i < $length; $i++) {
             if ($i == 0) {
-                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($cs_belong['build_user_id'], '总监');
+                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($cs_belong['build_user_id'], '部门总监');
                 if (empty($dbleader)) {
                     return false;
                 }

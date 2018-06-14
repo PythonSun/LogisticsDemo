@@ -15,7 +15,7 @@
                     <i class="fa fa-user fa-lg" aria-hidden="true" style="font-size: 30px;"></i>
                 </label>
                 <div class="layui-input-block">
-                    <input type="text" name="username" id="username" required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input"> </div>
+                    <input type="text" name="username" id="username" required lay-verify="required" placeholder="请输入登录名" autocomplete="off" class="layui-input"> </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">
@@ -24,8 +24,14 @@
                 <div class="layui-input-block">
                     <input type="password" name="password" id="pass" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input" /> </div>
             </div>
-            <div class="login">
-                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="login" id='button'> 登录 </button>
+            <div class="layui-form-item">
+<!--                 <div class="login">
+                    <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="login" id='button'> 登录</button>
+                </div> -->
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="login" id='button'> 登录</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="javascript:void(0);" style="color: white;font-size: 14px;text-decoration:underline;" id="resetpersoninfo">修改密码</a>
+                </div>
             </div>
         </form>
         <!--<div class="layui-container">
@@ -76,6 +82,37 @@
                     });
                     return false;
                 });
+
+                /*修改用户密码*/
+                jq('#resetpersoninfo').click(function(){
+                    top.layer.open({
+                        type: 2 //此处以iframe举例
+                        , title: ['修改用户密码','text-align:center']
+                        , area: ['500px', '400px']
+                        , shade: 0.8
+                        , maxmin: false
+                        , content: "{:url('usermanage/resetpersonalinfo/resetpersonalinfo')}"
+                        , btn: ['保存', '取消'] //只是为了演示
+                        , yes: function (index, layero){
+                            var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                            var personalinfo = iframeWin.submitPersonalinfo();
+                            if(personalinfo == ''){
+                                return;
+                            }
+                            jq.post("{:url('usermanage/resetpersonalinfo/updatepersonalinfo')}",{'param':personalinfo},function(data){
+                                if(data == ''){
+                                    top.layer.msg('用户名不存在或者密码错误',{icon:2});
+                                    return;
+                                }else{
+                                    top.layer.close(index);
+                                    top.layer.msg('用户密码修改成功',{icon:1});
+                                }
+                            });
+                        }
+                    });
+                });
+
+
             });
 
             function keyLogin() {
