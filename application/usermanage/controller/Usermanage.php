@@ -22,7 +22,12 @@ class Usermanage extends Controller
     {
         $page = $_GET['page'];
         $limit = $_GET['limit'];
-        $tablelist = \app\index\model\Admin::queryuserinfo($page,$limit);
+        if(isset($_GET['user_id'])){
+            $user_id = intval($_GET['user_id']);
+            $tablelist = \app\index\model\Admin::queryuserinfo($page,$limit,$user_id);
+        }else{
+            $tablelist = \app\index\model\Admin::queryuserinfo($page,$limit);
+        }
         return $tablelist;
     }
 
@@ -63,4 +68,16 @@ class Usermanage extends Controller
         return $ret;
     }
 
+    /*获取用户名检索表*/
+    public function getserachfullname(){
+        $condition = array();
+        if(array_key_exists('serachText',$_POST)){
+            $condition['serachText'] = $_POST['serachText'];
+            $userinfo = \app\index\model\Admin::serachuserlike($condition);
+            return $userinfo;
+        }else{
+            return null;
+        }
+
+    }
 }

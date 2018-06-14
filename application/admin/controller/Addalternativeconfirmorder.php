@@ -71,11 +71,11 @@ class Addalternativeconfirmorder extends Controller
         {
             return 3;
         }
-        elseif($rolename == "总监")
+        elseif($rolename == "部门总监")
         {
             return 2;
         }
-        elseif($rolename == "经理")
+        elseif($rolename == "区域经理")
         {
             return 1;
         }
@@ -240,7 +240,7 @@ class Addalternativeconfirmorder extends Controller
             $cs_examine[$i]['cs_id'] = $cs_info['cs_id'];
             $user_id = $cs_examine[$i]['submit_user_id'];
             if ($i == 0) {
-                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '总监');
+                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($user_id, '部门总监');
                 if (empty($dbleader)) {
                     $this->deldata($data);
                     return false;
@@ -423,7 +423,7 @@ class Addalternativeconfirmorder extends Controller
         $cs_examine_ids ="";
         for ($i = 0; $i < $length; $i++) {
             if ($i == 0) {
-                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($cs_belong['build_user_id'], '总监');
+                $dbleader = \app\index\model\Admin::getdepleaderbyuserid($cs_belong['build_user_id'], '部门总监');
                 if (empty($dbleader)) {
                     return false;
                 }

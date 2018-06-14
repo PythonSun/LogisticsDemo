@@ -762,7 +762,7 @@
                             url:"{:url('index/common/getserachmanarger')}",
                             type:"POST",
                             dataType:"json",
-                            data:{serachText:jq('#user_id').val(),organize_id:jq('#build_department_id').val(),role_name:'经理'},
+                            data:{serachText:jq('#user_id').val(),organize_id:jq('#build_department_id').val()},
                             success:function(data){
                                 if(data == null || data == undefined)
                                     return ;

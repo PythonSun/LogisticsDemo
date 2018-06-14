@@ -88,7 +88,7 @@
         <a style="color: red ;margin: 0px 20px">物流部角色：物流部人员、部长/主管、管理人员</a></br>
         <a style="color: red;margin: 0px 20px">财务部角色：财务人员：</a></br>
         <a style="color: red;margin: 0px 20px">只选总部门角色：总经理</a></br>
-        <a style="color: red;margin: 0px 20px">销售子部门角色：总监、经理</a></br>
+        <a style="color: red;margin: 0px 20px">销售子部门角色：部门总监、区域经理</a></br>
         <a style="color: red;margin: 0px 20px">物流部仓库角色：仓管</a></br>
     </div>
     <script src="/static/layui/layui.js"></script>
@@ -276,7 +276,7 @@
                 var companyName = jq('#company_id option:selected').text();
                 var departName = jq('#department_id option:selected').text();
                 var roleName = jq('#role_id option:selected').text();
-                if(departName != '仓库'&&(roleName != '总监'&&roleName != '经理'))
+                if(departName != '仓库'&&(roleName != '部门总监'&&roleName != '区域经理'))
                 {
                     layer.msg(departName+'角色不能为'+roleName,{icon:2});
                     return false;

@@ -37,17 +37,16 @@ html, body {
 	overflow: hidden;
 }
 .login {
-	width: 36%;
+	width: 24%;
 	margin: 1% auto;
 }
-.login .layui-btn-radius {
+.layui-btn-radius {
 	background-color: black;
 	border-color: #3C3A3A;
 	color: #fff;
-	width: 100%;
 	font-size: 20px;
 	letter-spacing: 5px;
-	text-align: center;
+	width: 125px;
 }
 .message {
 	border-radius: 20px!important;
