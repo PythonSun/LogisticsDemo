@@ -1274,12 +1274,21 @@
                 console.log(cs_belong);
 
                 var cs_examine = [];
-                cs_examine[0] = getDirectorExamine(data,false,1);
-                cs_examine[0]['cs_examine_id'] = editOrderData['depart_examine']['cs_examine_id'];
-                cs_examine[1] = getGeneralManagerExamine(data,false,1);
-                cs_examine[0]['cs_examine_id'] = editOrderData['company_examine']['cs_examine_id'];
-                cs_examine[2] = getFinanceExamine(data,false,1);
-                cs_examine[0]['cs_examine_id'] = editOrderData['finance_examine']['cs_examine_id'];
+                cs_examine[0] = getDirectorExamine(data,true,1);
+                cs_examine[1] = getGeneralManagerExamine(data,true,1);
+                cs_examine[2] = getFinanceExamine(data,true,1);
+                if(data['cs_info_state'] == '5' || data['cs_info_state'] == 5) //退回状态下提交
+                {
+                    cs_examine[0]['cs_examine_date'] ='2000-01-01';
+                    cs_examine[0]['cs_examine_comment'] = '';
+                    cs_examine[0]['cs_examine_result'] = "";
+                    cs_examine[1]['cs_examine_date'] ='2000-01-01';
+                    cs_examine[1]['cs_examine_comment'] = '';
+                    cs_examine[1]['cs_examine_result'] = "";
+                    cs_examine[2]['cs_examine_date'] ='2000-01-01';
+                    cs_examine[2]['cs_examine_comment'] = '';
+                    cs_examine[2]['cs_examine_result'] = "";
+                }
                 console.log("以下订单审批信息：");
                 console.log(cs_examine);
 
