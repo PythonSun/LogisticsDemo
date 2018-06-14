@@ -1275,11 +1275,11 @@
 
                 var cs_examine = [];
                 cs_examine[0] = getDirectorExamine(data,false,1);
-                cs_examine[0]['cs_id'] = editOrderData['depart_examine']['cs_id'];
+                cs_examine[0]['cs_examine_id'] = editOrderData['depart_examine']['cs_examine_id'];
                 cs_examine[1] = getGeneralManagerExamine(data,false,1);
-                cs_examine[0]['cs_id'] = editOrderData['company_examine']['cs_id'];
+                cs_examine[0]['cs_examine_id'] = editOrderData['company_examine']['cs_examine_id'];
                 cs_examine[2] = getFinanceExamine(data,false,1);
-                cs_examine[0]['cs_id'] = editOrderData['finance_examine']['cs_id'];
+                cs_examine[0]['cs_examine_id'] = editOrderData['finance_examine']['cs_examine_id'];
                 console.log("以下订单审批信息：");
                 console.log(cs_examine);
 
