@@ -3249,7 +3249,7 @@
             if($count == 0)
                 return null;
 
-            $sql = "SELECT dsp_logistic.user.*  ,dsp_logistic.organize.organize_name,dsp_logistic.role.role_name FROM dsp_logistic.user ";
+            $sql = "SELECT dsp_logistic.user.fullname , dsp_logistic.user.user_id,dsp_logistic.user.phone ,dsp_logistic.organize.organize_name,dsp_logistic.role.role_name FROM dsp_logistic.user ";
             $sql .= "left join dsp_logistic.role on dsp_logistic.role.role_id = dsp_logistic.user.role_id ";
             $sql .= "left join dsp_logistic.organize on dsp_logistic.organize.organize_id = dsp_logistic.user.organize_id ";
             if(array_key_exists('serachText',$param))
