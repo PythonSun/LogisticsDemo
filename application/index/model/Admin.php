@@ -3265,6 +3265,7 @@
             if(array_key_exists('serachText',$param))
             {
                 $serachText = $param['serachText'];
+                $serachText = addslashes($serachText);
                 $sql .= "WHERE dsp_logistic.user.fullname LIKE '%{$serachText}%' ";
             }
 
