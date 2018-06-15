@@ -21,6 +21,18 @@
             }
             .layui-table-style td{padding: 4px 1px;  border: 1px solid #8A8A8A}
             .layui-table-style th{ border: 1px solid #8A8A8A;  color:black}
+            .row-panel {
+                height: 38px;margin-bottom: 20px
+            }
+            .row-panel-left{
+                float: left;min-width: 190px;margin-left: -1px;margin-right: 25px
+            }
+            .row-panel-self-adaption{
+                overflow:hidden;
+            }
+            .row-panel-self-adaption-input{
+                float: left;width: calc(100% - 110px);margin-left: -1px;
+            }
         </style>
     <body>
         <form class="layui-form layui-form-pane" action="">
@@ -140,23 +152,25 @@
                     <div class="layui-input-inline">
                         <input type="text" name="receiver_phone" id="receiver_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputphone(this);"> </div>
                 </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label Wheat">收货地址</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="receiver_address" id="receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);">
-                    </div>
+
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label Wheat">收货地址</label>
+                <div class="layui-input-block">
+                    <input type="text" name="receiver_address" id="receiver_address" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);">
                 </div>
             </div>
-            <div class="layui-form-item">
+            <div class="row-panel">
                 <label class="layui-form-label Wheat">客户名称</label>
-                <div class="layui-input-inline">
+                <div class="row-panel-left">
                     <input type="text" name="company_name" id="company_name" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+                <div class="row-panel-self-adaption">
+                    <label class="layui-form-label Wheat">公司名称</label>
+                    <div class="row-panel-self-adaption-input">
+                        <input type="text" name="company_address" id="company_address" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+                </div>
             </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label Wheat">公司名称</label>
-                <div class="layui-input-block">
-                    <input type="text" name="company_address" id="company_address" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
-            </div>
+
             <h3>费用情况</h3>
             <div class="layui-form-item">
                 <div class="layui-inline">

@@ -8,7 +8,7 @@
         <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
         <link rel="stylesheet" type="text/css" href="/static/css/login.css">
         <link rel="stylesheet" type="text/css" href="/static/font-awesome-4.7.0/css/font-awesome.css"> </head>
-    <body onkeydown="keyLogin()" style="overflow: auto;">
+    <body onkeydown="keyLogin(event)" style="overflow: auto;">
         <form class="layui-form uspw">
             <div class="layui-form-item">
                 <label class="layui-form-label" style="background-color:;">
@@ -116,8 +116,10 @@
 
             });
 
-            function keyLogin() {
-                if(event.keyCode == 13) //回车键的键值为13
+            function keyLogin(keyevent) {
+                var e = keyevent || window.event || arguments.callee.caller.arguments[0];
+                console.log(keyevent);
+                if(e.keyCode == 13) //回车键的键值为13
                     document.getElementById("button").click(); //调用登录按钮的登录事件
             }
         </script>
