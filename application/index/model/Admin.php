@@ -1833,10 +1833,14 @@
 
         public static function login($username,$password){
             $where['username'] = $username;
-            $where['password'] = $password;
+            //$where['password'] = $password;
 
             $user = Db::name('dsp_logistic.user')->where($where)->find();   /*用户信息检测*/
             if($user){
+
+                if (md5($user["password"]) != $password){
+                    return false;
+                }
                 unset($user["password"]);      	   					       /*销毁password*/
                 session_start();
                 session("user_session", $user);/*创建session,里面只包含用户名，password已经销毁*/

@@ -411,11 +411,12 @@
                         return ;
                     }
                     console.time("timer");
-                    layui.form.render('select');
                     addGoodsTableRow();
                     console.timeEnd("timer");
                     setDBDateToHtml(order_info);
                     setHtmlType();
+                    layui.form.render('select');
+
                     isLoading = false;
                 });
                 //监听提交
@@ -717,15 +718,12 @@
                     }else {
                         return;
                     }
-
-                    var html1 = "<img src='"+ pathName +"'>";
-
+                    var html1 = "<img id='test111' src='"+ pathName +"'>";
                     top.layer.open({
                         type: 1,
                         title: fileName,
                         area: ['80%', '80%'],
                         maxmin: true,
-                        skin: 'layui-layer-nobg', //没有背景色
                         shadeClose: true,
                         content: html1,
                     });
@@ -992,8 +990,9 @@
 
                 //consult_sheet_file = order_goods_cs_info.consult_sheet_file;
                 //jq('#unc_ofg_info_id').val(order_goods_cs_info.unc_ofg_info_id);
-                if(order_goods_cs_info.delivery_date_reply != ''&&order_goods_cs_info.delivery_date_reply != '2000-01-01'&&order_goods_cs_info.delivery_date_reply == null)
+                if(order_goods_cs_info.delivery_date_reply != '' && order_goods_cs_info.delivery_date_reply != '2000-01-01'&& order_goods_cs_info.delivery_date_reply != null){
                     jq('#delivery_date_reply').val(order_goods_cs_info.delivery_date_reply);
+                }
                 document.getElementById('cs_info_state').value = order_goods_cs_info.cs_info_state;
 
                 fee_info_id = fee_info.fee_info_id;
