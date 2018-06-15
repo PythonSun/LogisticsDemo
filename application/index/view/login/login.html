@@ -54,6 +54,7 @@
             </form>
         </div>-->
         <script src="/static/layui/layui.js"></script>
+        <script src="/static/js/md5.js"></script>
         <script type="text/javascript">
             layui.use(['jquery', 'form', 'layer'], function () {
                 var jq = layui.jquery,
@@ -64,7 +65,7 @@
                 /*监听登录按键*/
                 form.on('submit(login)', function (data) {
                     var userinfo = data.field;
-                    jq.post("{:url('index/login/loginconfirm')}", { 'username': userinfo.username, 'password': userinfo.password }, function (data) {
+                    jq.post("{:url('index/login/loginconfirm')}", { 'username': userinfo.username, 'password': hex_md5(userinfo.password) }, function (data) {
                         if(data) {
                             layer.msg('登录成功', {
                                 icon: 1,
