@@ -2038,7 +2038,7 @@
                         $unc_interlligencesoft_num++;
 
                     /*缺货部分统计 order_goods_manager_count*/
-                    if($ofg_productlist[$j]['ogl_product_state'] == '1'){
+                    if($ofg_productlist[$j]['ogl_product_state'] == '缺货'){
                         $model_param['place_name'] = $ofg_productlist[$j]['place_name'];
                         $model_param['brand_name'] = $ofg_productlist[$j]['brand_name'];
                         $model_param['model'] = $ofg_productlist[$j]['model'];
