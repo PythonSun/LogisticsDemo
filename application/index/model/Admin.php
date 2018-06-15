@@ -1874,12 +1874,25 @@
         }
 
         /*查询需要导出的更换/代用/维修/退货/配件/借样确认单  未完待续*/
-        public static function queryexportcsinfoconfirmorder($param,$type){
+        public static function queryexportcsinfoconfirmorder($param,$type,$organizename,$departmentname,$areamanager){
             $sqlone ="select dsp_logistic.cs_belong.*,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.*,dsp_logistic.return_info.* from dsp_logistic.cs_info ";
             $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
             $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqlone .= "where dsp_logistic.cs_info.cs_info_type='$type' ";
+
+            if($organizename != ""){
+                $sqlone .= "and build_organize_name='$organizename' ";
+            }
+
+            if($departmentname != ""){
+                $sqlone .= "and build_department_name='$departmentname' ";
+            }
+
+            if($areamanager != ""){
+                $sqlone .= "and build_user_name='$areamanager' ";
+            }
+
             if((property_exists($param,'startdate'))&&(property_exists($param,'enddate'))){
                $startdate = $param->startdate;
                $enddate = $param->enddate;
