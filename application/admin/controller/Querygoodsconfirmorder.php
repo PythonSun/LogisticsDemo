@@ -50,7 +50,6 @@ class Querygoodsconfirmorder extends Controller
     }
 
     public function getexamineorder(){
-
         $queryuserinfo = session("user_querypower");
         $page = $_GET['page'];
         $limit = $_GET['limit'];

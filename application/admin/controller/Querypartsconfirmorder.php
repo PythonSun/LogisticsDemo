@@ -106,13 +106,26 @@ class Querypartsconfirmorder extends Controller
 
     /*导出配件确认单*/
     public function exportpartsconfirmorder(){
+        $queryuserinfo = session("user_querypower");
+        $organizename = "";
+        if (array_key_exists('organizename',$queryuserinfo)){
+            $organizename = $queryuserinfo["organizename"];
+        }
+        $departmentname = "";
+        if (array_key_exists('departmentname',$queryuserinfo)){
+            $departmentname = $queryuserinfo["departmentname"];
+        }
+        $areamanager = "";
+        if (array_key_exists('areamanager',$queryuserinfo)){
+            $areamanager = $queryuserinfo["areamanager"];
+        }
         $template_name = "订单登记系统导出.xlsx";
         $type=0x05;
         $param = json_decode($_GET['param']);
         $file_name = $_GET['file_name'];
         $file_extend = 'xlsx';
 
-        $ret = \app\index\model\Admin::queryexportcsinfoconfirmorder($param,$type);
+        $ret = \app\index\model\Admin::queryexportcsinfoconfirmorder($param,$type,$organizename,$departmentname,$areamanager);
         \app\index\model\Admin::exportcsinfoconfirmorder($file_name,$file_extend,$template_name,$ret,$type);
     }
 
