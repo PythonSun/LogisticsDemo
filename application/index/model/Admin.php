@@ -2042,7 +2042,7 @@
                         $unc_interlligencesoft_num++;
 
                     /*缺货部分统计 order_goods_manager_count*/
-                    if($ofg_productlist[$j]['ogl_product_state'] == '1'){
+                    if($ofg_productlist[$j]['ogl_product_state'] == '缺货'){
                         $model_param['place_name'] = $ofg_productlist[$j]['place_name'];
                         $model_param['brand_name'] = $ofg_productlist[$j]['brand_name'];
                         $model_param['model'] = $ofg_productlist[$j]['model'];
@@ -2115,6 +2115,18 @@
                 }else if($ret[$item-3]['cs_info_state'] == 2){
                     $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), '已完成');
                     $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), 1);
+                }else if($ret[$item-3]['cs_info_state'] == 3){
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), '取消');
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), 0);
+                }else if($ret[$item-3]['cs_info_state'] == 4){
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), '备货');
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), 0);
+                }else if($ret[$item-3]['cs_info_state'] == 5){
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), '退回');
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), 0);
+                }else if($ret[$item-3]['cs_info_state'] == 6){
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), '缺货');
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), 0);
                 }
                 $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), $ret[$item-3]['product_number']);
                 if($ret[$item-3]['broadcast_num'] != 0)
@@ -2475,6 +2487,18 @@
                 }else if($ret[$item-3]['cs_info_state'] == 2){
                     $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), '已完成');
                     $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), 1);
+                }else if($ret[$item-3]['cs_info_state'] == 3){
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), '取消');
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), 0);
+                }else if($ret[$item-3]['cs_info_state'] == 4){
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), '备货');
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), 0);
+                }else if($ret[$item-3]['cs_info_state'] == 5){
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), '退回');
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), 0);
+                }else if($ret[$item-3]['cs_info_state'] == 6){
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), '缺货');
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), 0);
                 }
                 $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), $ret[$item-3]['product_number']);
                 
