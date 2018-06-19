@@ -247,16 +247,14 @@
                         {
                             examinerEdit(data);
                         }
-                        else if(current_user_type == 1)
+                        else if(current_user_type == 1 || current_user_type == 6)
                         {
                             if(data['can_edit'] == 0)
                             {
                                 layer.msg('当前不可编辑',{icon:2});
                                 return false;
                             }
-
                             managerEdit(data);
-
                         }
 
                     }

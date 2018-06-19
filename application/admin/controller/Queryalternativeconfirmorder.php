@@ -68,6 +68,10 @@ class Queryalternativeconfirmorder extends Controller
         {
             $this->assign('current_user_type',1);
         }
+        elseif($rolename == "部门助理")
+        {
+            $this->assign('current_user_type',6);
+        }
 
         return $this->fetch();
     }
