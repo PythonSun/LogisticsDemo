@@ -240,11 +240,11 @@
                                 logisticEdit(data);
                             }
                         }
-                        else if(current_user_type == 2|| current_user_type == 3 || current_user_type == 4)
+                        else if(current_user_type == 3 || current_user_type == 4)
                         {
                             examinerEdit(data);
                         }
-                        else if(current_user_type == 1 || current_user_type == 6)
+                        else if(current_user_type == 1 || current_user_type == 6||current_user_type == 2)
                         {
                             if(data['can_edit'] == 0)
                             {
@@ -417,7 +417,7 @@
                         },
                         btn2: function (index,layero) {
                             var iframeWin = top.window[layero.find('iframe')[0]['name']];
-                            var result = iframeWin.editDeliver();
+                            var result = iframeWin.managerDeliver();
                             if(result == false)
                                 return false;
                             table.reload('querytable', {

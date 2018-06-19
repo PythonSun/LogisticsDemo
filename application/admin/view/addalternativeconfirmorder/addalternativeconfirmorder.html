@@ -960,8 +960,11 @@
         else if(current_user_type == 2)
         {
 
-            //jq('.Wheat_disabled').addClass('layui-disabled');
-            //jq('.Wheat_disabled').attr('disabled',value);
+            if(is_Examine)
+            {
+                jq('.Wheat_disabled').addClass('layui-disabled');
+                jq('.Wheat_disabled').attr('disabled',value);
+            }
 
             jq('.company_blue_disabled').addClass('layui-disabled');
             jq('.company_blue_disabled').attr('disabled',value);
@@ -1211,6 +1214,7 @@
     }
     //修改时 经理的提交
     function managerDeliver () {
+        setDisable(false);
         var data = getFormData();
         var jq = layui.jquery;
 
@@ -1613,11 +1617,7 @@
         }
      
         setDisable(false);
-        if(current_user_type == 1 || current_user_type == 6)
-        {
-            return managerDeliver();
-        }
-        else if(current_user_type == 2)
+        if(current_user_type == 2)
         {
             return departDeliver();
         }
