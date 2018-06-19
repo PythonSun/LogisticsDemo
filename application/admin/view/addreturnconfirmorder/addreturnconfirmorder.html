@@ -1070,6 +1070,10 @@
 
         var cs_examine = [];
         var directorExamine = getDirectorExamine(data,false,state);
+        if(current_user_type == 2)
+        {
+            directorExamine['cs_examine_state'] = '2' ;
+        }
         cs_examine[0] = directorExamine;
         var generalManagerExamine = getGeneralManagerExamine(data,false,state);
         cs_examine[1] = generalManagerExamine;
@@ -1216,6 +1220,10 @@
 
         var cs_examine = [];
         cs_examine[0] = getDirectorExamine(data,true,1);
+        if(current_user_type == 2)
+        {
+            cs_examine[0]['cs_examine_state'] = '2' ;
+        }
         cs_examine[1] = getGeneralManagerExamine(data,true,1);
         cs_examine[2] = getFinanceExamine(data,true,1);
         if(data['cs_info_state'] == '5' || data['cs_info_state'] == 5) //退回状态下提交
