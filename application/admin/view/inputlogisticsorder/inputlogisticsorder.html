@@ -7,6 +7,7 @@
         <link rel="stylesheet" type="text/css" href="/static/css/public.css"> 
     </head>
     <body>
+    <div style="margin:15px 10px 5px 10px;min-height: 180px;border: 2px solid #C7C7C7;">
         <form class="layui-form layui-form-pane" id="form" action="">
             <div class="toph2">
                 <h2>物流单号输入</h2>
@@ -15,7 +16,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">流水号</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="cs_id" id="cs_id" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray"> </div>
+                        <input type="text" name="cs_id" id="cs_id" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_gray" oninput="detectinputnumber(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label light_gray">收货人</label>
@@ -29,9 +30,9 @@
                 </div>
             </div>
             <div class="layui-form-item">
-            	<label class="layui-form-label light_gray">收货地址</label>
+                <label class="layui-form-label light_gray">收货地址</label>
                 <div class="layui-input-block layui-input-block-custom-settings">
-                    <input type="text" name="shippingaddress" id="shippingaddress" disabled="" lay-verify="" autocomplete="on" placeholder="" class="layui-input layui-disabled light_gray"> 
+                    <input type="text" name="shippingaddress" id="shippingaddress" disabled="" lay-verify="" autocomplete="on" placeholder="" class="layui-input layui-disabled light_gray">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -43,7 +44,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_blue">运单号</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="transfer_order_num" id="transfer_order_num" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_blue"> </div>
+                        <input type="text" name="transfer_order_num" id="transfer_order_num" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_blue" oninput="detectinputdataletter(this);"> </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label light_blue" style="color:red;">发货日期</label>
@@ -53,17 +54,19 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_blue">件数</label>
                     <div class="layui-input-inline">
-                        <input type="number" name="count" id="count" autocomplete="on" class="layui-input light_blue"> </div>
+                        <input type="text" name="count" id="count" autocomplete="on" class="layui-input light_blue" oninput="detectinputnumber(this);"> </div>
                 </div>
             </div>
             <div class="layui-form-item">
-                <div class="layui-inline">
-                    <button class="layui-btn" lay-submit="" lay-filter="saveinfo">保存</button>
-                </div>
+                <input type="button" class="layui-btn" style="float: right;margin-right: 10px;" lay-submit="" lay-filter="saveinfo" value="保存">
             </div>
         </form>
+    </div>
+    <div style="margin:20px 10px;">
         <h2 id="h2">物流单查询结果</h2>
         <table class="layui-hide" id="logisticstablequeryresult" lay-filter="logisticstablequeryresult"></table>
+    </div>
+
         <script type="text/html" id="barDemo">
             <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
@@ -77,6 +80,18 @@
             document.onkeypress = forbidBackSpace;
             document.onkeydown = forbidBackSpace;
             var winhei,remain,heightone,heigthtwo,formheight;
+            function validate(inputValue) {
+                var strLength = inputValue.length;
+                if(strLength == 13) {
+                    var year = parseInt(inputValue.substring(0, 4));
+                    var month = parseInt(inputValue.substring(4, 6));
+                    var day = parseInt(inputValue.substring(6, 8));
+                    if (year >= 1988 && year <= 2088 && month >= 1 && month <= 12 && day >= 0 && day <= 31) {
+                        return true;
+                    }
+                }
+                return false;
+            }
             layui.use(['form', 'laydate', 'jquery', 'layer', 'table'], function () {
                 var form = layui.form,
                     laydate = layui.laydate,
@@ -95,13 +110,42 @@
                     window.location.reload();
                 });
                 $("#cs_id").blur(function () {
-                    var cs_id = $('#cs_id').val();
-                    $.post("{:url('admin/inputlogisticsorder/serialnumber')}", { 'cs_id': cs_id }, function (res) {
-                        console.log(res)
-                        $('#consignee').val(res.receiver_name);
-                        $('#consigneephone').val(res.receiver_phone);
-                        $('#shippingaddress').val(res.receiver_address);
-                    });
+                    var inputValue = $('#cs_id').val();
+                    var ret = validate(inputValue);
+                    if(ret === true){
+                        $.post(
+                            "{:url('admin/inputlogisticsorder/serialnumber')}"
+                            , { 'cs_id': inputValue }
+                            , function (res) {
+                                console.log(res);
+                                if (res !== null){
+                                    $('#consignee').val(res.receiver_name);
+                                    $('#consigneephone').val(res.receiver_phone);
+                                    $('#shippingaddress').val(res.receiver_address);
+                                }else {
+                                    $('#consignee').val('');
+                                    $('#consigneephone').val('');
+                                    $('#shippingaddress').val('');
+                                }
+                            });
+                    }else {
+                        $('#consignee').val('');
+                        $('#consigneephone').val('');
+                        $('#shippingaddress').val('');
+                    }
+                    return false;
+                });
+                $("#cs_id").bind('input propertychange',function (e) {
+                    console.log("发生改变");
+                    var inputValue = $(this).val();
+                    var strLength = inputValue.length;
+                    if(strLength == 13){
+                        $("#cs_id").blur();
+                    }else {
+                        $('#consignee').val('');
+                        $('#consigneephone').val('');
+                        $('#shippingaddress').val('');
+                    }
                 });
                 /*日期*/
                 laydate.render({
@@ -111,14 +155,44 @@
                 });
                 form.on('submit(saveinfo)', function (data) {
                     var param = data.field;
-                    $.post("{:url('admin/inputlogisticsorder/savemessage')}", { 'param': param }, function (res) {
-                        if(res == '1') {
-                            layer.msg('保存成功！', { icon: 6 });
-                            table.reload('logisticstablequeryresult', {});
-                        } else {
-                            layer.msg('保存失败！', { icon: 5 });
-                        }
-                    });
+                    var cs_id = param['cs_id'];
+                    var ret = validate(cs_id);
+                    var goods_yard_name = param['goods_yard_name'].trim();
+                    var transfer_order_num = param['transfer_order_num'].trim();
+                    var delivery_date = param['delivery_date'].trim();
+                    var count = param['count'].trim();
+                    var consignee = $('#consignee').val().trim();
+                    var consigneephone = $('#consigneephone').val().trim();
+                    var shippingaddress = $('#shippingaddress').val().trim();
+                    if(ret === true){
+
+                    }
+                    else {
+                        layer.msg('请正确填写流水号！',{icon:2});
+                        return false;
+                    }
+                    if(ret === true && goods_yard_name != ''&& transfer_order_num != ''&& delivery_date != ''&& count != ''&& consignee != ''&& consigneephone != ''&& shippingaddress != ''){
+                        $.post("{:url('admin/inputlogisticsorder/savemessage')}", { 'param': param }, function (res) {
+                            if(res == '1') {
+                                $('#cs_id').val('');
+                                $('#goods_yard_name').val('');
+                                $('#transfer_order_num').val('');
+                                $('#delivery_date').val('');
+                                $('#count').val('');
+                                $('#consignee').val('');
+                                $('#consigneephone').val('');
+                                $('#shippingaddress').val('');
+                                layer.msg('保存成功！', { icon: 6 });
+                                table.reload('logisticstablequeryresult', {});
+                            } else {
+                                layer.msg('保存失败！', { icon: 5 });
+                            }
+                        });
+                    }else {
+                        layer.msg('请正确填写信息！',{icon:2});
+                        return false;
+                    }
+
                     return false;
                 });
                 //第一个实例
@@ -128,8 +202,14 @@
                     url: "{:url('admin/inputlogisticsorder/loadingdata')}",
                     page: true,
                     limit: 10,
-                    cols: [
-                        [{ field: 'cs_id', title: '流水号', sort: true, fixed: 'left' }, { field: 'goods_yard_name', title: '货场名称' }, { field: 'transfer_order_num', title: '运单号' }, { field: 'delivery_date', title: '发货日期' }, { field: 'count', title: '件数' }, { fixed: 'right', width: 250, align: 'center', toolbar: '#barDemo' }]
+                    cols: [[
+                        { field: 'cs_id', title: '流水号', sort: true, fixed: 'left' }
+                        ,{ field: 'goods_yard_name', title: '货场名称' }
+                        ,{ field: 'transfer_order_num', title: '运单号' }
+                        ,{ field: 'delivery_date', title: '发货日期' }
+                        ,{ field: 'count', title: '件数' }
+                        ,{ fixed: 'right', width: 250, align: 'center', toolbar: '#barDemo' }
+                        ]
                     ]
                 });
                 //监听工具条
