@@ -78,6 +78,10 @@ class Addreturnconfirmorder extends Controller
         {
             return 1;
         }
+        elseif($rolename == "部门助理")
+        {
+            return 6;
+        }
     }
 
     public function editreturnconfirmorder()

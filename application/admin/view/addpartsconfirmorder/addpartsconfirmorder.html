@@ -447,6 +447,7 @@
     var uncofginfo = null;      //非常规订单数据 包含unc_ofg_info，清单明细：搜索unc_ofg_items，删除表del_unc_ofg_detail_id_arr
     var del_unc_ofg_detail_id_arr = new Array();//删除非定型订单明细id
     var unc_ofg_info_id = 0;
+    var is_Examine = false;
 
     //禁止backspace键
     document.onkeypress = forbidBackSpace;
@@ -479,7 +480,7 @@
                 userPower();
                 isloading = false;
                 console.log(current_user_type);
-                if(current_user_type == 1||current_user_type == 2)
+                if(current_user_type == 1||current_user_type == 2||current_user_type == 6)
                 {
                     jq('#build_organize_id').val(user_info['organize_id']);
                     LoadingDepartmentAndSelected(user_info['organize_id'],user_info['department_id']);
@@ -587,7 +588,7 @@
                     jq('#order_goods_manager_explain').val( order_goods[0]['order_goods_manager_explain']);
                     jq('#ogl_explain').val( order_goods[0]['ogl_explain']);
                 }
-                if(current_user_type == 1||current_user_type == 2)
+                if(current_user_type == 1||current_user_type == 2||current_user_type == 6)
                 {
                     addGoodsTableRow();
                 }
@@ -700,7 +701,7 @@
         });
 
         jq(document).on('click', '.del_btn', function(){
-            if((current_user_type) != 5 && (current_user_type != 1)&&current_user_type != 2)
+            if((current_user_type) != 5 && (current_user_type != 1)&&current_user_type != 2 ||current_user_type != 6)
                 return ;
             var text = jq(this).parent().parent();
             top.layer.confirm('确定删除这条订购清单？', {
@@ -832,7 +833,7 @@
 
         //开启日期弹框
         function setDatePopup() {
-            if(current_user_type == 1)
+            if(current_user_type == 1 || current_user_type == 6)
             {
                 /*日期*/
                 laydate.render({
@@ -840,17 +841,11 @@
                     position: 'fixed',
                     theme: 'molv'
                 });
-
-                laydate.render({
-                    elem: '#date3',
-                    position: 'fixed',
-                    theme: 'molv'
-                });
-
-
-
-
-
+                // laydate.render({
+                //     elem: '#date3',
+                //     position: 'fixed',
+                //     theme: 'molv'
+                // });
             }
             else if(current_user_type == 2)
             {
@@ -930,7 +925,7 @@
     function setDisable(value) {
         //disabled 色值#CD3700
         var jq = layui.jquery;
-        if(current_user_type == 1)
+        if(current_user_type == 1 || current_user_type == 6)
         {
             jq('.depart_blue_disabled').addClass('layui-disabled');
             jq('.depart_blue_disabled').attr('disabled',value);
@@ -1277,7 +1272,7 @@
         setDisable(false);
         var data = getFormData();
         //判断必填项
-        if(judgeMustInput(data,current_user_type) == false)
+        if(judgeMustInput(data,current_user_type) === false)
         {
             setDisable(true);
             return false;
@@ -1586,7 +1581,7 @@
             return;
         }
         setDisable(false);
-        if(current_user_type == 1)
+        if(current_user_type == 1 || current_user_type == 6)
         {
             return managerDeliver();
         }
@@ -1699,7 +1694,7 @@
     }
     //检查必填项
     function judgeMustInput(data,cur_user_type) {
-        if(cur_user_type == 1)
+        if((cur_user_type == 1 || cur_user_type == 6 ||cur_user_type == 2)&&(is_Examine == false))
         {
             if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
                 layer.msg('请选择部门！',{icon:2});
@@ -1820,7 +1815,7 @@
             }
 
         }
-        else if(cur_user_type == 2)
+        if(cur_user_type == 2)
         {
             if(data['examinationapprovaldatefirst'] == '')
             {
@@ -2194,7 +2189,7 @@
                             top.layer.close(index);
                             jq(newRow).attr('isExistModel',false);
                             jq(newRow).attr('product_info_id','');
-                            if(jq('#tableorder')[0].rows.length-1 == rowNum && (current_user_type == 1||current_user_type == 2))//只有经理才增加
+                            if(jq('#tableorder')[0].rows.length-1 == rowNum && (current_user_type == 1||current_user_type == 2||current_user_type == 6))//只有经理才增加
                             {
                                 addGoodsTableRow();
                             }
@@ -2213,7 +2208,7 @@
                         layui.form.render('select');
 
                         jq(newRow).attr('isExistModel',true);
-                        if(jq('#tableorder')[0].rows.length-1 == rowNum &&(current_user_type == 1||current_user_type == 2))//只有经理才增加
+                        if(jq('#tableorder')[0].rows.length-1 == rowNum &&(current_user_type == 1||current_user_type == 2||current_user_type == 6))//只有经理才增加
                         {
                             addGoodsTableRow();
                         }
@@ -2257,7 +2252,7 @@
         });
 
         rowIndex++;
-        if(current_user_type == 1)
+        if(current_user_type == 1 ||current_user_type == 2 || current_user_type == 6)
         {
             jq('.dark_blue_disabled').addClass('layui-disabled');
             jq('.dark_blue_disabled').attr('disabled',true);
@@ -2360,6 +2355,11 @@
         }
         return data;
     }
+
+    function  setExaminestatus(){
+        is_Examine = true;
+    }
+
 
     String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
         if(!RegExp.prototype.isPrototypeOf(reallyDo)) {

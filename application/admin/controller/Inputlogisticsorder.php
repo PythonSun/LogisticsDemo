@@ -60,6 +60,7 @@ class Inputlogisticsorder extends Controller {
         $count = $_POST['count'];
         $logistics_id = $_POST['logistics_id'];
 		$result = \app\index\model\Admin::getreceiverbycsid($cs_id);
+<<<<<<< HEAD
 		if (!empty($result)){
             $params = array();
             /*收件人*/
@@ -88,6 +89,22 @@ class Inputlogisticsorder extends Controller {
         }else{
 		    return false;
         }
+=======
+		$params[] = $result['receiver_name'];
+		/*收件人*/
+		$params[] = $result['goods_yard_name'];
+		/*货场*/
+		$params[] = $result['cs_id'];
+		/*物流单号*/
+		$params[] = $result['count'];
+		/*件数*/
+		$telephone = $result['receiver_phone'];
+		/*电话号码，支持群发*/
+		$p = new \Serverapi($AppKey, $AppSecret, 'curl');
+
+		$sendstate = $p -> sendSMSTemplate($templateid, array($telephone), json_encode($params));
+		return $sendstate;
+>>>>>>> 7d4f40bb512bfdfa9bc82cb9ed9f1a12f9374c85
 	}
 
 }

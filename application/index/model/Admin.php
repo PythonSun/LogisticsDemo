@@ -1812,7 +1812,7 @@
                     $userquerypower["departmentname"] ="";
                     $userquerypower["areamanager"] ="";
                 }
-                if($rolename == "部门总监")
+                if($rolename == "部门总监" || $rolename == "部门助理")
                 {
                     $userquerypower["departmentname"] = \app\index\model\Admin::querydepartmentname($user["organize_id"]);
                     $userquerypower["areamanager"] ="";
