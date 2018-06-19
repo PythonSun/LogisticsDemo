@@ -452,6 +452,8 @@
     var del_unc_ofg_detail_id_arr = new Array();//删除非定型订单明细id
     var unc_ofg_info_id = 0;
 
+    var is_Examine = false ;
+
     //禁止backspace键
     document.onkeypress = forbidBackSpace;
     document.onkeydown = forbidBackSpace;
@@ -1673,7 +1675,7 @@
     }
     //检查必填项
     function judgeMustInput(data,cur_user_type) {
-        if(cur_user_type == 1 || cur_user_type == 2 || cur_user_type == 6)
+        if((cur_user_type == 1 || cur_user_type == 2 || cur_user_type == 6)&&(is_Examine == false))
         {
             if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
                 layer.msg('请选择部门！',{icon:2});
@@ -2295,6 +2297,10 @@
             data[i-1]=rowdata;
         }
         return data;
+    }
+
+    function  setExaminestatus(){
+        is_Examine = true;
     }
 
     String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {

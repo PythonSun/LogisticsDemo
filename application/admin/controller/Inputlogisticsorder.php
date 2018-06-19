@@ -65,6 +65,7 @@ class Inputlogisticsorder extends Controller {
 		$telephone = $result['receiver_phone'];
 		/*电话号码，支持群发*/
 		$p = new \Serverapi($AppKey, $AppSecret, 'curl');
+
 		$sendstate = $p -> sendSMSTemplate($templateid, array($telephone), json_encode($params));
 		return $sendstate;
 	}

@@ -474,6 +474,8 @@
     document.onkeypress = forbidBackSpace;
     document.onkeydown = forbidBackSpace;
 
+    var is_Examine = false ;
+
     layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
         var form = layui.form,
             laydate = layui.laydate,
@@ -1609,6 +1611,7 @@
         if (isloading){
             return;
         }
+     
         setDisable(false);
         if(current_user_type == 1 || current_user_type == 6)
         {
@@ -1711,9 +1714,13 @@
         }
         return true;
     }
+
+   
     //检查必填项
     function judgeMustInput(data,cur_user_type) {
-        if(cur_user_type == 1 ||cur_user_type == 6 || cur_user_type == 2 )
+
+
+        if((cur_user_type == 1 ||cur_user_type == 6 || cur_user_type == 2 )&&(is_Examine == false))
         {
             if(data['build_organize_id'] == "" || data['build_department_id'] == ""){
                 layer.msg('请选择部门！',{icon:2});
@@ -2386,6 +2393,10 @@
             data[i-1]=rowdata;
         }
         return data;
+    }
+
+    function  setExaminestatus(){
+        is_Examine = true;
     }
 
     String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
