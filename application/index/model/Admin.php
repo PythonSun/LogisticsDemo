@@ -611,7 +611,7 @@
             $transfer_order_num = $info['transfer_order_num'];
             $delivery_date = $info['delivery_date'];
             $count = $info['count'];
-			$time_stamp=date("Y-m-d");
+			$time_stamp = '2000-01-01 00:00:00';//date("Y-m-d");
             $sql_value ="'$logistics_id','$cs_id','$goods_yard_name','$transfer_order_num','$delivery_date','$count','$time_stamp'";
             $sql = "INSERT INTO dsp_logistic.logistics_info (logistics_id,cs_id,goods_yard_name,transfer_order_num,delivery_date,count,time_stamp) VALUES ({$sql_value})";
             $sqlret = Db::execute($sql);

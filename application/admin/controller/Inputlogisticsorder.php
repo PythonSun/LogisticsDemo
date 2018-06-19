@@ -1,9 +1,12 @@
 <?php
 namespace app\admin\controller;
 use think\Controller;
+use think\Exception;
+
 class Inputlogisticsorder extends Controller {
 	/*输入物流单号渲染方法*/
 	public function inputlogisticsorder() {
+        //phpinfo();
 		return $this -> fetch();
 	}
 
@@ -48,25 +51,43 @@ class Inputlogisticsorder extends Controller {
 
 	/*发送短信*/
 	public function sendmessage() {
-		$params = array();
 		$AppKey = "57019656a4ddd2eeae8209e92c133c3e";
 		$AppSecret = "2dc9af4fb762";
 		$templateid = 3064651;
 		$cs_id = $_POST['cs_id'];
+		$goods_yard_name = $_POST['goods_yard_name'];
+        $transfer_order_num = $_POST['transfer_order_num'];
+        $count = $_POST['count'];
+        $logistics_id = $_POST['logistics_id'];
 		$result = \app\index\model\Admin::getreceiverbycsid($cs_id);
-		$params[] = $result['receiver_name'];
-		/*收件人*/
-		$params[] = $result['goods_yard_name'];
-		/*货场*/
-		$params[] = $result['cs_id'];
-		/*物流单号*/
-		$params[] = $result['count'];
-		/*件数*/
-		$telephone = $result['receiver_phone'];
-		/*电话号码，支持群发*/
-		$p = new \Serverapi($AppKey, $AppSecret, 'curl');
-		$sendstate = $p -> sendSMSTemplate($templateid, array($telephone), json_encode($params));
-		return $sendstate;
+		if (!empty($result)){
+            $params = array();
+            /*收件人*/
+            $params[] = $result['receiver_name'];
+            /*货场*/
+            $params[] = $goods_yard_name;
+            /*物流单号*/
+            $params[] = $transfer_order_num;
+            /*件数*/
+            $params[] = $count;
+            /*电话号码，支持群发*/
+            $telephone = $result['receiver_phone'];
+            $p = new \Serverapi($AppKey, $AppSecret, 'curl');
+            $sendstate = $p->sendSMSTemplate($templateid, array($telephone), json_encode($params));
+            if (!empty($sendstate) && $sendstate['code'] == 200){
+                $logistric_info = \app\index\model\Admin::getclassinfobyproperty('logistics_info','logistics_id',$logistics_id);
+                if (!empty($logistric_info)){
+                    $updataInfo = $logistric_info[0];
+                    $updataInfo['user_id'] = -1;
+                    $updataInfo['time_stamp'] = date("Y-m-d H:i:s");
+                    \app\index\model\Admin::updatelogisticinfo($updataInfo);
+                    return true;
+                }
+            }
+            return $sendstate;
+        }else{
+		    return false;
+        }
 	}
 
 }

@@ -30,7 +30,7 @@ class editlogistics extends Controller {
 		$parse['delivery_date'] = $_GET['delivery_date'];
 		$parse['count'] = $_GET['count'];
 		$parse['user_id'] = '1';
-        $parse['time_stamp'] = $_GET['time_stamp'];
+        $parse['time_stamp'] = '2000-01-01 00:00:00';//$_GET['time_stamp'];
 		$ret = \app\index\model\Admin::updatelogisticsinfo($parse);
 		return $ret;
 	}

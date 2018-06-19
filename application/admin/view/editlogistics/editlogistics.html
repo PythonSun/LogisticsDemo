@@ -55,7 +55,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_blue">件数</label>
                     <div class="layui-input-inline">
-                        <input type="number" name="count" id="count" autocomplete="on" class="layui-input light_blue"> </div>
+                        <input type="text" name="count" id="count" autocomplete="on" class="layui-input light_blue" oninput="detectinputnumber(this);"> </div>
                 </div>
             </div>
         </form>
@@ -72,28 +72,19 @@
                     laydate = layui.laydate,
                     $ = layui.jquery,
                     layer = layui.layer;
-                var goods_yard_name = ascii2native('{$goods_yard_name}');
-                $('#cs_id').val('{$cs_id}');
-                $('#goods_yard_name').val(goods_yard_name);
-                $('#transfer_order_num').val('{$transfer_order_num}');
-                $('#count').val('{$count}');
                 /*日期*/
                 laydate.render({
                     elem: '#delivery_date',
                     position: 'fixed',
                     theme: 'molv'
-                })
-                getData = function () {
-                    var cs_id = $('#cs_id').val(),
-                        goods_yard_name = $('#goods_yard_name').val(),
-                        transfer_order_num = $('#transfer_order_num').val(),
-                        delivery_date = $('#delivery_date').val(),
-                        count = $('#count').val();
-                   	var editdatasave = 'logistics_id='+'{$logistics_id}'+'&cs_id='+cs_id+'&goods_yard_name='+goods_yard_name
-                   	+'&transfer_order_num='+transfer_order_num+'&delivery_date='+delivery_date
-                   	+'&count='+count+'&time_stamp='+'{$time_stamp}';
-                    return  editdatasave;          
-                }
+                });
+                var goods_yard_name = ascii2native('{$goods_yard_name}');
+                $('#cs_id').val('{$cs_id}');
+                $('#goods_yard_name').val(goods_yard_name);
+                $('#transfer_order_num').val('{$transfer_order_num}');
+                $('#count').val('{$count}');
+
+
                 $.post("{:url('admin/inputlogisticsorder/serialnumber')}", { 'cs_id':'{$cs_id}'}, function (res) {
            	        $('#consignee').val(res.receiver_name);
                     $('#consigneephone').val(res.receiver_phone);
@@ -104,6 +95,22 @@
             function ascii2native(n) {
                 var n = unescape(n.split("/").join("%"));
                 return n;
+            }
+            function getData() {
+                var cs_id = $('#cs_id').val().trim(),
+                    goods_yard_name = $('#goods_yard_name').val().trim(),
+                    transfer_order_num = $('#transfer_order_num').val().trim(),
+                    delivery_date = $('#delivery_date').val().trim(),
+                    count = $('#count').val().trim();
+                if(goods_yard_name != ''&& transfer_order_num != ''&& delivery_date != ''&& count != ''){
+                    var editdatasave = 'logistics_id='+'{$logistics_id}'+'&cs_id='+cs_id+'&goods_yard_name='+goods_yard_name
+                        +'&transfer_order_num='+transfer_order_num+'&delivery_date='+delivery_date
+                        +'&count='+count+'&time_stamp='+'{$time_stamp}';
+                    return  editdatasave;
+                }else {
+                    layer.msg('请正确填写信息！',{icon:2});
+                    return false;
+                }
             }
         </script>
     </body>
