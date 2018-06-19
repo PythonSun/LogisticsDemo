@@ -1102,10 +1102,14 @@
                 if(e){
                     console.log('订单添加成功！');
                     console.log(e);
+                    var str = state == 0?'订单保存成功':'订单提交成功';
+                    top.layer.msg(str,{icon:1});
                     location.href = "{:url('admin/Addborrowconfirmorder/Addborrowconfirmorder')}";
                 }else if(!e){
                     console.log('订单提交失败！');
                     console.log(e);
+                    var str = state == 0?'订单保存失败':'订单提交失败';
+                    top.layer.msg(str,{icon:2});
                 }
             }
         })
