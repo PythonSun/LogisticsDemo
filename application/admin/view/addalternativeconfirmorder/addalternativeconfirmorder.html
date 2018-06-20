@@ -960,8 +960,11 @@
         else if(current_user_type == 2)
         {
 
-            //jq('.Wheat_disabled').addClass('layui-disabled');
-            //jq('.Wheat_disabled').attr('disabled',value);
+            if(is_Examine)
+            {
+                jq('.Wheat_disabled').addClass('layui-disabled');
+                jq('.Wheat_disabled').attr('disabled',value);
+            }
 
             jq('.company_blue_disabled').addClass('layui-disabled');
             jq('.company_blue_disabled').attr('disabled',value);
@@ -1104,6 +1107,10 @@
 
         var cs_examine = [];
         var directorExamine = getDirectorExamine(data,false,state);
+        if(current_user_type == 2)
+        {
+            directorExamine['cs_examine_state'] = '2' ;
+        }
         cs_examine[0] = directorExamine;
         var generalManagerExamine = getGeneralManagerExamine(data,false,state);
         cs_examine[1] = generalManagerExamine;
@@ -1136,10 +1143,14 @@
                 if(e){
                     console.log('订单添加成功！');
                     console.log(e);
+                    var str = state == 0?'订单保存成功':'订单提交成功';
+                    top.layer.msg(str,{icon:1});
                     location.href = "{:url('admin/addalternativeconfirmorder/addalternativeconfirmorder')}";
                 }else if(!e){
                     console.log('订单提交失败！');
                     console.log(e);
+                    var str = state == 0?'订单保存失败':'订单提交失败';
+                    top.layer.msg(str,{icon:2});
                 }
             }
         })
@@ -1211,6 +1222,7 @@
     }
     //修改时 经理的提交
     function managerDeliver () {
+        setDisable(false);
         var data = getFormData();
         var jq = layui.jquery;
 
@@ -1249,6 +1261,10 @@
 
         var cs_examine = [];
         cs_examine[0] = getDirectorExamine(data,true,1);
+        if(current_user_type == 2)
+        {
+            cs_examine[0]['cs_examine_state'] = '2' ;
+        }
         cs_examine[1] = getGeneralManagerExamine(data,true,1);
         cs_examine[2] = getFinanceExamine(data,true,1);
         if(data['cs_info_state'] == '5' || data['cs_info_state'] == 5) //退回状态下提交
@@ -1613,11 +1629,7 @@
         }
      
         setDisable(false);
-        if(current_user_type == 1 || current_user_type == 6)
-        {
-            return managerDeliver();
-        }
-        else if(current_user_type == 2)
+        if(current_user_type == 2)
         {
             return departDeliver();
         }

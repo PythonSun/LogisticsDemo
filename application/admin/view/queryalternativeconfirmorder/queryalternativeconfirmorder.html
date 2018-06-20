@@ -418,7 +418,7 @@
                         },
                         btn2: function (index,layero) {
                             var iframeWin = top.window[layero.find('iframe')[0]['name']];
-                            var result = iframeWin.editDeliver();
+                            var result = iframeWin.managerDeliver();
                             if(result == false)
                                 return false;
                             table.reload('querytable', {

@@ -117,7 +117,6 @@
                                 yes: function (index,layero) {
                                     var iframeWin = top.window[layero.find('iframe')[0]['name']];
                                     iframeWin.setExaminestatus();
-                                    var result = iframeWin.returnOrder();
                                     if(result == false)
                                         return false;
                                     layui.table.reload('querytable', {
@@ -130,7 +129,6 @@
                                 },
                                 btn2: function (index,layero) {
                                     var iframeWin = top.window[layero.find('iframe')[0]['name']];
-                                    iframeWin.setExaminestatus();
                                     var result = iframeWin.editDeliver();
                                     if(result == false)
                                         return false;
@@ -144,6 +142,11 @@
                                 },
                                 btn3:function () {
                                     top.layer.closeAll();
+                                },
+                                success:function (layero,index) {
+                                    var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                                    iframeWin.setExaminestatus();
+                                    console.log(11111111111);
                                 }
                             });
                         }
