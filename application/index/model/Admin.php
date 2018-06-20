@@ -311,15 +311,16 @@
 
 
 		/*查询维修，代用等订单 销售部查询时调用 */
-		/*参数:organizename(总部门) departmentname(子部门) areamanager(经理名) type  page  limit queryinfo*/
+		/*参数:organizename(总部门) departmentname(子部门) areamanager(经理名) rolename(角色名),type  page  limit queryinfo*/
 		public static function querycsinfobysales(...$args){
 			$totalargs = count($args);
 			$organizename = $args[0];
             $departmentname = $args[1];
             $areamanager = $args[2];
-			$type = $args[3];
-			$pagenum = intval($args[4]?$args[4]:1);
-			$length = intval($args[5]);
+            $rolename = $args[3];
+			$type = $args[4];
+			$pagenum = intval($args[5]?$args[5]:1);
+			$length = intval($args[6]);
 
 			$sqlone = "select count(*) from dsp_logistic.cs_info ";
             $sqlone .= "left join dsp_logistic.custom_info on dsp_logistic.custom_info.custom_info_id = dsp_logistic.cs_info.custom_info_id ";
@@ -341,26 +342,26 @@
             {
                 $sqlone .= "and build_user_name='$areamanager' ";
             }
-            else{
-			    //不是经理查时，不能查看未提交的单
-                $sqlone .= "and dsp_logistic.cs_info.cs_info_state != 0 ";
+            else if($rolename != '部门总监'&&  $rolename != '部门助理'){
+                //不是经理、部门总监、部门助理查时，不能查看未提交的单
+                $sqltwo .= "and dsp_logistic.cs_info.cs_info_state != 0 ";
             }
 
-            if($totalargs == 7){
-                if($args[6]['areamanager'] != "" && $areamanager == ""){
-                    $areamanger1 = $args[6]['areamanager'];
+            if($totalargs == 8){
+                if($args[7]['areamanager'] != "" && $areamanager == ""){
+                    $areamanger1 = $args[7]['areamanager'];
                     $sqlone.= " and build_user_name ='$areamanger1'";
                 }
-                if($args[6]['departmentname'] != "" && $departmentname == ""){
-                    $departmentname1 = $args[6]['departmentname'];
+                if($args[7]['departmentname'] != "" && $departmentname == ""){
+                    $departmentname1 = $args[7]['departmentname'];
                     $sqlone.= " and build_department_name ='$departmentname1'";
                 }
-                if($args[6]['organizename'] != "" && $organizename == ""){
-                    $organizename1 = $args[6]['organizename'];
+                if($args[7]['organizename'] != "" && $organizename == ""){
+                    $organizename1 = $args[7]['organizename'];
                     $sqlone.= " and build_organize_name ='$organizename1'";
                 }
-                $startdate = $args[6]['startdate'];
-                $enddate = $args[6]['enddate'];
+                $startdate = $args[7]['startdate'];
+                $enddate = $args[7]['enddate'];
                 if($startdate != "" && $enddate != "" ){
                     $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate'";
                 }
@@ -372,54 +373,54 @@
                 {
                     $sqlone.= " and cs_belong_create_time ='$startdate'";
                 }
-                if($args[6]['order_id'] != "")
+                if($args[7]['order_id'] != "")
                 {
-                    $cs_id = $args[6]['order_id'];
+                    $cs_id = $args[7]['order_id'];
                     $sqlone.= " and dsp_logistic.cs_info.cs_id ='$cs_id'";
                 }
-                if($args[6]['orderstate'] != "")
+                if($args[7]['orderstate'] != "")
                 {
-                    $cs_info_state = $args[6]['orderstate'];
+                    $cs_info_state = $args[7]['orderstate'];
                     $sqlone.= " and cs_info_state ='$cs_info_state'";
                 }
                 if($type == 2||$type == 5) //借样和配件没有返货信息
                 {
-                    if($args[6]['receiver_name'] != "")
+                    if($args[7]['receiver_name'] != "")
                     {
-                        $delivery_info_receiver_name = $args[3]['receiver_name'];
+                        $delivery_info_receiver_name = $args[7]['receiver_name'];
                         $sqlone.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
                     }
 
-                    if($args[6]['yard'] != "")
+                    if($args[7]['yard'] != "")
                     {
-                        $yard = $args[3]['yard'];
+                        $yard = $args[7]['yard'];
                         $sqlone.= " and delivery_info_goods_yard_name ='$yard' ";
                     }
                 }
                 else
                 {
-                    if($args[6]['receiver_name'] != "")
+                    if($args[7]['receiver_name'] != "")
                     {
-                        $return_info_receiver_name = $args[3]['receiver_name'];
+                        $return_info_receiver_name = $args[7]['receiver_name'];
                         $sqlone.= " and return_info_receiver_name ='$return_info_receiver_name' ";
                     }
-                    if($args[6]['yard'] != "")
+                    if($args[7]['yard'] != "")
                     {
-                        $yard = $args[3]['yard'];
+                        $yard = $args[7]['yard'];
                         $sqlone.= " and return_info_goods_yard_name ='$yard' ";
                     }
                 }
 
-                if($args[6]['couriernumber'] != "")
+                if($args[7]['couriernumber'] != "")
                 {
-                    $num = $args[6]['couriernumber'];
+                    $num = $args[7]['couriernumber'];
                     $sqlone.= " and transfer_order_num ='$num' ";
                 }
-                if(array_key_exists('freightmode',$args[6]))
+                if(array_key_exists('freightmode',$args[7]))
                 {
-                    if($args[6]['freightmode'] != "")
+                    if($args[7]['freightmode'] != "")
                     {
-                        $freightmode = $args[6]['freightmode'];
+                        $freightmode = $args[7]['freightmode'];
                         $sqlone.= " and transfer_fee_mode ='$freightmode' ";
                     }
                 }
@@ -457,26 +458,26 @@
             {
                 $sqltwo .= "and build_user_name='$areamanager' ";
             }
-            else{
-                //不是经理查时，不能查看未提交的单
+            else if($rolename != '部门总监'&&  $rolename != '部门助理'){
+                //不是经理、部门总监、部门助理查时，不能查看未提交的单
                 $sqltwo .= "and dsp_logistic.cs_info.cs_info_state != 0 ";
             }
 
-			if($totalargs == 7){
-				if($args[6]['areamanager'] != "" && $areamanager == ""){
-					$areamanger1 = $args[6]['areamanager'];
+			if($totalargs == 8){
+				if($args[7]['areamanager'] != "" && $areamanager == ""){
+					$areamanger1 = $args[7]['areamanager'];
 					$sqltwo.= " and build_user_name ='$areamanger1'";
 				}
-                if($args[6]['departmentname'] != "" && $departmentname == ""){
-                    $departmentname1 = $args[6]['departmentname'];
+                if($args[7]['departmentname'] != "" && $departmentname == ""){
+                    $departmentname1 = $args[7]['departmentname'];
                     $sqltwo.= " and build_department_name ='$departmentname1'";
                 }
-                if($args[6]['organizename'] != "" && $organizename == ""){
-                    $organizename1 = $args[6]['organizename'];
+                if($args[7]['organizename'] != "" && $organizename == ""){
+                    $organizename1 = $args[7]['organizename'];
                     $sqltwo.= " and build_organize_name ='$organizename1'";
                 }
-                $startdate = $args[6]['startdate'];
-                $enddate = $args[6]['enddate'];
+                $startdate = $args[7]['startdate'];
+                $enddate = $args[7]['enddate'];
                 if($startdate != "" && $enddate != "" ){
                     $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate'";
                 }
@@ -488,55 +489,55 @@
                 {
                     $sqltwo.= " and cs_belong_create_time ='$startdate'";
                 }
-                if($args[6]['order_id'] != "")
+                if($args[7]['order_id'] != "")
                 {
-                    $cs_id = $args[6]['order_id'];
+                    $cs_id = $args[7]['order_id'];
                     $sqltwo.= " and dsp_logistic.cs_info.cs_id ='$cs_id'";
                 }
-                if($args[6]['orderstate'] != "")
+                if($args[7]['orderstate'] != "")
                 {
-                    $cs_info_state = $args[6]['orderstate'];
+                    $cs_info_state = $args[7]['orderstate'];
                     $sqltwo.= " and cs_info_state ='$cs_info_state'";
                 }
                 if($type == 2||$type == 5) //借样和配件没有返货信息
                 {
-                    if($args[6]['receiver_name'] != "")
+                    if($args[7]['receiver_name'] != "")
                     {
-                        $delivery_info_receiver_name = $args[3]['receiver_name'];
+                        $delivery_info_receiver_name = $args[7]['receiver_name'];
                         $sqltwo.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
                     }
 
-                    if($args[6]['yard'] != "")
+                    if($args[7]['yard'] != "")
                     {
-                        $yard = $args[3]['yard'];
+                        $yard = $args[7]['yard'];
                         $sqltwo.= " and delivery_info_goods_yard_name ='$yard' ";
                     }
                 }
                 else
                 {
-                    if($args[6]['receiver_name'] != "")
+                    if($args[7]['receiver_name'] != "")
                     {
-                        $return_info_receiver_name = $args[3]['receiver_name'];
+                        $return_info_receiver_name = $args[7]['receiver_name'];
                         $sqltwo.= " and return_info_receiver_name ='$return_info_receiver_name' ";
                     }
-                    if($args[6]['yard'] != "")
+                    if($args[7]['yard'] != "")
                     {
-                        $yard = $args[3]['yard'];
+                        $yard = $args[7]['yard'];
                         $sqltwo.= " and return_info_goods_yard_name ='$yard' ";
                     }
                 }
 
-                if($args[6]['couriernumber'] != "")
+                if($args[7]['couriernumber'] != "")
                 {
-                    $num = $args[6]['couriernumber'];
+                    $num = $args[7]['couriernumber'];
                     $sqltwo.= " and transfer_order_num ='$num' ";
                 }
 
                 if(array_key_exists('freightmode',$args[6]))
                 {
-                    if($args[6]['freightmode'] != "")
+                    if($args[7]['freightmode'] != "")
                     {
-                        $freightmode = $args[6]['freightmode'];
+                        $freightmode = $args[7]['freightmode'];
                         $sqlone.= " and transfer_fee_mode ='$freightmode' ";
                     }
                 }
