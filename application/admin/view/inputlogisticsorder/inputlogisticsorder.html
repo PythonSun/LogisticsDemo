@@ -308,6 +308,7 @@
                             }
                         });
                     } else if(layEvent == 'sendmessage') {
+                        var node = this.lastChild;
                         $.post("{:url('admin/inputlogisticsorder/sendmessage')}"
                             , { 'cs_id': data.cs_id
                                 ,'logistics_id':data.logistics_id
@@ -319,8 +320,8 @@
                             if(res === false){
                                 layer.msg('获取收货信息失败！', { icon: 5 });
                             }else if (res === true){
-                                if (this.lastChild.nodeType == 1){
-                                    $(this.lastChild).remove();
+                                if (node.nodeType == 1){
+                                    $(node).remove();
                                 }
                                 layer.msg('短信发送成功',{ icon: 6 });
                             }else if (res != null){
