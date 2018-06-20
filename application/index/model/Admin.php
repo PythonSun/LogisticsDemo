@@ -2904,8 +2904,8 @@
                 $objPHPExcel->getActiveSheet()->setCellValue('N'.$item, $productlist[$item-7]->uod_comment);
             }
 
-            $objPHPExcel->getActiveSheet()->setCellValue('A15', "项目名称：".$ret->uoi_project_name);
-            $objPHPExcel->getActiveSheet()->setCellValue('A16', "提供商：".$ret->uoi_provider_name);
+            $objPHPExcel->getActiveSheet()->setCellValue('A12', "项目名称：".$ret->uoi_project_name);
+            $objPHPExcel->getActiveSheet()->setCellValue('A13', "提供商：".$ret->uoi_provider_name);
 
             /*超过默认行数*/
             if(count($productlist) > 5){

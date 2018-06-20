@@ -639,8 +639,6 @@ class Addreturnconfirmorder extends Controller
                     \app\index\model\Admin::deleterowtableid('unc_ofg_detail','uod_id',$item);
                 }
             }
-
-
         }
 
         //cs_examine
@@ -653,10 +651,6 @@ class Addreturnconfirmorder extends Controller
                     \app\index\model\Admin::updatecsexamine($item);
                 }
             }
-
-
-
-
         }
     }
 
