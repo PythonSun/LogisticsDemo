@@ -214,10 +214,12 @@
                 	<input type="button" id="uncofginfo" class="layui-btn" target="_blank" value="增加非定型产品订货确认单">
                 	<input type="button" id="lookuncofginfo" class="layui-btn" target="_blank" value="查看非定型产品订货确认单">
                     <input type="button" id="deluncofginfo" class="layui-btn" target="_blank" style="color: red" value="删除非定型产品订货确认单">
-                	<input type="button" id="uploadpic" name="uploadpic" class="layui-btn" target="_blank" value="上传咨询表">
-                	<input type="button" id="lookpic" class="layui-btn" target="_blank" value="查看咨询表">
-                    <input type="button" id="delpic" class="layui-btn" target="_blank" style="color: red" value="删除咨询表" title="删除新上传的未保存的咨询表（已保存的咨询表无法删除）">
-               	</div>
+                	<!--<input type="button" id="uploadpic" name="uploadpic" class="layui-btn" target="_blank" value="上传咨询表">-->
+                	<!--<input type="button" id="lookpic" class="layui-btn" target="_blank" value="查看咨询表">-->
+                    <!--<input type="button" id="delpic" class="layui-btn" target="_blank" style="color: red" value="删除咨询表" title="删除新上传的未保存的咨询表（已保存的咨询表无法删除）">-->
+                    <input type="button" id="uploadconsultsheet" class="layui-btn" target="_blank" value="添加咨询表">
+                    <input type="button" id="consultsheet" class="layui-btn" target="_blank" value="咨询表" title="查看或者删除咨询表">
+                </div>
             </div>
             <h3>确认单产品</h3>
             <div class="layui-form-item" id="divorderproduct">
@@ -267,21 +269,22 @@
             var ofg_info_id = "";
             var fee_info_id = "";
             var unc_ofg_info_id = "";
-            var consult_sheet_file = "";
+            var consult_sheet_file = "";  //咨询表 弃用
+            var picNames = [];  //咨询表 hjh 2018/06/21 新增
+            var delPic = [];    //咨询表 hjh 2018/06/21 新增
             var cs_belong_id = "";
             var cs_belong_create_time = "";
             var ofg_info_id = "";
             var fee_info_id = "";
             var unc_ofg_info_id = "";
-            var consult_sheet_file = "";
-            var consult_sheet_file_new = "";
+            var consult_sheet_file = "";//咨询表 弃用
+            var consult_sheet_file_new = "";//咨询表 弃用
             var isSave = false;
             var type = 0; //当前页面模式 说明：0：不可编辑 1：编辑
             var uncofginfo = null;      //非常规订单数据 包含unc_ofg_info，清单明细：搜索unc_ofg_items，删除表del_unc_ofg_detail_id_arr
             var del_logistics_id_arr = new Array();//删除物流信息id
             var del_unc_ofg_detail_id_arr = new Array();//删除非定型订单明细id
             var del_ogcugi_id_arr = new Array(); //删除订单明细id
-
             var user_id = 0;
 
 
@@ -295,22 +298,32 @@
                 onunload_handler();
                 //return "确定离开此页面？"
             }
-
+            //hjh 2018/06/21 改
             function onunload_handler() {
                 console.log("离开了这个页面！！！");
-                if (consult_sheet_file_new != "" && !isSave){
+                var length = picNames.length;
+                if(length == 0){
+                    return;
+                }
+                var delFileNames =  [];
+                for(var i = 0; i < length; i++){
+                    var tab = picNames[i].tab;
+                    if(tab == 0){
+                        delFileNames.push(picNames[i].value);
+                    }
+                }
+                if(delFileNames.length > 0){
                     var index = top.layer.msg('加载中', {icon: 16});
                     var jq = layui.jquery;
                     jq.ajax({
-                        url: "{:url('admin/addgoodsconfirmorder/delcachefile')}",//php文件路径
+                        url: "{:url('admin/addgoodsconfirmorder/delcachefiles')}",//php文件路径
                         data: {
-                            delFileName:consult_sheet_file_new
+                            delFileNames:delFileNames
                         },
                         type: 'POST',
                         async: false,
                         success: function(res) {
                             console.log("没保存，删除了缓存咨询表！！！！！！！！！！！！！");
-                            consult_sheet_file_new = "";
                             top.layer.close(index);
                         }
                     })
@@ -353,8 +366,39 @@
                     ,position: 'fixed'
                     ,theme: 'molv'
                 });
-                //上传文件
-                var uploadPic = upload.render({
+                var uploadconsultsheet = upload.render({
+                    elem: '#uploadconsultsheet' //绑定元素
+                    ,method: 'POST'
+                    ,url: "{:url('admin/addgoodsconfirmorder/uploadconsultform')}" //上传接口
+                    ,acceptMime: 'image/*'
+                    ,size:'10240'
+                    ,error: function(obj){
+                        top.layer.closeAll('loading');
+                        top.layer.msg('上传失败！',{icon:2});
+                    }
+                    ,before: function(obj){
+                        top.layer.load({icon:16}); //上传loading
+                    }
+                    ,done: function(res){
+                        top.layer.closeAll('loading');
+                        console.log(res);
+                        if(res.code == '1'){
+                            var fileName = res.fileName;
+                            top.layer.msg(res.msg,{icon:1});
+                            if (fileName === undefined || fileName ==""){
+
+                            }else {
+                                picNames.push({'tab':0,'value':fileName});
+                            }
+                        }
+                        if(res.code == '0'){
+                            top.layer.msg(res.msg,{icon:2});
+                        }
+                        setConsultSheet();
+                    }
+                });
+                //上传文件 hjh 2018/06/21 弃用
+                /*var uploadPic = upload.render({
                     elem: '#uploadpic' //绑定元素
                     ,method: 'POST'
                     ,url: "{:url('admin/addgoodsconfirmorder/uploadconsultform')}" //上传接口
@@ -396,7 +440,7 @@
                         }
                         setConsultSheet();
                     }
-                });
+                });*/
 
                 //网页加载时  赋值使用
                 $(document).ready(function(){
@@ -535,6 +579,8 @@
                             var layer = layui.layer;
                             if (e != null){
                                 if(e.code == 1){
+                                    picNames = [];
+                                    delPic = [];
                                     isSave = true;
                                     top.layer.msg(e.msg);
                                     location.href = "{:url('admin/addgoodsconfirmorder/addgoodsconfirmorder')}";
@@ -709,7 +755,7 @@
                         }
                     });
                 });
-
+                //hjh 2018/06/21 弃用
                 jq('#lookpic').click(function () {
                     console.log("查看咨询表被点击了");
                     //var consult_sheet_file = "";
@@ -759,7 +805,7 @@
                         ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
                     });*/
                 });
-                //删除未保存咨询表
+                //删除未保存咨询表 hjh 2018/06/21 弃用
                 jq('#delpic').click(function () {
                     top.layer.confirm('删除新上传的未保存的咨询表？<br/><span style="color: red">（已保存的咨询表无法删除）</span>', {
                         btn: ['确定','取消'] //按钮
@@ -768,6 +814,40 @@
                         delCacheConsultSheet();
                     });
                 });
+
+                //查看/删除 咨询表 hjh 2018/06/21 新增
+                jq('#consultsheet').click(function () {
+                    var strJson = JSON.stringify(picNames);
+                    var rstrJson = strJson.replaceAll('"',"/$/@");
+                    var strDelJson = JSON.stringify(delPic);
+                    var dsePicJson = strDelJson.replaceAll('"',"/$/@");
+                    top.layer.open({
+                        type:2,
+                        title:'123465789',
+                        area:['80%','90%'],
+                        shade: [0.7, '#393D49'],
+                        skin: 'layui-layer-molv',
+                        maxmin:true,
+                        content:"{:url('admin/consultsheet/consultsheet')}" + "?picNames=" + rstrJson + "&canDelPic="+ type + "&delPic="+ dsePicJson,
+                        cancel: function(index, layero){
+                            var  iframeWin = top.window[layero.find('iframe')[0]['name']];
+                            picNames = iframeWin.picNames;
+                            delPic = iframeWin.delPic;
+                            console.log("咨询表：" + picNames);
+                            console.log("删除咨询表：" + delPic);
+                            setConsultSheet();
+                            console.log(picNames);
+                            top.layer.close(index);
+                            return false;
+                        }
+                        ,end: function () {
+                            console.log(picNames);
+                            console.log(delPic);
+                        }
+                    });
+                    return false;
+                });
+
                 jq("#user_id").autocomplete({
                     source:function(request,response){
                         jq.ajax({
@@ -831,8 +911,9 @@
                 order_goods_cs_info.order_date = data['order_date'];
                 order_goods_cs_info.delivery_date_reply = data['delivery_date_reply'];
                 order_goods_cs_info.unc_ofg_info_id = unc_ofg_info_id;
-                order_goods_cs_info.consult_sheet_file_old = consult_sheet_file;
-                order_goods_cs_info.consult_sheet_file = consult_sheet_file_new;
+
+                order_goods_cs_info.del_consult_sheet_file = delPic.length == 0 ? '': delPic;
+                order_goods_cs_info.consult_sheet_file = picNames.length == 0 ? '': picNames;
                 order_goods_cs_info.cs_info_state = data['cs_info_state'] == "" ? -1: data['cs_info_state'];
                 order_goods_cs_info.product_number = 0;
 
@@ -981,7 +1062,16 @@
                 ofg_info_id = order_goods_cs_info.ofg_info_id;
                 fee_info_id = order_goods_cs_info.fee_info_id;
                 unc_ofg_info_id = order_goods_cs_info.unc_ofg_info_id;
-                consult_sheet_file = order_goods_cs_info.consult_sheet_file;
+                var dbFileInfo = order_goods_cs_info.consult_sheet_file.trim();// hjh 2018/06/21 新增
+                var files = dbFileInfo.split("|");
+                picNames = [];
+                var filesLength = files.length;
+                for(var i = 0; i < filesLength; i++){
+                    if(files[i].trim() != ""){
+                        picNames.push({'tab':1,'value':files[i]});
+                    }
+                }
+                //consult_sheet_file = order_goods_cs_info.consult_sheet_file;  // hjh 2018/06/21 弃用
                 jq('#cs_id').val(cs_id);
                 jq('#order_date').val(order_goods_cs_info.order_date);
 
@@ -1223,6 +1313,8 @@
                         var layer = layui.layer;
                         if (e != null){
                             if(e.code == 1){
+                                picNames = [];
+                                delPic = [];
                                 isSave = true;
                                 retBo = true;
                                 top.layer.msg(e.msg);
@@ -1254,12 +1346,19 @@
                             var input =$(this)[0];
                             //$(input).addClass('hide');
                             var id = $(input).attr('id');
-                            if (id != 'lookuncofginfo' && id != 'lookpic'){
+                            if (id != 'consultsheet'){
                                 $(input).addClass('layui-disabled');
                                 $(input).attr("disabled","disabled");
                             }
                             else {
                             }
+                            /*hjh 2018/06/21 弃用
+                            if (id != 'lookuncofginfo' && id != 'lookpic'){
+                                $(input).addClass('layui-disabled');
+                                $(input).attr("disabled","disabled");
+                            }
+                            else {
+                            }*/
                         }
                     )
                     var selectArray = $("select");
@@ -1284,6 +1383,16 @@
             }
 
             function setConsultSheet() {
+                if(picNames.length == 0){
+                    $('#consultsheet').attr("disabled","disabled");
+                    $('#consultsheet').addClass('btnPicLightBg');
+                    $('#consultsheet').addClass('layui-disabled');
+                }else {
+                    $('#consultsheet').removeAttr("disabled");
+                    $('#consultsheet').removeClass('btnPicLightBg');
+                    $('#consultsheet').removeClass('layui-disabled');
+                }
+                /* // hjh 2018/06/21 弃用
                 if(consult_sheet_file == "" && consult_sheet_file_new == ""){
                     $('#lookpic').attr("disabled","disabled");
                     $('#lookpic').addClass('btnPicLightBg');
@@ -1296,6 +1405,7 @@
                 }else {
                     $('#delpic').addClass('hide');
                 }
+                */
             }
 
             function setDelUncofginfoVis() {
@@ -1304,24 +1414,28 @@
                         $('#deluncofginfo').addClass('hide');
                         $('#lookuncofginfo').attr("disabled","disabled");
                         $('#lookuncofginfo').addClass('btnPicLightBg');
+                        $('#lookuncofginfo').addClass('layui-disabled');
                     }else {
                         $('#deluncofginfo').addClass('hide');
                         $('#lookuncofginfo').removeAttr("disabled");
                         $('#lookuncofginfo').removeClass('btnPicLightBg');
+                        $('#lookuncofginfo').removeClass('layui-disabled');
                     }
                 }else {
                     if(uncofginfo == "" || uncofginfo == null || uncofginfo === undefined){
                         $('#deluncofginfo').addClass('hide');
                         $('#lookuncofginfo').attr("disabled","disabled");
                         $('#lookuncofginfo').addClass('btnPicLightBg');
+                        $('#lookuncofginfo').addClass('layui-disabled');
                     }else {
                         $('#deluncofginfo').removeClass('hide');
                         $('#lookuncofginfo').removeAttr("disabled");
                         $('#lookuncofginfo').removeClass('btnPicLightBg');
+                        $('#lookuncofginfo').removeClass('layui-disabled');
                     }
                 }
             }
-            //删除未保存咨询表
+            //删除未保存咨询表   hjh 2018/06/21 弃用
             function delCacheConsultSheet() {
                 if (consult_sheet_file_new == ""){
                     return;
