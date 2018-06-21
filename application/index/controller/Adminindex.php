@@ -76,6 +76,10 @@ class Adminindex extends Controller
         $role_id = intval($userinfo["role_id"]);
         $role_info = \app\index\model\Admin::queryroleinfo($role_id);
 
+        /*大数据导出权限*/
+        $bigdatapower = $role_info[0]['big_data_permission_manage'];
+        $this->assign('bigdatapower',$bigdatapower);
+
         /*用户管理权限*/
         $usermanagepower = $role_info[0]['user_manage_permission'];
         $this->assign('usermanagepower',$usermanagepower);
