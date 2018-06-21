@@ -533,7 +533,7 @@
                     $sqltwo.= " and transfer_order_num ='$num' ";
                 }
 
-                if(array_key_exists('freightmode',$args[6]))
+                if(array_key_exists('freightmode',$args[7]))
                 {
                     if($args[7]['freightmode'] != "")
                     {
