@@ -270,10 +270,11 @@ class Addgoodsconfirmorder extends Controller
             $order_goods_cs_info['ofg_info_id'] = $ofg_info_id;
             $order_goods_cs_info['fee_info_id'] = $fee_info_id;
             if (!empty($file_new)) {
-                for ($i = 0; $i < count($file_new);$i ++){
+                for ($i = 0; $i < count($file_new);$i++){
                     $fileName = $file_new[$i]['value'];
                     $consult_sheet_file .= $fileName.'|';
-                    $path = ROOT_PATH . 'public' . DS . 'uploads';
+                    $dir = date("Y-m");
+                    $path = ROOT_PATH . 'public' . DS . 'uploads'.DS.$dir;
                     //文件移动
                     $cachefilePath = ROOT_PATH . 'public' . DS . 'cachefile'.DS.$fileName;
                     $filePath = ROOT_PATH . 'public' . DS . 'uploads'.DS.$fileName;
@@ -285,7 +286,7 @@ class Addgoodsconfirmorder extends Controller
                     }
                 }
             }
-            $order_goods_cs_info['consult_sheet_file'] = $consult_sheet_file;
+            $order_goods_cs_info['consult_sheet_file'] = addslashes($consult_sheet_file);
             //$order_goods_cs_info['cs_id'] = $cs_info_id;
             $retcsinfo = \app\index\model\Admin::updateordergoodscsinfo($order_goods_cs_info);
             /*if (empty($retcsinfo)){
@@ -481,7 +482,8 @@ class Addgoodsconfirmorder extends Controller
                     $tab = $file_new[$i]['tab'];
                     $consult_sheet_file .= $fileName.'|';
                     if($tab == 0){
-                        $path = ROOT_PATH . 'public' . DS . 'uploads';
+                        $dir = date("Y-m");
+                        $path = ROOT_PATH . 'public' . DS . 'uploads'.DS.$dir;
                         //文件移动
                         $cachefilePath = ROOT_PATH . 'public' . DS . 'cachefile'.DS.$fileName;
                         $filePath = ROOT_PATH . 'public' . DS . 'uploads'.DS.$fileName;
@@ -494,7 +496,7 @@ class Addgoodsconfirmorder extends Controller
                     }
                 }
             }
-            $order_goods_cs_info['consult_sheet_file'] = $consult_sheet_file;
+            $order_goods_cs_info['consult_sheet_file'] = addslashes($consult_sheet_file);
             $retcsinfo = \app\index\model\Admin::updateordergoodscsinfo($order_goods_cs_info);//
 
             if (!empty($del_logistics_id_arr)){
@@ -630,9 +632,10 @@ class Addgoodsconfirmorder extends Controller
             $guid = self::create_guid();
             $file = request()->file('file');
             //$info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
-            $info = $file->move(ROOT_PATH . 'public' . DS . 'cachefile',"$guid",true);
+            $dir = date("Y-m");
+            $info = $file->move(ROOT_PATH . 'public' . DS . 'cachefile'.DS.$dir,"$guid",true);
             $name = $info->getFilename();
-            $pathname = $info->getPathname();
+            //$pathname = $info->getPathname();
             if($info){
                 $delFileNameMsg = '';
                 if (!empty($delFileName)){
@@ -652,8 +655,7 @@ class Addgoodsconfirmorder extends Controller
                 $res=[
                     'code'=>'1',
                     'msg'=>'上传成功',
-                    'fileName'=>$name,
-                    'pathName'=>$pathname,
+                    'fileName'=>$dir.DS.$name,
                     'delFileNameMsg'=>$delFileNameMsg
                 ];
                 return json($res);

@@ -221,6 +221,12 @@
                     <input type="button" id="consultsheet" class="layui-btn" target="_blank" value="咨询表" title="查看或者删除咨询表">
                 </div>
             </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label Wheat">备注</label>
+                <div class="layui-input-block">
+                    <input type="text" name="cs_comment" id="cs_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);">
+                </div>
+            </div>
             <h3>确认单产品</h3>
             <div class="layui-form-item" id="divorderproduct">
             </div>
@@ -911,7 +917,7 @@
                 order_goods_cs_info.order_date = data['order_date'];
                 order_goods_cs_info.delivery_date_reply = data['delivery_date_reply'];
                 order_goods_cs_info.unc_ofg_info_id = unc_ofg_info_id;
-
+                order_goods_cs_info.cs_comment = data['cs_comment'];
                 order_goods_cs_info.del_consult_sheet_file = delPic.length == 0 ? '': delPic;
                 order_goods_cs_info.consult_sheet_file = picNames.length == 0 ? '': picNames;
                 order_goods_cs_info.cs_info_state = data['cs_info_state'] == "" ? -1: data['cs_info_state'];
@@ -1097,6 +1103,7 @@
                 if(order_goods_cs_info.delivery_date_reply != '' && order_goods_cs_info.delivery_date_reply != '2000-01-01'&& order_goods_cs_info.delivery_date_reply != null){
                     jq('#delivery_date_reply').val(order_goods_cs_info.delivery_date_reply);
                 }
+                jq('#cs_comment').val(order_goods_cs_info.cs_comment);
                 document.getElementById('cs_info_state').value = order_goods_cs_info.cs_info_state;
 
                 fee_info_id = fee_info.fee_info_id;
