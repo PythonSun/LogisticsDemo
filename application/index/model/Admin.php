@@ -2208,7 +2208,7 @@
             $sqlone .= "left join dsp_logistic.ofg_info on dsp_logistic.ofg_info.ofg_info_id = dsp_logistic.order_goods_cs_info.ofg_info_id ";
             $sqlone .= "left join dsp_logistic.fee_info on dsp_logistic.fee_info.fee_info_id = dsp_logistic.order_goods_cs_info.fee_info_id ";
             /*查询条件*/
-            $sqlone .= "where dsp_logistic.order_goods_cs_info.cs_id like '%%' ";
+            $sqlone .= "where dsp_logistic.order_goods_cs_info.cs_info_state != '3'";
             if((property_exists($param,'startdate'))&&(property_exists($param,'enddate'))){
                $startdate = $param->startdate;
                $enddate = $param->enddate;
@@ -2233,6 +2233,9 @@
 
             if(property_exists($param,'orderstate')){
                 $orderstate = $param->orderstate;
+                if($orderstate == 3){
+                    return null;
+                }
                 $sqlone.= " and cs_info_state ='$orderstate' ";
             }
 
