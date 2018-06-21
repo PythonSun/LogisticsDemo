@@ -1096,11 +1096,14 @@
 
         var cs_examine = [];
         var directorExamine = getDirectorExamine(data,false,state);
+        cs_examine[0] = directorExamine;
         if(current_user_type == 2)
         {
-            directorExamine['cs_examine_state'] = '2' ;
+            cs_examine[0]['cs_examine_state'] = '2' ;
+            cs_examine[0]['cs_examine_date'] = data['examinationapprovaldatefirst'];
+            cs_examine[0]['cs_examine_comment'] =data['remarkfirst'];
+            cs_examine[0]['cs_examine_result'] = data['departmentdirectoradvice'];
         }
-        cs_examine[0] = directorExamine;
         var generalManagerExamine = getGeneralManagerExamine(data,false,state);
         cs_examine[1] = generalManagerExamine;
         var financeExamine = getFinanceExamine(data,false,state);
@@ -1247,10 +1250,6 @@
 
         var cs_examine = [];
         cs_examine[0] = getDirectorExamine(data,true,1);
-        if(current_user_type == 2)
-        {
-            cs_examine[0]['cs_examine_state'] = '2' ;
-        }
         cs_examine[1] = getGeneralManagerExamine(data,true,1);
         cs_examine[2] = getFinanceExamine(data,true,1);
         if(data['cs_info_state'] == '5' || data['cs_info_state'] == 5) //退回状态下提交
@@ -1264,6 +1263,13 @@
             cs_examine[2]['cs_examine_date'] ='2000-01-01';
             cs_examine[2]['cs_examine_comment'] = '';
             cs_examine[2]['cs_examine_result'] = "";
+        }
+        if(current_user_type == 2)
+        {
+            cs_examine[0]['cs_examine_state'] = '2' ;
+            cs_examine[0]['cs_examine_date'] = data['examinationapprovaldatefirst'];
+            cs_examine[0]['cs_examine_comment'] =data['remarkfirst'];
+            cs_examine[0]['cs_examine_result'] = data['departmentdirectoradvice'];
         }
         console.log("以下订单审批信息：");
         console.log(cs_examine);
@@ -1842,6 +1848,12 @@
         }
         if(cur_user_type == 2)
         {
+            if(data['departmentdirectoradvice'] != "同意")
+            {
+                layer.msg("提交请选择同意",{icon:2});
+                setDisable(true);
+                return false;
+            }
             if(data['examinationapprovaldatefirst'] == '')
             {
                 layer.msg('部门总监审批-审批日期不能为空！',{icon:2});

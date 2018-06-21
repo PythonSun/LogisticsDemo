@@ -533,7 +533,7 @@
                     $sqltwo.= " and transfer_order_num ='$num' ";
                 }
 
-                if(array_key_exists('freightmode',$args[6]))
+                if(array_key_exists('freightmode',$args[7]))
                 {
                     if($args[7]['freightmode'] != "")
                     {
@@ -3166,17 +3166,18 @@
             $product_number = $info['product_number'];
             $order_date = $info['order_date'];
             $cs_info_state = $info['cs_info_state'];
+            $cs_comment = $info['cs_comment'];
             $sql_value ="'{$cs_id}','{$ofg_info_id}','{$fee_info_id}','{$delivery_date_reply}','{$unc_ofg_info_id}','{$consult_sheet_file}','{$delivered_total}',";
             $sql_value .= "'{$delivered_pa}','{$delivered_conference}','{$delivered_customization}','{$delivered_record}','{$delivered_metro}','{$delivered_aux}',";
-            $sql_value .= "'{$delivered_gift}','{$delivered_album}','{$product_number}','{$order_date}','{$cs_info_state}'";
+            $sql_value .= "'{$delivered_gift}','{$delivered_album}','{$product_number}','{$order_date}','{$cs_info_state}','{$cs_comment}'";
             $sql = "INSERT INTO dsp_logistic.order_goods_cs_info (cs_id,ofg_info_id,fee_info_id,delivery_date_reply,unc_ofg_info_id,consult_sheet_file,";
             $sql .= "delivered_total,delivered_pa,delivered_conference,delivered_customization,delivered_record,delivered_metro,delivered_aux,";
-            $sql .= "delivered_gift,delivered_album,product_number,order_date,cs_info_state) VALUES ({$sql_value})";
+            $sql .= "delivered_gift,delivered_album,product_number,order_date,cs_info_state,cs_comment) VALUES ({$sql_value})";
             $sql .= " ON DUPLICATE KEY UPDATE cs_id = '{$cs_id}',ofg_info_id = '{$ofg_info_id}',fee_info_id = '{$fee_info_id}',delivery_date_reply = '{$delivery_date_reply}'";
             $sql .= ",unc_ofg_info_id = '{$unc_ofg_info_id}',consult_sheet_file = '{$consult_sheet_file}',delivered_total = '{$delivered_total}'";
             $sql .=",delivered_pa = '{$delivered_pa}',delivered_conference = '{$delivered_conference}',delivered_customization = '{$delivered_customization}'";
             $sql .= ",delivered_record = '{$delivered_record}',delivered_metro = '{$delivered_metro}',delivered_aux = '{$delivered_aux}'";
-            $sql .= ",delivered_gift = '{$delivered_gift}',delivered_album = '{$delivered_album}',product_number = '{$product_number}',order_date = '{$order_date}',cs_info_state = '{$cs_info_state}'";
+            $sql .= ",delivered_gift = '{$delivered_gift}',delivered_album = '{$delivered_album}',product_number = '{$product_number}',order_date = '{$order_date}',cs_info_state = '{$cs_info_state}',cs_comment = '{$cs_comment}'";
             $sqlret = Db::execute($sql);
             return $sqlret;
         }

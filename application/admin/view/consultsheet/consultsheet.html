@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=11">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+</head>
+    <style>
+        .hide{
+            display: none;
+        }
+        .circle {
+            padding: 2px;
+            margin: 4px auto;
+            text-align: center;
+            display: block;
+            background: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            height: 21px;
+            width: 21px;
+            box-shadow: 0 0 3px #000;
+        }
+    </style>
+<body style="height: 100%;margin: 0px;">
+<div>
+    <div>
+        <div style="background: white;box-shadow: 0 0 10px #000;position: fixed;text-align: center;width:100%;padding: 2px;">
+            <input type="button" id="last" class="layui-btn" target="_blank" value="上一张">
+            <input type="button" id="next" class="layui-btn" target="_blank" value="下一张">
+            <input type="button" id="del" class="layui-btn hide" target="_blank" value="删除">
+        </div>
+        <div style="margin-top: 42px; height: 30px; background: transparent;width:100%;padding: 2px;position:fixed;text-align: center;">
+            <div class="circle">
+                <a id="number" style="margin-top: 2px;margin-left: -10.5px;position: absolute;">123</a>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <img id="img" style="margin-top: 44px">
+    </div>
+
+</div>
+    <script type="text/javascript" src="/static/layui/layui.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript">
+        var  cs_id = 0;//相关联的订单id
+        var picNames = [];//item：tab:文件保存的文件夹，0：缓存/新增的；1：原有的；value：文件名
+        var index = 0;//当前图片浏览序号
+        var canDelPic = false;
+        var delPic = [];
+        layui.use(['form', 'jquery'], function () {
+            var form = layui.form,
+                jq = layui.jquery,
+                layer = layui.layer;
+            jq(document).ready(function(){
+                canDelPic = {$canDelPic};
+                picNames = {$picNames};
+                delPic = {$delPic};
+                var path = picPath(picNames[index].tab,picNames[index].value);
+                jq("#img").attr("src",path);
+                if(canDelPic){
+                    jq('#del').removeClass('hide');
+                }
+                refreshPicLengthText();
+            });
+            jq('#last').click(function () {
+                lastPic();
+            });
+            jq('#next').click(function () {
+                if((index + 1)== picNames.length){
+                    //return;
+                    index = -1;
+                }
+                index++;
+                var path = picPath(picNames[index].tab,picNames[index].value);
+                jq("#img").attr("src",path);
+                refreshPicLengthText();
+            });
+            jq('#del').click(function () {
+                layer.confirm('<span style="color: red">确定删除当前图片</span>', {
+                    btn: ['确定','取消'] //按钮
+                }, function(nindex){
+                    layer.close(nindex);
+                    var tab = picNames[index].tab;
+                    if(tab == 0){
+                        delCacheConsultSheet(picNames[index].value);
+                    }
+                    delPic.push(picNames[index]);
+                    picNames.splice(index,1);
+                    if(picNames.length == 0){
+                        var wlength = window.parent.length;
+                        var wParent = window.parent[window.parent.length - 2];
+                        if(wParent.delPic){
+                            wParent.delPic = delPic;
+                        }else {
+                            if(wParent[0].delPic){
+                                wParent[0].delPic = delPic;
+                            }
+                        }
+                        if(wParent.picNames){
+                            wParent.picNames = picNames;
+                        }else {
+                            if(wParent[0].picNames){
+                                wParent[0].picNames = picNames;
+                            }
+                        }
+                        //没有图片了 关闭当前页面
+                        console.log(top.layer.index);
+                        top.layer.close(top.layer.index);
+                    }else {
+                        lastPic();
+                    }
+                });
+            });
+        })
+
+        function picPath(tab,picName) {
+            console.log(picName);
+            if(tab == 0){
+                return "/cachefile/" + picName;
+            }else if (tab == 1){
+                return "/uploads/" + picName;
+            }
+        }
+        function lastPic() {
+            var jq = layui.jquery;
+            if (index == 0){
+                index = picNames.length;
+                //return;
+            }
+            index--;
+            var path = picPath(picNames[index].tab,picNames[index].value);
+            jq("#img").attr("src",path);
+            refreshPicLengthText();
+        }
+        //删除咨询表
+        function delCacheConsultSheet(delPicName) {
+            if (delPicName == ""){
+                return;
+            }
+            var jq = layui.jquery;
+            jq.ajax({
+                url: "{:url('admin/consultsheet/delcachefile')}",//php文件路径
+                data: {
+                    delFileName:delPicName
+                },
+                type: 'POST',
+                success: function(res) {
+                    console.log(res)
+                    if(res.code){
+                        top.layer.msg(res.msg,{icon:1});
+                    }else {
+                        top.layer.msg(res.msg,{icon:2});
+                    }
+                }
+            })
+        }
+
+        function refreshPicLengthText() {
+            var jq = layui.jquery;
+            var text = (index + 1) + '/'+ picNames.length
+            jq('#number').text(text);
+        }
+    </script>
+</body>
+</html>
