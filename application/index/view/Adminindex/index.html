@@ -48,6 +48,16 @@
 						  </li>
 						{/if}
 
+						<!--大数据导出-->
+						{if condition="$bigdatapower eq 1"}
+						<li class="layui-nav-item layui-nav-itemed">
+						  	<a href="javascript:void(0);"><span style="color: red;">售后单导出</span></a>
+						  	<dl class="layui-nav-child">
+								<dd><a href="javascript:void(0);" target="main">大数据导出</a></dd>
+						  	</dl>
+						</li>
+						{/if}
+
 						{if condition="$addorderpower eq 1"}
   		              	<li class="layui-nav-item layui-nav-itemed">
 			                <a href="javascript:void(0);"><span style="color: red;">新增订单(销售部)</span></a>

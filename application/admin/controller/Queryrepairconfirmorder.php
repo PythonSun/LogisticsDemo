@@ -95,13 +95,15 @@ class Queryrepairconfirmorder extends Controller
             $organizename = $queryuserinfo["organizename"];
             $departmentname = $queryuserinfo["departmentname"];
             $areamanager = $queryuserinfo["areamanager"];
+            $rolename = $queryuserinfo['role_name'];
             if(isset($_GET['queryInfo'])){
                 $queryInfo = $_GET['queryInfo'];
                 $queryInfo["organizename"] = $queryInfo["departname"];
                 $queryInfo["departmentname"] = $queryInfo["departname"];
-                $tablelist = \app\index\model\Admin::querycsinfobysales($organizename,$departmentname,$areamanager,$type,$page,$limit,$queryInfo);
+
+                $tablelist = \app\index\model\Admin::querycsinfobysales($organizename,$departmentname,$areamanager,$rolename,$type,$page,$limit,$queryInfo);
             }else{
-                $tablelist = \app\index\model\Admin::querycsinfobysales($organizename,$departmentname,$areamanager,$type,$page,$limit);
+                $tablelist = \app\index\model\Admin::querycsinfobysales($organizename,$departmentname,$areamanager,$rolename,$type,$page,$limit);
             }
         }
 

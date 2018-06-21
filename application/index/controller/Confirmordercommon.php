@@ -230,7 +230,6 @@ class Confirmordercommon extends Controller
         $cs_info['payment_info_id'] = $payment_info_id ;
         $cs_info['cs_examine_ids'] = $cs_examine_ids;
         \app\index\model\Admin::updateconfirmorder($cs_info);
-
         return true;
     }
 
