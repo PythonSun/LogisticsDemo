@@ -150,6 +150,15 @@
                   </div>
               </div>
           </div>
+
+          <div class="layui-form-item" style="margin: 5px 20px">
+              <div class="layui-inline">
+                  <label class="layui-form-label" style="width: 150px">大数据权限：</label>
+                  <div class="layui-input-inline" style="width: 600px">
+                      <input type="checkbox" id="big_data_permission_manage" name="big_data_permission_manage" lay-skin="primary" title="导出" >
+                  </div>
+              </div>
+          </div>
       </form>
     </div>
     <script src="/static/layui/layui.js"></script>
@@ -245,6 +254,14 @@
                         }
                         pos ++;
                     });
+
+                    pos = 0;
+                    jq("input[name='big_data_permission_manage']").each(function(){
+                        if(parseInt(data.big_data_permission_manage) == 1){
+                            jq(this).prop('checked',true);
+                        }
+                        pos ++;
+                    });
                     form.render('checkbox');
                 });
 
@@ -303,6 +320,12 @@
 
                 pos = 0;
                 jq("input[name='logistic_input_permission']").each(function(){
+                    jq(this).prop('checked',state);
+                    pos ++;
+                });
+
+                pos = 0;
+                jq("input[name='big_data_permission_manage']").each(function(){
                     jq(this).prop('checked',state);
                     pos ++;
                 });
@@ -406,6 +429,16 @@
                 pos++;
             });
             role.logistic_input_permission = logistic_input_permission;
+
+            var big_data_permission_manage = 0x0000;
+            pos = 0;
+            jq("input[name='big_data_permission_manage']").each(function(){
+                if(jq(this).prop('checked')){
+                    big_data_permission_manage = big_data_permission_manage|(1<<pos);
+                }
+                pos++;
+            });
+            role.big_data_permission_manage = big_data_permission_manage;
             return role;
         }
     </script>
