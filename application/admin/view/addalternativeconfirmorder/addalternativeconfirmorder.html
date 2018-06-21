@@ -71,6 +71,16 @@
             <div class="layui-input-inline ">
                 <input type="text" name="orderdate" id="date2" autocomplete="on" class="layui-input dark_blue dark_blue_disabled"> </div>
         </div>
+        <div class="layui-inline ">
+            <label class="layui-form-label dark_blue">发出日期</label>
+            <div class="layui-input-inline ">
+                <input type="text" name="cs_info_delivery_date" id="cs_info_delivery_date" autocomplete="on" class="layui-input dark_blue dark_blue_disabled"> </div>
+        </div>
+        <div class="layui-inline ">
+            <label class="layui-form-label dark_blue">入仓日期</label>
+            <div class="layui-input-inline ">
+                <input type="text" name="cs_info_warehouse_date" id="cs_info_warehouse_date" autocomplete="on" class="layui-input dark_blue dark_blue_disabled"> </div>
+        </div>
     </div>
     <h3>物流信息</h3>
     <div class="layui-form-item">
@@ -539,6 +549,12 @@
                     jq('#date2').val(data['complete_date']); //不确定下单时间是指那个
                 if(data['delivery_date_reply'] != '2000-01-01 00:00:00' && data['delivery_date_reply'] != '2000-01-01' )
                     jq('#delivery_date_reply').val(data['delivery_date_reply']); //不确定下单时间是指那个
+                if(data['cs_info_delivery_date'] != '2000-01-01 00:00:00' && data['cs_info_delivery_date'] != '2000-01-01' )
+                    jq('#cs_info_delivery_date').val(data['cs_info_delivery_date']);
+                if(data['cs_info_warehouse_date'] != '2000-01-01 00:00:00' && data['cs_info_warehouse_date'] != '2000-01-01' )
+                    jq('#cs_info_warehouse_date').val(data['cs_info_warehouse_date']);
+
+
                 editOrderData['cs_id'] = data['cs_id'];
                 editOrderData['complete_date'] = data['complete_date'];
                 editOrderData['product_number'] = data['product_number'];
@@ -925,6 +941,17 @@
                     position: 'fixed',
                     theme: 'molv'
                 });
+                laydate.render({
+                    elem: '#cs_info_delivery_date',
+                    position: 'fixed',
+                    theme: 'molv'
+                });
+                laydate.render({
+                    elem: '#cs_info_warehouse_date',
+                    position: 'fixed',
+                    theme: 'molv'
+                });
+
 
             }
             else  if(current_user_type == 0) //只查看
@@ -1841,11 +1868,11 @@
                 layer.msg('返货信息-货场电话不能为空！',{icon:2});
                 return false;
             }
-            if(data['return_order_num'] == '')
-            {
-                layer.msg('返货信息-返货单号不能为空！',{icon:2});
-                return false;
-            }
+            // if(data['return_order_num'] == '')
+            // {
+            //     layer.msg('返货信息-返货单号不能为空！',{icon:2});
+            //     return false;
+            // }
             if(data['return_info_receiver_address'] == '')
             {
                 layer.msg('返货信息-收货地址不能为空！',{icon:2});
@@ -1998,6 +2025,8 @@
         info.product_number =dataTable==null?0 :dataTable.length;
         info.unc_ofg_info_id = isEdit == true?editOrderData['unc_ofg_info_id']:0;
         info.delivery_date_reply = data['delivery_date_reply'] == ''?'2000-01-01':data['delivery_date_reply'];
+        info.cs_info_delivery_date = data['cs_info_delivery_date'] == ''?'2000-01-01':data['cs_info_delivery_date'];
+        info.cs_info_warehouse_date = data['cs_info_warehouse_date'] == ''?'2000-01-01':data['cs_info_warehouse_date'];
         return info;
     }
 
