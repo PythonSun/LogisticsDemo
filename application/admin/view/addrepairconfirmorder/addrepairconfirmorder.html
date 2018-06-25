@@ -1832,11 +1832,11 @@
                 layer.msg('返货信息-货场电话不能为空！',{icon:2});
                 return false;
             }
-            if(data['return_order_num'] == '')
-            {
-                layer.msg('返货信息-返货单号不能为空！',{icon:2});
-                return false;
-            }
+            // if(data['return_order_num'] == '')
+            // {
+            //     layer.msg('返货信息-返货单号不能为空！',{icon:2});
+            //     return false;
+            // }
             if(data['return_info_receiver_address'] == '')
             {
                 layer.msg('返货信息-收货地址不能为空！',{icon:2});
@@ -1846,11 +1846,14 @@
         }
         if(cur_user_type == 2)
         {
-            if(data['departmentdirectoradvice'] != "同意")
+            if(is_Examine === false)
             {
-                layer.msg("提交请选择同意",{icon:2});
-                setDisable(true);
-                return false;
+                if(data['departmentdirectoradvice'] != "同意")
+                {
+                    layer.msg("提交请选择同意",{icon:2});
+                    setDisable(true);
+                    return false;
+                }
             }
             if(data['examinationapprovaldatefirst'] == '')
             {

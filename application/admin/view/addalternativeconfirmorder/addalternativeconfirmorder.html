@@ -1888,12 +1888,16 @@
         }
         if(cur_user_type == 2)
         {
-            if(data['departmentdirectoradvice'] != "同意")
+            if(is_Examine === false)
             {
-                layer.msg("提交请选择同意",{icon:2});
-                setDisable(true);
-                return false;
+                if(data['departmentdirectoradvice'] != "同意")
+                {
+                    layer.msg("提交请选择同意",{icon:2});
+                    setDisable(true);
+                    return false;
+                }
             }
+
             if(data['examinationapprovaldatefirst'] == '')
             {
                 layer.msg('部门总监审批-审批日期不能为空！',{icon:2});
