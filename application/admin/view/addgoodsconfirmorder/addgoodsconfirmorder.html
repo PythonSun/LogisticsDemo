@@ -199,7 +199,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">备注</label>
                 <div class="layui-input-block">
-                    <input type="text" name="comment" id="comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);">
+                    <input type="text" name="comment" id="comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat">
                     <!--<textarea name="comment" id="comment" placeholder="请输入" class="layui-textarea Wheat"></textarea>-->
                 </div>
             </div>
@@ -224,7 +224,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label Wheat">备注</label>
                 <div class="layui-input-block">
-                    <input type="text" name="cs_comment" id="cs_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat" oninput="detectinputtext(this);">
+                    <input type="text" name="cs_comment" id="cs_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat">
                 </div>
             </div>
             <h3>确认单产品</h3>
@@ -1575,7 +1575,7 @@
                     "<option value='4'>备货</option>" +
                     "<option value='5'>缺货</option></select></td>";
                 col = newRow.insertCell(9);
-                col.innerHTML ="<td><input type='text' id='ogcugi_comment"+rowIndex+"' name='ogcugi_comment' class='layui-input  ' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+                col.innerHTML ="<td><input type='text' id='ogcugi_comment"+rowIndex+"' name='ogcugi_comment' class='layui-input  ' style='color: #0C0C0C ;border:0px'></td>";
                 col = newRow.insertCell(10);
                 if(type == 1){
                     col.innerHTML ="<td><a class='layui-btn layui-btn-xs layui-btn-danger del_btn ' style = 'margin: 0px 10px '>删除</a></td>";
