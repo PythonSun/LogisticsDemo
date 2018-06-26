@@ -317,7 +317,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label light_green">备注</label>
                 <div class="layui-input-block">
-                    <input type="text" name="remarkfirst" id="remarkfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green depart_blue_disabled" oninput="detectinputtext(this);"> </div>
+                    <input type="text" name="remarkfirst" id="remarkfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green depart_blue_disabled"> </div>
             </div>
             <h3>执行总经理审批</h3>
             <div class="layui-form-item">
@@ -346,7 +346,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label light_green">备注</label>
                 <div class="layui-input-block">
-                    <input type="text" name="remarksecond" id="remarksecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green company_blue_disabled" oninput="detectinputtext(this);">
+                    <input type="text" name="remarksecond" id="remarksecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green company_blue_disabled">
                 </div>
             </div>
             <h3>财务审批</h3>
@@ -375,7 +375,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label light_green">备注</label>
                 <div class="layui-input-block">
-                    <input type="text" name="remarkthird" id="remarkthird" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green finance_blue_disabled" oninput="detectinputtext(this);"> </div>
+                    <input type="text" name="remarkthird" id="remarkthird" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_green finance_blue_disabled"> </div>
             </div>
             <h3>款项情况</h3>
             <div class="layui-form-item">
@@ -413,7 +413,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label dark_blue">备注</label>
                 <div class="layui-input-block">
-                   <input type="text" name="payment_info_comment" id="payment_info_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input   dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
+                   <input type="text" name="payment_info_comment" id="payment_info_comment" lay-verify="" autocomplete="on" placeholder="" class="layui-input   dark_blue dark_blue_disabled"> </div>
 
             </div>
 
@@ -1931,11 +1931,14 @@
                 }
                 if(cur_user_type == 2)
                 {
-                    if(data['departmentdirectoradvice'] != "同意")
+                    if(is_Examine === false)
                     {
-                        layer.msg("提交请选择同意",{icon:2});
-                        setDisable(true);
-                        return false;
+                        if(data['departmentdirectoradvice'] != "同意")
+                        {
+                            layer.msg("提交请选择同意",{icon:2});
+                            setDisable(true);
+                            return false;
+                        }
                     }
                     if(data['examinationapprovaldatefirst'] == '')
                     {
@@ -2274,7 +2277,7 @@
                 col = newRow.insertCell(13);
                 col.innerHTML ="<td><select id='unc_product_id"+rowIndex+"' name='unc_product_id' lay-filter='unc_productname'  class='select-style-border-none dark_blue_disabled'> <option value='' selected >请选择</option>{volist name='uncproductlist' id='vo1'} <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>{/volist} </select></td>";
                 col = newRow.insertCell(14);
-                col.innerHTML ="<td><input type='text' name='ogl_comment' id='ogl_comment"+rowIndex+"' class='layui-input dark_blue_disabled' oninput='detectinputtext(this);' style='color: #0C0C0C ;border:0px'></td>";
+                col.innerHTML ="<td><input type='text' name='ogl_comment' id='ogl_comment"+rowIndex+"' class='layui-input dark_blue_disabled' style='color: #0C0C0C ;border:0px'></td>";
                 col = newRow.insertCell(15);
                 col.innerHTML ="<td><a class='layui-btn layui-btn-xs layui-btn-danger Wheat_disabled  del_btn del_disabled' style = 'margin: 0px 10px '>删除</a></td>";
 
