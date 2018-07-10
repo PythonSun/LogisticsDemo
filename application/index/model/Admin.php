@@ -270,29 +270,29 @@
                     //$tableobj[$i]['write_date'] = $tableobj[$i]["order_date"];
                     $state = $tableobj[$i]["cs_info_state"];
 
-//                    if($state == 0)
-//                        $tableobj[$i]["cs_info_state"] = "";
-//                    elseif ($state == 1)
-//                    {
-//                        $tableobj[$i]["cs_info_state"] = "处理中";
-//                    }
-//                    elseif ($state == 2)
-//                    {
-//                        $tableobj[$i]["cs_info_state"] = "已完成";
-//                    }
-//                    elseif ($state == 3)
-//                    {
-//                        $tableobj[$i]["cs_info_state"] = "取消";
-//                    }
-//                    elseif ($state == 4)
-//                    {
-//                        $tableobj[$i]["cs_info_state"] = "备货";
-//                    }
-//                    elseif ($state == 6)
-//                    {
-//                        $tableobj[$i]["cs_info_state"] = "缺货";
-//                    }
-                    $tableobj[$i]["cs_info_state"] = "1";
+                    if($state == 0)
+                        $tableobj[$i]["cs_info_state"] = "";
+                    elseif ($state == 1)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "处理中";
+                    }
+                    elseif ($state == 2)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "已完成";
+                    }
+                    elseif ($state == 3)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "取消";
+                    }
+                    elseif ($state == 4)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "备货";
+                    }
+                    elseif ($state == 6)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "缺货";
+                    }
+                   // $tableobj[$i]["cs_info_state"] = "1";
 
                     $tableobj[$i]["transfer_fee_mode"]= self::parsefreightmode($tableobj[$i]["transfer_mode"]) ;
 
