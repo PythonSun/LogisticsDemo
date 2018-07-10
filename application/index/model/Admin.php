@@ -269,38 +269,33 @@
                     $tableobj[$i]["receiver_name"] = $tableobj[$i]["receiver_name"];//+++++
                     //$tableobj[$i]['write_date'] = $tableobj[$i]["order_date"];
                     $state = $tableobj[$i]["cs_info_state"];
-                    $mode =  $tableobj[$i]["transfer_mode"];
-                    if($state == 0)
-                        $tableobj[$i]["cs_info_state"] = "";
-                    elseif ($state == 1)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "处理中";
-                    }
-                    elseif ($state == 2)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "已完成";
-                    }
-                    elseif ($state == 3)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "取消";
-                    }
-                    elseif ($state == 4)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "备货";
-                    }
-                    elseif ($state == 6)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "缺货";
-                    }
 
-                    if ($mode == 0)
-                        $tableobj[$i]["transfer_fee_mode"] = "到付";
-                    elseif ($mode == 1)
-                        $tableobj[$i]["transfer_fee_mode"] = "现金";
-                    elseif ($mode == 2)
-                        $tableobj[$i]["transfer_fee_mode"] = "代付";
-                    elseif ($mode == 3)
-                        $tableobj[$i]["transfer_fee_mode"] = "公司付";
+//                    if($state == 0)
+//                        $tableobj[$i]["cs_info_state"] = "";
+//                    elseif ($state == 1)
+//                    {
+//                        $tableobj[$i]["cs_info_state"] = "处理中";
+//                    }
+//                    elseif ($state == 2)
+//                    {
+//                        $tableobj[$i]["cs_info_state"] = "已完成";
+//                    }
+//                    elseif ($state == 3)
+//                    {
+//                        $tableobj[$i]["cs_info_state"] = "取消";
+//                    }
+//                    elseif ($state == 4)
+//                    {
+//                        $tableobj[$i]["cs_info_state"] = "备货";
+//                    }
+//                    elseif ($state == 6)
+//                    {
+//                        $tableobj[$i]["cs_info_state"] = "缺货";
+//                    }
+                    $tableobj[$i]["cs_info_state"] = "1";
+
+                    $tableobj[$i]["transfer_fee_mode"]= self::parsefreightmode($tableobj[$i]["transfer_mode"]) ;
+
 
                 }
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
@@ -383,8 +378,8 @@
                     $cs_info_state = $args[7]['orderstate'];
                     $sqlone.= " and cs_info_state ='$cs_info_state'";
                 }
-                if($type == 2||$type == 5) //借样和配件没有返货信息
-                {
+//                if($type == 2||$type == 5) //借样和配件没有返货信息
+//                {
                     if($args[7]['receiver_name'] != "")
                     {
                         $delivery_info_receiver_name = $args[7]['receiver_name'];
@@ -396,20 +391,20 @@
                         $yard = $args[7]['yard'];
                         $sqlone.= " and delivery_info_goods_yard_name ='$yard' ";
                     }
-                }
-                else
-                {
-                    if($args[7]['receiver_name'] != "")
-                    {
-                        $return_info_receiver_name = $args[7]['receiver_name'];
-                        $sqlone.= " and return_info_receiver_name ='$return_info_receiver_name' ";
-                    }
-                    if($args[7]['yard'] != "")
-                    {
-                        $yard = $args[7]['yard'];
-                        $sqlone.= " and return_info_goods_yard_name ='$yard' ";
-                    }
-                }
+//                }
+//                else
+//                {
+//                    if($args[7]['receiver_name'] != "")
+//                    {
+//                        $return_info_receiver_name = $args[7]['receiver_name'];
+//                        $sqlone.= " and return_info_receiver_name ='$return_info_receiver_name' ";
+//                    }
+//                    if($args[7]['yard'] != "")
+//                    {
+//                        $yard = $args[7]['yard'];
+//                        $sqlone.= " and return_info_goods_yard_name ='$yard' ";
+//                    }
+//                }
 
                 if($args[7]['couriernumber'] != "")
                 {
@@ -499,8 +494,8 @@
                     $cs_info_state = $args[7]['orderstate'];
                     $sqltwo.= " and cs_info_state ='$cs_info_state'";
                 }
-                if($type == 2||$type == 5) //借样和配件没有返货信息
-                {
+//                if($type == 2||$type == 5) //借样和配件没有返货信息
+//                {
                     if($args[7]['receiver_name'] != "")
                     {
                         $delivery_info_receiver_name = $args[7]['receiver_name'];
@@ -512,20 +507,20 @@
                         $yard = $args[7]['yard'];
                         $sqltwo.= " and delivery_info_goods_yard_name ='$yard' ";
                     }
-                }
-                else
-                {
-                    if($args[7]['receiver_name'] != "")
-                    {
-                        $return_info_receiver_name = $args[7]['receiver_name'];
-                        $sqltwo.= " and return_info_receiver_name ='$return_info_receiver_name' ";
-                    }
-                    if($args[7]['yard'] != "")
-                    {
-                        $yard = $args[7]['yard'];
-                        $sqltwo.= " and return_info_goods_yard_name ='$yard' ";
-                    }
-                }
+//                }
+//                else
+//                {
+//                    if($args[7]['receiver_name'] != "")
+//                    {
+//                        $return_info_receiver_name = $args[7]['receiver_name'];
+//                        $sqltwo.= " and return_info_receiver_name ='$return_info_receiver_name' ";
+//                    }
+//                    if($args[7]['yard'] != "")
+//                    {
+//                        $yard = $args[7]['yard'];
+//                        $sqltwo.= " and return_info_goods_yard_name ='$yard' ";
+//                    }
+//                }
 
                 if($args[7]['couriernumber'] != "")
                 {
@@ -548,17 +543,17 @@
 
                 for ($i = 0;$i < count($tableobj);$i++)
                 {
-                    if($type == 2||$type == 5) //借样和配件没有返货信息
-                    {
+//                    if($type == 2||$type == 5) //借样和配件没有返货信息
+//                    {
                         $tableobj[$i]["receiver_name"] = $tableobj[$i]["delivery_info_receiver_name"];
-                    }
-                    else
-                    {
-                        //$tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
-                        $tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
-                    }
+//                    }
+//                    else
+//                    {
+//                        //$tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
+//                        $tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
+//                    }
                     $state = $tableobj[$i]["cs_info_state"];
-                    $mode =  $tableobj[$i]["transfer_fee_mode"];
+
                     if($state == 0||$state == -1)
                         $tableobj[$i]["cs_info_state"] = "";
                     elseif ($state == 1)
@@ -586,14 +581,7 @@
                         $tableobj[$i]["cs_info_state"] = "缺货";
                     }
 
-                    if ($mode == 0)
-                        $tableobj[$i]["transfer_fee_mode"] = "到付";
-                    elseif ($mode == 1)
-                        $tableobj[$i]["transfer_fee_mode"] = "现金";
-                    elseif ($mode == 2)
-                        $tableobj[$i]["transfer_fee_mode"] = "现付";
-                    elseif ($mode == 3)
-                        $tableobj[$i]["transfer_fee_mode"] = "公司付";
+                    $tableobj[$i]["transfer_fee_mode"] = self::parsefreightmode( $tableobj[$i]["transfer_fee_mode"]);
 
                     if($tableobj[$i]["complete_date"] == "2000-01-01 00:00:00")
                     {
@@ -698,8 +686,8 @@
                     $cs_info_state = $args[3]['orderstate'];
                     $sqlone.= " and cs_info_state ='$cs_info_state' ";
                 }
-                if($type == 2||$type == 5) //借样和配件没有返货信息
-                {
+//                if($type == 2||$type == 5) //借样和配件没有返货信息
+//                {
                     if($args[3]['receiver_name'] != "")
                     {
                         $delivery_info_receiver_name = $args[3]['receiver_name'];
@@ -711,20 +699,20 @@
                         $yard = $args[3]['yard'];
                         $sqlone.= " and delivery_info_goods_yard_name ='$yard' ";
                     }
-                }
-                else
-                {
-                    if($args[3]['receiver_name'] != "")
-                    {
-                        $return_info_receiver_name = $args[3]['receiver_name'];
-                        $sqlone.= " and return_info_receiver_name ='$return_info_receiver_name' ";
-                    }
-                    if($args[3]['yard'] != "")
-                    {
-                        $yard = $args[3]['yard'];
-                        $sqlone.= " and return_info_goods_yard_name ='$yard' ";
-                    }
-                }
+//                }
+//                else
+//                {
+//                    if($args[3]['receiver_name'] != "")
+//                    {
+//                        $return_info_receiver_name = $args[3]['receiver_name'];
+//                        $sqlone.= " and return_info_receiver_name ='$return_info_receiver_name' ";
+//                    }
+//                    if($args[3]['yard'] != "")
+//                    {
+//                        $yard = $args[3]['yard'];
+//                        $sqlone.= " and return_info_goods_yard_name ='$yard' ";
+//                    }
+//                }
 
                 if($args[3]['couriernumber'] != "")
                 {
@@ -801,8 +789,8 @@
                     $cs_info_state = $args[3]['orderstate'];
                     $sqltwo.= " and cs_info_state ='$cs_info_state' ";
                 }
-                if($type == 2||$type == 5) //借样和配件没有返货信息
-                {
+//                if($type == 2||$type == 5) //借样和配件没有返货信息
+//                {
                     if($args[3]['receiver_name'] != "")
                     {
                         $delivery_info_receiver_name = $args[3]['receiver_name'];
@@ -814,20 +802,20 @@
                         $yard = $args[3]['yard'];
                         $sqltwo.= " and delivery_info_goods_yard_name ='$yard' ";
                     }
-                }
-                else
-                {
-                    if($args[3]['receiver_name'] != "")
-                    {
-                        $return_info_receiver_name = $args[3]['receiver_name'];
-                        $sqltwo.= " and return_info_receiver_name ='$return_info_receiver_name' ";
-                    }
-                    if($args[3]['yard'] != "")
-                    {
-                        $yard = $args[3]['yard'];
-                        $sqltwo.= " and return_info_goods_yard_name ='$yard' ";
-                    }
-                }
+//                }
+//                else
+//                {
+//                    if($args[3]['receiver_name'] != "")
+//                    {
+//                        $return_info_receiver_name = $args[3]['receiver_name'];
+//                        $sqltwo.= " and return_info_receiver_name ='$return_info_receiver_name' ";
+//                    }
+//                    if($args[3]['yard'] != "")
+//                    {
+//                        $yard = $args[3]['yard'];
+//                        $sqltwo.= " and return_info_goods_yard_name ='$yard' ";
+//                    }
+//                }
 
                 if($args[3]['couriernumber'] != "")
                 {
@@ -852,17 +840,17 @@
             if(!empty($tableobj)){
                 for ($i = 0;$i < count($tableobj);$i++)
                 {
-                    if($type == 2||$type == 5) //借样和配件没有返货信息
-                    {
+//                    if($type == 2||$type == 5) //借样和配件没有返货信息
+//                    {
                         $tableobj[$i]["receiver_name"] = $tableobj[$i]["delivery_info_receiver_name"];
-                    }
-                    else
-                    {
-                        //$tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
-                        $tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
-                    }
+//                    }
+//                    else
+//                    {
+//                        //$tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
+//                        $tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
+//                    }
                     $state = $tableobj[$i]["cs_info_state"];
-                    $mode =  $tableobj[$i]["transfer_fee_mode"];
+
                     if($state == 0||$state == -1)
                         $tableobj[$i]["cs_info_state"] = "";
                     elseif ($state == 1)
@@ -890,14 +878,9 @@
                         $tableobj[$i]["cs_info_state"] = "缺货";
                     }
 
-                    if ($mode == 0)
-                        $tableobj[$i]["transfer_fee_mode"] = "到付";
-                    elseif ($mode == 1)
-                        $tableobj[$i]["transfer_fee_mode"] = "现金";
-                    elseif ($mode == 2)
-                        $tableobj[$i]["transfer_fee_mode"] = "现付";
-                    elseif ($mode == 3)
-                        $tableobj[$i]["transfer_fee_mode"] = "公司付";
+
+                    $tableobj[$i]["transfer_fee_mode"]= self::parsefreightmode($tableobj[$i]["transfer_fee_mode"])  ;
+
 
                     if($tableobj[$i]["complete_date"] == "2000-01-01 00:00:00")
                     {
@@ -1008,17 +991,17 @@
             if(!empty($tableobj)){
                 for ($i = 0;$i < count($tableobj);$i++)
                 {
-                    if($type == 2||$type == 5) //借样和配件没有返货信息
-                    {
+//                    if($type == 2||$type == 5) //借样和配件没有返货信息
+//                    {
                         $tableobj[$i]["receiver_name"] = $tableobj[$i]["delivery_info_receiver_name"];
-                    }
-                    else
-                    {
-                        //$tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
-                        $tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
-                    }
+//                    }
+//                    else
+//                    {
+//                        //$tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
+//                        $tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
+//                    }
                     $state = $tableobj[$i]["cs_info_state"];
-                    $mode =  $tableobj[$i]["transfer_fee_mode"];
+
                     if($state == 0||$state == -1)
                         $tableobj[$i]["cs_info_state"] = "";
                     elseif ($state == 1)
@@ -1046,14 +1029,9 @@
                         $tableobj[$i]["cs_info_state"] = "缺货";
                     }
 
-                    if ($mode == 1)
-                        $tableobj[$i]["transfer_fee_mode"] = "到付";
-                    elseif ($mode == 2)
-                        $tableobj[$i]["transfer_fee_mode"] = "现金";
-                    elseif ($mode == 3)
-                        $tableobj[$i]["transfer_fee_mode"] = "现付";
-                    elseif ($mode == 4)
-                        $tableobj[$i]["transfer_fee_mode"] = "公司付";
+
+                    $tableobj[$i]["transfer_fee_mode"] = self::parsefreightmode($tableobj[$i]["transfer_fee_mode"])  ;
+
 
                     $tableobj[$i]["serial_number"] = $i+1;
                 }
@@ -1170,15 +1148,15 @@
                 $countTable = count($tableobj);
                 for ($i = 0;$i < $countTable;$i++)
                 {
-                    if($type == 2||$type == 5) //借样和配件没有返货信息
-                    {
+//                    if($type == 2||$type == 5) //借样和配件没有返货信息
+//                    {
                         $tableobj[$i]["receiver_name"] = $tableobj[$i]["delivery_info_receiver_name"];
-                    }
-                    else
-                    {
-                        //$tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
-                        $tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
-                    }
+//                    }
+//                    else
+//                    {
+//                        //$tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
+//                        $tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
+//                    }
                     $tableobj[$i]["serial_number"] = $i+1;
                     $state = $tableobj[$i]["cs_info_state"];
                     if($state == 0||$state == -1)
@@ -2672,7 +2650,7 @@
                 $objPHPExcel->getActiveSheet()->setCellValue('B'.($item+$liststart), $ret[$item-3]['delivery_logistic_date']);
                 $objPHPExcel->getActiveSheet()->setCellValue('C'.($item+$liststart), $ret[$item-3]['build_department_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('D'.($item+$liststart), $ret[$item-3]['build_user_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('E'.($item+$liststart), $ret[$item-3]['company_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('E'.($item+$liststart), $ret[$item-3]['company_address']);
                 $objPHPExcel->getActiveSheet()->setCellValue('F'.($item+$liststart), $ret[$item-3]['receiver_name']);
                 $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), $ret[$item-3]['delivery_logistic_yard']);
                 /*订单状态*/
@@ -2930,12 +2908,13 @@
 
                 if($type == 0x05){
                     $objPHPExcel->getActiveSheet()->setCellValue('G'.$item, $productlist[$item-$startitem]['unit']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['product_number']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['order_goods_manager_count']);
                 }else{
                     $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['unit']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$item, $productlist[$item-$startitem]['product_number']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$item, $productlist[$item-$startitem]['order_goods_manager_count']);
                 }
-
+//                var_dump($productlist[$item-$startitem]);
+//                return ;
                 if(($type == 0x01)||($type == 0x06)){
                     $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['bar_code']);
                     $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['back_date']);
@@ -3027,12 +3006,12 @@
                     
                     if($type == 0x05){
                         $objPHPExcel->getActiveSheet()->setCellValue('G'.$item, $productlist[$item-$startitem]['unit']);
-                        $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['product_number']);
+                        $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['order_goods_manager_count']);
                     }else{
                         $objPHPExcel->getActiveSheet()->setCellValue('H'.$item, $productlist[$item-$startitem]['unit']);
-                        $objPHPExcel->getActiveSheet()->setCellValue('I'.$item, $productlist[$item-$startitem]['product_number']);
-                    }
+                        $objPHPExcel->getActiveSheet()->setCellValue('I'.$item, $productlist[$item-$startitem]['order_goods_manager_count']);
 
+                    }
                     if(($type == 0x01)||($type == 0x06)){
                         $objPHPExcel->getActiveSheet()->setCellValue('J'.$item, $productlist[$item-$startitem]['bar_code']);
                         $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-$startitem]['back_date']);
@@ -3426,8 +3405,8 @@
             $tableobj = Db::query($sqlone);
             if(!empty($tableobj))
             {
-                if($tableobj[0]['cs_info_type'] == 2|| $tableobj[0]['cs_info_type'] == 5)
-                {
+//                if($tableobj[0]['cs_info_type'] == 2|| $tableobj[0]['cs_info_type'] == 5)
+//                {
                     $info = Array();
                     $info['receiver_name'] = $tableobj[0]['delivery_info_receiver_name'];
                     $info['receiver_phone'] = $tableobj[0]['delivery_info_receiver_phone'];
@@ -3438,20 +3417,20 @@
 					$info['transfer_order_num'] = $tableobj[0]['transfer_order_num'];
 					$info['delivery_date'] = $tableobj[0]['delivery_date'];
                     return $info;
-                }
-                else
-                {
-                    $info = Array();
-                    $info['receiver_name'] = $tableobj[0]['return_info_receiver_name'];
-                    $info['receiver_phone'] = $tableobj[0]['return_info_receiver_phone'];
-                    $info['receiver_address'] = $tableobj[0]['return_info_receiver_address'];
-					$info['goods_yard_name'] = $tableobj[0]['goods_yard_name'];
-					$info['cs_id'] = $tableobj[0]['cs_id'];
-					$info['count'] = $tableobj[0]['count'];
-					$info['transfer_order_num'] = $tableobj[0]['transfer_order_num'];
-					$info['delivery_date'] = $tableobj[0]['delivery_date'];
-                    return $info;
-                }
+//                }
+//                else
+//                {
+//                    $info = Array();
+//                    $info['receiver_name'] = $tableobj[0]['return_info_receiver_name'];
+//                    $info['receiver_phone'] = $tableobj[0]['return_info_receiver_phone'];
+//                    $info['receiver_address'] = $tableobj[0]['return_info_receiver_address'];
+//					$info['goods_yard_name'] = $tableobj[0]['goods_yard_name'];
+//					$info['cs_id'] = $tableobj[0]['cs_id'];
+//					$info['count'] = $tableobj[0]['count'];
+//					$info['transfer_order_num'] = $tableobj[0]['transfer_order_num'];
+//					$info['delivery_date'] = $tableobj[0]['delivery_date'];
+//                    return $info;
+//                }
             }
             //物流单
             $sqlone = "select dsp_logistic.ofg_info.*,dsp_logistic.logistics_info.* from dsp_logistic.order_goods_cs_info ";
@@ -3695,6 +3674,21 @@
             $sql = "INSERT INTO dsp_logistic.product_info (model,product_info_name,product_type_id,brand_id,place_id) VALUES ".$mysql;
             $sqlret = Db::execute($sql);
             return $sqlret;
+        }
+
+        /*Parsefreightmode*/
+        public static function parsefreightmode($freightmode)
+        {
+            if ($freightmode == 0||$freightmode == '0')
+                return "到付";
+            elseif ($freightmode == 1||$freightmode == '1')
+                return "现金";
+            elseif ($freightmode == 2||$freightmode == '2')
+                return "现付";
+            elseif ($freightmode == 3||$freightmode == '3')
+                return "公司付";
+            elseif ($freightmode == 4||$freightmode == '4')
+                return "送货";
         }
 	}
 ?>

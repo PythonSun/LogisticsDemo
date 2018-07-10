@@ -90,6 +90,7 @@ class Querygoodsconfirmorder extends Controller
         $file_extend = 'xlsx';
         /*查询订货确认单*/
         $ret = \app\index\model\Admin::queryexportgoodsconfirmorder($param);
+
         /*导出订货确认单*/
         \app\index\model\Admin::exportgoodsconfirmorder($file_name,$file_extend,$template_name,$ret);
     }

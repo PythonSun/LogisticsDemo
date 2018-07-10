@@ -14,13 +14,17 @@
 			<table class="layui-hide" id="queryrepairorder" lay-filter="queryrepairorder"></table>
 			<script type="text/html" id="operatebar">
   			  <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="detail">查看</a>
-  			  
-  			  {if condition="$editrepairpower eq 2"}
+
+			  {{#  if(d.cs_info_state != '取消'){ }}
+			  {if condition="$editrepairpower eq 2"}
 			  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			  {/if}
+			  {{#  } }}
 
 			  {if condition="$deleterepairpower eq 4"}
+			  {{#  if(d.cs_info_state != '取消'){ }}
 			  <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="cancel">取消</a>
+			  {{#  } }}
 			  {/if}
 			</script>
 		</div>
