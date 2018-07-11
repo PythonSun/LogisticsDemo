@@ -1819,40 +1819,41 @@
                 return false;
             }
             //delivery_info
-            if(data['delivery_info_receiver_name'] == '')
-            {
-                layer.msg('发货信息-收货人姓名不能为空！',{icon:2});
-                return false;
-            }
-            if(data['delivery_info_receiver_phone'] == '')
-            {
-                layer.msg('发货信息-收货人电话不能为空！',{icon:2});
-                return false;
-            }
-            if(data['delivery_info_goods_yard_name'] == '')
-            {
-                layer.msg('发货信息-货场名称不能为空！',{icon:2});
-                return false;
-            }
-            if(data['delivery_info_goods_yard_phone'] == '')
-            {
-                layer.msg('发货信息-货场电话不能为空！',{icon:2});
-                return false;
-            }
-            if(data['delivery_info_receiver_address'] == '')
-            {
-                layer.msg('发货信息-收货地址不能为空！',{icon:2});
-                return false;
-            }
-            if(data['is_insure'] == 1){
-                if(data['insure_amount'] == ""){
-                    layer.msg('发货信息-保额不能为空！',{icon:2});
-                    return false;
-                }
-            }
+            // if(data['delivery_info_receiver_name'] == '')
+            // {
+            //     layer.msg('发货信息-收货人姓名不能为空！',{icon:2});
+            //     return false;
+            // }
+            // if(data['delivery_info_receiver_phone'] == '')
+            // {
+            //     layer.msg('发货信息-收货人电话不能为空！',{icon:2});
+            //     return false;
+            // }
+            // if(data['delivery_info_goods_yard_name'] == '')
+            // {
+            //     layer.msg('发货信息-货场名称不能为空！',{icon:2});
+            //     return false;
+            // }
+            // if(data['delivery_info_goods_yard_phone'] == '')
+            // {
+            //     layer.msg('发货信息-货场电话不能为空！',{icon:2});
+            //     return false;
+            // }
+            // if(data['delivery_info_receiver_address'] == '')
+            // {
+            //     layer.msg('发货信息-收货地址不能为空！',{icon:2});
+            //     return false;
+            // }
+            // if(data['is_insure'] == 1){
+            //     if(data['insure_amount'] == ""){
+            //         layer.msg('发货信息-保额不能为空！',{icon:2});
+            //         return false;
+            //     }
+            // }
             if(data['transfer_fee_mode'] == ""){
-                layer.msg('发货信息-请选择运费方式！',{icon:2});
-                return false;
+                // layer.msg('发货信息-请选择运费方式！',{icon:2});
+                // return false;
+                data['transfer_fee_mode'] = -1;
             }
             //return_info
             if(data['return_info_receiver_name'] == '')

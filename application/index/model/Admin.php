@@ -4,6 +4,7 @@
 	use PHPExcel_IOFactory;
 	use PHPExcel;
     use PHPExcel_RichText;
+    use think\Exception;
     use think\Session;
 
 	class Admin extends \think\Model
@@ -1487,220 +1488,298 @@
         /*update    暂时使用（更改确认单）*/
         public  static function updateconfirmorder($info)
         {
-            $cs_id = $info['cs_id'];
-            $custom_info_id = $info['custom_info_id'];
-            $delivery_info_id = $info['delivery_info_id'];
-            $return_info_id = $info['return_info_id'];
-            $payment_info_id = $info['payment_info_id'];
-            $cur_process_user_id = $info['cur_process_user_id'];
-            $pre_process_user_id = $info['pre_process_user_id'];
-            $cs_info_type = $info['cs_info_type'];
-            $can_edit = $info['can_edit'];
-            $write_date = $info['write_date'];
-            $cs_info_state = $info['cs_info_state'];
-            $complete_date = $info['complete_date'];
-            $product_number = $info['product_number'];
-            $cs_examine_ids = $info['cs_examine_ids'];
-            $unc_ofg_info_id = $info['unc_ofg_info_id'];
-            $delivery_date_reply = $info['delivery_date_reply'];
-            $cs_info_delivery_date = $info['cs_info_delivery_date'];
-            $cs_info_warehouse_date = $info['cs_info_warehouse_date'];
-            $sql_value ="'{$cs_id}','{$custom_info_id}','{$delivery_info_id}','{$return_info_id}','{$payment_info_id}','{$cur_process_user_id}','{$pre_process_user_id}','{$cs_info_type}','{$can_edit}','{$write_date}','{$cs_info_state}','{$complete_date}','{$product_number}','$cs_examine_ids','{$unc_ofg_info_id}','$delivery_date_reply','$cs_info_delivery_date','$cs_info_warehouse_date'";
-            $sql = "INSERT INTO dsp_logistic.cs_info (cs_id,custom_info_id,delivery_info_id,return_info_id,payment_info_id,cur_process_user_id,pre_process_user_id
-,cs_info_type,can_edit,write_date,cs_info_state,complete_date,product_number,cs_examine_ids,unc_ofg_info_id,delivery_date_reply,cs_info_delivery_date,cs_info_warehouse_date) VALUES ({$sql_value}) ";
-            $sql.= "ON DUPLICATE KEY UPDATE custom_info_id = '{$custom_info_id}',delivery_info_id = '{$delivery_info_id}',return_info_id = '{$return_info_id}',payment_info_id = '{$payment_info_id}',";
-            $sql.= "cur_process_user_id= '{$cur_process_user_id}',pre_process_user_id= '{$pre_process_user_id}',cs_info_type = '{$cs_info_type}',";
-            $sql.= "can_edit= '{$can_edit}',write_date= '{$write_date}',cs_info_state= '{$cs_info_state}',complete_date= '{$complete_date}',product_number= '$product_number',";
-            $sql.= "cs_examine_ids= '$cs_examine_ids',unc_ofg_info_id='{$unc_ofg_info_id}',delivery_date_reply ='$delivery_date_reply', ";
-            $sql.= "cs_info_delivery_date= '$cs_info_delivery_date',cs_info_warehouse_date= '$cs_info_warehouse_date'";
-            $sqlret = Db::execute($sql);
-            return $sqlret;
+            try{
+                $cs_id = $info['cs_id'];
+                $custom_info_id = $info['custom_info_id'];
+                $delivery_info_id = $info['delivery_info_id'];
+                $return_info_id = $info['return_info_id'];
+                $payment_info_id = $info['payment_info_id'];
+                $cur_process_user_id = $info['cur_process_user_id'];
+                $pre_process_user_id = $info['pre_process_user_id'];
+                $cs_info_type = $info['cs_info_type'];
+                $can_edit = $info['can_edit'];
+                $write_date = $info['write_date'];
+                $cs_info_state = $info['cs_info_state'];
+                $complete_date = $info['complete_date'];
+                $product_number = $info['product_number'];
+                $cs_examine_ids = $info['cs_examine_ids'];
+                $unc_ofg_info_id = $info['unc_ofg_info_id'];
+                $delivery_date_reply = $info['delivery_date_reply'];
+                $cs_info_delivery_date = $info['cs_info_delivery_date'];
+                $cs_info_warehouse_date = $info['cs_info_warehouse_date'];
+                $sql_value ="'{$cs_id}','{$custom_info_id}','{$delivery_info_id}','{$return_info_id}','{$payment_info_id}','{$cur_process_user_id}','{$pre_process_user_id}','{$cs_info_type}','{$can_edit}','{$write_date}','{$cs_info_state}','{$complete_date}','{$product_number}','$cs_examine_ids','{$unc_ofg_info_id}','$delivery_date_reply','$cs_info_delivery_date','$cs_info_warehouse_date'";
+                $sql = "INSERT INTO dsp_logistic.cs_info (cs_id,custom_info_id,delivery_info_id,return_info_id,payment_info_id,cur_process_user_id,pre_process_user_id";
+                $sql.= ",cs_info_type,can_edit,write_date,cs_info_state,complete_date,product_number,cs_examine_ids,unc_ofg_info_id,delivery_date_reply,cs_info_delivery_date,cs_info_warehouse_date) VALUES ({$sql_value}) ";
+                $sql.= "ON DUPLICATE KEY UPDATE custom_info_id = '{$custom_info_id}',delivery_info_id = '{$delivery_info_id}',return_info_id = '{$return_info_id}',payment_info_id = '{$payment_info_id}',";
+                $sql.= "cur_process_user_id= '{$cur_process_user_id}',pre_process_user_id= '{$pre_process_user_id}',cs_info_type = '{$cs_info_type}',";
+                $sql.= "can_edit= '{$can_edit}',write_date= '{$write_date}',cs_info_state= '{$cs_info_state}',complete_date= '{$complete_date}',product_number= '$product_number',";
+                $sql.= "cs_examine_ids= '$cs_examine_ids',unc_ofg_info_id='{$unc_ofg_info_id}',delivery_date_reply ='$delivery_date_reply', ";
+                $sql.= "cs_info_delivery_date= '$cs_info_delivery_date',cs_info_warehouse_date= '$cs_info_warehouse_date'";
+                $sqlret = Db::execute($sql);
+                return $sqlret;
+            }
+            catch (Exception $ex)
+            {
+                return false;
+            }
+
         }
         /*update custom_info */
         public  static function updatecustominfo($info)
         {
-            $custom_info_id = $info['custom_info_id'];
-            $company_name = $info['company_name'];
-            $company_phone = $info['company_phone'];
-            $company_address = $info['company_address'];
-            $legal_representative = $info['legal_representative'];
-            $legal_phone = $info['legal_phone'];
-            $company_contact = $info['company_contact'];
-            $company_contact_phone = $info['company_contact_phone'];
-            $sql_value ="'{$custom_info_id}','{$company_name}','{$company_phone}','{$company_address}','{$legal_representative}','{$legal_phone}','{$company_contact}','{$company_contact_phone}'";
-            $sql = "INSERT INTO dsp_logistic.custom_info (custom_info_id,company_name,company_phone,company_address,legal_representative,legal_phone,company_contact,company_contact_phone) VALUES ({$sql_value})";
-            $sql.= "ON DUPLICATE KEY UPDATE company_name = '{$company_name}',company_phone = '{$company_phone}',company_address = '{$company_address}',";
-            $sql.= "legal_representative= '{$legal_representative}',legal_phone= '{$legal_phone}',company_contact = '{$company_contact}',";
-            $sql.= "company_contact_phone= '{$company_contact_phone}'";
-            $sqlret = Db::execute($sql);
-            return $sqlret;
+            try
+            {
+                $custom_info_id = $info['custom_info_id'];
+                $company_name = $info['company_name'];
+                $company_phone = $info['company_phone'];
+                $company_address = $info['company_address'];
+                $legal_representative = $info['legal_representative'];
+                $legal_phone = $info['legal_phone'];
+                $company_contact = $info['company_contact'];
+                $company_contact_phone = $info['company_contact_phone'];
+                $sql_value ="'{$custom_info_id}','{$company_name}','{$company_phone}','{$company_address}','{$legal_representative}','{$legal_phone}','{$company_contact}','{$company_contact_phone}'";
+                $sql = "INSERT INTO dsp_logistic.custom_info (custom_info_id,company_name,company_phone,company_address,legal_representative,legal_phone,company_contact,company_contact_phone) VALUES ({$sql_value})";
+                $sql.= "ON DUPLICATE KEY UPDATE company_name = '{$company_name}',company_phone = '{$company_phone}',company_address = '{$company_address}',";
+                $sql.= "legal_representative= '{$legal_representative}',legal_phone= '{$legal_phone}',company_contact = '{$company_contact}',";
+                $sql.= "company_contact_phone= '{$company_contact_phone}'";
+                $sqlret = Db::execute($sql);
+                return $sqlret;
+            }
+            catch (Exception $ex)
+            {
+                return false;
+            }
+
         }
         /*update delivery_info */
         public static function updatedeliveryinfo($info){
-            $delivery_info_id = $info['delivery_info_id'];
-            $delivery_info_receiver_name = $info['delivery_info_receiver_name'];
-            $delivery_info_receiver_phone = $info['delivery_info_receiver_phone'];
-            $delivery_info_goods_yard_name = $info['delivery_info_goods_yard_name'];
-            $delivery_info_goods_yard_phone = $info['delivery_info_goods_yard_phone'];
-            $delivery_info_receiver_address = $info['delivery_info_receiver_address'];
-            $is_insure = $info['is_insure'];
-            $is_sign = $info['is_sign'];
-            $insure_amount = $info['insure_amount'];
-            $has_contract = $info['has_contract'];
-            $transfer_fee_mode = $info['transfer_fee_mode'];
-            $order_delivery_require = $info['order_delivery_require'];
-            $sql_value ="'$delivery_info_id','{$delivery_info_receiver_name}','{$delivery_info_receiver_phone}','{$delivery_info_goods_yard_name}','{$delivery_info_goods_yard_phone}','{$delivery_info_receiver_address}','{$is_insure}','{$insure_amount}','{$is_sign}','{$has_contract}','{$transfer_fee_mode}','$order_delivery_require'";
-            $sql = "INSERT INTO dsp_logistic.delivery_info (delivery_info_id,delivery_info_receiver_name,delivery_info_receiver_phone,delivery_info_goods_yard_name,delivery_info_goods_yard_phone,delivery_info_receiver_address,is_insure,insure_amount,is_sign,has_contract,transfer_fee_mode,order_delivery_require) VALUES ({$sql_value})";
-            $sql.= "ON DUPLICATE KEY UPDATE delivery_info_receiver_name = '$delivery_info_receiver_name',delivery_info_receiver_phone = '$delivery_info_receiver_phone',delivery_info_goods_yard_name = '{$delivery_info_goods_yard_name}',";
-            $sql.= "delivery_info_goods_yard_phone= '{$delivery_info_goods_yard_phone}',delivery_info_receiver_address= '{$delivery_info_receiver_address}',is_insure = '{$is_insure}',";
-            $sql.= "is_sign= '{$is_sign}',insure_amount= '{$insure_amount}',has_contract= '{$has_contract}',transfer_fee_mode= '{$transfer_fee_mode}',order_delivery_require = '$order_delivery_require'";
-            $sqlret = Db::execute($sql);
-            return $sqlret;
+            try
+            {
+                $delivery_info_id = $info['delivery_info_id'];
+                $delivery_info_receiver_name = $info['delivery_info_receiver_name'];
+                $delivery_info_receiver_phone = $info['delivery_info_receiver_phone'];
+                $delivery_info_goods_yard_name = $info['delivery_info_goods_yard_name'];
+                $delivery_info_goods_yard_phone = $info['delivery_info_goods_yard_phone'];
+                $delivery_info_receiver_address = $info['delivery_info_receiver_address'];
+                $is_insure = $info['is_insure'];
+                $is_sign = $info['is_sign'];
+                $insure_amount = $info['insure_amount'];
+                $has_contract = $info['has_contract'];
+                $transfer_fee_mode = $info['transfer_fee_mode'];
+                $order_delivery_require = $info['order_delivery_require'];
+                $sql_value ="'$delivery_info_id','{$delivery_info_receiver_name}','{$delivery_info_receiver_phone}','{$delivery_info_goods_yard_name}','{$delivery_info_goods_yard_phone}','{$delivery_info_receiver_address}','{$is_insure}','{$insure_amount}','{$is_sign}','{$has_contract}','{$transfer_fee_mode}','$order_delivery_require'";
+                $sql = "INSERT INTO dsp_logistic.delivery_info (delivery_info_id,delivery_info_receiver_name,delivery_info_receiver_phone,delivery_info_goods_yard_name,delivery_info_goods_yard_phone,delivery_info_receiver_address,is_insure,insure_amount,is_sign,has_contract,transfer_fee_mode,order_delivery_require) VALUES ({$sql_value})";
+                $sql.= "ON DUPLICATE KEY UPDATE delivery_info_receiver_name = '$delivery_info_receiver_name',delivery_info_receiver_phone = '$delivery_info_receiver_phone',delivery_info_goods_yard_name = '{$delivery_info_goods_yard_name}',";
+                $sql.= "delivery_info_goods_yard_phone= '{$delivery_info_goods_yard_phone}',delivery_info_receiver_address= '{$delivery_info_receiver_address}',is_insure = '{$is_insure}',";
+                $sql.= "is_sign= '{$is_sign}',insure_amount= '{$insure_amount}',has_contract= '{$has_contract}',transfer_fee_mode= '{$transfer_fee_mode}',order_delivery_require = '$order_delivery_require'";
+                $sqlret = Db::execute($sql);
+                return $sqlret;
+            }
+            catch (Exception $ex)
+            {
+                return false;
+            }
+
         }
         /*update return_info */
         public  static function updatereturninfo($info)
         {
-            $return_info_id = $info['return_info_id'];
-            $return_info_receiver_name = $info['return_info_receiver_name'];
-            $return_info_receiver_phone = $info['return_info_receiver_phone'];
-            $return_info_goods_yard_name = $info['return_info_goods_yard_name'];
-            $return_info_goods_yard_phone = $info['return_info_goods_yard_phone'];
-            $return_order_num = $info['return_order_num'];
-            $return_info_receiver_address = $info['return_info_receiver_address'];
-            $sql_value ="'$return_info_id','{$return_info_receiver_name}','{$return_info_receiver_phone}','{$return_info_goods_yard_name}','{$return_info_goods_yard_phone}','{$return_order_num}','{$return_info_receiver_address}'";
-            $sql = "INSERT INTO dsp_logistic.return_info (return_info_id,return_info_receiver_name,return_info_receiver_phone,return_info_goods_yard_name,return_info_goods_yard_phone,return_order_num,return_info_receiver_address) VALUES ({$sql_value})";
-            $sql.= "ON DUPLICATE KEY UPDATE return_info_receiver_name = '$return_info_receiver_name',return_info_receiver_phone = '$return_info_receiver_phone',return_info_goods_yard_name = '{$return_info_goods_yard_name}',";
-            $sql.= "return_info_goods_yard_phone= '{$return_info_goods_yard_phone}',return_order_num= '{$return_order_num}',return_info_receiver_address = '{$return_info_receiver_address}'";
-            $sqlret = Db::execute($sql);
-            return $sqlret;
+            try{
+                $return_info_id = $info['return_info_id'];
+                $return_info_receiver_name = $info['return_info_receiver_name'];
+                $return_info_receiver_phone = $info['return_info_receiver_phone'];
+                $return_info_goods_yard_name = $info['return_info_goods_yard_name'];
+                $return_info_goods_yard_phone = $info['return_info_goods_yard_phone'];
+                $return_order_num = $info['return_order_num'];
+                $return_info_receiver_address = $info['return_info_receiver_address'];
+                $sql_value ="'$return_info_id','{$return_info_receiver_name}','{$return_info_receiver_phone}','{$return_info_goods_yard_name}','{$return_info_goods_yard_phone}','{$return_order_num}','{$return_info_receiver_address}'";
+                $sql = "INSERT INTO dsp_logistic.return_info (return_info_id,return_info_receiver_name,return_info_receiver_phone,return_info_goods_yard_name,return_info_goods_yard_phone,return_order_num,return_info_receiver_address) VALUES ({$sql_value})";
+                $sql.= "ON DUPLICATE KEY UPDATE return_info_receiver_name = '$return_info_receiver_name',return_info_receiver_phone = '$return_info_receiver_phone',return_info_goods_yard_name = '{$return_info_goods_yard_name}',";
+                $sql.= "return_info_goods_yard_phone= '{$return_info_goods_yard_phone}',return_order_num= '{$return_order_num}',return_info_receiver_address = '{$return_info_receiver_address}'";
+                $sqlret = Db::execute($sql);
+                return $sqlret;
+            }
+            catch (Exception $ex)
+            {
+                return false;
+            }
+
         }
 
         /*update payment_info*/
         public static function updatepaymentinfo($info){
-            $payment_info_id = $info['payment_info_id'];
-            $is_paid = $info['is_paid'];
-            $paid_date = $info['paid_date'];
-            $customization_fee = $info['customization_fee'];
-            $paid_bank = $info['paid_bank'];
-            $payment_info_comment = $info['payment_info_comment'];
+            try
+            {
+                $payment_info_id = $info['payment_info_id'];
+                $is_paid = $info['is_paid'];
+                $paid_date = $info['paid_date'];
+                $customization_fee = $info['customization_fee'];
+                $paid_bank = $info['paid_bank'];
+                $payment_info_comment = $info['payment_info_comment'];
 //            $time_stamp = $info['time_stamp'];
 //            $user_id = $info['user_id'];
-            $sql_value ="'$payment_info_id','{$is_paid}','{$paid_date}','{$customization_fee}','{$paid_bank}','{$payment_info_comment}'";
-            $sql = "INSERT INTO dsp_logistic.payment_info (payment_info_id,is_paid,paid_date,customization_fee,paid_bank,payment_info_comment) VALUES ({$sql_value})";
-            $sql.= "ON DUPLICATE KEY UPDATE is_paid = '$is_paid',paid_date = '$paid_date',customization_fee = '{$customization_fee}',";
-            $sql.= "paid_bank= '$paid_bank',payment_info_comment= '$payment_info_comment'";
-            $sqlret = Db::execute($sql);
-            return $sqlret;
+                $sql_value ="'$payment_info_id','{$is_paid}','{$paid_date}','{$customization_fee}','{$paid_bank}','{$payment_info_comment}'";
+                $sql = "INSERT INTO dsp_logistic.payment_info (payment_info_id,is_paid,paid_date,customization_fee,paid_bank,payment_info_comment) VALUES ({$sql_value})";
+                $sql.= "ON DUPLICATE KEY UPDATE is_paid = '$is_paid',paid_date = '$paid_date',customization_fee = '{$customization_fee}',";
+                $sql.= "paid_bank= '$paid_bank',payment_info_comment= '$payment_info_comment'";
+                $sqlret = Db::execute($sql);
+                return $sqlret;
+            }
+            catch (Exception $ex)
+            {
+                return false;
+            }
+
         }
         /*update*/
         public static function updatecsbelong($info){
-            $cs_belong_id = $info['cs_belong_id'];
-            $cs_id = $info['cs_id'];
-            $build_organize_id = $info['build_organize_id'];
-            $build_user_id = $info['build_user_id'];
-            $cs_belong_create_time = $info['cs_belong_create_time'];
-            $build_user_name = $info['build_user_name'];
-            $build_organize_name = $info['build_organize_name'];
-            $build_department_id = $info['build_department_id'];
-            $build_department_name = $info['build_department_name'];
-            $build_user_phone = $info['build_user_phone'];
-            $sql_value ="'$cs_belong_id','{$cs_id}','{$build_organize_id}','{$build_user_id}','{$cs_belong_create_time}','{$build_user_name}','{$build_organize_name}','{$build_department_id}','{$build_department_name}','$build_user_phone'";
-            $sql = "INSERT INTO dsp_logistic.cs_belong (cs_belong_id,cs_id,build_organize_id,build_user_id,cs_belong_create_time,build_user_name,build_organize_name,build_department_id,build_department_name,build_user_phone) VALUES ({$sql_value})";
-            $sql.= "ON DUPLICATE KEY UPDATE cs_id = '$cs_id',build_organize_id = '$build_organize_id',build_user_id = '$build_user_id',";
-            $sql.= "cs_belong_create_time= '$cs_belong_create_time',build_user_name= '$build_user_name',build_organize_name= '$build_organize_name',";
-            $sql.= "build_department_id='{$build_department_id}',build_department_name='{$build_department_name}',build_user_phone = '$build_user_phone';";
-            $sqlret = Db::execute($sql);
-            return $sqlret;
+            try
+            {
+                $cs_belong_id = $info['cs_belong_id'];
+                $cs_id = $info['cs_id'];
+                $build_organize_id = $info['build_organize_id'];
+                $build_user_id = $info['build_user_id'];
+                $cs_belong_create_time = $info['cs_belong_create_time'];
+                $build_user_name = $info['build_user_name'];
+                $build_organize_name = $info['build_organize_name'];
+                $build_department_id = $info['build_department_id'];
+                $build_department_name = $info['build_department_name'];
+                $build_user_phone = $info['build_user_phone'];
+                $sql_value ="'$cs_belong_id','{$cs_id}','{$build_organize_id}','{$build_user_id}','{$cs_belong_create_time}','{$build_user_name}','{$build_organize_name}','{$build_department_id}','{$build_department_name}','$build_user_phone'";
+                $sql = "INSERT INTO dsp_logistic.cs_belong (cs_belong_id,cs_id,build_organize_id,build_user_id,cs_belong_create_time,build_user_name,build_organize_name,build_department_id,build_department_name,build_user_phone) VALUES ({$sql_value})";
+                $sql.= "ON DUPLICATE KEY UPDATE cs_id = '$cs_id',build_organize_id = '$build_organize_id',build_user_id = '$build_user_id',";
+                $sql.= "cs_belong_create_time= '$cs_belong_create_time',build_user_name= '$build_user_name',build_organize_name= '$build_organize_name',";
+                $sql.= "build_department_id='{$build_department_id}',build_department_name='{$build_department_name}',build_user_phone = '$build_user_phone';";
+                $sqlret = Db::execute($sql);
+                return $sqlret;
+            }
+            catch (Exception $ex)
+            {
+                return false;
+            }
+
         }
         /*update 确认单清单经理部分 order_goods_manager*/
         public static function updateordergoodsmanager($info){
             //id
-            $order_goods_manager_id = $info['order_goods_manager_id'];
-            $cs_id = $info['cs_id'];
-            $product_info_id = $info['product_info_id'];
-            $unit_price = $info['unit_price']== ''?-1:$info['unit_price'];
-            $unit = $info['unit'];
-            $order_goods_manager_count = $info['order_goods_manager_count'];
-            $specification = $info['specification'];
-            $order_goods_manager_explain = $info['order_goods_manager_explain'];
-            $type = $info['type'];
-            $comment = $info['comment'];
-            $bar_code = $info['bar_code'];
-            $back_date = $info['back_date'];
-            $replace_reason = $info['replace_reason'];
-            $purchase_date = $info['purchase_date'];
-            $deal_date = $info['deal_date'];
-            $fault_condition = $info['fault_condition'];
-            $sql_value ="'$order_goods_manager_id','{$cs_id}','{$product_info_id}','{$unit_price}','{$order_goods_manager_count}','{$specification}','{$order_goods_manager_explain}','{$type}'";
-            $sql_value .= ",'{$comment}','{$bar_code}','{$back_date}','{$replace_reason}','{$purchase_date}','{$deal_date}','{$fault_condition}','$unit'";
-            $sql = "INSERT INTO dsp_logistic.order_goods_manager (order_goods_manager_id,cs_id,product_info_id,unit_price,order_goods_manager_count,specification,order_goods_manager_explain,type";
-            $sql .= ",comment,bar_code,back_date,replace_reason,purchase_date,deal_date,fault_condition,unit) VALUES ({$sql_value})";
-            $sql.= "ON DUPLICATE KEY UPDATE cs_id = '$cs_id',product_info_id = '$product_info_id',unit_price = '$unit_price',";
-            $sql.= "order_goods_manager_count= '$order_goods_manager_count',specification= '$specification',order_goods_manager_explain= '$order_goods_manager_explain',";
-            $sql.= "type= '$type',comment= '$comment',bar_code= '$bar_code',";
-            $sql.= "back_date= '$back_date',replace_reason= '$replace_reason',purchase_date= '$purchase_date',";
-            $sql.= "deal_date= '$deal_date',fault_condition= '$fault_condition' ,unit = '$unit';";
-            $sqlret = Db::execute($sql);
-            return $sqlret;
+            try
+            {
+                $order_goods_manager_id = $info['order_goods_manager_id'];
+                $cs_id = $info['cs_id'];
+                $product_info_id = $info['product_info_id'];
+                $unit_price = $info['unit_price']== ''?-1:$info['unit_price'];
+                $unit = $info['unit'];
+                $order_goods_manager_count = $info['order_goods_manager_count'];
+                $specification = $info['specification'];
+                $order_goods_manager_explain = $info['order_goods_manager_explain'];
+                $type = $info['type'];
+                $comment = $info['comment'];
+                $bar_code = $info['bar_code'];
+                $back_date = $info['back_date'];
+                $replace_reason = $info['replace_reason'];
+                $purchase_date = $info['purchase_date'];
+                $deal_date = $info['deal_date'];
+                $fault_condition = $info['fault_condition'];
+                $sql_value ="'$order_goods_manager_id','{$cs_id}','{$product_info_id}','{$unit_price}','{$order_goods_manager_count}','{$specification}','{$order_goods_manager_explain}','{$type}'";
+                $sql_value .= ",'{$comment}','{$bar_code}','{$back_date}','{$replace_reason}','{$purchase_date}','{$deal_date}','{$fault_condition}','$unit'";
+                $sql = "INSERT INTO dsp_logistic.order_goods_manager (order_goods_manager_id,cs_id,product_info_id,unit_price,order_goods_manager_count,specification,order_goods_manager_explain,type";
+                $sql .= ",comment,bar_code,back_date,replace_reason,purchase_date,deal_date,fault_condition,unit) VALUES ({$sql_value})";
+                $sql.= "ON DUPLICATE KEY UPDATE cs_id = '$cs_id',product_info_id = '$product_info_id',unit_price = '$unit_price',";
+                $sql.= "order_goods_manager_count= '$order_goods_manager_count',specification= '$specification',order_goods_manager_explain= '$order_goods_manager_explain',";
+                $sql.= "type= '$type',comment= '$comment',bar_code= '$bar_code',";
+                $sql.= "back_date= '$back_date',replace_reason= '$replace_reason',purchase_date= '$purchase_date',";
+                $sql.= "deal_date= '$deal_date',fault_condition= '$fault_condition' ,unit = '$unit';";
+                $sqlret = Db::execute($sql);
+                return $sqlret;
+            }
+            catch (Exception $ex)
+            {
+                return false;
+            }
+
         }
         /*update 确认单清单物流部分 order_goods_logistics*/
         public static function updateordergoodslogistics($info){
-            $ogl_id = $info['ogl_id'];
-            $order_goods_manager_id = $info['order_goods_manager_id'];
-            $ogl_product_state = $info['ogl_product_state'];
-            $unc_product_id = $info['unc_product_id'];
-            $ogl_comment = $info['ogl_comment'];
-            $user_id = $info['user_id'];
-            $ogl_time_stamp = $info['ogl_time_stamp'];
-            $ogl_explain = $info['ogl_explain'];
-            $sql_value ="'$ogl_id','{$order_goods_manager_id}','{$ogl_product_state}','{$unc_product_id}','{$ogl_comment}','{$user_id}','{$ogl_time_stamp}','{$ogl_explain}'";
-            $sql = "INSERT INTO dsp_logistic.order_goods_logistics (ogl_id,order_goods_manager_id,ogl_product_state,unc_product_id,ogl_comment,user_id,ogl_time_stamp,ogl_explain) VALUES ({$sql_value})";
-            $sql.= "ON DUPLICATE KEY UPDATE order_goods_manager_id = '$order_goods_manager_id',ogl_product_state = '$ogl_product_state',unc_product_id = '$unc_product_id',";
-            $sql.= "ogl_comment= '$ogl_comment',user_id= '$user_id',ogl_time_stamp= '$ogl_time_stamp',";
-            $sql.= "ogl_explain= '$ogl_explain'";
-            $sqlret = Db::execute($sql);
-            return $sqlret;
+            try
+            {
+                $ogl_id = $info['ogl_id'];
+                $order_goods_manager_id = $info['order_goods_manager_id'];
+                $ogl_product_state = $info['ogl_product_state'];
+                $unc_product_id = $info['unc_product_id'];
+                $ogl_comment = $info['ogl_comment'];
+                $user_id = $info['user_id'];
+                $ogl_time_stamp = $info['ogl_time_stamp'];
+                $ogl_explain = $info['ogl_explain'];
+                $sql_value ="'$ogl_id','{$order_goods_manager_id}','{$ogl_product_state}','{$unc_product_id}','{$ogl_comment}','{$user_id}','{$ogl_time_stamp}','{$ogl_explain}'";
+                $sql = "INSERT INTO dsp_logistic.order_goods_logistics (ogl_id,order_goods_manager_id,ogl_product_state,unc_product_id,ogl_comment,user_id,ogl_time_stamp,ogl_explain) VALUES ({$sql_value})";
+                $sql.= "ON DUPLICATE KEY UPDATE order_goods_manager_id = '$order_goods_manager_id',ogl_product_state = '$ogl_product_state',unc_product_id = '$unc_product_id',";
+                $sql.= "ogl_comment= '$ogl_comment',user_id= '$user_id',ogl_time_stamp= '$ogl_time_stamp',";
+                $sql.= "ogl_explain= '$ogl_explain'";
+                $sqlret = Db::execute($sql);
+                return $sqlret;
+            }
+            catch (Exception $ex)
+            {
+                return false;
+            }
+
         }
         /*update 确认单审批 cs_examine*/
         public static function updatecsexamine($info){
-            $cs_examine_id = $info['cs_examine_id'];
-            $cs_id = $info['cs_id'];
-            $submit_user_id = $info['submit_user_id'];
-            $examine_user_id = $info['examine_user_id'];
-            $cs_examine_date = $info['cs_examine_date'];
-            $cs_examine_content = $info['cs_examine_content'];
-            $cs_examine_result = $info['cs_examine_result'];
-            $cs_examine_time_stamp = $info['cs_examine_time_stamp'];
-            $cs_examine_comment = $info['cs_examine_comment'];
-            $cs_examine_name = $info['cs_examine_name'];
-            $cs_examine_state = $info['cs_examine_state'];
-            $sql_value ="'$cs_examine_id','{$cs_id}','{$submit_user_id}','{$examine_user_id}','{$cs_examine_date}','{$cs_examine_content}','{$cs_examine_result}','{$cs_examine_time_stamp}','{$cs_examine_comment}','{$cs_examine_name}','{$cs_examine_state}'";
-            $sql = "INSERT INTO dsp_logistic.cs_examine (cs_examine_id,cs_id,submit_user_id,examine_user_id,cs_examine_date,cs_examine_content,cs_examine_result,cs_examine_time_stamp,cs_examine_comment,cs_examine_name,cs_examine_state) VALUES ({$sql_value})";
-            $sql.= "ON DUPLICATE KEY UPDATE cs_id = '$cs_id',submit_user_id = '$submit_user_id',examine_user_id = '$examine_user_id',";
-            $sql.= "cs_examine_date= '$cs_examine_date',cs_examine_content= '$cs_examine_content',cs_examine_result= '$cs_examine_result',";
-            $sql.= "cs_examine_time_stamp= '$cs_examine_time_stamp',cs_examine_comment= '$cs_examine_comment',cs_examine_name= '$cs_examine_name',";
-            $sql.= "cs_examine_state= '$cs_examine_state'";
-            $sqlret = Db::execute($sql);
-            return $sqlret;
+            try
+            {
+                $cs_examine_id = $info['cs_examine_id'];
+                $cs_id = $info['cs_id'];
+                $submit_user_id = $info['submit_user_id'];
+                $examine_user_id = $info['examine_user_id'];
+                $cs_examine_date = $info['cs_examine_date'];
+                $cs_examine_content = $info['cs_examine_content'];
+                $cs_examine_result = $info['cs_examine_result'];
+                $cs_examine_time_stamp = $info['cs_examine_time_stamp'];
+                $cs_examine_comment = $info['cs_examine_comment'];
+                $cs_examine_name = $info['cs_examine_name'];
+                $cs_examine_state = $info['cs_examine_state'];
+                $sql_value ="'$cs_examine_id','{$cs_id}','{$submit_user_id}','{$examine_user_id}','{$cs_examine_date}','{$cs_examine_content}','{$cs_examine_result}','{$cs_examine_time_stamp}','{$cs_examine_comment}','{$cs_examine_name}','{$cs_examine_state}'";
+                $sql = "INSERT INTO dsp_logistic.cs_examine (cs_examine_id,cs_id,submit_user_id,examine_user_id,cs_examine_date,cs_examine_content,cs_examine_result,cs_examine_time_stamp,cs_examine_comment,cs_examine_name,cs_examine_state) VALUES ({$sql_value})";
+                $sql.= "ON DUPLICATE KEY UPDATE cs_id = '$cs_id',submit_user_id = '$submit_user_id',examine_user_id = '$examine_user_id',";
+                $sql.= "cs_examine_date= '$cs_examine_date',cs_examine_content= '$cs_examine_content',cs_examine_result= '$cs_examine_result',";
+                $sql.= "cs_examine_time_stamp= '$cs_examine_time_stamp',cs_examine_comment= '$cs_examine_comment',cs_examine_name= '$cs_examine_name',";
+                $sql.= "cs_examine_state= '$cs_examine_state'";
+                $sqlret = Db::execute($sql);
+                return $sqlret;
+            }
+            catch (Exception $ex)
+            {
+                return false;
+            }
+
         }
 
         /*update  logisticinfo*/
         public static function updatelogisticinfo($info){
-            $logistics_id = $info['logistics_id'];
-            $cs_id = $info['cs_id'];
-            $goods_yard_name = $info['goods_yard_name'];
-            $transfer_order_num = $info['transfer_order_num'];
-            $delivery_date = $info['delivery_date'];
-            $count = $info['count'];
-            $user_id = $info['user_id'];
-            $time_stamp = $info['time_stamp'];
-            $sql_value ="'$logistics_id','$cs_id','$goods_yard_name','$transfer_order_num','$delivery_date','$count','$user_id','$time_stamp'";
-            $sql = "INSERT INTO dsp_logistic.logistics_info (logistics_id,cs_id,goods_yard_name,transfer_order_num,delivery_date,count,user_id,time_stamp) VALUES ({$sql_value})";
-            $sql.= "ON DUPLICATE KEY UPDATE cs_id = '$cs_id',goods_yard_name = '$goods_yard_name',transfer_order_num = '$transfer_order_num',";
-            $sql.= "delivery_date= '$delivery_date',count= '$count',user_id= '$user_id',";
-            $sql.= "time_stamp= '$time_stamp'";
-            $sqlret = Db::execute($sql);
-            return $sqlret;
+            try
+            {
+                $logistics_id = $info['logistics_id'];
+                $cs_id = $info['cs_id'];
+                $goods_yard_name = $info['goods_yard_name'];
+                $transfer_order_num = $info['transfer_order_num'];
+                $delivery_date = $info['delivery_date'];
+                $count = $info['count'];
+                $user_id = $info['user_id'];
+                $time_stamp = $info['time_stamp'];
+                $sql_value ="'$logistics_id','$cs_id','$goods_yard_name','$transfer_order_num','$delivery_date','$count','$user_id','$time_stamp'";
+                $sql = "INSERT INTO dsp_logistic.logistics_info (logistics_id,cs_id,goods_yard_name,transfer_order_num,delivery_date,count,user_id,time_stamp) VALUES ({$sql_value})";
+                $sql.= "ON DUPLICATE KEY UPDATE cs_id = '$cs_id',goods_yard_name = '$goods_yard_name',transfer_order_num = '$transfer_order_num',";
+                $sql.= "delivery_date= '$delivery_date',count= '$count',user_id= '$user_id',";
+                $sql.= "time_stamp= '$time_stamp'";
+                $sqlret = Db::execute($sql);
+                return $sqlret;
+            }
+            catch (Exception $ex)
+            {
+                return false;
+            }
+
         }
 		
         /*查询订单未审核的条数,未完待续*/
@@ -1750,25 +1829,47 @@
             if (!empty($type) && $type != ""){
                 $dateymd = $type.$dateymd;
             }
-            $sql ="select * from dsp_logistic.{$tableName} where {$tableID} like '%{$dateymd}%'";
+           // $sql ="select * from dsp_logistic.{$tableName} where {$tableID} like '%{$dateymd}%'";
+            $sql = "select max(dsp_logistic.$tableName.$tableID) from dsp_logistic.$tableName where $tableID like '%20180712%'";
             $retdb = Db::query($sql);
-            if(empty($retdb)){
-                return $dateymd.'00001';
-            }else{
-                $num = count($retdb);
-                $maxid = 00001;
-                for($i = 0; $i < $num; $i++){
-                    $cs_id = $retdb[$i]['cs_id'];
-                    $cur_id = str_replace($dateymd,'',$cs_id);
-                    if ($cur_id > $maxid){
-                        $maxid = $cur_id;
-                    }
-                }
+//            if(empty($retdb)){
+//                return $dateymd.'00001';
+//            }else{
+//                $num = count($retdb);
+//                $maxid = 00001;
+//                for($i = 0; $i < $num; $i++){
+//                    $cs_id = $retdb[$i]['cs_id'];
+//                    $cur_id = str_replace($dateymd,'',$cs_id);
+//                    if ($cur_id > $maxid){
+//                        $maxid = $cur_id;
+//                    }
+//                }
+//
+//                $maxid = $maxid + 00001;
+//                $strmaxid = $newStr= sprintf('%05s', $maxid);;
+//                return $dateymd.$strmaxid;
+//            }
+             $num = 0;
+             if(!empty($retdb))
+             {
+                 $cs_id = $retdb[0]["max(dsp_logistic.$tableName.$tableID)"];
+                 $cur_id = str_replace($dateymd,'',$cs_id);
+                 $num = $cur_id;
 
-                $maxid = $maxid + 00001;
-                $strmaxid = $newStr= sprintf('%05s', $maxid);;
-                return $dateymd.$strmaxid;
-            }
+             }
+             $exit = true;
+             while ($exit)
+             {
+                 $num = $num +1;
+                 $newStr= sprintf('%05s', $num);
+                 $cs_id = $dateymd.$newStr;
+                 $sql1 = "SELECT * FROM dsp_logistic.cs_info where $tableID = '$cs_id'";
+                 $sql2 = "SELECT * FROM dsp_logistic.order_goods_cs_info where $tableID = '$cs_id'";
+                 $retdb1 = Db::query($sql1);
+                 $retdb2 = Db::query($sql2);
+                 if(empty($retdb1)&&empty($retdb2))
+                     return $cs_id;
+             }
         }
 
         public static function getcuruserquerypower($user)
@@ -3408,14 +3509,15 @@
 //                if($tableobj[0]['cs_info_type'] == 2|| $tableobj[0]['cs_info_type'] == 5)
 //                {
                     $info = Array();
-                    $info['receiver_name'] = $tableobj[0]['delivery_info_receiver_name'];
-                    $info['receiver_phone'] = $tableobj[0]['delivery_info_receiver_phone'];
-                    $info['receiver_address'] = $tableobj[0]['delivery_info_receiver_address'];
-					$info['goods_yard_name'] = $tableobj[0]['goods_yard_name'];
-					$info['cs_id'] = $tableobj[0]['cs_id'];
-					$info['count'] = $tableobj[0]['count'];
-					$info['transfer_order_num'] = $tableobj[0]['transfer_order_num'];
-					$info['delivery_date'] = $tableobj[0]['delivery_date'];
+                    $info['receiver_name'] = self::parse($tableobj[0]['delivery_info_receiver_name']);
+                    $info['receiver_phone'] = self::parse($tableobj[0]['delivery_info_receiver_phone']);
+                    $info['receiver_address'] = self::parse($tableobj[0]['delivery_info_receiver_address']);
+					$info['goods_yard_name'] = self::parse($tableobj[0]['goods_yard_name']);
+					$info['cs_id'] = self::parse($tableobj[0]['cs_id']);
+					$info['count'] = self::parse($tableobj[0]['count']);
+					$info['transfer_order_num'] = self::parse($tableobj[0]['transfer_order_num']);
+					$info['delivery_date'] = self::parse($tableobj[0]['delivery_date']);
+					var_dump($info);
                     return $info;
 //                }
 //                else
@@ -3441,19 +3543,30 @@
             if(!empty($tableobj))
             {
                 $info = Array();
-                $info['receiver_name'] = $tableobj[0]['receiver_name'];
-                $info['receiver_phone'] = $tableobj[0]['receiver_phone'];
-                $info['receiver_address'] = $tableobj[0]['receiver_address'];
-				$info['goods_yard_name'] = $tableobj[0]['goods_yard_name'];
-				$info['cs_id'] = $tableobj[0]['cs_id'];
-				$info['count'] = $tableobj[0]['count'];
-				$info['transfer_order_num'] = $tableobj[0]['transfer_order_num'];
-				$info['delivery_date'] = $tableobj[0]['delivery_date'];
+
+                $info['receiver_name'] =self:: parse($tableobj[0]['receiver_name']);
+
+
+                $info['receiver_phone'] =self::parse( $tableobj[0]['receiver_phone']);
+
+                $info['receiver_address'] = self::parse($tableobj[0]['receiver_address']);
+				$info['goods_yard_name'] = self::parse($tableobj[0]['goods_yard_name']);
+				$info['cs_id'] = self::parse($tableobj[0]['cs_id']);
+				$info['count'] = self::parse($tableobj[0]['count']);
+				$info['transfer_order_num'] = self::parse($tableobj[0]['transfer_order_num']);
+				$info['delivery_date'] = self::parse($tableobj[0]['delivery_date']);
                 return $info;
             }
             return null;
         }     
-		
+
+        public  static  function parse($prarameter)
+        {
+            if($prarameter == null || $prarameter == "")
+                return "";
+            else
+                return $prarameter;
+        }
 		
         /*cs_product*/
         public static function getcsproduct(){
@@ -3689,6 +3802,8 @@
                 return "公司付";
             elseif ($freightmode == 4||$freightmode == '4')
                 return "送货";
+            else
+                return "";
         }
 	}
 ?>
