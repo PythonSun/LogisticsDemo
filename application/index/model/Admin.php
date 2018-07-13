@@ -878,11 +878,7 @@
                     {
                         $tableobj[$i]["cs_info_state"] = "缺货";
                     }
-
-
                     $tableobj[$i]["transfer_fee_mode"]= self::parsefreightmode($tableobj[$i]["transfer_fee_mode"])  ;
-
-
                     if($tableobj[$i]["complete_date"] == "2000-01-01 00:00:00")
                     {
                         $tableobj[$i]["complete_date"] ="";
