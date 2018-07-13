@@ -1830,7 +1830,7 @@
                 $dateymd = $type.$dateymd;
             }
            // $sql ="select * from dsp_logistic.{$tableName} where {$tableID} like '%{$dateymd}%'";
-            $sql = "select max(dsp_logistic.$tableName.$tableID) from dsp_logistic.$tableName where $tableID like '%20180712%'";
+            $sql = "select max(dsp_logistic.$tableName.$tableID) from dsp_logistic.$tableName where $tableID like '%{$dateymd}%'";
             $retdb = Db::query($sql);
 //            if(empty($retdb)){
 //                return $dateymd.'00001';
@@ -1854,6 +1854,9 @@
              {
                  $cs_id = $retdb[0]["max(dsp_logistic.$tableName.$tableID)"];
                  $cur_id = str_replace($dateymd,'',$cs_id);
+                 //$cur_id = 0;
+                 if(count($cs_id) > 5)
+                     $cur_id = substr($cs_id,8,5);
                  $num = $cur_id;
 
              }
