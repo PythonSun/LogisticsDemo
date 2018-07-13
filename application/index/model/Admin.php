@@ -3520,7 +3520,6 @@
 					$info['count'] = self::parse($tableobj[0]['count']);
 					$info['transfer_order_num'] = self::parse($tableobj[0]['transfer_order_num']);
 					$info['delivery_date'] = self::parse($tableobj[0]['delivery_date']);
-					var_dump($info);
                     return $info;
 //                }
 //                else
