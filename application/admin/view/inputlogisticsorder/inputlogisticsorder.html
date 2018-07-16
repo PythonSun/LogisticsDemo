@@ -44,7 +44,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label light_blue">运单号</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="transfer_order_num" id="transfer_order_num" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_blue" oninput="detectinputdataletter(this);"> </div>
+                        <input type="text" name="transfer_order_num" id="transfer_order_num" lay-verify="" autocomplete="on" placeholder="" class="layui-input light_blue" > </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label light_blue" style="color:red;">发货日期</label>
@@ -180,7 +180,9 @@
                         && delivery_date != ''&& count != ''&& consignee != ''
                         && consigneephone != ''&& shippingaddress != ''){
                         $.post("{:url('admin/inputlogisticsorder/savemessage')}", { 'param': param }, function (res) {
-                            if(res == '1') {
+                            if(res === false) {
+                                layer.msg('保存失败！', { icon: 5 });
+                            } else {
                                 $('#cs_id').val('');
                                 $('#goods_yard_name').val('');
                                 $('#transfer_order_num').val('');
@@ -191,8 +193,6 @@
                                 $('#shippingaddress').val('');
                                 layer.msg('保存成功！', { icon: 6 });
                                 table.reload('logisticstablequeryresult', {});
-                            } else {
-                                layer.msg('保存失败！', { icon: 5 });
                             }
                         });
                     }else {
@@ -257,6 +257,11 @@
                                 data: deldata,
                                 success: function (msg) {
                                     layer.msg('删除成功！', { icon: 6 });
+                                    table.reload('logisticstablequeryresult', {
+                                        page: {
+                                            curr: 1
+                                        }
+                                    });
                                 },
                                 error: function (data) {
                                     alert(data);
@@ -290,16 +295,23 @@
                                     url: "{:url('admin/editlogistics/editsave')}",
                                     data: editdatasave,
                                     success: function (msg) {
-                                        if(msg == 0) {
+                                        if(msg === false)
+                                        {
+                                            top.layer.msg('保存失败！', { icon: 5 })
+                                            return false;
+                                        }
+                                        else if(msg == 0) {
                                             top.layer.msg('保存成功！', { icon: 6 });
                                             top.layer.close(index);
                                         } else if(msg == 2) {
                                             top.layer.msg('保存成功！', { icon: 6 });
                                             top.layer.close(index);
-                                        } else {
-                                            top.layer.msg('保存失败！', { icon: 5 })
                                         }
-                                        table.reload('logisticstablequeryresult', {});
+                                        table.reload('logisticstablequeryresult', {
+                                            page: {
+                                                curr: 1
+                                            }});
+
                                     }
                                 });
                             },

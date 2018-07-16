@@ -595,17 +595,25 @@
 		}
 		/*chenshanqiang向物流表单插入数据*/
 		public static function insertlogisticinfo($info){
-            $logistics_id = $info['logistics_id'];
-            $cs_id = $info['cs_id'];
-            $goods_yard_name = $info['goods_yard_name'];
-            $transfer_order_num = $info['transfer_order_num'];
-            $delivery_date = $info['delivery_date'];
-            $count = $info['count'];
-			$time_stamp = '2000-01-01 00:00:00';//date("Y-m-d");
-            $sql_value ="'$logistics_id','$cs_id','$goods_yard_name','$transfer_order_num','$delivery_date','$count','$time_stamp'";
-            $sql = "INSERT INTO dsp_logistic.logistics_info (logistics_id,cs_id,goods_yard_name,transfer_order_num,delivery_date,count,time_stamp) VALUES ({$sql_value})";
-            $sqlret = Db::execute($sql);
-            return $sqlret;
+		    try
+            {
+                $logistics_id = $info['logistics_id'];
+                $cs_id = $info['cs_id'];
+                $goods_yard_name = $info['goods_yard_name'];
+                $transfer_order_num = $info['transfer_order_num'];
+                $delivery_date = $info['delivery_date'];
+                $count = $info['count'];
+                $time_stamp = '2000-01-01 00:00:00';//date("Y-m-d");
+                $sql_value ="'$logistics_id','$cs_id','$goods_yard_name','$transfer_order_num','$delivery_date','$count','$time_stamp'";
+                $sql = "INSERT INTO dsp_logistic.logistics_info (logistics_id,cs_id,goods_yard_name,transfer_order_num,delivery_date,count,time_stamp) VALUES ({$sql_value})";
+                $sqlret = Db::execute($sql);
+                return $sqlret;
+            }
+            catch (Exception $ex)
+            {
+                return false;
+            }
+
         }
         /*chenshanqiang查询物流表数据*/
 		public static function querylogisticsinfo(...$args){
@@ -624,7 +632,7 @@
             }
 			$offset = ($pagenum - 1)*$length;
 			/*$tableobj = Db::query($sqlone);*/
-			$sqlone = "select * from dsp_logistic.logistics_info order By dsp_logistic.logistics_info.delivery_date DESC limit {$offset},{$length}";
+			$sqlone = "select * from dsp_logistic.logistics_info order By dsp_logistic.logistics_info.logistics_id DESC limit {$offset},{$length}";
 			$tableobj = Db::query($sqlone);
 			return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
 		}
@@ -3313,20 +3321,27 @@
         }
         /*物流信息 logistics_info*/
         public static function updatelogisticsinfo($info){
-            $logistics_id = $info['logistics_id'];
-            $cs_id = $info['cs_id'];
-            $goods_yard_name = $info['goods_yard_name'];
-            $transfer_order_num = $info['transfer_order_num'];
-            $delivery_date = $info['delivery_date'];
-            $count = $info['count'];
-            $user_id = $info['user_id'];
-            $time_stamp = $info['time_stamp'];
-            $sql_value ="'{$logistics_id}','{$cs_id}','{$goods_yard_name}','{$transfer_order_num}','{$delivery_date}','{$count}','{$user_id}','{$time_stamp}'";
-            $sql = "INSERT INTO dsp_logistic.logistics_info (logistics_id,cs_id,goods_yard_name,transfer_order_num,delivery_date,count,user_id,time_stamp) VALUES ({$sql_value})";
-            $sql .= " ON DUPLICATE KEY UPDATE cs_id = '{$cs_id}',goods_yard_name = '{$goods_yard_name}',transfer_order_num = '{$transfer_order_num}',delivery_date = '{$delivery_date}'";
-            $sql .= ",count = '{$count}',user_id = '{$user_id}',time_stamp = '{$time_stamp}'";
-            $sqlret = Db::execute($sql);
-            return $sqlret;
+            try{
+                $logistics_id = $info['logistics_id'];
+                $cs_id = $info['cs_id'];
+                $goods_yard_name = $info['goods_yard_name'];
+                $transfer_order_num = $info['transfer_order_num'];
+                $delivery_date = $info['delivery_date'];
+                $count = $info['count'];
+                $user_id = $info['user_id'];
+                $time_stamp = $info['time_stamp'];
+                $sql_value ="'{$logistics_id}','{$cs_id}','{$goods_yard_name}','{$transfer_order_num}','{$delivery_date}','{$count}','{$user_id}','{$time_stamp}'";
+                $sql = "INSERT INTO dsp_logistic.logistics_info (logistics_id,cs_id,goods_yard_name,transfer_order_num,delivery_date,count,user_id,time_stamp) VALUES ({$sql_value})";
+                $sql .= " ON DUPLICATE KEY UPDATE cs_id = '{$cs_id}',goods_yard_name = '{$goods_yard_name}',transfer_order_num = '{$transfer_order_num}',delivery_date = '{$delivery_date}'";
+                $sql .= ",count = '{$count}',user_id = '{$user_id}',time_stamp = '{$time_stamp}'";
+                $sqlret = Db::execute($sql);
+                return $sqlret;
+            }
+            catch (Exception $ex)
+            {
+                return false;
+            }
+
         }
 
         /*非常规订单 unc_ofg_info*/

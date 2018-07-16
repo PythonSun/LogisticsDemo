@@ -29,7 +29,7 @@ class Inputlogisticsorder extends Controller {
 			$item['delivery_date'] = $logistic_info['delivery_date'];
 			$item['count'] = $logistic_info['count'];
 			$res = \app\index\model\Admin::insertlogisticinfo($item);
-			print_r($res);
+			return $res;
 		}
 	}
 
