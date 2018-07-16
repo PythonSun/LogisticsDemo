@@ -283,13 +283,20 @@ class Confirmordercommon extends Controller
         //cs_belong
         $cs_belong = $_POST['cs_belong'];
         $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
+        if($ret_cs_belog === false)
+            return false;
 
         ///custom_info
         $custom_info = $_POST['custom_info'];
         $ret_custom_info = \app\index\model\Admin::updatecustominfo($custom_info);
+        if($ret_custom_info === false)
+            return false;
+
         //delivery_info
         $delivery_info = $_POST['delivery_info'];
         $ret_delivery_info = \app\index\model\Admin::updatedeliveryinfo($delivery_info);
+        if($ret_delivery_info === false)
+            return false;
 
 
         //return_info
@@ -297,6 +304,8 @@ class Confirmordercommon extends Controller
         {
             $return_info = $_POST['return_info'];
             $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
+            if($ret_return_info === false)
+                return false;
         }
 
         //order_goods_manager  order_goods_logistics
@@ -310,6 +319,8 @@ class Confirmordercommon extends Controller
                     $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
                     $order_goods_manager[$i]['product_info_id'] = $product_info_id;
                     $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                    if($retsql === false)
+                        return false;
                 }
                 //order_goods_manager
                 if($order_goods_manager[$i]['order_goods_manager_id'] == '')
@@ -318,6 +329,8 @@ class Confirmordercommon extends Controller
                     $order_goods_manager[$i]['order_goods_manager_id'] = $order_goods_manager_id+1;
                 }
                 $retmanager = \app\index\model\Admin::updateordergoodsmanager($order_goods_manager[$i]);
+                if($retmanager === false)
+                    return false;
                 //order_goods_logistics
                 if($order_goods_manager[$i]['ogl_id'] == '')
                 {
@@ -327,6 +340,8 @@ class Confirmordercommon extends Controller
                 $order_goods_manager[$i]['ogl_time_stamp'] = $date_now;
                 $order_goods_manager[$i]['user_id'] = $cs_belong['build_user_id']; //暂时不知道是报那个的id,先写经理的
                 $retmanager = \app\index\model\Admin::updateordergoodslogistics($order_goods_manager[$i]);
+                if($retmanager === false)
+                    return false;
             }
 
         }
@@ -340,7 +355,7 @@ class Confirmordercommon extends Controller
         for ($i = 0; $i < $length; $i++) {
             if ($i == 0) {
                 $dbleader = \app\index\model\Admin::getdepleaderbyuserid($cs_belong['build_user_id'], '部门总监');
-                if (empty($dbleader)) {
+                if ($dbleader === false) {
                     return false;
                 }
                 $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
@@ -348,7 +363,7 @@ class Confirmordercommon extends Controller
 
             } else if ($i == 1) {
                 $dbleader = \app\index\model\Admin::getdepleaderbyuserid($cs_belong['build_user_id'], '总经理');
-                if (empty($dbleader)) {
+                if ($dbleader === false) {
                     return false;
                     //return false;
                 }
@@ -356,7 +371,7 @@ class Confirmordercommon extends Controller
                 $cs_examine[$i]['cs_examine_name'] = $dbleader[0]['fullname'];
             } else if ($i == 2) {
                 $dbleader = \app\index\model\Admin::getdepleaderbyuserid($cs_belong['build_user_id'], '财务人员');
-                if (empty($dbleader)) {
+                if ($dbleader === false) {
                     return false;
                 }
                 $cs_examine[$i]['examine_user_id'] = $dbleader[0]['user_id'];
@@ -367,19 +382,27 @@ class Confirmordercommon extends Controller
             $cs_examine[$i]['cs_examine_id'] = $cs_examine_id;
             $cs_examine_ids.= "$cs_examine_id,";
             $rettest = \app\index\model\Admin::updatecsexamine($cs_examine[$i]);
+            if ($rettest === false) {
+                    return false;
+                }
         }
         //cs_info
 
         $cs_info['cs_examine_ids'] = $cs_examine_ids;
         $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
-
+        if ($ret_confirm_order === false) {
+            return false;
+        }
 
         if(array_key_exists('order_goods_delete_row',$_POST))
         {
             $order_goods_delete_row = $_POST['order_goods_delete_row'];
             foreach ($order_goods_delete_row as $item )
             {
-                \app\index\model\Admin::deleterowtableid('order_goods_manager', 'order_goods_manager_id', $item);
+                $ret = \app\index\model\Admin::deleterowtableid('order_goods_manager', 'order_goods_manager_id', $item);
+                if ($ret === false) {
+                    return false;
+                }
             }
         }
 
@@ -450,6 +473,8 @@ class Confirmordercommon extends Controller
                 $order_goods_manager[$i]['ogl_time_stamp'] = $date_now;
                 $order_goods_manager[$i]['user_id'] = $cs_belong['build_user_id']; //暂时不知道是报那个的id,先写经理的
                 $retmanager = \app\index\model\Admin::updateordergoodslogistics($order_goods_manager[$i]);
+                if($retmanager === false)
+                    return false;
             }
 
         }
@@ -457,19 +482,25 @@ class Confirmordercommon extends Controller
         $cs_examine = $_POST['cs_examine'];
         $length = count($cs_examine);
         for ($i = 0; $i < $length; $i++) {
-            \app\index\model\Admin::updatecsexamine($cs_examine[$i]);
+            $ret = \app\index\model\Admin::updatecsexamine($cs_examine[$i]);
+            if($ret === false)
+                return false;
         }
 
         //cs_info
         $cs_info = $_POST['cs_info'];
         $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
+        if($ret_confirm_order === false)
+            return false;
 
         if(array_key_exists('order_goods_delete_row',$_POST))
         {
             $order_goods_delete_row = $_POST['order_goods_delete_row'];
             foreach ($order_goods_delete_row as $item )
             {
-                \app\index\model\Admin::deleterowtableid('order_goods_manager', 'order_goods_manager_id', $item);
+                $ret = \app\index\model\Admin::deleterowtableid('order_goods_manager', 'order_goods_manager_id', $item);
+                if($ret === false)
+                    return false;
             }
         }
 
