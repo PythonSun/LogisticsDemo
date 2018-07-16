@@ -105,6 +105,7 @@
 				nodeObj.organize_id = getNodes[node].id;
 				nodeObj.parent_id = getNodes[node].pId;
 				nodeObj.organize_name = getNodes[node].name;
+				nodeObj.department_number = getNodes[node].department_number;
 				nodeArr.push(nodeObj);
 				if((getNodes[node]).hasOwnProperty('children')){
 					var length = (getNodes[node].children).length;
@@ -115,6 +116,7 @@
 							childnodeObj.organize_id = childrennode[item].id;
 							childnodeObj.parent_id = childrennode[item].pId;
 							childnodeObj.organize_name = childrennode[item].name;
+							childnodeObj.department_number = childrennode[item].department_number;
 							nodeArr.push(childnodeObj);
 						}
 					}

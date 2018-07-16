@@ -20,11 +20,11 @@ class Departmentmanage extends Controller
     public function getorganizeinfo(){
     	$organizelist = \app\index\model\Admin::querydepartmentinfo();
     	$data = array();
-    	for ($i=0; $i <count($organizelist) ; $i++) { 
+    	for ($i=0; $i <count($organizelist) ; $i++) {
     		$data[$i]["name"] = $organizelist[$i]['organize_name'];
     		$data[$i]["id"] = $organizelist[$i]['organize_id'];
     		$data[$i]["pId"] = $organizelist[$i]['parent_id'];
-
+            $data[$i]["department_number"] = $organizelist[$i]['department_number'];
     	}
     	return json_encode($data);
     }
