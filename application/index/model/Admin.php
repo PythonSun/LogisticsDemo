@@ -417,7 +417,7 @@
                     if($args[7]['freightmode'] != "")
                     {
                         $freightmode = $args[7]['freightmode'];
-                        $sqlone.= " and transfer_fee_mode ='$freightmode' ";
+                        $sqlone.= " and dsp_logistic.delivery_info.transfer_fee_mode ='$freightmode' ";
                     }
                 }
 
@@ -534,7 +534,7 @@
                     if($args[7]['freightmode'] != "")
                     {
                         $freightmode = $args[7]['freightmode'];
-                        $sqlone.= " and transfer_fee_mode ='$freightmode' ";
+                        $sqltwo.= " and dsp_logistic.delivery_info.transfer_fee_mode ='$freightmode' ";
                     }
                 }
 			}
