@@ -721,14 +721,14 @@
                     $sqlone.= " and transfer_order_num ='$num' ";
                 }
 
-                if(array_key_exists('freightmode',$args[3]))
-                {
+                //if(array_key_exists('freightmode',$args[3]))
+                //{
                     if($args[3]['freightmode'] != "")
                     {
                         $freightmode = $args[3]['freightmode'];
                         $sqlone.= " and transfer_fee_mode ='$freightmode' ";
                     }
-                }
+                //}
             }
             $countobj = Db::query($sqlone);
             $count = $countobj[0]['count(*)'];
@@ -824,19 +824,17 @@
                     $sqltwo.= " and transfer_order_num ='$num' ";
                 }
 
-                if(array_key_exists('freightmode',$args[3]))
-                {
+                //if(array_key_exists('freightmode',$args[3]))
+                //{
                     if($args[3]['freightmode'] != "")
                     {
                         $freightmode = $args[3]['freightmode'];
                         $sqlone.= " and transfer_fee_mode ='$freightmode' ";
                     }
-                }
-
-
-
+                //}
             }
-            $sqltwo .= "order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length} ;";
+            $sqltwo .= "order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length}";
+
             $tableobj = Db::query($sqltwo);
             if(!empty($tableobj)){
                 for ($i = 0;$i < count($tableobj);$i++)
@@ -878,7 +876,7 @@
                     {
                         $tableobj[$i]["cs_info_state"] = "缺货";
                     }
-                    $tableobj[$i]["transfer_fee_mode"]= self::parsefreightmode($tableobj[$i]["transfer_fee_mode"])  ;
+                    $tableobj[$i]["transfer_fee_mode"]= self::parsefreightmode($tableobj[$i]["transfer_fee_mode"]);
                     if($tableobj[$i]["complete_date"] == "2000-01-01 00:00:00")
                     {
                         $tableobj[$i]["complete_date"] ="";

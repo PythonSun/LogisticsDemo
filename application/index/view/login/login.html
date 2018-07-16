@@ -63,7 +63,7 @@
                 /*光标在用户名输入框*/
                 jq('#username').focus();    
                 /*监听登录按键*/
-                form.on('submit(login)', function (data) {
+                form.on('submit(login)', function (data){
                     var userinfo = data.field;
                     jq.post("{:url('index/login/loginconfirm')}", { 'username': userinfo.username, 'password': hex_md5(userinfo.password) }, function (data) {
                         if(data) {
