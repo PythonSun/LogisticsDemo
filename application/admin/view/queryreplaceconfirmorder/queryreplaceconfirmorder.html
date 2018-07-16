@@ -53,7 +53,7 @@
 				form.on('submit(query)',function(data){
 					var queryInfo = data.field;
 
-  			      	table.reload('querytable', {
+			      	table.reload('querytable', {
 				        page: {
 				          curr: 1
 				        }
@@ -63,10 +63,12 @@
 			      	});
 		  			return false;
 				});
+
                 jq(document).ready(function () {
                     current_user_type = {$current_user_type};
 
                 });
+
 				/*监听导出按钮  style='width:300px;height:60px;*/
 				form.on('submit(export)',function(data){
 					top.layer.open({
