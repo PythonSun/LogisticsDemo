@@ -539,7 +539,6 @@
                 }
 			}
 			$sqltwo .= "order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length} ;";
-            return $sqltwo;
 			$tableobj = Db::query($sqltwo);
 			if(!empty($tableobj)){
 

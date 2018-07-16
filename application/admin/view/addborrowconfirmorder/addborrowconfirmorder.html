@@ -1803,7 +1803,7 @@
             //         return false;
             //     }
             // }
-            if(data['transfer_fee_mode'] == ""){
+            if(data['transfer_fee_mode'] == ""|| data['transfer_fee_mode'] == undefined){
                 // layer.msg('发货信息-请选择运费方式！',{icon:2});
                 // return false;
                 data['transfer_fee_mode'] = -1;
