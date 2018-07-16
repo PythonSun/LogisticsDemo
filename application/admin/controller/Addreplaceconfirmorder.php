@@ -12,7 +12,7 @@ class Addreplaceconfirmorder extends Controller
     public function addreplaceconfirmorder()
     {
         $organizeid = session("user_session");
-        $depid = $organizeid["organize_id"];  //部门id
+        $depid = \app\index\model\Admin::getdepartmentnumber($organizeid['organize_id']);  //部门编号
         $this->assign("depid", $depid);
         $date = date('Y-m-d');
         $this->assign("date", $date);
