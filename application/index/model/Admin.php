@@ -328,46 +328,46 @@
             $sqlone .= "where dsp_logistic.cs_info.cs_info_type='$type' ";
 			if($organizename != "")
             {
-                $sqlone .= "and build_organize_name='$organizename' ";
+                $sqlone .= "and dsp_logistic.cs_belong.build_organize_name='$organizename' ";
             }
             if($departmentname != "")
             {
-                $sqlone .= "and build_department_name='$departmentname' ";
+                $sqlone .= "and dsp_logistic.cs_belong.build_department_name='$departmentname' ";
             }
             if($areamanager != "")
             {
-                $sqlone .= "and build_user_name='$areamanager' ";
+                $sqlone .= "and dsp_logistic.cs_belong.build_user_name='$areamanager' ";
             }
             else if($rolename != '部门总监'&&  $rolename != '部门助理'){
                 //不是经理、部门总监、部门助理查时，不能查看未提交的单
-                $sqltwo .= "and dsp_logistic.cs_info.cs_info_state != 0 ";
+                $sqlone .= "and dsp_logistic.cs_info.cs_info_state != 0 ";
             }
 
             if($totalargs == 8){
                 if($args[7]['areamanager'] != "" && $areamanager == ""){
                     $areamanger1 = $args[7]['areamanager'];
-                    $sqlone.= " and build_user_name ='$areamanger1'";
+                    $sqlone.= " and dsp_logistic.cs_belong.build_user_name ='$areamanger1'";
                 }
                 if($args[7]['departmentname'] != "" && $departmentname == ""){
                     $departmentname1 = $args[7]['departmentname'];
-                    $sqlone.= " and build_department_name ='$departmentname1'";
+                    $sqlone.= " and dsp_logistic.cs_belong.build_department_name ='$departmentname1'";
                 }
                 if($args[7]['organizename'] != "" && $organizename == ""){
                     $organizename1 = $args[7]['organizename'];
-                    $sqlone.= " and build_organize_name ='$organizename1'";
+                    $sqlone.= " and dsp_logistic.cs_belong.build_organize_name ='$organizename1'";
                 }
                 $startdate = $args[7]['startdate'];
                 $enddate = $args[7]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate'";
+                    $sqlone.= " and dsp_logistic.cs_belong.cs_belong_create_time >='$startdate' and dsp_logistic.cs_belong.cs_belong_create_time <='$enddate'";
                 }
                 else if($startdate != "")
                 {
-                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                    $sqlone.= " and dsp_logistic.cs_belong.cs_belong_create_time ='$startdate'";
                 }
                 else if($enddate != "")
                 {
-                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                    $sqlone.= " and dsp_logistic.cs_belong.cs_belong_create_time ='$startdate'";
                 }
                 if($args[7]['order_id'] != "")
                 {
@@ -377,20 +377,20 @@
                 if($args[7]['orderstate'] != "")
                 {
                     $cs_info_state = $args[7]['orderstate'];
-                    $sqlone.= " and cs_info_state ='$cs_info_state'";
+                    $sqlone.= " and dsp_logistic.cs_info.cs_info_state ='$cs_info_state'";
                 }
 //                if($type == 2||$type == 5) //借样和配件没有返货信息
 //                {
                     if($args[7]['receiver_name'] != "")
                     {
                         $delivery_info_receiver_name = $args[7]['receiver_name'];
-                        $sqlone.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
+                        $sqlone.= " and dsp_logistic.delivery_info.delivery_info_receiver_name ='$delivery_info_receiver_name' ";
                     }
 
                     if($args[7]['yard'] != "")
                     {
                         $yard = $args[7]['yard'];
-                        $sqlone.= " and delivery_info_goods_yard_name ='$yard' ";
+                        $sqlone.= " and dsp_logistic.delivery_info.delivery_info_goods_yard_name ='$yard' ";
                     }
 //                }
 //                else
@@ -410,7 +410,7 @@
                 if($args[7]['couriernumber'] != "")
                 {
                     $num = $args[7]['couriernumber'];
-                    $sqlone.= " and transfer_order_num ='$num' ";
+                    $sqlone.= " and dsp_logistic.logistics_info.transfer_order_num ='$num' ";
                 }
                 if(array_key_exists('freightmode',$args[7]))
                 {
@@ -444,15 +444,15 @@
             $sqltwo .= "where dsp_logistic.cs_info.cs_info_type='$type' ";
             if($organizename != "")
             {
-                $sqltwo .= "and build_organize_name='$organizename' ";
+                $sqltwo .= "and dsp_logistic.cs_belong.build_organize_name='$organizename' ";
             }
             if($departmentname != "")
             {
-                $sqltwo .= "and build_department_name='$departmentname' ";
+                $sqltwo .= "and dsp_logistic.cs_belong.build_department_name='$departmentname' ";
             }
             if($areamanager != "")
             {
-                $sqltwo .= "and build_user_name='$areamanager' ";
+                $sqltwo .= "and dsp_logistic.cs_belong.build_user_name='$areamanager' ";
             }
             else if($rolename != '部门总监'&&  $rolename != '部门助理'){
                 //不是经理、部门总监、部门助理查时，不能查看未提交的单
@@ -462,28 +462,28 @@
 			if($totalargs == 8){
 				if($args[7]['areamanager'] != "" && $areamanager == ""){
 					$areamanger1 = $args[7]['areamanager'];
-					$sqltwo.= " and build_user_name ='$areamanger1'";
+					$sqltwo.= " and dsp_logistic.cs_belong.build_user_name ='$areamanger1'";
 				}
                 if($args[7]['departmentname'] != "" && $departmentname == ""){
                     $departmentname1 = $args[7]['departmentname'];
-                    $sqltwo.= " and build_department_name ='$departmentname1'";
+                    $sqltwo.= " and dsp_logistic.cs_belong.build_department_name ='$departmentname1'";
                 }
                 if($args[7]['organizename'] != "" && $organizename == ""){
                     $organizename1 = $args[7]['organizename'];
-                    $sqltwo.= " and build_organize_name ='$organizename1'";
+                    $sqltwo.= " and dsp_logistic.cs_belong.build_organize_name ='$organizename1'";
                 }
                 $startdate = $args[7]['startdate'];
                 $enddate = $args[7]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate'";
+                    $sqltwo.= " and dsp_logistic.cs_belong.cs_belong_create_time >='$startdate' and dsp_logistic.cs_belong.cs_belong_create_time <='$enddate'";
                 }
                 else if($startdate != "")
                 {
-                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
+                    $sqltwo.= " and dsp_logistic.cs_belong.cs_belong_create_time ='$startdate'";
                 }
                 else if($enddate != "")
                 {
-                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
+                    $sqltwo.= " and dsp_logistic.cs_belong.cs_belong_create_time ='$startdate'";
                 }
                 if($args[7]['order_id'] != "")
                 {
@@ -493,20 +493,20 @@
                 if($args[7]['orderstate'] != "")
                 {
                     $cs_info_state = $args[7]['orderstate'];
-                    $sqltwo.= " and cs_info_state ='$cs_info_state'";
+                    $sqltwo.= " and dsp_logistic.cs_info.cs_info_state ='$cs_info_state'";
                 }
 //                if($type == 2||$type == 5) //借样和配件没有返货信息
 //                {
                     if($args[7]['receiver_name'] != "")
                     {
                         $delivery_info_receiver_name = $args[7]['receiver_name'];
-                        $sqltwo.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
+                        $sqltwo.= " and dsp_logistic.delivery_info.delivery_info_receiver_name ='$delivery_info_receiver_name' ";
                     }
 
                     if($args[7]['yard'] != "")
                     {
                         $yard = $args[7]['yard'];
-                        $sqltwo.= " and delivery_info_goods_yard_name ='$yard' ";
+                        $sqltwo.= " and dsp_logistic.delivery_info.delivery_info_goods_yard_name ='$yard' ";
                     }
 //                }
 //                else
@@ -526,7 +526,7 @@
                 if($args[7]['couriernumber'] != "")
                 {
                     $num = $args[7]['couriernumber'];
-                    $sqltwo.= " and transfer_order_num ='$num' ";
+                    $sqltwo.= " and dsp_logistic.logistics_info.transfer_order_num ='$num' ";
                 }
 
                 if(array_key_exists('freightmode',$args[7]))
@@ -539,6 +539,7 @@
                 }
 			}
 			$sqltwo .= "order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length} ;";
+            return $sqltwo;
 			$tableobj = Db::query($sqltwo);
 			if(!empty($tableobj)){
 
@@ -658,24 +659,24 @@
             if($totalargs == 4){
                 if($args[3]['areamanager'] != "" ){
                     $areamanger1 = $args[3]['areamanager'];
-                    $sqlone.= " and build_user_name ='$areamanger1'";
+                    $sqlone.= " and dsp_logistic.cs_belong.build_user_name ='$areamanger1'";
                 }
                 if($args[3]['departname'] ){
                     $departmentname1 = $args[3]['departname'];
-                    $sqlone.= " and (build_department_name ='$departmentname1' or build_organize_name ='$departmentname1') ";
+                    $sqlone.= " and (dsp_logistic.cs_belong.build_department_name ='$departmentname1' or dsp_logistic.cs_belong.build_organize_name ='$departmentname1') ";
                 }
                 $startdate = $args[3]['startdate'];
                 $enddate = $args[3]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
+                    $sqlone.= " and dsp_logistic.cs_belong.cs_belong_create_time >='$startdate' and dsp_logistic.cs_belong.cs_belong_create_time <='$enddate' ";
                 }
                 else if($startdate != "")
                 {
-                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                    $sqlone.= " and dsp_logistic.cs_belong.cs_belong_create_time ='$startdate'";
                 }
                 else if($enddate != "")
                 {
-                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+                    $sqlone.= " and dsp_logistic.cs_belong.cs_belong_create_time ='$startdate'";
                 }
                 if($args[3]['order_id'] != "")
                 {
@@ -685,20 +686,20 @@
                 if($args[3]['orderstate'] != "")
                 {
                     $cs_info_state = $args[3]['orderstate'];
-                    $sqlone.= " and cs_info_state ='$cs_info_state' ";
+                    $sqlone.= " and dsp_logistic.cs_info.cs_info_state ='$cs_info_state' ";
                 }
 //                if($type == 2||$type == 5) //借样和配件没有返货信息
 //                {
                     if($args[3]['receiver_name'] != "")
                     {
                         $delivery_info_receiver_name = $args[3]['receiver_name'];
-                        $sqlone.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
+                        $sqlone.= " and dsp_logistic.delivery_info.delivery_info_receiver_name ='$delivery_info_receiver_name' ";
                     }
 
                     if($args[3]['yard'] != "")
                     {
                         $yard = $args[3]['yard'];
-                        $sqlone.= " and delivery_info_goods_yard_name ='$yard' ";
+                        $sqlone.= " and dsp_logistic.delivery_info.delivery_info_goods_yard_name ='$yard' ";
                     }
 //                }
 //                else
@@ -718,17 +719,17 @@
                 if($args[3]['couriernumber'] != "")
                 {
                     $num = $args[3]['couriernumber'];
-                    $sqlone.= " and transfer_order_num ='$num' ";
+                    $sqlone.= " and dsp_logistic.logistics_info.transfer_order_num ='$num' ";
                 }
 
-                //if(array_key_exists('freightmode',$args[3]))
-                //{
+                if(array_key_exists('freightmode',$args[3]))
+                {
                     if($args[3]['freightmode'] != "")
                     {
                         $freightmode = $args[3]['freightmode'];
-                        $sqlone.= " and transfer_fee_mode ='$freightmode' ";
+                        $sqlone.= " and dsp_logistic.delivery_info.transfer_fee_mode ='$freightmode' ";
                     }
-                //}
+                }
             }
             $countobj = Db::query($sqlone);
             $count = $countobj[0]['count(*)'];
@@ -760,25 +761,25 @@
             if($totalargs == 4){
                 if($args[3]['areamanager'] != ""){
                     $areamanger1 = $args[3]['areamanager'];
-                    $sqltwo.= " and build_user_name ='$areamanger1' ";
+                    $sqltwo.= " and dsp_logistic.cs_belong.build_user_name ='$areamanger1' ";
                 }
                 if($args[3]['departname'] != "" ){
                     $departmentname1 = $args[3]['departname'];
-                    $sqltwo.= " and (build_department_name ='$departmentname1' or build_organize_name ='$departmentname1') ";
+                    $sqltwo.= " and (dsp_logistic.cs_belongbuild_department_name ='$departmentname1' or dsp_logistic.cs_belong.build_organize_name ='$departmentname1') ";
                 }
 
                 $startdate = $args[3]['startdate'];
                 $enddate = $args[3]['enddate'];
                 if($startdate != "" && $enddate != "" ){
-                    $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
+                    $sqltwo.= " and dsp_logistic.cs_belong.cs_belong_create_time >='$startdate' and dsp_logistic.cs_belong.cs_belong_create_time <='$enddate' ";
                 }
                 else if($startdate != "")
                 {
-                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
+                    $sqltwo.= " and dsp_logistic.cs_belong.cs_belong_create_time ='$startdate'";
                 }
                 else if($enddate != "")
                 {
-                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
+                    $sqltwo.= " and dsp_logistic.cs_belong.cs_belong_create_time ='$startdate'";
                 }
                 if($args[3]['order_id'] != "")
                 {
@@ -788,20 +789,20 @@
                 if($args[3]['orderstate'] != "")
                 {
                     $cs_info_state = $args[3]['orderstate'];
-                    $sqltwo.= " and cs_info_state ='$cs_info_state' ";
+                    $sqltwo.= " and dsp_logistic.cs_info.cs_info_state ='$cs_info_state' ";
                 }
 //                if($type == 2||$type == 5) //借样和配件没有返货信息
 //                {
                     if($args[3]['receiver_name'] != "")
                     {
                         $delivery_info_receiver_name = $args[3]['receiver_name'];
-                        $sqltwo.= " and delivery_info_receiver_name ='$delivery_info_receiver_name' ";
+                        $sqltwo.= " and dsp_logistic.delivery_info.delivery_info_receiver_name ='$delivery_info_receiver_name' ";
                     }
 
                     if($args[3]['yard'] != "")
                     {
                         $yard = $args[3]['yard'];
-                        $sqltwo.= " and delivery_info_goods_yard_name ='$yard' ";
+                        $sqltwo.= " and dsp_logistic.delivery_info.delivery_info_goods_yard_name ='$yard' ";
                     }
 //                }
 //                else
@@ -821,17 +822,17 @@
                 if($args[3]['couriernumber'] != "")
                 {
                     $num = $args[3]['couriernumber'];
-                    $sqltwo.= " and transfer_order_num ='$num' ";
+                    $sqltwo.= " and dsp_logistic.logistics_info.transfer_order_num ='$num' ";
                 }
 
-                //if(array_key_exists('freightmode',$args[3]))
-                //{
+                if(array_key_exists('freightmode',$args[3]))
+                {
                     if($args[3]['freightmode'] != "")
                     {
                         $freightmode = $args[3]['freightmode'];
-                        $sqlone.= " and transfer_fee_mode ='$freightmode' ";
+                        $sqlone.= " and dsp_logistic.delivery_info.transfer_fee_mode ='$freightmode' ";
                     }
-                //}
+                }
             }
             $sqltwo .= "order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length}";
 

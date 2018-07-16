@@ -110,6 +110,7 @@ class Queryreplaceconfirmorder extends Controller
                 $tablelist = \app\index\model\Admin::querycsinfobysales($organizename,$departmentname,$areamanager,$rolename,$type,$page,$limit);
             }
         }
+        var_dump($tablelist);
         return $tablelist;
     }
 
