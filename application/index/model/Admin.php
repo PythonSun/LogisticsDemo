@@ -3793,7 +3793,7 @@
             elseif ($freightmode == 1||$freightmode == '1')
                 return "现金";
             elseif ($freightmode == 2||$freightmode == '2')
-                return "现付";
+                return "代付";
             elseif ($freightmode == 3||$freightmode == '3')
                 return "公司付";
             elseif ($freightmode == 4||$freightmode == '4')
