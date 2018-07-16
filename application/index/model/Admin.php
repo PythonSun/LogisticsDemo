@@ -829,7 +829,7 @@
                     if($args[3]['freightmode'] != "")
                     {
                         $freightmode = $args[3]['freightmode'];
-                        $sqlone.= " and dsp_logistic.delivery_info.transfer_fee_mode ='$freightmode' ";
+                        $sqltwo.= " and dsp_logistic.delivery_info.transfer_fee_mode ='$freightmode' ";
                     }
                 }
             }

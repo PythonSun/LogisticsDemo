@@ -393,15 +393,20 @@ class Confirmordercommon extends Controller
         //cs_belong
         $cs_belong = $_POST['cs_belong'];
         $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
+        if($ret_cs_belog === false)
+            return false;
 
         ///custom_info
         $custom_info = $_POST['custom_info'];
         $ret_custom_info = \app\index\model\Admin::updatecustominfo($custom_info);
+        if($ret_custom_info === false)
+            return false;
 
         //delivery_info
         $delivery_info = $_POST['delivery_info'];
         $ret_delivery_info = \app\index\model\Admin::updatedeliveryinfo($delivery_info);
-
+        if($ret_delivery_info === false)
+            return false;
 
 
         //return_info
@@ -409,6 +414,8 @@ class Confirmordercommon extends Controller
         {
             $return_info = $_POST['return_info'];
             $ret_return_info = \app\index\model\Admin::updatereturninfo($return_info);
+            if($ret_return_info === false)
+                return false;
         }
 
         //order_goods_manager  order_goods_logistics
@@ -422,6 +429,8 @@ class Confirmordercommon extends Controller
                     $product_info_id = \app\index\model\Admin::getmaxtableidretid('product_info','product_info_id') + 1;
                     $order_goods_manager[$i]['product_info_id'] = $product_info_id;
                     $retsql = \app\index\model\Admin::addproductinfo($order_goods_manager[$i]);
+                    if($retsql === false)
+                        return false;
                 }
                 //order_goods_manager
                 if($order_goods_manager[$i]['order_goods_manager_id'] == '')
@@ -430,6 +439,8 @@ class Confirmordercommon extends Controller
                     $order_goods_manager[$i]['order_goods_manager_id'] = $order_goods_manager_id+1;
                 }
                 $retmanager = \app\index\model\Admin::updateordergoodsmanager($order_goods_manager[$i]);
+                if($retmanager === false)
+                    return false;
                 //order_goods_logistics
                 if($order_goods_manager[$i]['ogl_id'] == '')
                 {
