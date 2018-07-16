@@ -1919,6 +1919,16 @@
             session("user_querypower", $userquerypower);
         }
 
+        public static function getdepartmentnumber($departid)
+        {
+            $sql = "select * from  dsp_logistic.organize where organize_id = '$departid'";
+            $tableorganize = Db::query($sql);
+            if(!empty($tableorganize))
+                return $tableorganize[0]['department_number'];
+            else
+                return 0;
+        }
+
         public static function login($username,$password){
             $where['username'] = $username;
             //$where['password'] = $password;
