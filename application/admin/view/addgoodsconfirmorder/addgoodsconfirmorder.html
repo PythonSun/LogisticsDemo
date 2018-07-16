@@ -192,6 +192,7 @@
                             <option value="1">现金</option>
                             <option value="2">代付</option>
                             <option value="3">公司付</option>
+                            <option value="4">送货</option>
                         </select>
                     </div>
                 </div>
@@ -259,7 +260,7 @@
             </table>
             <div class="layui-form-item">
                 <div class="layui-btn-container textcenter">
-                    <input type="button" value="保存" class="layui-btn layui-btn-normal" lay-submit="" id="save" lay-filter="save">
+                    <input type="submit" value="保存" class="layui-btn layui-btn-normal" lay-submit="" id="save" lay-filter="save">
                 </div>
             </div>
         </form>
@@ -600,6 +601,7 @@
                             }
                         }
                     });
+                    document.formName.submit();
                     return false;
                 });
                 //监听选择公司

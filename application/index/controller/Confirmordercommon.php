@@ -26,6 +26,7 @@ class Confirmordercommon extends Controller
         $cs_examine = $_POST['cs_examine'];
 
         $cs_info_id = \app\index\model\Admin::getcsinfomaxid('cs_belong','cs_id');
+        //var_dump($cs_info_id);
         $cs_info['write_date'] = $date_now;
         $cs_info['cs_id'] = $cs_info_id;
         $cs_info['return_info_id'] = '-1';
