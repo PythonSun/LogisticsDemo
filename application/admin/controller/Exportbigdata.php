@@ -42,7 +42,6 @@ class Exportbigdata extends Controller
                 $file_name = $_GET['file_name'];
                 $file_extend = 'xlsx';
                 $ret = \app\index\model\Admin::queryexportordergoodsinfo($param);
-                dump($ret);
-                //\app\index\model\Admin::exportcsinfo($file_name,$file_extend,$template_name,$ret);
+                \app\index\model\Admin::exportoutofstackinfo($file_name,$file_extend,$template_name,$ret);
         }
 }

@@ -2630,7 +2630,6 @@
                             $tableobj[$i] = null;
                         }
                     }
-                    
                 }else{
                     /*只查非常规的*/
                     $tableobj[$i]['ofg_productlist'] = [];
@@ -2791,8 +2790,96 @@
             $tableobj = Db::query($sqlone);
             if(empty($tableobj))
                 return null;
+            for ($i=0; $i < count($tableobj); $i++) {
+                //常规产品详细
+                $cs_id = $tableobj[$i]['cs_id'];
+                $sqlthree = "select dsp_logistic.product_info.*,dsp_logistic.product_brand.brand_name,dsp_logistic.product_type.product_type_name,dsp_logistic.product_place.place_name,dsp_logistic.order_goods_cs_undeliver_goods_info.* from dsp_logistic.order_goods_cs_undeliver_goods_info ";
+                $sqlthree .= "left join dsp_logistic.product_info on dsp_logistic.product_info.product_info_id = dsp_logistic.order_goods_cs_undeliver_goods_info.product_info_id ";
+                $sqlthree .= "left join dsp_logistic.product_brand on dsp_logistic.product_brand.brand_id = dsp_logistic.product_info.brand_id ";
+                $sqlthree .= "left join dsp_logistic.product_place on dsp_logistic.product_place.place_id = dsp_logistic.product_info.place_id ";
+                $sqlthree .= "left join dsp_logistic.product_type on dsp_logistic.product_type.product_type_id = dsp_logistic.product_info.product_type_id ";
+                $sqlthree .= "where dsp_logistic.order_goods_cs_undeliver_goods_info.cs_id ='$cs_id' and dsp_logistic.order_goods_cs_undeliver_goods_info.ogcugi_product_state='5'";
+                /*品牌*/
+                if(property_exists($param,'brand')){
+                    $brand = intval($param->brand);
+                    $sqlthree .= "and dsp_logistic.product_brand.brand_id = '$brand' ";
+                }
 
-            
+                /*产品型号*/
+                if(property_exists($param,'producttype')){
+                    $producttype = $param->producttype;
+                    $sqlthree .= "and dsp_logistic.product_info.model = '$producttype' ";
+                }
+
+                /*生产地*/
+                if(property_exists($param,'productarea')){
+                    $productarea = intval($param->productarea);
+                    $sqlthree .= "and dsp_logistic.product_place.place_id = '$productarea' ";
+                }
+
+                $listobjtwo = Db::query($sqlthree);
+                if(empty($listobjtwo)){
+                    $tableobj[$i] = null;
+                }else{
+                    $tableobj[$i]['ofg_productlist'] = $listobjtwo;
+                }
+            }
+
+            $newtableobj = array();
+            for($item = 0 ; $item < count($tableobj) ; $item++){
+                if($tableobj[$item] != null){
+                    $newtableobj[] = $tableobj[$item];
+                }
+            }
+            return $newtableobj;
+        }
+
+        /*导出缺货部分*/
+        public static function exportoutofstackinfo($file_name,$file_extend,$template_name,$ret){
+            $root_url = $_SERVER['DOCUMENT_ROOT'];
+            $file_name = iconv("utf-8","gb2312",$file_name);
+            $template_name = iconv("utf-8","gb2312",$template_name);
+
+            $objReader = PHPExcel_IOFactory::createReader('Excel2007');
+            $objPHPExcel = $objReader->load($root_url."/templates/".$template_name);
+            $objPHPExcel->setActiveSheetIndex(0);
+            $objPHPExcel->getActiveSheet()->setTitle('sheet0');
+            $list_num = 0;
+
+            for($item=0; $item < count($ret); $item++){
+                $ofg_productlist = $ret[$item]['ofg_productlist'];
+                for($list=0; $list < count($ofg_productlist); $list++){
+                    $objPHPExcel->getActiveSheet()->setCellValue('A'.($list+2+$list_num), $ofg_productlist[$list]['model']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.($list+2+$list_num), $ofg_productlist[$list]['product_info_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('C'.($list+2+$list_num), $ofg_productlist[$list]['product_type_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('D'.($list+2+$list_num), $ofg_productlist[$list]['brand_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.($list+2+$list_num), $ofg_productlist[$list]['place_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('F'.($list+2+$list_num), $ofg_productlist[$list]['ogcugi_unit']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.($list+2+$list_num), $ofg_productlist[$list]['ogcugi_count']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($list+2+$list_num), $ret[$item]['cs_belong_create_time']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.($list+2+$list_num), $ret[$item]['cs_id']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('J'.($list+2+$list_num), $ret[$item]['build_department_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('K'.($list+2+$list_num), $ret[$item]['build_user_name']);                    
+                    $objPHPExcel->getActiveSheet()->setCellValue('L'.($list+2+$list_num), $ret[$item]['company_address']);                    
+                    $objPHPExcel->getActiveSheet()->setCellValue('M'.($list+2+$list_num), $ret[$item]['receiver_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('N'.($list+2+$list_num), $ofg_productlist[$list]['ogcugi_comment']);
+                }
+                $list_num += count($ofg_productlist);
+            }
+
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="'.$file_name.'.'.$file_extend.'"');
+            header('Cache-Control: max-age=0');
+            ob_clean();  //关键
+            flush();     //关键
+            if($file_extend == 'xlsx'){
+                $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel2007');
+            }else if($file_extend == 'xls'){
+                $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+            }
+
+            $objWriter->save("php://output");  /*输出至浏览器*/
+            exit;        //关键
         }
 
         /*导出订货确认单*/
