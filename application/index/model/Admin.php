@@ -2769,6 +2769,32 @@
             return $newtableobj;
         }
 
+        public static function queryexportordergoodsinfo($param){
+            $sqlone = "select dsp_logistic.cs_belong.*,dsp_logistic.order_goods_cs_info.*,dsp_logistic.ofg_info.*,dsp_logistic.fee_info.* from dsp_logistic.order_goods_cs_info ";
+            $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
+            $sqlone .= "left join dsp_logistic.ofg_info on dsp_logistic.ofg_info.ofg_info_id = dsp_logistic.order_goods_cs_info.ofg_info_id ";
+            $sqlone .= "left join dsp_logistic.fee_info on dsp_logistic.fee_info.fee_info_id = dsp_logistic.order_goods_cs_info.fee_info_id ";
+            /*查询条件*/
+            $sqlone .= "where dsp_logistic.order_goods_cs_info.cs_info_state != '3'";
+            if((property_exists($param,'startdate'))&&(property_exists($param,'enddate'))){
+               $startdate = $param->startdate;
+               $enddate = $param->enddate;
+               $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
+            }else if(property_exists($param,'startdate')){
+                    $startdate = $param->startdate;
+                    $sqlone.= " and cs_belong_create_time ='$startdate'";
+            }else if(property_exists($param,'enddate')){
+                    $enddate = $param->enddate;
+                    $sqlone.= " and cs_belong_create_time ='$enddate'";
+            }
+
+            $tableobj = Db::query($sqlone);
+            if(empty($tableobj))
+                return null;
+
+            
+        }
+
         /*导出订货确认单*/
         public static function exportgoodsconfirmorder($file_name,$file_extend,$template_name,$ret){
             $root_url = $_SERVER['DOCUMENT_ROOT'];

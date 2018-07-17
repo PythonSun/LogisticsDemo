@@ -55,7 +55,13 @@
 				</div>
 				
 				<div class="layui-form-item">
-					<button class="layui-btn" lay-submit="" lay-filter="export" style="float: right;margin-right: 10px;">导出</button>
+					{if condition="$aftersalepower eq 2"}
+					<button class="layui-btn" lay-submit="" lay-filter="export" style="float: right;margin-right: 10px;">售后单导出</button>
+					{/if}
+
+	  			  	{if condition="$presalepower eq 1"}
+				  	<button class="layui-btn" lay-submit="" lay-filter="exports" style="float: right;margin-right: 10px;">售前单导出</button>
+				  	{/if}
 				</div>
 			</form>
 		</div>
@@ -111,6 +117,48 @@
                         			param.productarea = productarea;
                         		}
                         		window.open("{:url('admin/exportbigdata/exportcsinfo')}?param="+ JSON.stringify(param) + "&file_name=" + exportparam.file_name,"_self");
+							}
+						});
+					return false;
+				});
+
+				form.on('submit(exports)',function(data){
+					top.layer.open({
+						type: 2,
+						area: ['600px', '150px'],
+						shade: 0.6,
+						shadeClose:true,
+						title: '设置导出参数',
+						resize:false,
+						btn: ['保存','取消'],
+						content: "{:url('admin/setexportfileparam/setexportfileparam')}",
+						yes:function(index,layero){
+		                        var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                        		var exportparam = iframeWin.getexportparam();
+                        		top.layer.close(index);
+                        		var param = new Object();
+                        		var startdate = jq('#startdate').val();
+                        		if(startdate != ''){
+                        			param.startdate = startdate;
+                        		}
+                        		var enddate = jq('#enddate').val();
+                        		if(enddate != ''){
+                        			param.enddate = enddate;
+                        		}
+
+                        		var brand = jq('#brand').val();
+                        		if(brand != ''){
+                        			param.brand = brand;
+                        		}
+                        		var producttype = jq('#producttype').val();
+                        		if(producttype != ''){
+                        			param.producttype = producttype;
+                        		}
+                        		var productarea = jq('#productarea').val();
+                        		if(productarea != ''){
+                        			param.productarea = productarea;
+                        		}
+                        		window.open("{:url('admin/exportbigdata/exportordergoodsinfo')}?param="+ JSON.stringify(param) + "&file_name=" + exportparam.file_name,"_self");
 							}
 						});
 					return false;

@@ -26,7 +26,7 @@ class Queryborrowconfirmorder extends Controller
         $role_info = \app\index\model\Admin::queryroleinfo($role_id);
 
         $exportgoodspower = 0;
-        $exportreplacepower = 
+        $exportreplacepower = 0;
         $exportborrowpower = ($role_info[0]['borrow_sample_permission'])&0x10;
         $exportreturnpower = 0;
         $exportpartspower = 0;
