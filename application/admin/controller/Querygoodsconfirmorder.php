@@ -84,13 +84,12 @@ class Querygoodsconfirmorder extends Controller
 
     /*导出订货确认单*/
     public function exportorderconfirmorder(){
-        $template_name = "订单登记系统导出.xlsx";
+        $template_name = "订货确认单导出表格.xlsx";
         $param = json_decode($_GET['param']);
         $file_name = $_GET['file_name'];
         $file_extend = 'xlsx';
         /*查询订货确认单*/
         $ret = \app\index\model\Admin::queryexportgoodsconfirmorder($param);
-
         /*导出订货确认单*/
         \app\index\model\Admin::exportgoodsconfirmorder($file_name,$file_extend,$template_name,$ret);
     }

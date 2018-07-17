@@ -2532,7 +2532,7 @@
             /*运费付费模式*/
             if(property_exists($param,'freightmode')){
                 $freightmode = intval($param->freightmode);
-                $sqlone .= "and dsp_logistic.fee_info.transfer_fee = '$freightmode' ";
+                $sqlone .= "and dsp_logistic.fee_info.transfer_mode = '$freightmode' ";
             }
 
             $tableobj = Db::query($sqlone);
@@ -2779,43 +2779,44 @@
             for($item=3; $item < count($ret)+3; $item++){
                 $objPHPExcel->getActiveSheet()->setCellValue('A'.($item+$liststart), $ret[$item-3]['cs_belong_create_time']);
                 $objPHPExcel->getActiveSheet()->setCellValue('B'.($item+$liststart), $ret[$item-3]['delivery_logistic_date']);
-                $objPHPExcel->getActiveSheet()->setCellValue('C'.($item+$liststart), $ret[$item-3]['build_department_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('D'.($item+$liststart), $ret[$item-3]['build_user_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('E'.($item+$liststart), $ret[$item-3]['company_address']);
-                $objPHPExcel->getActiveSheet()->setCellValue('F'.($item+$liststart), $ret[$item-3]['receiver_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), $ret[$item-3]['delivery_logistic_yard']);
+                $objPHPExcel->getActiveSheet()->setCellValue('C'.($item+$liststart), $ret[$item-3]['cs_id']);
+                $objPHPExcel->getActiveSheet()->setCellValue('D'.($item+$liststart), $ret[$item-3]['build_department_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('E'.($item+$liststart), $ret[$item-3]['build_user_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('F'.($item+$liststart), $ret[$item-3]['company_address']);
+                $objPHPExcel->getActiveSheet()->setCellValue('G'.($item+$liststart), $ret[$item-3]['receiver_name']);
+                $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), $ret[$item-3]['delivery_logistic_yard']);
                 /*订单状态*/
                 if($ret[$item-3]['cs_info_state'] == 1){
-                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), '处理中');
-                    $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), 1);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), '处理中');
+                    $objPHPExcel->getActiveSheet()->setCellValue('J'.($item+$liststart), 1);
                 }else if($ret[$item-3]['cs_info_state'] == 2){
-                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), '已完成');
-                    $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), 1);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), '已完成');
+                    $objPHPExcel->getActiveSheet()->setCellValue('J'.($item+$liststart), 1);
                 }else if($ret[$item-3]['cs_info_state'] == 3){
-                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), '取消');
-                    $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), 1);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), '取消');
+                    $objPHPExcel->getActiveSheet()->setCellValue('J'.($item+$liststart), 1);
                 }else if($ret[$item-3]['cs_info_state'] == 4){
-                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), '备货');
-                    $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), 1);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), '备货');
+                    $objPHPExcel->getActiveSheet()->setCellValue('J'.($item+$liststart), 1);
                 }else if($ret[$item-3]['cs_info_state'] == 5){
-                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), '退回');
-                    $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), 1);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), '退回');
+                    $objPHPExcel->getActiveSheet()->setCellValue('J'.($item+$liststart), 1);
                 }else if($ret[$item-3]['cs_info_state'] == 6){
-                    $objPHPExcel->getActiveSheet()->setCellValue('H'.($item+$liststart), '缺货');
-                    $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), 1);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.($item+$liststart), '缺货');
+                    $objPHPExcel->getActiveSheet()->setCellValue('J'.($item+$liststart), 1);
                 }
 
-                $objPHPExcel->getActiveSheet()->setCellValue('J'.($item+$liststart), $ret[$item-3]['less_num']);
-                $objPHPExcel->getActiveSheet()->setCellValue('K'.($item+$liststart), $ret[$item-3]['delivered_total']);
-                $objPHPExcel->getActiveSheet()->setCellValue('L'.($item+$liststart), $ret[$item-3]['less_total']);
-                $objPHPExcel->getActiveSheet()->setCellValue('M'.($item+$liststart), $ret[$item-3]['delivered_pa']);
-                $objPHPExcel->getActiveSheet()->setCellValue('N'.($item+$liststart), $ret[$item-3]['delivered_conference']);
-                $objPHPExcel->getActiveSheet()->setCellValue('O'.($item+$liststart), $ret[$item-3]['delivered_customization']);
-                $objPHPExcel->getActiveSheet()->setCellValue('P'.($item+$liststart), $ret[$item-3]['delivered_record']);
-                $objPHPExcel->getActiveSheet()->setCellValue('Q'.($item+$liststart), $ret[$item-3]['delivered_metro']);
-                $objPHPExcel->getActiveSheet()->setCellValue('R'.($item+$liststart), $ret[$item-3]['delivered_aux']);
-                $objPHPExcel->getActiveSheet()->setCellValue('S'.($item+$liststart), $ret[$item-3]['delivered_gift']);
-                $objPHPExcel->getActiveSheet()->setCellValue('T'.($item+$liststart), $ret[$item-3]['delivered_album']);
+                $objPHPExcel->getActiveSheet()->setCellValue('K'.($item+$liststart), $ret[$item-3]['less_num']);
+                $objPHPExcel->getActiveSheet()->setCellValue('L'.($item+$liststart), $ret[$item-3]['delivered_total']);
+                $objPHPExcel->getActiveSheet()->setCellValue('M'.($item+$liststart), $ret[$item-3]['less_total']);
+                $objPHPExcel->getActiveSheet()->setCellValue('N'.($item+$liststart), $ret[$item-3]['delivered_pa']);
+                $objPHPExcel->getActiveSheet()->setCellValue('O'.($item+$liststart), $ret[$item-3]['delivered_conference']);
+                $objPHPExcel->getActiveSheet()->setCellValue('P'.($item+$liststart), $ret[$item-3]['delivered_customization']);
+                $objPHPExcel->getActiveSheet()->setCellValue('Q'.($item+$liststart), $ret[$item-3]['delivered_record']);
+                $objPHPExcel->getActiveSheet()->setCellValue('R'.($item+$liststart), $ret[$item-3]['delivered_metro']);
+                $objPHPExcel->getActiveSheet()->setCellValue('S'.($item+$liststart), $ret[$item-3]['delivered_aux']);
+                $objPHPExcel->getActiveSheet()->setCellValue('T'.($item+$liststart), $ret[$item-3]['delivered_gift']);
+                $objPHPExcel->getActiveSheet()->setCellValue('U'.($item+$liststart), $ret[$item-3]['delivered_album']);
 
                 /*以下部分保留*/
                 // /*常规产品统计*/
