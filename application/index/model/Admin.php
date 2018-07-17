@@ -3199,30 +3199,38 @@
             $objPHPExcel->getActiveSheet()->setCellValue('L4', $ret->uoi_to_place);
 
             $productlist = $ret->productlist;
-            for($item=7;$item<(count($productlist)+7);$item++){
-                $objPHPExcel->getActiveSheet()->setCellValue('B'.$item, $productlist[$item-7]->model);
-                $objPHPExcel->getActiveSheet()->setCellValue('C'.$item, $productlist[$item-7]->uod_count);
-                $objPHPExcel->getActiveSheet()->setCellValue('D'.$item, $productlist[$item-7]->uod_unit);
-                $objPHPExcel->getActiveSheet()->setCellValue('E'.$item, $productlist[$item-7]->uod_requirement);
-                $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-7]->uod_delivery_date);
-                $objPHPExcel->getActiveSheet()->setCellValue('N'.$item, $productlist[$item-7]->uod_comment);
+            if(count($productlist) > 0){
+                $objPHPExcel->getActiveSheet()->setCellValue('B7', $productlist[0]->model);
+                $objPHPExcel->getActiveSheet()->setCellValue('C7', $productlist[0]->uod_count);
+                $objPHPExcel->getActiveSheet()->setCellValue('D7', $productlist[0]->uod_unit);
+                $objPHPExcel->getActiveSheet()->setCellValue('E7', $productlist[0]->uod_requirement);
+                $objPHPExcel->getActiveSheet()->setCellValue('K7', $productlist[0]->uod_delivery_date);
+                $objPHPExcel->getActiveSheet()->setCellValue('N7', $productlist[0]->uod_comment);
             }
+            // for($item=7;$item<(count($productlist)+7);$item++){
+            //     $objPHPExcel->getActiveSheet()->setCellValue('B'.$item, $productlist[$item-7]->model);
+            //     $objPHPExcel->getActiveSheet()->setCellValue('C'.$item, $productlist[$item-7]->uod_count);
+            //     $objPHPExcel->getActiveSheet()->setCellValue('D'.$item, $productlist[$item-7]->uod_unit);
+            //     $objPHPExcel->getActiveSheet()->setCellValue('E'.$item, $productlist[$item-7]->uod_requirement);
+            //     $objPHPExcel->getActiveSheet()->setCellValue('K'.$item, $productlist[$item-7]->uod_delivery_date);
+            //     $objPHPExcel->getActiveSheet()->setCellValue('N'.$item, $productlist[$item-7]->uod_comment);
+            // }
 
-            $objPHPExcel->getActiveSheet()->setCellValue('A12', "项目名称：".$ret->uoi_project_name);
-            $objPHPExcel->getActiveSheet()->setCellValue('A13', "提供商：".$ret->uoi_provider_name);
+            $objPHPExcel->getActiveSheet()->setCellValue('A8', "项目名称：".$ret->uoi_project_name);
+            $objPHPExcel->getActiveSheet()->setCellValue('A9', "提供商：".$ret->uoi_provider_name);
 
             /*超过默认行数*/
-            if(count($productlist) > 5){
+            if(count($productlist) > 1){
                 /*插入多行数据*/
-                $newrows = count($productlist) - 5;
-                $objPHPExcel->getActiveSheet()->insertNewRowBefore(12,$newrows);
+                $newrows = count($productlist) - 1;
+                $objPHPExcel->getActiveSheet()->insertNewRowBefore(8,$newrows);
                 for($i=0; $i<$newrows;$i++){
-                    $objPHPExcel->getActiveSheet()->mergeCells('E'.(12+$i).':'.'J'.(12+$i));
-                    $objPHPExcel->getActiveSheet()->mergeCells('K'.(12+$i).':'.'L'.(12+$i));
-                    $objPHPExcel->getActiveSheet()->mergeCells('N'.(12+$i).':'.'Q'.(12+$i));
+                    $objPHPExcel->getActiveSheet()->mergeCells('E'.(8+$i).':'.'J'.(8+$i));
+                    $objPHPExcel->getActiveSheet()->mergeCells('K'.(8+$i).':'.'L'.(8+$i));
+                    $objPHPExcel->getActiveSheet()->mergeCells('N'.(8+$i).':'.'Q'.(8+$i));
                 }
 
-                for($item=12;$item<(count($productlist)+12-5);$item++){
+                for($item=8;$item<(count($productlist)+8-1);$item++){
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$item, $item-6);
                     $objPHPExcel->getActiveSheet()->setCellValue('B'.$item, $productlist[$item-7]->model);
                     $objPHPExcel->getActiveSheet()->setCellValue('C'.$item, $productlist[$item-7]->uod_count);
