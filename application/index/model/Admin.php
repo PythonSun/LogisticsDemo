@@ -2641,20 +2641,25 @@
             }
 
             //删除数组中空值
-            $tableobj = array_filter($tableobj);
+            $newtableobj = array();
+            for($item = 0 ; $item < count($tableobj) ; $item++){
+                if($tableobj[$item] != null){
+                    $newtableobj[] = $tableobj[$item];
+                }
+            }
 
             /*单独查询发货日期*/
-            if(count($tableobj) > 0){
-                for($i=0; $i < count($tableobj); $i++){
-                    $cs_id = $tableobj[$i]['cs_id'];
+            if(count($newtableobj) > 0){
+                for($i=0; $i < count($newtableobj); $i++){
+                    $cs_id = $newtableobj[$i]['cs_id'];
                     $sqlfour = "select dsp_logistic.logistics_info.* from dsp_logistic.logistics_info where cs_id='$cs_id'";
                     $dateobj = Db::query($sqlfour);
-                    $tableobj[$i]['logistic_date'] = $dateobj;
+                    $newtableobj[$i]['logistic_date'] = $dateobj;
                 }
             }
 
             /*统计出缺货，产品分类，非常规数据*/
-            for($i = 0 ; $i < count($tableobj);$i++){
+            for($i = 0 ; $i < count($newtableobj);$i++){
                 $less_num = 0 ;
                 $less_total =  0;
                 /*公共广播，会议等产品数量*/
@@ -2677,7 +2682,7 @@
                 /*缺货产品列表*/
                 //$lessproductlist = array();
 
-                $ofg_productlist = $tableobj[$i]['ofg_productlist'];
+                $ofg_productlist = $newtableobj[$i]['ofg_productlist'];
                 for($j=0 ; $j <count($ofg_productlist); $j++ ){
                     // if($ofg_productlist[$j]['product_type_name'] == '公共广播')
                     //     $broadcast_num++;
@@ -2710,8 +2715,8 @@
 
                 //缺货产品列表
                 //$tableobj[$i]['lessproductlist'] = $lessproductlist;
-                $tableobj[$i]['less_num'] = $less_num;
-                $tableobj[$i]['less_total'] = $less_total;
+                $newtableobj[$i]['less_num'] = $less_num;
+                $newtableobj[$i]['less_total'] = $less_total;
                 // $unc_productlist = $tableobj[$i]['unc_productlist'];
                 // for($k = 0 ; $k < count($unc_productlist) ; $k++){
                 //     if($unc_productlist[$k]['unc_product_name'] == '研发'){
@@ -2751,17 +2756,17 @@
                 // $tableobj[$i]['unc_interlligencesoft_num'] = $unc_interlligencesoft_num;
 
                 // /*发货日期*/
-                $logistic_date = $tableobj[$i]['logistic_date'];
+                $logistic_date = $newtableobj[$i]['logistic_date'];
                 $delivery_logistic_date = "";
                 $delivery_logistic_yard = "";
                 for($l = 0 ; $l < count($logistic_date) ; $l++){
                     $delivery_logistic_date .= $logistic_date[$l]['delivery_date'].',';
                     $delivery_logistic_yard .= $logistic_date[$l]['goods_yard_name'].',';
                 }
-                $tableobj[$i]['delivery_logistic_date'] = $delivery_logistic_date;
-                $tableobj[$i]['delivery_logistic_yard'] = $delivery_logistic_yard;
+                $newtableobj[$i]['delivery_logistic_date'] = $delivery_logistic_date;
+                $newtableobj[$i]['delivery_logistic_yard'] = $delivery_logistic_yard;
             }
-            return $tableobj;
+            return $newtableobj;
         }
 
         /*导出订货确认单*/
