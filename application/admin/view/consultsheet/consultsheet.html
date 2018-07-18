@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=11">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
     <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/viewer/css/viewer.min.css">
 </head>
     <style>
         .hide{
@@ -21,6 +22,8 @@
             width: 21px;
             box-shadow: 0 0 3px #000;
         }
+        #dowebok { width: 700px; margin: 0 auto; font-size: 0;}
+        #dowebok img { width: 100%; cursor: zoom-in;}
     </style>
 <body style="height: 100%;margin: 0px;">
 <div>
@@ -37,19 +40,25 @@
         </div>
     </div>
 
-    <div>
-        <img id="img" style="margin-top: 44px">
+    <div id="dowebok">
+        <img id="img" style="margin-top: 44px;" data-original="">
     </div>
 
 </div>
     <script type="text/javascript" src="/static/layui/layui.js"></script>
     <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+    <script src="/static/viewer/js/viewer.min.js"></script>
     <script type="text/javascript">
         var  cs_id = 0;//相关联的订单id
         var picNames = [];//item：tab:文件保存的文件夹，0：缓存/新增的；1：原有的；value：文件名
         var index = 0;//当前图片浏览序号
         var canDelPic = false;
         var delPic = [];
+
+        var viewer = new Viewer(document.getElementById('dowebok'), {
+            url: 'data-original'
+        });
+
         layui.use(['form', 'jquery'], function () {
             var form = layui.form,
                 jq = layui.jquery,
@@ -60,6 +69,7 @@
                 delPic = {$delPic};
                 var path = picPath(picNames[index].tab,picNames[index].value);
                 jq("#img").attr("src",path);
+                jq("#img").attr("data-original",path);
                 if(canDelPic){
                     jq('#del').removeClass('hide');
                 }
@@ -76,6 +86,7 @@
                 index++;
                 var path = picPath(picNames[index].tab,picNames[index].value);
                 jq("#img").attr("src",path);
+                jq("#img").attr("data-original",path);
                 refreshPicLengthText();
             });
             jq('#del').click(function () {
@@ -133,6 +144,7 @@
             index--;
             var path = picPath(picNames[index].tab,picNames[index].value);
             jq("#img").attr("src",path);
+            jq("#img").attr("data-original",path);
             refreshPicLengthText();
         }
         //删除咨询表
