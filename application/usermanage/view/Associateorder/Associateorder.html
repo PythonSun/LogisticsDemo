@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>转手订单</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/global.css">
+    <link rel="stylesheet" type="text/css" href="/static/UI-jquery/jquery-ui.min.css">
+</head>
+<body>
+    <div style ="margin: 10px 20px">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">转出经理：</label>
+                    <div class="layui-input-inline" >
+                        <select id ="company_id" name="company_name" lay-filter="company_name">
+                            <option value = ""  selected>请选择公司</option>
+                            {volist name="companylist" id="vo"}
+                            <option value={$vo.organize_id}>{$vo.organize_name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select id ="department_id" name="department_name" lay-filter="department_name">
+                            <option value = ""  selected>请选择部门</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select id ="people_id" name="people_name" lay-filter="people_name">
+                            <option value = ""  selected>请选择经理</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">接手经理：</label>
+                    <div class="layui-input-inline" >
+                        <select id ="in_company_id" name="in_company_name" lay-filter="in_company_name">
+                            <option value = ""  selected>请选择公司</option>
+                            {volist name="companylist" id="vo"}
+                            <option value={$vo.organize_id}>{$vo.organize_name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select id ="in_department_id" name="in_department_name" lay-filter="in_department_name">
+                            <option value = ""  selected>请选择部门</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select id ="in_people_id" name="in_people_name" lay-filter="in_people_name">
+                            <option value = ""  selected>请选择经理</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">订单类型：</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="ordertype" value="0" title="订货单"  lay-filter="ordertype" checked="">
+                        <input type="radio" name="ordertype" value="1" title="更换确认单" lay-filter="ordertype">
+                        <input type="radio" name="ordertype" value="2" title="借样确认单" lay-filter="ordertype">
+                        <input type="radio" name="ordertype" value="3" title="退货确认单" lay-filter="ordertype">
+                        <input type="radio" name="ordertype" value="4" title="维修确认单" lay-filter="ordertype">
+                        <input type="radio" name="ordertype" value="5" title="配件确认单"  lay-filter="ordertype">
+                        <input type="radio" name="ordertype" value="6" title="代用确认单" lay-filter="ordertype">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">订单状态：</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="orderstate" value="-1" title="全部" lay-filter="orderstate" checked = ''>
+                        <input type="radio" name="orderstate" value="1" title="处理中" lay-filter="orderstate">
+                        <input type="radio" name="orderstate" value="2" title="已完成" lay-filter="orderstate">
+                        <input type="radio" name="orderstate" value="3" title="取消" lay-filter="orderstate">
+                        <input type="radio" name="orderstate" value="4" title="备货" lay-filter="orderstate">
+                        <input type="radio" name="orderstate" value="6" title="缺货" lay-filter="orderstate">
+                        <input type="radio" name="orderstate" value="5" title="退回" lay-filter="orderstate" class="confirmhave">
+                        <input type="radio" name="orderstate" value="0" title="空" lay-filter="orderstate" class="confirmhave">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item" style="padding-left:20px ">
+                <input type="button" class="layui-btn" lay-submit="" lay-filter="query" style="float: left;margin-right: 10px;" value="查询">
+                <!--<input type="button" id="transfer_page" class="layui-btn" lay-filter="transfer_page" style="float: left;margin-right: 10px;" value="转手当前页">-->
+            </div>
+        </form>
+        <div style="padding-left:20px ">
+            <table  class="layui-table" id="ordertable" lay-filter="ordertable"></table>
+            <script type="text/html" id="operatebar">
+                <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+                <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="transfer">转手</a>
+            </script>
+        </div>
+        <div style="padding-left:20px ">
+            <a style="color: #A60000;">注意：订货单状态没有退回和空；空订单状态表示该单只保存没有提交</a>
+        </div>
+
+    </div>
+    <script src="/static/layui/layui.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript">
+        var order_type = 0;
+        var ordert_state = '-1';
+        layui.use(['layer','jquery','form','table'],function(){
+            var form = layui.form ,layer = layui.layer,jq = layui.jquery,table = layui.table;
+            /*监听总部门选择*/
+            form.on('select(company_name)',function(data){
+                var ops=document.getElementById("department_id");
+                ops.innerHTML = "";
+                ops.options.length = 0;
+                form.render('select');
+                jq("#department_id").append("<option value=''>请选择</option>");
+                form.render('select');
+                var ops=document.getElementById("people_id");
+                ops.innerHTML = "";
+                ops.options.length = 0;
+                form.render('select');
+                jq("#people_id").append("<option value=''>请选择</option>");
+                form.render('select');
+                if(data.value == "")
+                    return ;
+                jq.post("{:url('usermanage/associateorder/getdepartmentinfo')}",{'param':data.value},function(result){
+                    if(result == null)
+                        return ;
+                    for(var  item in result){
+                        //console.log(data[item]['organize_name']);
+                        jq("#department_id").append("<option value='"+result[item]['organize_id']+"'>"+result[item]['organize_name']+"</option>");
+                    }
+                    form.render('select');
+                });
+                return false;
+            });
+            form.on('select(in_company_name)',function(data){
+                var ops=document.getElementById("in_department_id");
+                ops.innerHTML = "";
+                ops.options.length = 0;
+                form.render('select');
+                jq("#in_department_id").append("<option value=''>请选择</option>");
+                form.render('select');
+                var ops=document.getElementById("in_people_id");
+                ops.innerHTML = "";
+                ops.options.length = 0;
+                form.render('select');
+                jq("#in_people_id").append("<option value=''>请选择</option>");
+                form.render('select');
+                if(data.value == "")
+                    return ;
+                jq.post("{:url('usermanage/associateorder/getdepartmentinfo')}",{'param':data.value},function(result){
+                    if(result == null)
+                        return ;
+                    for(var  item in result){
+                        //console.log(data[item]['organize_name']);
+                        jq("#in_department_id").append("<option value='"+result[item]['organize_id']+"'>"+result[item]['organize_name']+"</option>");
+                    }
+                    form.render('select');
+                });
+                return false;
+            });
+            form.on('select(department_name)',function(data){
+                var ops=document.getElementById("people_id");
+                ops.innerHTML = "";
+                ops.options.length = 0;
+                form.render('select');
+                jq("#people_id").append("<option value=''>请选择</option>");
+                form.render('select');
+
+                if(data.value == "")
+                    return ;
+                jq.post("{:url('usermanage/associateorder/getdspmanagerinfo')}",{'param':data.value},function(result){
+                    if(result == null)
+                        return ;
+                    for(var  item in result){
+                        //console.log(data[item]['organize_name']);
+                        jq("#people_id").append("<option value='"+result[item]['user_id']+"'>"+result[item]['fullname']+"</option>");
+                    }
+                    form.render('select');
+                });
+                return false;
+            });
+            form.on('select(in_department_name)',function(data){
+                var ops=document.getElementById("in_people_id");
+                ops.innerHTML = "";
+                ops.options.length = 0;
+                form.render('select');
+                jq("#in_people_id").append("<option value=''>请选择</option>");
+                form.render('select');
+
+                if(data.value == "")
+                    return ;
+                jq.post("{:url('usermanage/associateorder/getdspmanagerinfo')}",{'param':data.value},function(result){
+                    if(result == null)
+                        return ;
+                    for(var  item in result){
+                        //console.log(data[item]['organize_name']);
+                        jq("#in_people_id").append("<option value='"+result[item]['user_id']+"'>"+result[item]['fullname']+"</option>");
+                    }
+                    form.render('select');
+                });
+                return false;
+            });
+            /*表格渲染*/
+            table.render({
+                elem: '#ordertable'
+                ,url:"{:url('usermanage/associateorder/getorder')}"     //动态获取数据
+                ,cols: [[
+                    {field: 'cs_id', title: '流水号', minWidth: 80, }
+                    ,{field: 'write_date', title: '录单时间', minWidth: 80}
+                    ,{field: 'build_user_name', title: '经理', minWidth: 80}
+                    ,{field: 'order_type', title: '订单类型', minWidth: 80}
+                    ,{field: 'cs_info_state', title: '订单状态', minWidth: 80}
+                    ,{fixed: 'right', title:'操作', width:150, align:'center', toolbar: '#operatebar'}
+                ]]
+                ,id: 'ordertable'
+                ,data:[]
+                ,even: true
+                ,page: true //是否显示分页
+                ,limit: 10 //每页默认显示的数量
+                ,done: function(res){
+                    //console.log(res);    //res为接口返回的数据
+                }
+            });
+
+            /*监听工具条*/
+            table.on('tool(ordertable)', function(obj){
+                var data = obj.data;
+                console.log(data);
+                if(obj.event === 'detail'){
+                    if(data['cs_info_type'] == '0')
+                    {
+                        orderDetail(data['cs_id'],data['cs_belong_id'],data['fee_info_id'],data['ofg_info_id'],data['unc_ofg_info_id']);
+                    }
+                    else if(data['cs_info_type'] == '1')
+                    {
+                        replaceDetail(data['cs_id']);
+                    }
+                    else if(data['cs_info_type'] == '2')
+                    {
+                        borrowDetail(data['cs_id']);
+                    }
+                    else if(data['cs_info_type'] == '3')
+                    {
+                        returnDetail(data['cs_id']);
+                    }
+                    else if(data['cs_info_type'] == '4')
+                    {
+                        repairDetail(data['cs_id']);
+                    }
+                    else if(data['cs_info_type'] == '5')
+                    {
+                        partsDetail(data['cs_id']);
+                    }
+                    else if(data['cs_info_type'] == '6')
+                    {
+                        alternativeDetail(data['cs_id']);
+                    }
+                }
+                else if(obj.event === 'transfer')
+                {
+                    var queryInfo = {};
+                    queryInfo['build_organize_name'] = jq('#in_company_id option:selected').text();
+                    queryInfo['build_department_name'] = jq('#in_department_id option:selected').text();
+                    queryInfo['build_user_name'] = jq('#in_people_id option:selected').text();
+
+                    if(data['build_user_name'] ==queryInfo['build_user_name'] && data['build_organize_name'] ==queryInfo['build_organize_name']&&data['build_department_name'] ==queryInfo['build_department_name'] )
+                    {
+                        layer.msg('转出、接手经理相同',{icon:2});
+                        return false;
+                    }
+                    queryInfo['build_user_id'] =jq('#in_people_id option:selected').val();
+                    queryInfo['build_organize_id'] =jq('#in_company_id option:selected').val() ;
+                    queryInfo['build_department_id'] =jq('#in_department_id option:selected').val();
+                    queryInfo['cs_belong_id'] =data['cs_belong_id'] ;
+                    queryInfo['build_user_phone'] =data['build_user_phone'] ;
+                    queryInfo['cs_belong_create_time'] =data['cs_belong_create_time'] ;
+                    queryInfo['cs_id'] =data['cs_id'] ;
+                    jq.post("{:url('usermanage/associateorder/transferorder')}",{'param':queryInfo},function(result){
+                        if (result) {
+                            top.layer.msg('转接成功', {icon: 1});
+                            //刷新表格
+                            var data = {};
+                            data['in_company_name'] = jq('#in_company_id option:selected').val();
+                            data['in_department_name'] = jq('#in_department_id option:selected').val();
+                            data['in_people_name'] = jq('#in_people_id option:selected').val();
+                            data['company_name'] = jq('#company_id option:selected').val();
+                            data['department_name'] = jq('#department_id option:selected').val();
+                            data['people_name'] = jq('#people_id option:selected').val();
+                            getOrderData(data);
+                        } else if (!result) {
+
+                            top.layer.msg('转接失败', {icon: 2});
+                        }
+                    });
+                }
+            });
+
+            form.on('radio(ordertype)',function (data) {
+                if(order_type != data.value)
+                {
+                    if(order_type != 0 && data.value == 0)
+                    {
+                        if(ordert_state == '0' ||ordert_state == '5')
+                        {
+                            jq("input[name='orderstate'][value='-1']").prop("checked",true)
+                            form.render('radio');
+                            ordert_state = '-1';
+                        }
+                        jq('.confirmhave').addClass('layui-disabled');
+                        jq('.confirmhave').attr('disabled',true);
+                    }
+                    else if(order_type == 0 && data.value != 0)
+                    {
+                        jq('.confirmhave').attr('disabled',false);
+                        jq('.confirmhave').removeClass('layui-disabled');
+                    }
+                    order_type = data.value
+                }
+                order_type = data.value;
+            });
+
+            form.on('radio(orderstate)',function (data) {
+                ordert_state = data.value;
+            });
+
+            form.on('submit(query)',function(data){
+                var queryInfo = data.field;
+                console.log(queryInfo);
+                getOrderData(queryInfo);
+                return false;
+            });
+
+            jq('#transfer_page').click(function () {
+                //var table = document.getElementById("ordertable");
+                console.log(jq('table').find('tr')[1].innerHTML);
+            });
+
+            function orderDetail(cs_id,cs_belong_id,fee_info_id,ofg_info_id,unc_ofg_info_id) {
+                top.layer.open({
+                    type: 2,
+                    title: [
+                        '查看订货确认单',
+                        'background-color:#636363; color:#fff;'
+                    ],
+                    area: ['90%', '90%'],
+                    shade: 0.9,
+                    maxmin: true
+                    , content: "{:url('admin/addgoodsconfirmorder/editgoodsconfirmorder')}?cs_id=" + cs_id
+                    + "&&type=0"
+                    + "&cs_belong_id=" + cs_belong_id
+                    + "&fee_info_id=" + fee_info_id
+                    + "&ofg_info_id=" + ofg_info_id
+                    + "&unc_ofg_info_id=" + unc_ofg_info_id,
+                    btn: ['退出'],
+                    btnAlign: 'c',
+                    yes: function (index,layui) {
+                        top.layer.close(index);
+                    }
+                });
+            }
+
+            function replaceDetail(cs_id) {
+                top.layer.open({
+                    type: 2,
+                    title: [
+                        '查看更换确认单',
+                        'background-color:#636363; color:#fff;'
+                    ],
+                    area: ['90%', '90%'],
+                    shade: 0.9,
+                    maxmin: true,
+                    content: "{:url('admin/addreplaceconfirmorder/editreplaceconfirmorder')}?cs_id=" + cs_id + "&current_user_type= 0",
+                    btn: ['退出'],
+                    btnAlign: 'c',
+                    yes: function (index,layui) {
+                        top.layer.close(index);
+                    }
+                });
+            }
+
+            function borrowDetail(cs_id) {
+                top.layer.open({
+                    type: 2,
+                    title: [
+                        '查看借样确认单',
+                        'background-color:#636363; color:#fff;'
+                    ],
+                    area: ['90%', '90%'],
+                    shade: 0.9,
+                    maxmin: true,
+                    content: "{:url('admin/Addborrowconfirmorder/editborrowconfirmorder')}?cs_id=" + cs_id+"&current_user_type= 0",
+                    btn: [ '退出'],
+                    btnAlign: 'c',
+                    yes: function (index,layui) {
+                        top.layer.close(index);
+                    }
+                });
+            }
+
+            function returnDetail(cs_id) {
+                top.layer.open({
+                    type: 2,
+                    title: [
+                        '查看退货确认单',
+                        'background-color:#636363; color:#fff;'
+                    ],
+                    area: ['90%', '90%'],
+                    shade: 0.9,
+                    maxmin: true,
+                    content: "{:url('admin/addreturnconfirmorder/editreturnconfirmorder')}?cs_id=" + cs_id+"&current_user_type= 0",
+                    btn: [ '退出'],
+                    btnAlign: 'c',
+                    yes: function (index,layui) {
+                        top.layer.close(index);
+                    }
+                });
+            }
+
+            function repairDetail(cs_id) {
+                top.layer.open({
+                    type: 2,
+                    title: [
+                        '查看维修确认单',
+                        'background-color:#636363; color:#fff;'
+                    ],
+                    area: ['90%', '90%'],
+                    shade: 0.9,
+                    maxmin: true,
+                    content: "{:url('admin/Addrepairconfirmorder/editrepairconfirmorder')}?cs_id=" + cs_id+"&current_user_type= 0",
+                    btn: [ '退出'],
+                    btnAlign: 'c',
+                    yes: function (index,layui) {
+                        top.layer.close(index);
+                    }
+                });
+            }
+
+            function partsDetail(cs_id) {
+                top.layer.open({
+                    type: 2,
+                    title: [
+                        '查看配件确认单',
+                        'background-color:#636363; color:#fff;'
+                    ],
+                    area: ['90%', '90%'],
+                    shade: 0.9,
+                    maxmin: true,
+                    content: "{:url('admin/addpartsconfirmorder/editpartsconfirmorder')}?cs_id=" + cs_id+"&current_user_type= 0",
+                    btn: ['退出'],
+                    btnAlign: 'c',
+                    yes: function (index,layui) {
+                        top.layer.close(index);
+                    }
+                });
+            }
+
+            function alternativeDetail(cs_id) {
+                top.layer.open({
+                    type: 2,
+                    title: [
+                        '查看代用确认单',
+                        'background-color:#636363; color:#fff;'
+                    ],
+                    area: ['90%', '90%'],
+                    shade: 0.9,
+                    maxmin: true,
+                    content: "{:url('admin/Addalternativeconfirmorder/editalternativeconfirmorder')}?cs_id=" + cs_id+"&current_user_type= 0",
+                    btn: [ '退出'],
+                    btnAlign: 'c',
+                    yes: function (index,layui) {
+                        top.layer.close(index);
+                    }
+                });
+            }
+
+            function getOrderData(queryInfo) {
+                if(queryInfo['company_name'] == "" ||queryInfo['department_name'] == "" ||queryInfo['people_name'] == "" )
+                {
+                    layer.msg('转出经理信息不正确',{icon:2});
+                    return false;
+                }
+                if(queryInfo['in_company_name'] == "" ||queryInfo['in_department_name'] == "" ||queryInfo['in_people_name'] == "" )
+                {
+                    layer.msg('接手经理信息不正确',{icon:2});
+                    return false;
+                }
+                if(queryInfo['people_name'] ==queryInfo['in_people_name'] )
+                {
+                    layer.msg('转出、接手经理相同',{icon:2});
+                    return false;
+                }
+                queryInfo['in_company_name'] = jq('#in_company_id option:selected').text();
+                queryInfo['in_department_name'] = jq('#in_department_id option:selected').text();
+                queryInfo['in_people_name'] = jq('#in_people_id option:selected').text();
+                queryInfo['company_name'] = jq('#company_id option:selected').text();
+                queryInfo['department_name'] = jq('#department_id option:selected').text();
+                queryInfo['people_name'] = jq('#people_id option:selected').text();
+                queryInfo['order_type'] = order_type;
+                if(ordert_state != -1)
+                    queryInfo['order_state'] = ordert_state;
+                table.reload('ordertable', {
+                    page: {
+                        curr: 1
+                    }
+                    ,where: {
+                        queryInfo: queryInfo
+                    }
+                });
+            }
+
+
+        });
+
+    </script>
+</body>
+</html>

@@ -3967,5 +3967,249 @@
             else
                 return "";
         }
+        //转手订单页面用
+        public static function querysalesedconfirmorder(...$args){
+            $totalargs = count($args);
+            $type = $args[0];
+            $pagenum = intval($args[1]?$args[1]:1);
+            $length = intval($args[2]);
+
+            $sqlone = "select count(*) from dsp_logistic.cs_info ";
+            $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
+            $sqlone .= "where dsp_logistic.cs_info.cs_info_type='$type' ";
+
+            if($totalargs == 4){
+                if($args[3]['company_name'] != "" ){
+                    $company = $args[3]['company_name'];
+                    $sqlone.= " and dsp_logistic.cs_belong.build_organize_name ='$company'";
+                }
+                if($args[3]['people_name'] != "" ){
+                    $areamanger1 = $args[3]['people_name'];
+                    $sqlone.= " and dsp_logistic.cs_belong.build_user_name ='$areamanger1'";
+                }
+                if($args[3]['department_name'] ){
+                    $departmentname1 = $args[3]['department_name'];
+                    $sqlone.= " and dsp_logistic.cs_belong.build_department_name ='$departmentname1' ";
+                }
+                if(array_key_exists('order_state',$args[3]))
+                {
+                    if($args[3]['order_state'] != "")
+                    {
+                        $cs_info_state = $args[3]['order_state'];
+                        $sqlone.= " and dsp_logistic.cs_info.cs_info_state ='$cs_info_state' ";
+                    }
+                }
+            }
+            $countobj = Db::query($sqlone);
+            $count = $countobj[0]['count(*)'];
+            if($count == 0){
+                return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>[]));
+            }
+            $pagetot = ceil($count/$length);
+            if($pagenum >= $pagetot){
+                $pagenum = $pagetot;
+            }
+
+            $offset = ($pagenum - 1)*$length;
+            $sqltwo ="select  dsp_logistic.cs_belong.*, dsp_logistic.cs_info.* from dsp_logistic.cs_info ";
+            $sqltwo .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
+            $sqltwo .= "where dsp_logistic.cs_info.cs_info_type='$type' ";
+            //不能查看未提交的单
+            $sqltwo .= "and dsp_logistic.cs_info.cs_info_state != 0 ";
+            if($totalargs == 4){
+                if($args[3]['company_name'] != "" ){
+                    $company = $args[3]['company_name'];
+                    $sqltwo.= " and dsp_logistic.cs_belong.build_organize_name ='$company'";
+                }
+                if($args[3]['people_name'] != "" ){
+                    $areamanger1 = $args[3]['people_name'];
+                    $sqltwo.= " and dsp_logistic.cs_belong.build_user_name ='$areamanger1'";
+                }
+                if($args[3]['department_name'] ){
+                    $departmentname1 = $args[3]['department_name'];
+                    $sqltwo.= " and dsp_logistic.cs_belong.build_department_name ='$departmentname1' ";
+                }
+                if(array_key_exists('order_state',$args[3]))
+                {
+                    if($args[3]['order_state'] != "")
+                    {
+                        $cs_info_state = $args[3]['order_state'];
+                        $sqltwo.= " and dsp_logistic.cs_info.cs_info_state ='$cs_info_state' ";
+                    }
+                }
+            }
+            $sqltwo .= "order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length}";
+
+            $tableobj = Db::query($sqltwo);
+            if(!empty($tableobj)){
+                for ($i = 0;$i < count($tableobj);$i++)
+                {
+                    if($type == 1)
+                        $tableobj[$i]["order_type"] =  '更换确认单';
+                    elseif($type == 1)
+                    {
+                        $tableobj[$i]["order_type"] =  '更换确认单';
+                    }
+                    elseif($type == 2)
+                    {
+                        $tableobj[$i]["order_type"] =  '借样确认单';
+                    }
+                    elseif($type == 3)
+                    {
+                        $tableobj[$i]["order_type"] =  '退回确认单';
+                    }
+                    elseif($type == 4)
+                    {
+                        $tableobj[$i]["order_type"] =  '维修确认单';
+                    }
+                    elseif($type == 5)
+                    {
+                        $tableobj[$i]["order_type"] =  '配件确认单';
+                    }
+                    elseif($type == 6)
+                    {
+                        $tableobj[$i]["order_type"] =  '代用确认单';
+                    }
+
+                    $state = $tableobj[$i]["cs_info_state"];
+                    if($state == 0||$state == -1)
+                        $tableobj[$i]["cs_info_state"] = "";
+                    elseif ($state == 1)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "处理中";
+                    }
+                    elseif ($state == 2)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "已完成";
+                    }
+                    elseif ($state == 3)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "取消";
+                    }
+                    elseif ($state == 4)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "备货";
+                    }
+                    elseif ($state == 5)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "退回";
+                    }
+                    elseif ($state == 6)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "缺货";
+                    }
+                }
+                return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
+            }
+        }
+        //转手订单页面用
+        public static function querygoodsorder(...$args){
+            $totalargs = count($args);
+            $pagenum = intval($args[0]?$args[0]:1);
+            $length = intval($args[1]);
+
+            $sqlone = "select count(*) from dsp_logistic.order_goods_cs_info ";
+            $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
+            $sqlone .= "where dsp_logistic.order_goods_cs_info.cs_id like '%%' ";
+
+            if($totalargs == 3){
+                if($args[2]['company_name'] != "" ){
+                    $company = $args[2]['company_name'];
+                    $sqlone.= " and dsp_logistic.cs_belong.build_organize_name ='$company'";
+                }
+                if($args[2]['people_name'] != "" ){
+                    $areamanger1 = $args[2]['people_name'];
+                    $sqlone.= " and dsp_logistic.cs_belong.build_user_name ='$areamanger1'";
+                }
+                if($args[2]['department_name'] ){
+                    $departmentname1 = $args[2]['department_name'];
+                    $sqlone.= " and dsp_logistic.cs_belong.build_department_name ='$departmentname1' ";
+                }
+                if(array_key_exists('order_state',$args[2]))
+                {
+                    if($args[2]['order_state'] != "")
+                    {
+                        $cs_info_state = $args[2]['order_state'];
+                        $sqlone.= " and dsp_logistic.cs_info.cs_info_state ='$cs_info_state' ";
+                    }
+                }
+            }
+            $countobj = Db::query($sqlone);
+            $count = $countobj[0]['count(*)'];
+            if($count == 0){
+                return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>[]));
+            }
+            $pagetot = ceil($count/$length);
+            if($pagenum >= $pagetot){
+                $pagenum = $pagetot;
+            }
+
+            $offset = ($pagenum - 1)*$length;
+            $sqltwo ="select  dsp_logistic.cs_belong.*,dsp_logistic.order_goods_cs_info.* from dsp_logistic.order_goods_cs_info ";
+            $sqltwo .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.order_goods_cs_info.cs_id ";
+            $sqltwo .= "where dsp_logistic.order_goods_cs_info.cs_id like '%%' ";
+            if($totalargs == 3){
+                if($args[2]['company_name'] != "" ){
+                    $company = $args[2]['company_name'];
+                    $sqltwo.= " and dsp_logistic.cs_belong.build_organize_name ='$company'";
+                }
+                if($args[2]['people_name'] != "" ){
+                    $areamanger1 = $args[2]['people_name'];
+                    $sqltwo.= " and dsp_logistic.cs_belong.build_user_name ='$areamanger1'";
+                }
+                if($args[2]['department_name'] ){
+                    $departmentname1 = $args[2]['department_name'];
+                    $sqltwo.= " and dsp_logistic.cs_belong.build_department_name ='$departmentname1' ";
+                }
+                if(array_key_exists('order_state',$args[2]))
+                {
+                    if($args[2]['order_state'] != "")
+                    {
+                        $cs_info_state = $args[2]['order_state'];
+                        $sqltwo.= " and dsp_logistic.order_goods_cs_info.cs_info_state ='$cs_info_state' ";
+                    }
+                }
+            }
+            $sqltwo .= "order By dsp_logistic.order_goods_cs_info.order_date DESC limit {$offset},{$length}";
+
+            $tableobj = Db::query($sqltwo);
+            if(!empty($tableobj)){
+                for ($i = 0;$i < count($tableobj);$i++)
+                {
+                    $tableobj[$i]["cs_info_type"] = 0;
+                    $tableobj[$i]["write_date"] =  $tableobj[$i]["order_date"];
+                    $tableobj[$i]["order_type"] =  '订货单';
+                    $state = $tableobj[$i]["cs_info_state"];
+                    if($state == 0||$state == -1)
+                        $tableobj[$i]["cs_info_state"] = "";
+                    elseif ($state == 1)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "处理中";
+                    }
+                    elseif ($state == 2)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "已完成";
+                    }
+                    elseif ($state == 3)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "取消";
+                    }
+                    elseif ($state == 4)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "备货";
+                    }
+                    elseif ($state == 5)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "退回";
+                    }
+                    elseif ($state == 6)
+                    {
+                        $tableobj[$i]["cs_info_state"] = "缺货";
+                    }
+                }
+                return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
+            }
+        }
+
 	}
 ?>

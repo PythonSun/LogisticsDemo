@@ -52,6 +52,10 @@
                     <div class="layui-input-inline">
                         <input type="text" name="searchinfo" lay-filter="searchinfo" id="searchinfo" placeholder="请输入用户姓名" autocomplete="off" class="layui-input">
                     </div>
+
+                </div>
+                <div class="layui-inline" style="float: right">
+                    <input type="button" id = "associateorder" class="layui-btn" value="转接订单" >
                 </div>
 
             </div>
@@ -139,6 +143,26 @@
                     , btn2: function () {
                         layer.closeAll();
                     }
+                });
+                return false;
+            });
+
+            jq('#associateorder').click(function(){
+                // 触发事件
+                // 多窗口模式，层叠置顶
+                layer.open({
+                    type: 2 //此处以iframe举例
+                    , title: '转接订单'
+                    , area: ['1200px', '90%']
+                    , shade: 0.8
+                    , maxmin: true
+                    , content: "{:url('usermanage/associateorder/associateorder')}"
+                    , btn: ['退出']
+                    , async:false
+                    , yes: function () {
+                        layer.closeAll();
+                    }
+
                 });
                 return false;
             });
