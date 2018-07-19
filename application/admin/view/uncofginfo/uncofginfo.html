@@ -390,13 +390,13 @@
                 col = newRow.insertCell(5);
                 col.innerHTML ="<td><select id='place_id"+rowIndex+"' style='color: #0C0C0C ;border:0px' name='place_name' lay-filter='place_name' class=' select-style-border-none look_disabled' > <option value='' selected>请选择</option>{volist name='placelist' id='vo'} <option value={$vo.place_id}>{$vo.place_name}</option>{/volist} </select></td>";
                 col = newRow.insertCell(6);
-                col.innerHTML ="<td><input type='text' id='uod_unit"+rowIndex+"' name='uod_unit' class='layui-input  look_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+                col.innerHTML ="<td><input type='text' id='uod_unit"+rowIndex+"' name='uod_unit' class='layui-input  look_disabled' style='color: #0C0C0C ;border:0px'></td>";
                 col = newRow.insertCell(7);
-                col.innerHTML ="<td><input type='text' id='uod_count"+rowIndex+"' name='uod_count' class='layui-input  look_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputnumber(this);'></td>";
+                col.innerHTML ="<td><input type='text' id='uod_count"+rowIndex+"' name='uod_count' class='layui-input  look_disabled' style='color: #0C0C0C ;border:0px'></td>";
                 col = newRow.insertCell(8);
                 col.innerHTML ="<td><select id='unc_product_id"+rowIndex+"' name='unc_product_id' lay-filter='unc_product_id'  class='select-style-border-none look_disabled'> <option value='' selected >请选择</option>{volist name='uncproductlist' id='vo1'} <option value={$vo1.unc_product_id}>{$vo1.unc_product_name}</option>{/volist} </select></td>";
                 col = newRow.insertCell(9);
-                col.innerHTML ="<td><input type='text' id='uod_requirement"+rowIndex+"' name='uod_requirement' class='layui-input  look_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+                col.innerHTML ="<td><input type='text' id='uod_requirement"+rowIndex+"' name='uod_requirement' class='layui-input  look_disabled' style='color: #0C0C0C ;border:0px'></td>";
                 col = newRow.insertCell(10);
                 col.innerHTML ="<td><input type='text' name='uod_delivery_date' id='uod_delivery_date"+rowIndex+"' autocomplete='on' class='layui-input time-item look_disabled' style='border: 0px'></td>";
                 jq.each(jq(".time-item"),function(){
