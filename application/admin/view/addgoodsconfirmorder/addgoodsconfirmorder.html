@@ -137,7 +137,7 @@
                         <!--<select id="user_id" name="user_id" lay-filter="user_id">-->
                             <!--<option value="" selected>请选择</option>-->
                         <!--</select>-->
-                        <input type="text" id="user_id" name="user_id" lay-filter="user_id" oninput="detectinputtext(this);"  class="layui-input Wheat">
+                        <input type="text" id="user_id" name="user_id" lay-filter="user_id" class="layui-input Wheat">
                     </div>
                 </div>
             </div>
@@ -1565,9 +1565,9 @@
                 col = newRow.insertCell(5);
                 col.innerHTML ="<td><select id='place_id"+rowIndex+"' style='color: #0C0C0C ;border:0px' name='place_name' lay-filter='place_name' class=' select-style-border-none' > <option value='' selected>请选择</option>{volist name='placelist' id='vo'} <option value={$vo.place_id}>{$vo.place_name}</option>{/volist} </select></td>";
                 col = newRow.insertCell(6);
-                col.innerHTML ="<td><input type='text' id='ogcugi_unit"+rowIndex+"' name='ogcugi_unit' class='layui-input  ' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+                col.innerHTML ="<td><input type='text' id='ogcugi_unit"+rowIndex+"' name='ogcugi_unit' class='layui-input  ' style='color: #0C0C0C ;border:0px'></td>";
                 col = newRow.insertCell(7);
-                col.innerHTML ="<td><input type='text' id='ogcugi_count"+rowIndex+"' name='ogcugi_count' class='layui-input  ' style='color: #0C0C0C ;border:0px' oninput='detectinputnumber(this);'></td>";
+                col.innerHTML ="<td><input type='text' id='ogcugi_count"+rowIndex+"' name='ogcugi_count' class='layui-input  ' style='color: #0C0C0C ;border:0px'></td>";
                 col = newRow.insertCell(8);
                 col.innerHTML ="<td><select id='ogcugi_product_state"+rowIndex+"' name='ogcugi_product_state' lay-filter='unc_productname' class='select-style-border-none '> " +
                     "<option value='' selected>请选择</option> " +

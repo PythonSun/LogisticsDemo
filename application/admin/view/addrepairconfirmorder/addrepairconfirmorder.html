@@ -132,7 +132,7 @@
         <div class="layui-inline">
             <label class="layui-form-label Wheat " style="padding-left: 0px;padding-right: 0px">区域经理电话</label>
             <div class="layui-input-inline Wheat">
-                <input type="text"  name="build_user_phone" id="build_user_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputphone(this);">
+                <input type="text"  name="build_user_phone" id="build_user_phone" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled">
             </div>
         </div>
     </div>
@@ -256,7 +256,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label Wheat" style="padding-left: 0px;padding-right: 0px">订单发货要求</label>
         <div class="layui-input-block">
-            <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat Wheat_disabled" oninput="detectinputtext(this);">
+            <input type="text" name="order_delivery_require" id="order_delivery_require" lay-verify="" autocomplete="on" placeholder="" class="layui-input input_change Wheat Wheat_disabled">
         </div>
     </div>
     <h3>返货信息</h3>
@@ -296,7 +296,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label Wheat" style="padding-left: 0px;padding-right: 0px;">申请审核内容</label>
         <div class="layui-input-block">
-            <input type="text" name="examinationapprovalcontentfirst" id="examinationapprovalcontentfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+            <input type="text" name="examinationapprovalcontentfirst" id="examinationapprovalcontentfirst" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled"> </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-inline light_green" style="margin-right: 20px">
@@ -323,7 +323,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label Wheat" style="padding-left: 0px;padding-right: 0px;">申请审核内容</label>
         <div class="layui-input-block">
-            <input type="text" name="examinationapprovalcontentsecond" id="examinationapprovalcontentsecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+            <input type="text" name="examinationapprovalcontentsecond" id="examinationapprovalcontentsecond" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled"></div>
     </div>
     <div class="layui-form-item">
         <div class="layui-inline light_green" style="margin-right: 20px">
@@ -350,7 +350,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label Wheat" style="padding-left: 0px;padding-right: 0px;">申请审核内容</label>
         <div class="layui-input-block">
-            <input type="text" name="examinationapprovalcontentthird" id="examinationapprovalcontentthird" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled" oninput="detectinputtext(this);"> </div>
+            <input type="text" name="examinationapprovalcontentthird" id="examinationapprovalcontentthird" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled"> </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-inline light_green" style="margin-right: 20px">
@@ -391,12 +391,12 @@
         <div class="layui-inline">
             <label class="layui-form-label dark_blue">维修报价</label>
             <div class="layui-input-inline">
-                <input type="text" name="customization_fee" id = "customization_fee" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
+                <input type="text" name="customization_fee" id = "customization_fee" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled"> </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label dark_blue">运费</label>
             <div class="layui-input-inline">
-                <input type="text" name="paid_bank" id = "paid_bank" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
+                <input type="text" name="paid_bank" id = "paid_bank" lay-verify="" autocomplete="on" placeholder="" class="layui-input dark_blue dark_blue_disabled"> </div>
         </div>
     </div>
     <div class="layui-form-item">
@@ -450,13 +450,13 @@
     <div class="layui-form-item">
         <label class="layui-form-label Wheat ">其它说明</label>
         <div class="layui-input-block">
-            <input type="text" name="order_goods_manager_explain" id="order_goods_manager_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled  " oninput="detectinputtext(this);"> </div>
+            <input type="text" name="order_goods_manager_explain" id="order_goods_manager_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input Wheat Wheat_disabled"> </div>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label dark_blue">情况说明</label>
         <div class="layui-input-block">
-            <input type="text" name="ogl_explain" id="ogl_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input  dark_blue dark_blue_disabled" oninput="detectinputtext(this);"> </div>
+            <input type="text" name="ogl_explain" id="ogl_explain" lay-verify="" autocomplete="on" placeholder="" class="layui-input  dark_blue dark_blue_disabled"> </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-btn-container">
@@ -2176,18 +2176,18 @@
         col = newRow.insertCell(5);
         col.innerHTML ="<td><select id='place_id"+rowIndex+"' style='color: #0C0C0C ;border:0px' name='place_name' lay-filter='place_name' class='Wheat_disabled select-style-border-none' > <option value='' selected>请选择</option>{volist name='placelist' id='vo'} <option value={$vo.place_id}>{$vo.place_name}</option>{/volist} </select></td>";
         col = newRow.insertCell(6);
-        col.innerHTML ="<td><input type='text' id='unit"+rowIndex+"' name='unit' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+        col.innerHTML ="<td><input type='text' id='unit"+rowIndex+"' name='unit' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px'></td>";
         col = newRow.insertCell(7);
-        col.innerHTML ="<td><input type='text' id='order_goods_manager_count"+rowIndex+"' name='inputcount' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputnumber(this);'></td>";
+        col.innerHTML ="<td><input type='text' id='order_goods_manager_count"+rowIndex+"' name='inputcount' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px'></td>";
         col = newRow.insertCell(8);
         col.innerHTML ="<td><input type='text' name='deal_date' id='deal_date"+rowIndex+"' autocomplete='on' class='layui-input time-item Wheat_disabled' style='border: 0px'></td>";
         jq.each(jq(".time-item"),function(){
             layui.laydate.render({ elem: this });
         });
         col = newRow.insertCell(9);
-        col.innerHTML ="<td><input type='text' name='fault_condition' id='fault_condition"+rowIndex+"' lay-filter='replace_reason' style='color: #0C0C0C ;border:0px' class='layui-input Wheat_disabled ' oninput='detectinputtext(this);'></td>";
+        col.innerHTML ="<td><input type='text' name='fault_condition' id='fault_condition"+rowIndex+"' lay-filter='replace_reason' style='color: #0C0C0C ;border:0px' class='layui-input Wheat_disabled'></td>";
         col = newRow.insertCell(10);
-        col.innerHTML ="<td><input type='text' id='specification"+rowIndex+"' name='specification' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px' oninput='detectinputtext(this);'></td>";
+        col.innerHTML ="<td><input type='text' id='specification"+rowIndex+"' name='specification' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px'></td>";
         col = newRow.insertCell(11);
         col.innerHTML ="<td><input type='text' name='bar_code' id='bar_code"+rowIndex+"' class='layui-input  Wheat_disabled' style='color: #0C0C0C ;border:0px'></td>";
         col = newRow.insertCell(12);
