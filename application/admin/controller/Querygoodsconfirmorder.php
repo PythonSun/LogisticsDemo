@@ -75,11 +75,93 @@ class Querygoodsconfirmorder extends Controller
             }
 
             $queryInfo["departmentname"] = $queryInfo["departname"];
-            $tablelist = \app\index\model\Admin::querygoodsorderinfo($organizename,$departmentname,$areamanager,$type,$page,$limit,$queryInfo);
+            $mode = $this->getquerymode($queryInfo);
+            if($mode == 0)
+            {
+                if($areamanager == "" && $organizename == "" &&$departmentname == "")
+                    $tablelist = \app\index\model\Admin::querygoodsorderinfo_ex($page,$limit); //物流，财务查
+                else
+                    $tablelist = \app\index\model\Admin::querygoodsorderinfo_ex1($page,$limit,$organizename,$departmentname,$areamanager); //销售部查
+            }
+            elseif ($mode == 1)
+            {
+                $tablelist = \app\index\model\Admin::querygoodsorderinfo_ex2($page,$limit,$organizename,$departmentname,$areamanager,$queryInfo);
+            }
+            elseif ($mode == 2 && $areamanager == "" && $organizename == "" &&$departmentname == "")
+            {
+                $tablelist = \app\index\model\Admin::querygoodsorderinfo_ex3($page,$limit,$organizename,$departmentname,$areamanager,$queryInfo);
+            }
+            elseif ($mode == 3 && $areamanager == "" && $organizename == "" &&$departmentname == "")
+            {
+                $tablelist = \app\index\model\Admin::querygoodsorderinfo_ex4($page,$limit,$organizename,$departmentname,$areamanager,$queryInfo);
+            }
+            elseif ($mode == 4 && $areamanager == "" && $organizename == "" &&$departmentname == "")
+            {
+                $tablelist = \app\index\model\Admin::querygoodsorderinfo_ex5($page,$limit,$organizename,$departmentname,$areamanager,$queryInfo);
+            }
+            elseif ($mode == 5 )
+            {
+                if($areamanager == "" && $organizename == "" &&$departmentname == "")
+                    $tablelist = \app\index\model\Admin::querygoodsorderinfo_ex($page,$limit,$queryInfo['orderstate']);
+                else
+                    $tablelist = \app\index\model\Admin::querygoodsorderinfo_ex2($page,$limit,$organizename,$departmentname,$areamanager,$queryInfo);
+            }
+            else
+                $tablelist = \app\index\model\Admin::querygoodsorderinfo($organizename,$departmentname,$areamanager,$type,$page,$limit,$queryInfo);
         }else{
-            $tablelist = \app\index\model\Admin::querygoodsorderinfo($organizename,$departmentname,$areamanager,$type,$page,$limit);
+            //$tablelist = \app\index\model\Admin::querygoodsorderinfo($organizename,$departmentname,$areamanager,$type,$page,$limit);
+           if($areamanager == "" && $organizename == "" &&$departmentname == "")
+               $tablelist = \app\index\model\Admin::querygoodsorderinfo_ex($page,$limit); //物流，财务查
+           else
+               $tablelist = \app\index\model\Admin::querygoodsorderinfo_ex1($page,$limit,$organizename,$departmentname,$areamanager); //销售部查
         }
         return $tablelist;
+    }
+    //根据条件返回查询方式
+    public function getquerymode($queryInfo)
+    {
+        if($queryInfo['startdate'] == "" && $queryInfo['enddate'] == ""&&
+            $queryInfo['departmentname'] == "" && $queryInfo['areamanager'] == ""&&
+            $queryInfo['orderstate'] == "" && $queryInfo['order_id'] == ""&&
+            $queryInfo['receiver_name'] == "" && $queryInfo['yard'] == ""&&
+            $queryInfo['couriernumber'] == "" && $queryInfo['freightmode'] == ""
+            ) //都为空
+            return 0;
+        elseif (($queryInfo['startdate'] != "" || $queryInfo['enddate'] != ""||
+            $queryInfo['departmentname'] != "" || $queryInfo['areamanager'] != ""
+            )&& $queryInfo['order_id'] == ""&&
+            $queryInfo['receiver_name'] == "" && $queryInfo['yard'] == ""&&
+            $queryInfo['couriernumber'] == "" && $queryInfo['freightmode'] == ""
+             ) //日期，部门，经理有一不为空，除订单状态外其他为空
+            return 1;
+        elseif ($queryInfo['startdate'] == "" && $queryInfo['enddate'] == ""&&
+                $queryInfo['departmentname'] == "" && $queryInfo['areamanager'] == ""&&
+                $queryInfo['order_id'] == ""&&
+                $queryInfo['receiver_name'] != "" && $queryInfo['yard'] == ""&&
+                $queryInfo['couriernumber'] == "" && $queryInfo['freightmode'] == ""
+            )//收货人不为空，除订单状态外其他为空
+            return 2;
+        elseif ($queryInfo['startdate'] == "" && $queryInfo['enddate'] == ""&&
+                $queryInfo['departmentname'] == "" && $queryInfo['areamanager'] == ""&&
+                $queryInfo['order_id'] == ""&& $queryInfo['receiver_name'] == "" &&
+                ($queryInfo['yard'] != "" || $queryInfo['couriernumber'] != "" )&&
+                $queryInfo['freightmode'] == "") //货场，运单 有一不为空 ，除订单状态外其他为空
+            return 3;
+        elseif ($queryInfo['startdate'] == "" && $queryInfo['enddate'] == ""&&
+            $queryInfo['departmentname'] == "" && $queryInfo['areamanager'] == ""&&
+            $queryInfo['order_id'] == ""&& $queryInfo['receiver_name'] == "" &&
+            $queryInfo['yard'] == "" && $queryInfo['couriernumber'] == "" &&
+            $queryInfo['freightmode'] != "") //运费方式不为空 ，除订单状态外其他为空
+            return 4;
+        elseif($queryInfo['startdate'] == "" && $queryInfo['enddate'] == ""&&
+            $queryInfo['departmentname'] == "" && $queryInfo['areamanager'] == ""&&
+            $queryInfo['orderstate'] != "" && $queryInfo['order_id'] == ""&&
+            $queryInfo['receiver_name'] == "" && $queryInfo['yard'] == ""&&
+            $queryInfo['couriernumber'] == "" && $queryInfo['freightmode'] == ""
+            ) //订单状态不为空 ,其他为空
+            return 5;
+
+        return -1;
     }
 
     /*导出订货确认单*/

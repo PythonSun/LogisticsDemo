@@ -82,35 +82,15 @@ class Queryalternativeconfirmorder extends Controller
     	$page = $_GET['page'];
     	$limit = $_GET['limit'];
         $type = 0x06;
-        if($queryuserinfo["isSales"])
-        {
-            if(isset($_GET['queryInfo'])){
-                $queryInfo = $_GET['queryInfo'];
-                $tablelist = \app\index\model\Admin::querycsInfomation($type,$page,$limit,$queryInfo);
-            }else{
-                $tablelist = \app\index\model\Admin::querycsInfomation($type,$page,$limit);
-            }
-        }
+
+        if(isset($_GET['queryInfo']))
+            $tablelist = \app\index\model\Admin::queryConfirmOrder($queryuserinfo,$page,$limit,$type,$_GET['queryInfo']);
         else
-        {
-            $organizename = $queryuserinfo["organizename"];
-            $departmentname = $queryuserinfo["departmentname"];
-            $areamanager = $queryuserinfo["areamanager"];
-            $rolename = $queryuserinfo['role_name'];
-            if(isset($_GET['queryInfo'])){
-                $queryInfo = $_GET['queryInfo'];
-                $queryInfo["organizename"] = $queryInfo["departname"];
-                $queryInfo["departmentname"] = $queryInfo["departname"];
+            $tablelist = \app\index\model\Admin::queryConfirmOrder($queryuserinfo,$page,$limit,$type,null);
 
-                $tablelist = \app\index\model\Admin::querycsinfobysales($organizename,$departmentname,$areamanager,$rolename,$type,$page,$limit,$queryInfo);
-            }else{
-                $tablelist = \app\index\model\Admin::querycsinfobysales($organizename,$departmentname,$areamanager,$rolename,$type,$page,$limit);
-            }
-        }
 
-    	return $tablelist;
+        return $tablelist;
     }
-
     /*导出代用确认单确认单*/
     public function exportalternativeconfirmorder(){
         $queryuserinfo = session("user_querypower");
