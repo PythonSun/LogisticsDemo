@@ -1932,47 +1932,24 @@
         /*物流人员根据条件查询审批确认单，五个参数最少san个: type  page  limit queryinfo*/
         public static function logisticQueryApproveConfirmOrder(...$args){
             $totalargs = count($args);
+
+
             $type = $args[0];
             $pagenum = intval($args[1]?$args[1]:1);
             $length = intval($args[2]);
 
+            if($totalargs == 3)
+            {
+                return self::logisticQueryApproveConfirmOrder_ex($type,$pagenum,$length);
+            }
+
             $sqlone = "select count(*) from dsp_logistic.cs_info ";
-            $sqlone .= "left join dsp_logistic.custom_info on dsp_logistic.custom_info.custom_info_id = dsp_logistic.cs_info.custom_info_id ";
-            $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
-            $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
-            //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
-          //  $sqlone .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
+            $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
             $sqlone .= "where dsp_logistic.cs_info.cs_info_type='$type'and cs_info_state = 1 and dsp_logistic.cs_info.complete_date <= '2000-01-01 00:00:00'";
 
             if($totalargs == 4){
-                if($args[3]['areamanager'] != "" ){
-                    $areamanger1 = $args[3]['areamanager'];
-                    $sqlone.= " and build_user_name ='$areamanger1'";
-                }
-                if($args[3]['departname'] ){
-                    $departmentname1 = $args[3]['departname'];
-                    $sqlone.= " and (build_department_name ='$departmentname1' or build_organize_name ='$departmentname1') ";
-                }
-                $startdate = $args[3]['startdate'];
-                $enddate = $args[3]['enddate'];
-                if($startdate != "" && $enddate != "" ){
-                    $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
-                }
-                else if($startdate != "")
-                {
-                    $sqlone.= " and cs_belong_create_time ='$startdate'";
-                }
-                else if($enddate != "")
-                {
-                    $sqlone.= " and cs_belong_create_time ='$startdate'";
-                }
-                if($args[3]['order_id'] != "")
-                {
-                    $cs_id = $args[3]['order_id'];
-                    $sqlone.= " and dsp_logistic.cs_info.cs_id ='$cs_id' ";
-                }
-
+                $sqlone.= self::approveConfirmQueryCondition($args[3]);
             }
             $countobj = Db::query($sqlone);
             $count = $countobj[0]['count(*)'];
@@ -1986,96 +1963,75 @@
 
             $offset = ($pagenum - 1)*$length;
             $sqltwo ="select  dsp_logistic.cs_belong.* ,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.transfer_fee_mode,";
-            $sqltwo .= "dsp_logistic.delivery_info.delivery_info_receiver_name,dsp_logistic.return_info.return_info_receiver_name from dsp_logistic.cs_info ";
-            $sqltwo .= "left join dsp_logistic.custom_info on dsp_logistic.custom_info.custom_info_id = dsp_logistic.cs_info.custom_info_id ";
+            $sqltwo .= "dsp_logistic.delivery_info.delivery_info_receiver_name from dsp_logistic.cs_info ";
             $sqltwo .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
-            $sqltwo .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
-            //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
-         //   $sqltwo .= "left join dsp_logistic.logistics_info on dsp_logistic.logistics_info.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqltwo .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqltwo .= "where dsp_logistic.cs_info.cs_info_type='$type' and cs_info_state = 1 and dsp_logistic.cs_info.complete_date <= '2000-01-01 00:00:00'";
             if($totalargs == 4){
-                if($args[3]['areamanager'] != ""){
-                    $areamanger1 = $args[3]['areamanager'];
-                    $sqltwo.= " and build_user_name ='$areamanger1' ";
-                }
-                if($args[3]['departname'] != "" ){
-                    $departmentname1 = $args[3]['departname'];
-                    $sqltwo.= " and (build_department_name ='$departmentname1' or build_organize_name ='$departmentname1') ";
-                }
-
-                $startdate = $args[3]['startdate'];
-                $enddate = $args[3]['enddate'];
-                if($startdate != "" && $enddate != "" ){
-                    $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
-                }
-                else if($startdate != "")
-                {
-                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
-                }
-                else if($enddate != "")
-                {
-                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
-                }
-                if($args[3]['order_id'] != "")
-                {
-                    $cs_id = $args[3]['order_id'];
-                    $sqltwo.= " and dsp_logistic.cs_info.cs_id ='$cs_id' ";
-                }
-
+                $sqltwo.= self::approveConfirmQueryCondition($args[3]);
             }
-            $sqltwo .= "order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length} ;";
+            $sqltwo .= " order By dsp_logistic.cs_info.cs_id DESC limit {$offset},{$length} ;";
             $tableobj = Db::query($sqltwo);
             if(!empty($tableobj)){
                 for ($i = 0;$i < count($tableobj);$i++)
                 {
-//                    if($type == 2||$type == 5) //借样和配件没有返货信息
-//                    {
-                        $tableobj[$i]["receiver_name"] = $tableobj[$i]["delivery_info_receiver_name"];
-//                    }
-//                    else
-//                    {
-//                        //$tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
-//                        $tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
-//                    }
-                    $state = $tableobj[$i]["cs_info_state"];
+                    $tableobj[$i]["receiver_name"] = $tableobj[$i]["delivery_info_receiver_name"];
 
-                    if($state == 0||$state == -1)
-                        $tableobj[$i]["cs_info_state"] = "";
-                    elseif ($state == 1)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "处理中";
-                    }
-                    elseif ($state == 2)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "已完成";
-                    }
-                    elseif ($state == 3)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "取消";
-                    }
-                    elseif ($state == 4)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "备货";
-                    }
-                    elseif ($state == 5)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "退回";
-                    }
-                    elseif ($state == 6)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "缺货";
-                    }
-
-
-                    $tableobj[$i]["transfer_fee_mode"] = self::parsefreightmode($tableobj[$i]["transfer_fee_mode"])  ;
-
+                    $tableobj[$i]["cs_info_state"] = self::parseorderstate($tableobj[$i]["cs_info_state"]);
 
                     $tableobj[$i]["serial_number"] = $i+1;
                 }
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
             }
         }
+
+        public static function logisticQueryApproveConfirmOrder_ex(...$args){
+            $type = $args[0];
+            $pagenum = intval($args[1]?$args[1]:1);
+            $length = intval($args[2]);
+
+            $sqlone = "select count(*) from dsp_logistic.cs_info ";
+            $sqlone .= "where dsp_logistic.cs_info.cs_info_type='$type'and cs_info_state = 1 and dsp_logistic.cs_info.complete_date <= '2000-01-01 00:00:00'";
+            $countobj = Db::query($sqlone);
+            $count = $countobj[0]['count(*)'];
+            if($count == 0){
+                return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>[]));
+            }
+            $pagetot = ceil($count/$length);
+            if($pagenum >= $pagetot){
+                $pagenum = $pagetot;
+            }
+
+            $offset = ($pagenum - 1)*$length;
+            $sqltwo ="select dsp_logistic.cs_info.* from dsp_logistic.cs_info ";
+            $sqltwo .= "where dsp_logistic.cs_info.cs_info_type='$type' and cs_info_state = 1 and dsp_logistic.cs_info.complete_date <= '2000-01-01 00:00:00'";
+            $sqltwo .= " order By dsp_logistic.cs_info.cs_id DESC limit {$offset},{$length} ;";
+            $tableobj = Db::query($sqltwo);
+            if(empty($tableobj))
+                return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>[]));
+
+            for ($i = 0;$i < count($tableobj);$i++)
+            {
+                $sqlthree ="select  dsp_logistic.cs_belong.* ,dsp_logistic.delivery_info.transfer_fee_mode,";
+                $sqlthree .= "dsp_logistic.delivery_info.delivery_info_receiver_name from dsp_logistic.cs_info ";
+                $sqlthree .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
+                $sqlthree .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
+                $sqlthree .= "where dsp_logistic.cs_info.cs_id='{$tableobj[$i]['cs_id']}' ";
+                $obj = Db::query($sqlthree);
+                if(empty($obj))
+                    continue;
+                $tableobj[$i]["receiver_name"] = $obj[0]["delivery_info_receiver_name"];
+                $tableobj[$i]['cs_belong_create_time'] = $obj[0]['cs_belong_create_time'];
+                $tableobj[$i]['build_department_name'] = $obj[0]['build_department_name'];
+                $tableobj[$i]['build_user_name'] = $obj[0]['build_user_name'];
+
+                $tableobj[$i]["cs_info_state"] = self::parseorderstate($tableobj[$i]["cs_info_state"]);
+
+                $tableobj[$i]["serial_number"] = $i+1;
+            }
+            return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
+        }
+
         /*非物流人员根据条件查询审批确认单，五个参数最少四个:user_id  type  page  limit queryinfo*/
         public static function queryApproveConfirmOrder(...$args){
             $totalargs = count($args);
@@ -2086,44 +2042,11 @@
 
             $sqlone = "select count(*) from dsp_logistic.cs_examine ";
             $sqlone .= "left join dsp_logistic.cs_info on dsp_logistic.cs_info.cs_id = dsp_logistic.cs_examine.cs_id ";
-         //   $sqlone .= "left join dsp_logistic.custom_info on dsp_logistic.custom_info.custom_info_id = dsp_logistic.cs_info.custom_info_id ";
             $sqlone .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
-            $sqlone .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
-         //   $sqlone .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
             $sqlone .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqlone.=" where examine_user_id = '$examine_user_id' and cs_info_type = '$type' and cs_info_state = '1' and cs_examine_state = 1";
             if($totalargs == 5){
-                $startdate = $args[4]['startdate'];
-                $enddate = $args[4]['enddate'];
-                if($startdate != "" && $enddate != "" ){
-                    $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
-                }
-                else if($startdate != "")
-                {
-                    $sqlone.= " and cs_belong_create_time ='$startdate'";
-                }
-                else if($enddate != "")
-                {
-                    $sqlone.= " and cs_belong_create_time ='$startdate'";
-                }
-                if($args[4]['order_id'] != "")
-                {
-                    $cs_id = $args[4]['order_id'];
-                    $sqlone.= " and dsp_logistic.cs_info.cs_id ='$cs_id' ";
-                }
-                if($args[4]['departname'] != "")
-                {
-                    $departmentname1 = $args[4]['departname'];
-                    $sqlone.= " and (build_department_name ='$departmentname1' or build_organize_name ='$departmentname1') ";
-
-                }
-
-                if($args[4]['areamanager'] != "")
-                {
-                    $user_name = $args[4]['areamanager'];
-                    $sqlone.= " and build_user_name ='$user_name' ";
-
-                }
+                $sqlone.= self::approveConfirmQueryCondition($args[4]);
             }
             $countobj = Db::query($sqlone);
             $count = $countobj[0]['count(*)'];
@@ -2131,103 +2054,75 @@
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>[]));
             }
 
-
             $pagetot = ceil($count/$length);
             if($pagenum >= $pagetot){
                 $pagenum = $pagetot;
             }
-
             $offset = ($pagenum - 1)*$length;
             $sqltwo = "select  dsp_logistic.cs_belong.* ,dsp_logistic.cs_info.*,";
-            $sqltwo .= "dsp_logistic.delivery_info.delivery_info_receiver_name,dsp_logistic.return_info.return_info_receiver_name from dsp_logistic.cs_examine ";
+            $sqltwo .= "dsp_logistic.delivery_info.delivery_info_receiver_name from dsp_logistic.cs_examine ";
             $sqltwo .= "left join dsp_logistic.cs_info on dsp_logistic.cs_info.cs_id = dsp_logistic.cs_examine.cs_id ";
-          //  $sqltwo .= "left join dsp_logistic.custom_info on dsp_logistic.custom_info.custom_info_id = dsp_logistic.cs_info.custom_info_id ";
             $sqltwo .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
-            $sqltwo .= "left join dsp_logistic.return_info on dsp_logistic.return_info.return_info_id = dsp_logistic.cs_info.return_info_id ";
-         //   $sqltwo .= "left join dsp_logistic.payment_info on dsp_logistic.payment_info.payment_info_id = dsp_logistic.cs_info.payment_info_id ";
             $sqltwo .= "left join dsp_logistic.cs_belong on dsp_logistic.cs_belong.cs_id = dsp_logistic.cs_info.cs_id ";
             $sqltwo.=" where examine_user_id = '$examine_user_id' and cs_info_type = '$type' and cs_info_state = '1' and cs_examine_state = 1 ";
             if($totalargs == 5){
-                $startdate = $args[4]['startdate'];
-                $enddate = $args[4]['enddate'];
-                if($startdate != "" && $enddate != "" ){
-                    $sqltwo.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
-                }
-                else if($startdate != "")
-                {
-                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
-                }
-                else if($enddate != "")
-                {
-                    $sqltwo.= " and cs_belong_create_time ='$startdate'";
-                }
-                if($args[4]['order_id'] != "")
-                {
-                    $cs_id = $args[4]['order_id'];
-                    $sqltwo.= " and dsp_logistic.cs_info.cs_id ='$cs_id' ";
-                }
-                if($args[4]['departname'] != "")
-                {
-                    $departmentname1 = $args[4]['departname'];
-                    $sqltwo.= " and (build_department_name ='$departmentname1' or build_organize_name ='$departmentname1') ";
-
-                }
-
-                if($args[4]['areamanager'] != "")
-                {
-                    $user_name = $args[4]['areamanager'];
-                    $sqltwo.= " and build_user_name ='$user_name' ";
-
-                }
+                $sqltwo.= self::approveConfirmQueryCondition($args[4]);
             }
-            $sqltwo .= " order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length} ;";
+            $sqltwo .= " order By dsp_logistic.cs_info.cs_id DESC limit {$offset},{$length} ;";
             $tableobj = Db::query($sqltwo);
             if(!empty($tableobj)){
                 $countTable = count($tableobj);
                 for ($i = 0;$i < $countTable;$i++)
                 {
-//                    if($type == 2||$type == 5) //借样和配件没有返货信息
-//                    {
-                        $tableobj[$i]["receiver_name"] = $tableobj[$i]["delivery_info_receiver_name"];
-//                    }
-//                    else
-//                    {
-//                        //$tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
-//                        $tableobj[$i]["receiver_name"] = $tableobj[$i]["return_info_receiver_name"];
-//                    }
-                    $tableobj[$i]["serial_number"] = $i+1;
-                    $state = $tableobj[$i]["cs_info_state"];
-                    if($state == 0||$state == -1)
-                        $tableobj[$i]["cs_info_state"] = "";
-                    elseif ($state == 1)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "处理中";
-                    }
-                    elseif ($state == 2)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "已完成";
-                    }
-                    elseif ($state == 3)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "取消";
-                    }
-                    elseif ($state == 4)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "备货";
-                    }
-                    elseif ($state == 5)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "退回";
-                    }
-                    elseif ($state == 6)
-                    {
-                        $tableobj[$i]["cs_info_state"] = "缺货";
-                    }
+                    $tableobj[$i]["receiver_name"] = $tableobj[$i]["delivery_info_receiver_name"];
 
                     $tableobj[$i]["serial_number"] = $i+1;
+
+                    $tableobj[$i]["cs_info_state"] = self::parseorderstate($tableobj[$i]["cs_info_state"]);
                 }
                 return (array('code'=>0,'msg'=>'','count'=>$count,'data'=>$tableobj));
             }
+        }
+
+        public static function approveConfirmQueryCondition($queryInfo)
+        {
+            $sqlone = " ";
+            $startdate = $queryInfo['startdate'];
+            $enddate = $queryInfo['enddate'];
+            if($startdate != "" && $enddate != "" ){
+                $sqlone.= " and cs_belong_create_time >='$startdate' and cs_belong_create_time <='$enddate' ";
+            }
+            else if($startdate != "")
+            {
+                $sqlone.= " and cs_belong_create_time ='$startdate'";
+            }
+            else if($enddate != "")
+            {
+                $sqlone.= " and cs_belong_create_time ='$startdate'";
+            }
+            if($queryInfo['order_id'] != "")
+            {
+                $cs_id = $queryInfo['order_id'];
+                $sqlone.= " and dsp_logistic.cs_info.cs_id ='$cs_id' ";
+            }
+            if($queryInfo['departname'] != "")
+            {
+                $departmentname1 = $queryInfo['departname'];
+                $sqlone.= " and (build_department_name ='$departmentname1' or build_organize_name ='$departmentname1') ";
+
+            }
+            if($queryInfo['areamanager'] != "")
+            {
+                $user_name = $queryInfo['areamanager'];
+                $sqlone.= " and build_user_name ='$user_name' ";
+
+            }
+            if ($queryInfo['receiver_name']!= "")
+            {
+                $receiver_name = $queryInfo['receiver_name'];
+                $sqlone .= "and  delivery_info_receiver_name = '$receiver_name' ";
+            }
+            return $sqlone;
         }
 
         /*根据条件查询用户信息*/
@@ -5006,7 +4901,7 @@
 
         public  static function parseorderstate($state)
         {
-            if($state == 0)
+            if($state == 0 || $state == -1)
                 return "";
             elseif ($state == 1)
             {
