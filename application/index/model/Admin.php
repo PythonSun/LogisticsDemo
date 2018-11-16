@@ -548,7 +548,8 @@
                 $obj = Db::query($sqlsub);
                 if(empty($obj))
                     continue;
-                $allOrder[$i]['delivery_date'] = $obj[0]['delivery_date'];
+                $index = count($obj)-1;
+                $allOrder[$i]['delivery_date'] = $obj[$index]['delivery_date'];
                 $allOrder[$i]['receiver_name'] = $obj[0]['receiver_name'];
                 $state = $allOrder[$i]["cs_info_state"];
 
@@ -626,7 +627,8 @@
                 $obj = Db::query($sqlsub);
                 if(empty($obj))
                     continue;
-                $allOrder[$i]['delivery_date'] = $obj[0]['delivery_date'];
+                $index = count($obj)-1;
+                $allOrder[$i]['delivery_date'] = $obj[$index]['delivery_date'];
                 $allOrder[$i]['cs_belong_create_time'] = $obj[0]['cs_belong_create_time'];
                 $allOrder[$i]['build_department_name'] = $obj[0]['build_department_name'];
                 $allOrder[$i]['build_user_name'] = $obj[0]['build_user_name'];
@@ -1114,7 +1116,7 @@
 			}
 
 			$offset = ($pagenum - 1)*$length;
-            $sqltwo ="select  dsp_logistic.cs_belong.* ,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.transfer_fee_mode,dsp_logistic.logistics_info.transfer_order_num,";
+            $sqltwo ="select  dsp_logistic.cs_belong.* ,dsp_logistic.cs_info.*,dsp_logistic.delivery_info.transfer_fee_mode,dsp_logistic.logistics_info.transfer_order_num,dsp_logistic.logistics_info.delivery_date,";
             $sqltwo .= "dsp_logistic.delivery_info.delivery_info_receiver_name,dsp_logistic.return_info.return_info_receiver_name from dsp_logistic.cs_info ";
             $sqltwo .= "left join dsp_logistic.custom_info on dsp_logistic.custom_info.custom_info_id = dsp_logistic.cs_info.custom_info_id ";
             $sqltwo .= "left join dsp_logistic.delivery_info on dsp_logistic.delivery_info.delivery_info_id = dsp_logistic.cs_info.delivery_info_id ";
@@ -1442,7 +1444,6 @@
                 }
             }
             $sqltwo .= "order By dsp_logistic.cs_info.write_date DESC limit {$offset},{$length}";
-
             $tableobj = Db::query($sqltwo);
             if(!empty($tableobj)){
                 for ($i = 0;$i < count($tableobj);$i++)
