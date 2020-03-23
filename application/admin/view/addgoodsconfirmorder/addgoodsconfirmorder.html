@@ -599,6 +599,7 @@
                         success: function(e) {
                             var layer = layui.layer;
                             if (e != null){
+
                                 if(e.code == 1){
                                     picNames = [];
                                     delPic = [];
@@ -616,7 +617,7 @@
                             }
                         }
                     });
-                    document.formName.submit();
+                    //document.formName.submit();
                     return false;
                 });
                 //监听选择公司

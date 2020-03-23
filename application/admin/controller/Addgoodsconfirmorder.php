@@ -155,7 +155,13 @@ class Addgoodsconfirmorder extends Controller
             $file_new = $order_goods_cs_info['consult_sheet_file'];
             $consult_sheet_file = "";
             $order_goods_cs_info['consult_sheet_file'] = $consult_sheet_file;
-            $retcsinfo = \app\index\model\Admin::updateordergoodscsinfo($order_goods_cs_info);
+            $cs_info_id = \app\index\model\Admin::addOrderGoodsCsInfo($order_goods_cs_info);
+            if (empty($cs_info_id)||$cs_info_id == false) {
+                // $this->deldata($data);
+                return self::retmsg(0,'保存失败，错误代码：1120');
+            }
+            $order_goods_cs_info['cs_id'] = $cs_info_id;
+
             $cs_belog_id = \app\index\model\Admin::getmaxtableidretid('cs_belong','cs_belong_id') + 1;
             $cs_belong['cs_belong_id'] = $cs_belog_id;
             $cs_belong['cs_id'] = $cs_info_id;

@@ -139,13 +139,14 @@ class Addalternativeconfirmorder extends Controller
         $cs_info['delivery_info_id'] = '-1';
         $cs_info['payment_info_id'] = '-1';
         $cs_info['cs_examine_ids'] = "";
-        $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
-        $data[$index][0] = 'cs_info';
-        $data[$index][1] = 'cs_id';
-        $data[$index][2] = $cs_info_id;
-        $index++;
-        if (empty($ret_confirm_order)||$ret_confirm_order == false) {
-            $this->deldata($data);
+        $cs_info = \app\index\model\Admin::addConfirmOrder($cs_info);
+//        $data[$index][0] = 'cs_info';
+//        $data[$index][1] = 'cs_id';
+//        $data[$index][2] = $cs_info_id;
+//        $index++;
+
+        if (empty($cs_info)||$cs_info == false) {
+           // $this->deldata($data);
             return false;
         }
 

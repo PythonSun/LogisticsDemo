@@ -2418,6 +2418,49 @@
             return $organizeID;
         }
 
+        //2020-03-23 增
+        public  static function addConfirmOrder($info)
+        {
+            Db::startTrans();
+            try{
+                $cs_id = $info['cs_id'];
+                $query = "SELECT * FROM dsp_logistic.cs_belong where `cs_id` = '$cs_id';";
+                if(!$query){
+                    $cs_id = self::getcsinfomaxid("cs_belong","cs_id");
+                }
+                $custom_info_id = $info['custom_info_id'];
+                $delivery_info_id = $info['delivery_info_id'];
+                $return_info_id = $info['return_info_id'];
+                $payment_info_id = $info['payment_info_id'];
+                $cur_process_user_id = $info['cur_process_user_id'];
+                $pre_process_user_id = $info['pre_process_user_id'];
+                $cs_info_type = $info['cs_info_type'];
+                $can_edit = $info['can_edit'];
+                $write_date = $info['write_date'];
+                $cs_info_state = $info['cs_info_state'];
+                $complete_date = $info['complete_date'];
+                $product_number = $info['product_number'];
+                $cs_examine_ids = $info['cs_examine_ids'];
+                $unc_ofg_info_id = $info['unc_ofg_info_id'];
+                $delivery_date_reply = $info['delivery_date_reply'];
+                $cs_info_delivery_date = $info['cs_info_delivery_date'];
+                $cs_info_warehouse_date = $info['cs_info_warehouse_date'];
+                //INSERT INTO `dsp_logistic`.`cs_info` (`cs_id`) VALUES ('2018111500003');
+
+                $sql_value ="'{$cs_id}','{$custom_info_id}','{$delivery_info_id}','{$return_info_id}','{$payment_info_id}','{$cur_process_user_id}','{$pre_process_user_id}','{$cs_info_type}','{$can_edit}','{$write_date}','{$cs_info_state}','{$complete_date}','{$product_number}','$cs_examine_ids','{$unc_ofg_info_id}','$delivery_date_reply','$cs_info_delivery_date','$cs_info_warehouse_date'";
+                $sql = "INSERT INTO dsp_logistic.cs_info (cs_id,custom_info_id,delivery_info_id,return_info_id,payment_info_id,cur_process_user_id,pre_process_user_id";
+                $sql.= ",cs_info_type,can_edit,write_date,cs_info_state,complete_date,product_number,cs_examine_ids,unc_ofg_info_id,delivery_date_reply,cs_info_delivery_date,cs_info_warehouse_date) VALUES ({$sql_value}) ";
+                Db::execute($sql);
+                Db::commit();
+                return $cs_id;
+            }
+            catch (Exception $ex)
+            {
+                Db::rollback();
+                return false;
+            }
+        }
+
         /*update    暂时使用（更改确认单）*/
         public  static function updateconfirmorder($info)
         {
@@ -4311,6 +4354,52 @@
         public static function getuncproduct(){
             $sql = "SELECT * FROM dsp_logistic.unc_product";
             return Db::query($sql);
+        }
+
+
+        /*2020-03-23 增*/
+        public static function addOrderGoodsCsInfo($info){
+            Db::startTrans();
+            try{
+                $cs_id = $info['cs_id'];
+                $query = "SELECT * FROM dsp_logistic.cs_belong where `cs_id` = '$cs_id';";
+                if(!$query){
+                    $cs_id = self::getcsinfomaxid("cs_belong","cs_id");
+                }
+                $ofg_info_id = $info['ofg_info_id'];
+                $fee_info_id = $info['fee_info_id'];
+                $delivery_date_reply = $info['delivery_date_reply'];
+                $unc_ofg_info_id = $info['unc_ofg_info_id'];
+                $consult_sheet_file = $info['consult_sheet_file'];
+                $delivered_total = $info['delivered_total'];
+                $delivered_pa = $info['delivered_pa'];
+                $delivered_conference = $info['delivered_conference'];
+                $delivered_customization = $info['delivered_customization'];
+                $delivered_record = $info['delivered_record'];
+                $delivered_metro = $info['delivered_metro'];
+                $delivered_aux = $info['delivered_aux'];
+                $delivered_gift = $info['delivered_gift'];
+                $delivered_album = $info['delivered_album'];
+                $product_number = $info['product_number'];
+                $order_date = $info['order_date'];
+                $cs_info_state = $info['cs_info_state'];
+                $cs_comment = $info['cs_comment'];
+                $sql_value ="'{$cs_id}','{$ofg_info_id}','{$fee_info_id}','{$delivery_date_reply}','{$unc_ofg_info_id}','{$consult_sheet_file}','{$delivered_total}',";
+                $sql_value .= "'{$delivered_pa}','{$delivered_conference}','{$delivered_customization}','{$delivered_record}','{$delivered_metro}','{$delivered_aux}',";
+                $sql_value .= "'{$delivered_gift}','{$delivered_album}','{$product_number}','{$order_date}','{$cs_info_state}','{$cs_comment}'";
+                $sql = "INSERT INTO dsp_logistic.order_goods_cs_info (cs_id,ofg_info_id,fee_info_id,delivery_date_reply,unc_ofg_info_id,consult_sheet_file,";
+                $sql .= "delivered_total,delivered_pa,delivered_conference,delivered_customization,delivered_record,delivered_metro,delivered_aux,";
+                $sql .= "delivered_gift,delivered_album,product_number,order_date,cs_info_state,cs_comment) VALUES ({$sql_value})";
+
+                Db::execute($sql);
+                Db::commit();
+                return $cs_id;
+            }
+            catch (Exception $ex){
+                Db::rollback();
+                return false;
+            }
+
         }
 
         /*订货确认单 order_goods_cs_info*/

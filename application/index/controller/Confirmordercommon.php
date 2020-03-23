@@ -34,18 +34,24 @@ class Confirmordercommon extends Controller
         $cs_info['delivery_info_id'] = '-1';
         $cs_info['payment_info_id'] = '-1';
         $cs_info['cs_examine_ids'] = "";
-        $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
-        $data[$index][0] = 'cs_info';
-        $data[$index][1] = 'cs_id';
-        $data[$index][2] = $cs_info_id;
-        $index++;
-        if (empty($ret_confirm_order)||$ret_confirm_order == false) {
-            $this->deldata($data);
-            // dump(111);
+        $cs_info_id = \app\index\model\Admin::addConfirmOrder($cs_info);
+        if (empty($cs_info)||$cs_info == false) {
+            // $this->deldata($data);
             return false;
         }
 
-        $cs_belong['cs_id'] = $cs_info['cs_id'];
+//        $ret_confirm_order = \app\index\model\Admin::updateconfirmorder($cs_info);
+//        $data[$index][0] = 'cs_info';
+//        $data[$index][1] = 'cs_id';
+//        $data[$index][2] = $cs_info_id;
+//        $index++;
+//        if (empty($ret_confirm_order)||$ret_confirm_order == false) {
+//            $this->deldata($data);
+//            // dump(111);
+//            return false;
+//        }
+
+        $cs_belong['cs_id'] = $cs_info['cs_id'] = $cs_info_id;
         $cs_belong['cs_belong_create_time'] = $date_now;
 
         $cs_belong_id = \app\index\model\Admin::getmaxtableidretid('cs_belong', 'cs_belong_id')+1;
