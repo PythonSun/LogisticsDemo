@@ -2826,30 +2826,52 @@
 //                $strmaxid = $newStr= sprintf('%05s', $maxid);;
 //                return $dateymd.$strmaxid;
 //            }
-             $num = 0;
-             if(!empty($retdb))
-             {
+
+            //2020-04-17 改
+//             $num = 0;
+//             if(!empty($retdb))
+//             {
+//                 $cs_id = $retdb[0]["max(dsp_logistic.$tableName.$tableID)"];
+//                 $cur_id = str_replace($dateymd,'',$cs_id);
+//                 //$cur_id = 0;
+//                 if(count($cs_id) > 5)
+//                     $cur_id = substr($cs_id,8,5);
+//                 $num = $cur_id;
+//
+//             }
+//             $exit = true;
+//             while ($exit)
+//             {
+//                 $num = $num +1;
+//                 $newStr= sprintf('%05s', $num);
+//                 $cs_id = $dateymd.$newStr;
+//                 $sql1 = "SELECT * FROM dsp_logistic.cs_info where $tableID = '$cs_id'";
+//                 $sql2 = "SELECT * FROM dsp_logistic.order_goods_cs_info where $tableID = '$cs_id'";
+//                 $retdb1 = Db::query($sql1);
+//                 $retdb2 = Db::query($sql2);
+//                 if(empty($retdb1)&&empty($retdb2))
+//                     return $cs_id;
+//             }
+
+             if(!empty($retdb)) {
                  $cs_id = $retdb[0]["max(dsp_logistic.$tableName.$tableID)"];
-                 $cur_id = str_replace($dateymd,'',$cs_id);
-                 //$cur_id = 0;
-                 if(count($cs_id) > 5)
-                     $cur_id = substr($cs_id,8,5);
-                 $num = $cur_id;
+                 if($cs_id == 0){
+                     $num = 1;
+                     $newStr= sprintf('%05s', $num);
+                     return $dateymd.$newStr;
+                 }
+                 else{
+                     return $cs_id+1;
+                 }
+
 
              }
-             $exit = true;
-             while ($exit)
-             {
-                 $num = $num +1;
-                 $newStr= sprintf('%05s', $num);
-                 $cs_id = $dateymd.$newStr;
-                 $sql1 = "SELECT * FROM dsp_logistic.cs_info where $tableID = '$cs_id'";
-                 $sql2 = "SELECT * FROM dsp_logistic.order_goods_cs_info where $tableID = '$cs_id'";
-                 $retdb1 = Db::query($sql1);
-                 $retdb2 = Db::query($sql2);
-                 if(empty($retdb1)&&empty($retdb2))
-                     return $cs_id;
+             else{
+                 $num = 1;
+                $newStr= sprintf('%05s', $num);
+                return $dateymd.$newStr;
              }
+
         }
 
         public static function getcuruserquerypower($user)

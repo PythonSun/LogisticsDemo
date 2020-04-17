@@ -158,7 +158,7 @@ class Addgoodsconfirmorder extends Controller
             $cs_info_id = \app\index\model\Admin::addOrderGoodsCsInfo($order_goods_cs_info);
             if (empty($cs_info_id)||$cs_info_id == false) {
                 // $this->deldata($data);
-                return self::retmsg(0,'保存失败，错误代码：1120');
+                return self::retmsg(0,'保存失败，错误代码：1120,cs_info_id:'.$order_goods_cs_info['cs_id']);
             }
             $order_goods_cs_info['cs_id'] = $cs_info_id;
 
