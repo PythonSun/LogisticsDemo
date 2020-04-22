@@ -2424,10 +2424,6 @@
             Db::startTrans();
             try{
                 $cs_id = $info['cs_id'];
-                $query = "SELECT * FROM dsp_logistic.cs_belong where `cs_id` = '$cs_id';";
-                if(!$query){
-                    $cs_id = self::getcsinfomaxid("cs_belong","cs_id");
-                }
                 $custom_info_id = $info['custom_info_id'];
                 $delivery_info_id = $info['delivery_info_id'];
                 $return_info_id = $info['return_info_id'];
@@ -2607,6 +2603,39 @@
             }
 
         }
+
+        /*2020-04-22 增*/
+        public static function addcsbelong($info){
+            Db::startTrans();
+            try{
+                $cs_id = $info['cs_id'];
+                $query = "SELECT * FROM dsp_logistic.cs_belong where `cs_id` = '$cs_id';";
+                if(!$query){
+                    $cs_id = self::getcsinfomaxid("cs_belong","cs_id");
+                }
+                $cs_belong_id = $info['cs_belong_id'];
+                $build_organize_id = $info['build_organize_id'];
+                $build_user_id = $info['build_user_id'];
+                $cs_belong_create_time = $info['cs_belong_create_time'];
+                $build_user_name = $info['build_user_name'];
+                $build_organize_name = $info['build_organize_name'];
+                $build_department_id = $info['build_department_id'];
+                $build_department_name = $info['build_department_name'];
+                $build_user_phone = $info['build_user_phone'];
+                $sql_value ="'$cs_belong_id','{$cs_id}','{$build_organize_id}','{$build_user_id}','{$cs_belong_create_time}','{$build_user_name}','{$build_organize_name}','{$build_department_id}','{$build_department_name}','$build_user_phone'";
+                $sql = "INSERT INTO dsp_logistic.cs_belong (cs_belong_id,cs_id,build_organize_id,build_user_id,cs_belong_create_time,build_user_name,build_organize_name,build_department_id,build_department_name,build_user_phone) VALUES ({$sql_value})";
+                Db::execute($sql);
+                Db::commit();
+                return $cs_id;
+            }
+            catch (Exception $ex)
+            {
+                Db::rollback();
+                return false;
+            }
+
+        }
+
         /*update*/
         public static function updatecsbelong($info){
             try
@@ -4384,10 +4413,6 @@
             Db::startTrans();
             try{
                 $cs_id = $info['cs_id'];
-                $query = "SELECT * FROM dsp_logistic.cs_belong where `cs_id` = '$cs_id';";
-                if(!$query){
-                    $cs_id = self::getcsinfomaxid("cs_belong","cs_id");
-                }
                 $ofg_info_id = $info['ofg_info_id'];
                 $fee_info_id = $info['fee_info_id'];
                 $delivery_date_reply = $info['delivery_date_reply'];

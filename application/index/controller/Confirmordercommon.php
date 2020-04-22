@@ -26,6 +26,22 @@ class Confirmordercommon extends Controller
         $cs_examine = $_POST['cs_examine'];
 
         $cs_info_id = \app\index\model\Admin::getcsinfomaxid('cs_belong','cs_id');
+        $cs_belong['cs_id'] = $cs_info_id;
+        $cs_belong['cs_belong_create_time'] = $date_now;
+
+        $cs_belong_id = \app\index\model\Admin::getmaxtableidretid('cs_belong', 'cs_belong_id')+1;
+        $cs_belong['cs_belong_id'] = $cs_belong_id;
+        $cs_info_id = \app\index\model\Admin::addcsbelong($cs_belong);
+        $data[$index][0] = 'cs_belong';
+        $data[$index][1] = 'cs_belong_id';
+        $data[$index][2] = $cs_belong_id;
+        $index++;
+        if (empty($cs_info_id)||$cs_info_id == false) {
+            //$this->deldata($data);
+            return false;
+        }
+
+
         //var_dump($cs_info_id);
         $cs_info['write_date'] = $date_now;
         $cs_info['cs_id'] = $cs_info_id;
@@ -35,7 +51,7 @@ class Confirmordercommon extends Controller
         $cs_info['payment_info_id'] = '-1';
         $cs_info['cs_examine_ids'] = "";
         $cs_info_id = \app\index\model\Admin::addConfirmOrder($cs_info);
-        if (empty($cs_info)||$cs_info == false) {
+        if (empty($cs_info_id)||$cs_info_id == false) {
             // $this->deldata($data);
             return false;
         }
@@ -51,21 +67,7 @@ class Confirmordercommon extends Controller
 //            return false;
 //        }
 
-        $cs_belong['cs_id'] = $cs_info['cs_id'] = $cs_info_id;
-        $cs_belong['cs_belong_create_time'] = $date_now;
 
-        $cs_belong_id = \app\index\model\Admin::getmaxtableidretid('cs_belong', 'cs_belong_id')+1;
-        $cs_belong['cs_belong_id'] = $cs_belong_id;
-        $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
-        $data[$index][0] = 'cs_belong';
-        $data[$index][1] = 'cs_belong_id';
-        $data[$index][2] = $cs_belong_id;
-        $index++;
-        if (empty($ret_cs_belog)||$ret_cs_belog == false) {
-            $this->deldata($data);
-            //  dump(222);
-            return false;
-        }
 
         $custom_info_id = \app\index\model\Admin::getmaxtableidretid('custom_info', 'custom_info_id')+1;
         $custom_info['custom_info_id'] = $custom_info_id;

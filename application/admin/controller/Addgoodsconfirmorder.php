@@ -147,6 +147,16 @@ class Addgoodsconfirmorder extends Controller
             $order_goods_cs_undeliver_goods_info = null;
             $cs_info_id = \app\index\model\Admin::getcsinfomaxid('cs_belong','cs_id');
 
+            $cs_belog_id = \app\index\model\Admin::getmaxtableidretid('cs_belong','cs_belong_id') + 1;
+            $cs_belong['cs_belong_id'] = $cs_belog_id;
+            $cs_belong['cs_id'] = $cs_info_id;
+            $cs_belong['cs_belong_create_time'] = $date_now;
+            $cs_belong['build_user_phone'] = $user_session['phone'];
+            $cs_info_id = \app\index\model\Admin::addcsbelong($cs_belong);
+            if (empty($cs_info_id)|| $cs_info_id == false) {
+                return self::retmsg(0,'保存失败，错误代码：1120');
+            }
+
             $order_goods_cs_info['unc_ofg_info_id'] = -1;
             $order_goods_cs_info['ofg_info_id'] = -1;
             $order_goods_cs_info['fee_info_id'] = -1;
@@ -158,19 +168,11 @@ class Addgoodsconfirmorder extends Controller
             $cs_info_id = \app\index\model\Admin::addOrderGoodsCsInfo($order_goods_cs_info);
             if (empty($cs_info_id)||$cs_info_id == false) {
                 // $this->deldata($data);
-                return self::retmsg(0,'保存失败，错误代码：1120,cs_info_id:'.$order_goods_cs_info['cs_id']);
+                return self::retmsg(0,'保存失败，错误代码：1121,cs_info_id:'.$order_goods_cs_info['cs_id']);
             }
             $order_goods_cs_info['cs_id'] = $cs_info_id;
 
-            $cs_belog_id = \app\index\model\Admin::getmaxtableidretid('cs_belong','cs_belong_id') + 1;
-            $cs_belong['cs_belong_id'] = $cs_belog_id;
-            $cs_belong['cs_id'] = $cs_info_id;
-            $cs_belong['cs_belong_create_time'] = $date_now;
-            $cs_belong['build_user_phone'] = $user_session['phone'];
-            $ret_cs_belog = \app\index\model\Admin::updatecsbelong($cs_belong);
-            if (empty($ret_cs_belog)) {
-                return self::retmsg(0,'保存失败，错误代码：1121');
-            }
+
             $ogcugi_length = 0;
             if(array_key_exists('order_goods_cs_undeliver_goods_info',$_POST)){
                 $order_goods_cs_undeliver_goods_info = $_POST['order_goods_cs_undeliver_goods_info'];
